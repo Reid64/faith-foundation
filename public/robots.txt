@@ -1,0 +1,6 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+
+Host: https://faithfoundationsf.org
+Sitemap: https://faithfoundationsf.org/sitemap.xml
