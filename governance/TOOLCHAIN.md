@@ -4,8 +4,8 @@
 > this file is regenerated on every Phase 0 run.
 
 - **Phase 0 gate:** PASS ✅
-- **Generated:** 2026-06-12T06:26:51.698Z
-- **Machine ID:** 6bb8c2b7-c813-4254-80ef-4cf84fbe8650
+- **Generated:** 2026-06-12T07:00:58.698Z
+- **Machine ID:** 8a63604b-eaef-4566-8ca9-6dd519bfe918
 - **Machine registered in Build Memory:** no (first build here)
 - **Platform:** win32
 - **Node.js:** v22.16.0
@@ -16,8 +16,8 @@
 |--------|-------|
 | Framework | nextjs |
 | Language | typescript |
-| Database | — |
-| Deployment | — |
+| Database | supabase |
+| Deployment | vercel |
 | Package manager | pnpm |
 | Services | — |
 
@@ -31,8 +31,8 @@
 | node | yes | present | v22.16.0 |
 | playwright | no | present | Version 1.60.0 |
 | pnpm | yes | present | 11.5.2 |
-| supabase | no | present | 2.105.0 |
-| vercel | no | present | 54.12.2 |
+| supabase | yes | present | 2.105.0 |
+| vercel | yes | present | 54.12.2 |
 
 ## Skill Manifest
 
