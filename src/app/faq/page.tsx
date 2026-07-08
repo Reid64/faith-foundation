@@ -1,37 +1,39 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Reveal from "@/components/Reveal";
+import { img } from "@/lib/images";
 
 export const metadata: Metadata = {
   title: "Frequently Asked Questions — FAITH Foundation",
   description:
-    "Answers to common questions about FAITH Foundation — who we serve, how housing vouchers and the Bright Box Homes partnership work, eligibility, donations, tax-deductibility, and how to volunteer in Central Texas.",
+    "Answers to common questions about FAITH Foundation — who we serve, how down payment assistance vouchers and the Bright Box Homes partnership work, eligibility, donations, tax-deductibility, and how to volunteer across Texas.",
 };
 
 const FAQS = [
   {
     question: "What is FAITH Foundation?",
     answer:
-      "FAITH Foundation is a 501(c)(3) nonprofit organization based in Burnet, Texas. Our name stands for Foundation for Affordable Instruction and Tenancy Hope, and we strengthen families across Central Texas by removing the barriers between people and two essentials of a dignified life: quality instruction and stable, affordable housing.",
+      "FAITH Foundation is a 501(c)(3) nonprofit organization based in Burnet, Texas. Our name stands for Foundation for Affordable Instruction and Tenancy Hope, and we help families across Texas reach the milestone of homeownership — primarily through down payment assistance vouchers that turn the dream of owning a home into an achievable reality.",
   },
   {
     question: "What does the name FAITH stand for?",
     answer:
-      "FAITH is an acronym for our five core values: Faith, Accountability, Instruction, Tenacity, and Hope. Each value guides how we serve, from how we steward donations to how we walk alongside families through setbacks.",
+      "FAITH stands for \"Foundation for Affordable Instruction and Tenancy Hope.\" Each letter reflects our mission of helping families reach homeownership: F is the Foundation we provide as a launching point; A is the Affordable path to owning a home; I is the Instruction that prepares families to succeed; T is the Tenancy and ownership we help families secure; and H is the Hope of a permanent place to call their own. Together they describe what we do — putting families on the road to homeownership through down payment assistance.",
   },
   {
     question: "Who does FAITH Foundation serve?",
     answer:
-      "We serve families and individuals across Burnet and the surrounding Central Texas Hill Country who are facing housing instability or who need instruction to build a more stable future. Our programs reach veterans, single parents, people in recovery, individuals reentering the community after incarceration, and families facing a housing emergency.",
+      "We serve families and individuals across Texas who are working toward homeownership or facing housing instability. Our programs reach veterans, single parents, people in recovery, individuals reentering the community after incarceration, and families facing a housing emergency.",
   },
   {
     question: "How does the Bright Box Homes partnership work?",
     answer:
-      "Through our partnership with Bright Box Homes, every home purchased generates a $2,500 donation to FAITH Foundation at no extra cost to the buyer. We convert that gift into housing vouchers for families in need. It is a renewable cycle: one family putting down roots helps another family keep their home.",
+      "Through our partnership with Bright Box Homes, every home purchased generates a $2,500 donation to FAITH Foundation at no extra cost to the buyer. We convert that gift into down payment assistance vouchers that help other families buy a home of their own. It is a renewable cycle: one family becoming a homeowner helps the next family become one too.",
   },
   {
     question: "What is a housing voucher and how do I qualify?",
     answer:
-      "A housing voucher is direct financial assistance that helps a family secure or maintain stable housing — for example, covering a security deposit, move-in costs, or short-term rental help. Eligibility generally requires that you live in Central Texas, demonstrate a housing need, and partner with our case-management process. Specific criteria vary by program; apply or contact us to review your situation.",
+      "Our vouchers provide down payment assistance — direct financial help that closes the gap between a family and the keys to their own home. Vouchers can also help families secure or maintain stable housing during a transition. Eligibility generally requires that you live in Texas, demonstrate a need, and partner with our case-management process. Specific criteria vary by program; apply or contact us to review your situation.",
   },
   {
     question: "How do I apply for housing assistance?",
@@ -51,7 +53,7 @@ const FAQS = [
   {
     question: "What educational or instruction programs do you offer?",
     answer:
-      "Our instruction programs include financial literacy — budgeting, credit repair, and debt management — along with homeownership counseling, tenancy coaching, and life-skills support. We believe education opens doors that stay open, so instruction is woven through everything we do.",
+      "While down payment assistance toward homeownership is our primary mission, we offer supporting instruction to help families succeed as owners — including homeownership counseling and a financial-literacy program covering budgeting, credit repair, and debt management. These programs prepare families to buy and to keep the home they work so hard to reach.",
   },
   {
     question: "Are donations to FAITH Foundation tax-deductible?",
@@ -61,7 +63,7 @@ const FAQS = [
   {
     question: "How is my donation used?",
     answer:
-      "Donations fund housing vouchers, emergency rental and deposit assistance, and our instruction programs. We direct gifts toward measurable, local impact and report our outcomes openly, because accountability is one of our core values.",
+      "Donations fund down payment assistance vouchers, emergency rental and deposit assistance, and our supporting instruction programs. We direct gifts toward measurable impact for families across Texas and report our outcomes openly, because transparent stewardship is a commitment we take seriously.",
   },
   {
     question: "Can I donate by mail or do I have to give online?",
@@ -85,6 +87,48 @@ const FAQS = [
   },
 ];
 
+// Grouped views over the FAQS data — every question + answer is rendered
+// verbatim, organized into topical accordion sections.
+const CATEGORIES = [
+  {
+    name: "About FAITH Foundation",
+    questions: [
+      "What is FAITH Foundation?",
+      "What does the name FAITH stand for?",
+      "Who does FAITH Foundation serve?",
+      "How does the Bright Box Homes partnership work?",
+    ],
+  },
+  {
+    name: "Getting Help",
+    questions: [
+      "What is a housing voucher and how do I qualify?",
+      "How do I apply for housing assistance?",
+      "Is there a cost to receive help from FAITH Foundation?",
+      "Do I have to share your faith to receive help?",
+      "What educational or instruction programs do you offer?",
+    ],
+  },
+  {
+    name: "Giving & Donations",
+    questions: [
+      "Are donations to FAITH Foundation tax-deductible?",
+      "How is my donation used?",
+      "Can I donate by mail or do I have to give online?",
+    ],
+  },
+  {
+    name: "Get Involved & Visit",
+    questions: [
+      "How can I volunteer with FAITH Foundation?",
+      "Where is FAITH Foundation located and what are your hours?",
+      "How can my business or church partner with FAITH Foundation?",
+    ],
+  },
+];
+
+const byQuestion = (q: string) => FAQS.find((f) => f.question === q)!;
+
 const faqSchema = {
   "@context": "https://schema.org",
   "@type": "FAQPage",
@@ -107,79 +151,117 @@ export default function FAQPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
 
-      {/* Page header */}
-      <section className="bg-gradient-to-b from-navy to-navy-light text-white">
-        <div className="mx-auto max-w-4xl px-6 py-20 text-center">
-          <span className="rounded-full border border-gold/60 px-4 py-1 text-xs font-semibold uppercase tracking-widest text-gold">
-            Frequently Asked Questions
-          </span>
-          <h1 className="mt-6 text-balance text-4xl font-extrabold leading-tight sm:text-5xl">
-            Answers to your <span className="text-gold">questions</span>
-          </h1>
-          <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-white/85">
-            Whether you are seeking housing assistance, considering a gift, or
-            hoping to volunteer, you probably have questions — and we want to make
-            the answers easy to find. Below are the questions we hear most often
-            about who we are, how our programs work, and how you can get involved.
-            If you do not see your question here, reach out and a real person will
-            help.
-          </p>
+      {/* ===== HERO — dark photo + navy overlay ===== */}
+      <section className="relative overflow-hidden bg-navy text-white">
+        <img
+          src={img("peopleTalking", 1900, 1100)}
+          alt="Two people in conversation"
+          className="absolute inset-0 h-full w-full object-cover animate-slow-zoom"
+          loading="eager"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
+        <div className="absolute -right-24 top-1/4 h-96 w-96 rounded-full bg-green/10 blur-3xl" />
+        <div className="relative mx-auto max-w-4xl px-6 pb-24 pt-40 text-center sm:px-8 sm:pt-44">
+          <Reveal>
+            <span className="inline-flex items-center rounded-full border border-green/50 bg-green/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-green-light backdrop-blur">
+              Frequently Asked Questions
+            </span>
+          </Reveal>
+          <Reveal delay={120}>
+            <h1 className="mt-6 text-balance text-4xl font-extrabold leading-[1.05] sm:text-5xl lg:text-6xl">
+              Answers to your <span className="text-gold">questions</span>
+            </h1>
+          </Reveal>
+          <Reveal delay={240}>
+            <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-white/85">
+              Whether you are seeking housing assistance, considering a gift, or
+              hoping to volunteer, you probably have questions — and we want to make
+              the answers easy to find. Below are the questions we hear most often
+              about who we are, how our programs work, and how you can get involved.
+              If you do not see your question here, reach out and a real person will
+              help.
+            </p>
+          </Reveal>
         </div>
       </section>
 
-      {/* FAQ list */}
-      <section className="bg-white">
-        <div className="mx-auto max-w-3xl px-6 py-20">
-          <dl className="space-y-4">
-            {FAQS.map((faq) => (
-              <div
-                key={faq.question}
-                className="overflow-hidden rounded-lg border border-foreground/10 bg-white shadow-sm"
-              >
-                <details className="group">
-                  <summary className="flex cursor-pointer items-center justify-between gap-4 px-6 py-5 text-left text-lg font-bold text-navy transition-colors hover:bg-gold/10 [&::-webkit-details-marker]:hidden">
-                    <dt>{faq.question}</dt>
-                    <span
-                      aria-hidden
-                      className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-navy text-lg font-bold text-gold transition-transform group-open:rotate-45"
-                    >
-                      +
-                    </span>
-                  </summary>
-                  <dd className="border-t border-foreground/10 px-6 py-5 text-lg leading-relaxed text-foreground/80">
-                    {faq.answer}
-                  </dd>
-                </details>
+      {/* ===== ACCORDION FAQ — grouped by category ===== */}
+      <section className="bg-cream bg-texture">
+        <div className="mx-auto max-w-4xl px-6 py-24 sm:px-8 sm:py-32">
+          <div className="space-y-16">
+            {CATEGORIES.map((category) => (
+              <div key={category.name}>
+                <Reveal>
+                  <div className="mb-8 flex items-center gap-4">
+                    <h2 className="text-2xl font-extrabold text-navy sm:text-3xl">
+                      {category.name}
+                    </h2>
+                    <span className="h-px flex-1 bg-gradient-to-r from-green/60 to-transparent" />
+                  </div>
+                </Reveal>
+                <div className="space-y-4">
+                  {category.questions.map((q, i) => {
+                    const faq = byQuestion(q);
+                    return (
+                      <Reveal key={faq.question} delay={i * 80}>
+                        <details className="group overflow-hidden rounded-2xl border border-navy/5 bg-white shadow-card transition-shadow open:shadow-card-lg">
+                          <summary className="flex cursor-pointer list-none items-center justify-between gap-5 px-6 py-5 text-left text-lg font-bold text-navy transition-colors hover:bg-gold/5 sm:px-8 sm:text-xl [&::-webkit-details-marker]:hidden">
+                            <span>{faq.question}</span>
+                            <span
+                              aria-hidden
+                              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-navy text-2xl font-light leading-none text-gold transition-transform duration-300 group-open:rotate-45"
+                            >
+                              +
+                            </span>
+                          </summary>
+                          <div className="border-t border-navy/5 px-6 pb-6 pt-5 text-lg leading-relaxed text-charcoal/80 sm:px-8">
+                            {faq.answer}
+                          </div>
+                        </details>
+                      </Reveal>
+                    );
+                  })}
+                </div>
               </div>
             ))}
-          </dl>
+          </div>
         </div>
       </section>
 
-      {/* CTA */}
+      {/* ===== CTA — still have questions ===== */}
       <section className="bg-navy-dark text-white">
-        <div className="mx-auto max-w-4xl px-6 py-16 text-center">
-          <h2 className="mb-4 text-3xl font-extrabold">Still have questions?</h2>
-          <p className="mx-auto mb-8 max-w-2xl text-lg leading-relaxed text-white/85">
-            Our team is here to help — no phone trees, no run-around. Reach out
-            and a real person will respond.
-          </p>
-          <div className="flex flex-col justify-center gap-4 sm:flex-row">
-            <Link
-              href="/contact"
-              className="rounded-md bg-gold px-8 py-3 text-base font-bold text-navy shadow-lg transition-colors hover:bg-gold-light"
-            >
-              Contact Us
-            </Link>
-            <Link
-              href="/apply"
-              className="rounded-md border-2 border-gold px-8 py-3 text-base font-bold text-gold transition-colors hover:bg-gold hover:text-navy"
-            >
-              Apply for Assistance
-            </Link>
-          </div>
+        <div className="mx-auto max-w-4xl px-6 py-24 text-center sm:px-8">
+          <Reveal>
+            <h2 className="mb-4 text-3xl font-extrabold sm:text-4xl">
+              Still have questions?
+            </h2>
+          </Reveal>
+          <Reveal delay={120}>
+            <p className="mx-auto mb-8 max-w-2xl text-lg leading-relaxed text-white/85">
+              Our team is here to help — no phone trees, no run-around. Reach out
+              and a real person will respond.
+            </p>
+          </Reveal>
+          <Reveal delay={240}>
+            <div className="flex flex-col justify-center gap-4 sm:flex-row">
+              <Link
+                href="/contact"
+                className="rounded-full bg-gold px-8 py-3.5 text-base font-bold text-navy shadow-card transition-colors hover:bg-gold-light"
+              >
+                Contact Us
+              </Link>
+              <Link
+                href="/apply"
+                className="rounded-full border-2 border-green px-8 py-3.5 text-base font-bold text-green-light transition-colors hover:bg-green hover:text-white"
+              >
+                Apply for Assistance
+              </Link>
+            </div>
+          </Reveal>
         </div>
       </section>
     </>
   );
 }
+
+

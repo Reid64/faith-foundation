@@ -21,11 +21,27 @@ export default function VolunteerForm() {
 
   if (submitted) {
     return (
-      <div className="rounded-lg border-t-4 border-gold bg-white p-8 shadow-sm">
+      <div className="rounded-2xl border border-gold/30 bg-gold/5 p-8">
+        <span
+          aria-hidden
+          className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-gold text-navy"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={3}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="h-6 w-6"
+          >
+            <path d="M20 6 9 17l-5-5" />
+          </svg>
+        </span>
         <h3 className="text-2xl font-extrabold text-navy">
           Welcome to the team!
         </h3>
-        <p className="mt-3 text-lg leading-relaxed text-foreground/80">
+        <p className="mt-3 text-lg leading-relaxed text-charcoal/80">
           Thank you for offering your time and talents to FAITH Foundation. A
           member of our volunteer coordination team will reach out soon with next
           steps. Questions in the meantime? Call us at{" "}
@@ -39,15 +55,12 @@ export default function VolunteerForm() {
   }
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="rounded-lg border-t-4 border-gold bg-white p-8 shadow-sm"
-    >
+    <form onSubmit={handleSubmit}>
       <div className="grid gap-6 sm:grid-cols-2">
         <div>
           <label
             htmlFor="v-name"
-            className="mb-1 block text-sm font-semibold text-navy"
+            className="mb-2 block text-sm font-semibold text-navy"
           >
             Full name
           </label>
@@ -57,13 +70,13 @@ export default function VolunteerForm() {
             type="text"
             required
             autoComplete="name"
-            className="w-full rounded-md border border-navy/20 px-4 py-2 text-foreground outline-none focus:border-gold focus:ring-2 focus:ring-gold/40"
+            className="w-full rounded-xl border border-navy/15 bg-white px-4 py-3 text-charcoal placeholder:text-charcoal/40 focus:border-green focus:outline-none focus:ring-2 focus:ring-green/40"
           />
         </div>
         <div>
           <label
             htmlFor="v-email"
-            className="mb-1 block text-sm font-semibold text-navy"
+            className="mb-2 block text-sm font-semibold text-navy"
           >
             Email address
           </label>
@@ -73,13 +86,13 @@ export default function VolunteerForm() {
             type="email"
             required
             autoComplete="email"
-            className="w-full rounded-md border border-navy/20 px-4 py-2 text-foreground outline-none focus:border-gold focus:ring-2 focus:ring-gold/40"
+            className="w-full rounded-xl border border-navy/15 bg-white px-4 py-3 text-charcoal placeholder:text-charcoal/40 focus:border-green focus:outline-none focus:ring-2 focus:ring-green/40"
           />
         </div>
         <div>
           <label
             htmlFor="v-phone"
-            className="mb-1 block text-sm font-semibold text-navy"
+            className="mb-2 block text-sm font-semibold text-navy"
           >
             Phone (optional)
           </label>
@@ -88,20 +101,20 @@ export default function VolunteerForm() {
             name="phone"
             type="tel"
             autoComplete="tel"
-            className="w-full rounded-md border border-navy/20 px-4 py-2 text-foreground outline-none focus:border-gold focus:ring-2 focus:ring-gold/40"
+            className="w-full rounded-xl border border-navy/15 bg-white px-4 py-3 text-charcoal placeholder:text-charcoal/40 focus:border-green focus:outline-none focus:ring-2 focus:ring-green/40"
           />
         </div>
         <div>
           <label
             htmlFor="v-interest"
-            className="mb-1 block text-sm font-semibold text-navy"
+            className="mb-2 block text-sm font-semibold text-navy"
           >
             Area of interest
           </label>
           <select
             id="v-interest"
             name="interest"
-            className="w-full rounded-md border border-navy/20 px-4 py-2 text-foreground outline-none focus:border-gold focus:ring-2 focus:ring-gold/40"
+            className="w-full rounded-xl border border-navy/15 bg-white px-4 py-3 text-charcoal placeholder:text-charcoal/40 focus:border-green focus:outline-none focus:ring-2 focus:ring-green/40"
           >
             {INTERESTS.map((interest) => (
               <option key={interest}>{interest}</option>
@@ -112,7 +125,7 @@ export default function VolunteerForm() {
       <div className="mt-6">
         <label
           htmlFor="v-availability"
-          className="mb-1 block text-sm font-semibold text-navy"
+          className="mb-2 block text-sm font-semibold text-navy"
         >
           Tell us about your availability and skills
         </label>
@@ -120,15 +133,17 @@ export default function VolunteerForm() {
           id="v-availability"
           name="availability"
           rows={4}
-          className="w-full rounded-md border border-navy/20 px-4 py-2 text-foreground outline-none focus:border-gold focus:ring-2 focus:ring-gold/40"
+          className="w-full rounded-xl border border-navy/15 bg-white px-4 py-3 text-charcoal placeholder:text-charcoal/40 focus:border-green focus:outline-none focus:ring-2 focus:ring-green/40"
         />
       </div>
       <button
         type="submit"
-        className="mt-6 w-full rounded-md bg-gold px-8 py-3 text-base font-bold text-navy shadow-lg transition-colors hover:bg-gold-light sm:w-auto"
+        className="mt-8 w-full rounded-full bg-green px-8 py-4 text-base font-bold text-white shadow-green transition-all duration-300 hover:bg-green-dark hover:shadow-card-lg"
       >
         Sign Up to Volunteer
       </button>
     </form>
   );
 }
+
+

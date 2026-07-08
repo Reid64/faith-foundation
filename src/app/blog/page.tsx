@@ -1,26 +1,28 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Reveal from "@/components/Reveal";
+import { img } from "@/lib/images";
 
 export const metadata: Metadata = {
   title: "Blog — FAITH Foundation",
   description:
-    "Stories, updates, and insights from FAITH Foundation — news on the Bright Box Homes partnership, financial-literacy tips, and the families finding instruction and tenancy hope across Central Texas.",
+    "Stories, updates, and insights from FAITH Foundation — news on the Bright Box Homes partnership, down payment assistance, and the families reaching homeownership across Texas.",
 };
 
 const POSTS = [
   {
     slug: "bright-box-homes-partnership-milestone",
-    title: "How One Home Purchase Keeps Two Families Housed",
+    title: "How One Home Purchase Helps Another Family Become Owners",
     category: "Partnership",
     date: "June 2, 2026",
     author: "FAITH Foundation Team",
     readTime: "4 min read",
     excerpt:
-      "Our partnership with Bright Box Homes turns every home purchase into a $2,500 gift that funds housing vouchers. Here is how that renewable cycle of generosity is changing lives across Central Texas.",
+      "Our partnership with Bright Box Homes turns every home purchase into a $2,500 gift that funds down payment assistance vouchers. Here is how that renewable cycle of generosity is helping families reach homeownership across Texas.",
     body: [
-      "When a family closes on a home through Bright Box Homes, something remarkable happens: a $2,500 donation flows to FAITH Foundation at no extra cost to the buyer. We convert that gift directly into housing vouchers for neighbors who are one missed paycheck away from losing their home. One purchase, two families lifted.",
-      "Over the past several months we have watched this model prove itself again and again. A young couple buying their first home had no idea that their signature would, weeks later, help a single mother in Burnet make a security deposit she could not otherwise afford. That is the quiet power of a renewable funding source — it grows as our community grows.",
-      "We believe transparency is part of stewardship, so we report where every voucher dollar lands. As Bright Box Homes expands, the pool of assistance expands with it, creating a steady, sustainable engine for tenancy hope that does not depend on any single grant or season of giving.",
+      "When a family closes on a home through Bright Box Homes, something remarkable happens: a $2,500 donation flows to FAITH Foundation at no extra cost to the buyer. We convert that gift directly into down payment assistance vouchers for neighbors working toward a home of their own. One purchase, another family lifted onto the path to ownership.",
+      "Over the past several months we have watched this model prove itself again and again. A young couple buying their first home had no idea that their signature would, weeks later, help a single mother in Texas cover the down payment that finally made homeownership possible. That is the quiet power of a renewable funding source — it grows as our community grows.",
+      "We believe transparency is part of stewardship, so we report where every voucher dollar lands. As Bright Box Homes expands, the pool of down payment assistance expands with it, creating a steady, sustainable engine for homeownership that does not depend on any single grant or season of giving.",
     ],
   },
   {
@@ -39,108 +41,196 @@ const POSTS = [
     ],
   },
   {
-    slug: "faith-and-service-why-we-serve",
-    title: "Faith in Action: Why We Refuse to Let a Neighbor Fall",
+    slug: "what-faith-stands-for",
+    title: "What FAITH Stands For: A Foundation for Homeownership",
     category: "Mission",
     date: "April 29, 2026",
     author: "FAITH Foundation Team",
     readTime: "5 min read",
     excerpt:
-      "FAITH stands for Faith, Accountability, Instruction, Tenacity, and Hope. Here is what those values look like in the everyday work of serving families across the Hill Country.",
+      "FAITH stands for \"Foundation for Affordable Instruction and Tenancy Hope\" — five words that describe how we help families reach homeownership through down payment assistance across Texas.",
     body: [
-      "The name FAITH is not decoration — each letter names a value that guides how we serve. Faith is the conviction that no family is beyond hope. Accountability is the promise that every dollar entrusted to us is stewarded openly. Instruction is our belief that education opens doors that stay open. Tenacity is our refusal to give up when the work is hard. Hope is the heartbeat of all of it.",
-      "Those words become real in ordinary moments: a coach sitting at a kitchen table to build a budget, a voucher arriving in time to stop an eviction, a volunteer driving a family to a housing appointment. We are a faith-based organization, but our doors and programs are open to everyone, without condition or preference.",
-      "We share these stories not to celebrate ourselves but to invite you in. Every gift, every hour volunteered, and every prayer is part of a community that refuses to let a neighbor fall through the cracks. That is faith in action, and it is the reason we keep showing up.",
+      "The name FAITH is not decoration — it spells out our mission. FAITH stands for \"Foundation for Affordable Instruction and Tenancy Hope.\" F is the Foundation we lay beneath a family's future. A is the Affordable path to owning a home, made real through down payment assistance. I is the Instruction that prepares families to buy and to keep what they earn. T is the Tenancy and ownership we help families secure. And H is the Hope of a permanent place to call their own.",
+      "Those words become real in ordinary moments: a counselor reviewing a mortgage-ready budget at a kitchen table, a down payment voucher arriving in time to close on a first home, a volunteer walking a family through the keys-in-hand finish line. We are a faith-based organization, but our doors and programs are open to everyone, without condition or preference.",
+      "We share these stories not to celebrate ourselves but to invite you in. Every gift, every hour volunteered, and every prayer is part of a community that helps a neighbor become a homeowner. That is what FAITH stands for, and it is the reason we keep showing up.",
     ],
   },
 ];
 
+// Rotate image keys across the magazine grid.
+const POST_IMAGES = ["newKeys", "finance", "communityGathering"] as const;
+
 export default function BlogPage() {
+  const [featured, ...rest] = POSTS;
+
   return (
     <>
-      {/* Page header */}
-      <section className="bg-gradient-to-b from-navy to-navy-light text-white">
-        <div className="mx-auto max-w-4xl px-6 py-20 text-center">
-          <span className="rounded-full border border-gold/60 px-4 py-1 text-xs font-semibold uppercase tracking-widest text-gold">
-            News &amp; Stories
-          </span>
-          <h1 className="mt-6 text-balance text-4xl font-extrabold leading-tight sm:text-5xl">
-            The FAITH Foundation <span className="text-gold">blog</span>
-          </h1>
-          <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-white/85">
-            Updates from our programs, practical tips from our financial-literacy
-            coaches, and the stories of families finding instruction and tenancy
-            hope across Central Texas. We share where the work is going and who it
-            is reaching, because transparency is part of how we steward your
-            trust.
-          </p>
+      {/* ===== HERO — dark photo + navy overlay ===== */}
+      <section className="relative overflow-hidden bg-navy text-white">
+        <img
+          src={img("studying", 1900, 1100)}
+          alt=""
+          aria-hidden
+          loading="lazy"
+          className="absolute inset-0 h-full w-full object-cover opacity-30 animate-slow-zoom"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
+        <div className="absolute -left-24 top-1/3 h-96 w-96 rounded-full bg-green/10 blur-3xl" />
+        <div className="relative mx-auto max-w-7xl px-6 pb-24 pt-40 text-center sm:px-8 sm:pt-44">
+          <Reveal>
+            <span className="inline-flex items-center rounded-full border border-green/50 bg-green/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-green-light backdrop-blur">
+              News &amp; Stories
+            </span>
+          </Reveal>
+          <Reveal delay={120}>
+            <h1 className="mx-auto mt-6 max-w-4xl text-balance text-4xl font-extrabold leading-[1.05] sm:text-5xl lg:text-6xl">
+              The FAITH Foundation <span className="text-gold">blog</span>
+            </h1>
+          </Reveal>
+          <Reveal delay={240}>
+            <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-white/85">
+              Updates from our programs, news on the Bright Box Homes partnership,
+              and the stories of families reaching homeownership through down payment
+              assistance across Texas. We share where the work is going and who it
+              is reaching, because transparency is part of how we steward your
+              trust.
+            </p>
+          </Reveal>
         </div>
       </section>
 
-      {/* Posts */}
-      <section className="bg-white">
-        <div className="mx-auto max-w-4xl px-6 py-20">
-          <div className="space-y-12">
-            {POSTS.map((post) => (
-              <article
-                key={post.slug}
-                className="rounded-lg border-t-4 border-gold bg-white p-8 shadow-sm"
-              >
-                <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-foreground/60">
-                  <span className="font-bold uppercase tracking-widest text-gold-dark">
-                    {post.category}
-                  </span>
+      {/* ===== FEATURED POST — large wide card, image on top ===== */}
+      <section className="bg-cream bg-texture py-24 sm:py-32">
+        <div className="mx-auto max-w-7xl px-6 sm:px-8">
+          <Reveal>
+            <span className="text-sm font-bold uppercase tracking-[0.2em] text-green-dark">
+              Featured story
+            </span>
+          </Reveal>
+          <Reveal delay={100}>
+            <article className="group mt-6 overflow-hidden rounded-[2rem] bg-white shadow-card-lg ring-1 ring-navy/5">
+              <div className="relative aspect-[21/9] w-full overflow-hidden">
+                <img
+                  src={img(POST_IMAGES[0], 1700, 740)}
+                  alt={featured.title}
+                  loading="lazy"
+                  className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
+                <span className="absolute left-6 top-6 inline-flex items-center rounded-full bg-gold px-4 py-1.5 text-xs font-bold uppercase tracking-[0.18em] text-navy shadow-card">
+                  {featured.category}
+                </span>
+              </div>
+              <div className="p-8 sm:p-12">
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm font-medium text-charcoal/60">
+                  <span>{featured.date}</span>
                   <span aria-hidden>•</span>
-                  <span>{post.date}</span>
+                  <span>{featured.readTime}</span>
                   <span aria-hidden>•</span>
-                  <span>{post.readTime}</span>
+                  <span>By {featured.author}</span>
                 </div>
-                <h2 className="mt-3 text-2xl font-extrabold text-navy sm:text-3xl">
-                  {post.title}
+                <h2 className="mt-4 text-3xl font-extrabold text-navy sm:text-4xl">
+                  {featured.title}
                 </h2>
-                <p className="mt-2 text-sm font-medium text-foreground/60">
-                  By {post.author}
+                <p className="mt-5 text-xl font-semibold leading-relaxed text-charcoal/80">
+                  {featured.excerpt}
                 </p>
-                <p className="mt-5 text-lg font-semibold leading-relaxed text-foreground/80">
-                  {post.excerpt}
-                </p>
-                <div className="mt-5 space-y-4 text-lg leading-relaxed text-foreground/80">
-                  {post.body.map((paragraph, index) => (
+                <div className="mt-6 space-y-4 text-lg leading-relaxed text-charcoal/80">
+                  {featured.body.map((paragraph, index) => (
                     <p key={index}>{paragraph}</p>
                   ))}
                 </div>
-              </article>
+              </div>
+            </article>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* ===== MAGAZINE GRID — remaining posts ===== */}
+      <section className="bg-white py-24 sm:py-32">
+        <div className="mx-auto max-w-7xl px-6 sm:px-8">
+          <Reveal>
+            <h2 className="text-3xl font-extrabold text-navy sm:text-4xl">
+              More from the blog
+            </h2>
+          </Reveal>
+          <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-2">
+            {rest.map((post, i) => (
+              <Reveal key={post.slug} delay={i * 100}>
+                <article className="group flex h-full flex-col overflow-hidden rounded-[1.75rem] bg-cream shadow-card ring-1 ring-navy/5 transition-shadow duration-300 hover:shadow-card-lg">
+                  <div className="relative aspect-[16/10] w-full overflow-hidden">
+                    <img
+                      src={img(POST_IMAGES[(i + 1) % POST_IMAGES.length], 900, 560)}
+                      alt={post.title}
+                      loading="lazy"
+                      className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                    <span className="absolute left-5 top-5 inline-flex items-center rounded-full bg-green px-3.5 py-1.5 text-xs font-bold uppercase tracking-[0.16em] text-white backdrop-blur">
+                      {post.category}
+                    </span>
+                  </div>
+                  <div className="flex flex-1 flex-col p-8">
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm font-medium text-charcoal/60">
+                      <span>{post.date}</span>
+                      <span aria-hidden>•</span>
+                      <span>{post.readTime}</span>
+                    </div>
+                    <h3 className="mt-3 text-2xl font-extrabold text-navy">
+                      {post.title}
+                    </h3>
+                    <p className="mt-2 text-sm font-medium text-charcoal/60">
+                      By {post.author}
+                    </p>
+                    <p className="mt-4 text-lg font-semibold leading-relaxed text-charcoal/80">
+                      {post.excerpt}
+                    </p>
+                    <div className="mt-4 space-y-4 text-base leading-relaxed text-charcoal/75">
+                      {post.body.map((paragraph, index) => (
+                        <p key={index}>{paragraph}</p>
+                      ))}
+                    </div>
+                  </div>
+                </article>
+              </Reveal>
             ))}
           </div>
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="bg-navy-dark text-white">
-        <div className="mx-auto max-w-4xl px-6 py-16 text-center">
-          <h2 className="mb-4 text-3xl font-extrabold">
-            Want these stories in your inbox?
-          </h2>
-          <p className="mx-auto mb-8 max-w-2xl text-lg leading-relaxed text-white/85">
-            Reach out to join our community of supporters, or give today to help
-            keep families learning and keep families housed.
-          </p>
-          <div className="flex flex-col justify-center gap-4 sm:flex-row">
-            <Link
-              href="/donate"
-              className="rounded-md bg-gold px-8 py-3 text-base font-bold text-navy shadow-lg transition-colors hover:bg-gold-light"
-            >
-              Donate Now
-            </Link>
-            <Link
-              href="/contact"
-              className="rounded-md border-2 border-gold px-8 py-3 text-base font-bold text-gold transition-colors hover:bg-gold hover:text-navy"
-            >
-              Get in Touch
-            </Link>
-          </div>
+      {/* ===== CTA — newsletter nudge ===== */}
+      <section className="bg-navy-dark py-24 text-white sm:py-32">
+        <div className="mx-auto max-w-4xl px-6 text-center sm:px-8">
+          <Reveal>
+            <h2 className="text-3xl font-extrabold sm:text-4xl">
+              Want these stories in your inbox?
+            </h2>
+          </Reveal>
+          <Reveal delay={120}>
+            <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-white/85">
+              Reach out to join our community of supporters, or give today to help
+              another family reach the milestone of homeownership.
+            </p>
+          </Reveal>
+          <Reveal delay={240}>
+            <div className="mt-10 flex flex-col justify-center gap-4 sm:flex-row">
+              <Link
+                href="/donate"
+                className="rounded-md bg-gold px-8 py-3 text-base font-bold text-navy shadow-card transition-colors hover:bg-gold-light"
+              >
+                Donate Now
+              </Link>
+              <Link
+                href="/contact"
+                className="rounded-md border-2 border-green px-8 py-3 text-base font-bold text-green-light transition-colors hover:bg-green hover:text-white"
+              >
+                Get in Touch
+              </Link>
+            </div>
+          </Reveal>
         </div>
       </section>
     </>
   );
 }
+
+

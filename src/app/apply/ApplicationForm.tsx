@@ -10,8 +10,8 @@ const STEPS = [
 ];
 
 const inputClass =
-  "w-full rounded-md border border-navy/20 px-4 py-2 text-foreground outline-none focus:border-gold focus:ring-2 focus:ring-gold/40";
-const labelClass = "mb-1 block text-sm font-semibold text-navy";
+  "w-full rounded-xl border border-navy/15 bg-white px-4 py-3 text-charcoal placeholder:text-charcoal/40 focus:border-green focus:outline-none focus:ring-2 focus:ring-green/40";
+const labelClass = "mb-2 block text-sm font-semibold text-navy";
 
 export default function ApplicationForm() {
   const [step, setStep] = useState(1);
@@ -32,11 +32,27 @@ export default function ApplicationForm() {
 
   if (submitted) {
     return (
-      <div className="rounded-lg border-t-4 border-gold bg-white p-8 shadow-sm">
+      <div className="rounded-3xl bg-white p-8 shadow-card-lg sm:p-10">
+        <span
+          aria-hidden
+          className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-gold text-navy"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={3}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="h-6 w-6"
+          >
+            <path d="M20 6 9 17l-5-5" />
+          </svg>
+        </span>
         <h3 className="text-2xl font-extrabold text-navy">
           Application received
         </h3>
-        <p className="mt-3 text-lg leading-relaxed text-foreground/80">
+        <p className="mt-3 text-lg leading-relaxed text-charcoal/80">
           Thank you for trusting FAITH Foundation with your story. Your housing
           assistance application has been submitted. A caseworker will review
           your information and contact you within three business days. If you are
@@ -51,13 +67,13 @@ export default function ApplicationForm() {
   }
 
   return (
-    <div className="rounded-lg border-t-4 border-gold bg-white p-8 shadow-sm">
+    <div className="rounded-3xl bg-white p-8 shadow-card-lg sm:p-10">
       {/* Step indicator */}
       <ol className="mb-8 flex flex-wrap gap-x-2 gap-y-3">
         {STEPS.map((s) => (
           <li key={s.id} className="flex items-center gap-2">
             <span
-              className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-bold ${
+              className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-bold transition-colors ${
                 step >= s.id
                   ? "bg-gold text-navy"
                   : "bg-navy/10 text-navy/50"
@@ -215,7 +231,7 @@ export default function ApplicationForm() {
                 type="checkbox"
                 name="consent"
                 required
-                className="mt-1 h-4 w-4 rounded border-navy/30 text-gold focus:ring-gold"
+                className="mt-1 h-4 w-4 rounded border-navy/30 text-green focus:ring-green"
               />
               <span>
                 I certify that the information provided is accurate to the best of
@@ -232,7 +248,7 @@ export default function ApplicationForm() {
             type="button"
             onClick={back}
             disabled={step === 1}
-            className="rounded-md border-2 border-navy/30 px-6 py-3 text-base font-bold text-navy transition-colors hover:border-navy disabled:cursor-not-allowed disabled:opacity-40"
+            className="rounded-full border-2 border-navy/20 px-6 py-3 text-base font-bold text-navy transition-colors hover:border-navy disabled:cursor-not-allowed disabled:opacity-40"
           >
             Back
           </button>
@@ -240,14 +256,14 @@ export default function ApplicationForm() {
             <button
               type="button"
               onClick={next}
-              className="rounded-md bg-gold px-8 py-3 text-base font-bold text-navy shadow-lg transition-colors hover:bg-gold-light"
+              className="rounded-full bg-green px-8 py-3 text-base font-bold text-white shadow-green transition-all duration-300 hover:bg-green-dark hover:shadow-card-lg"
             >
               Continue
             </button>
           ) : (
             <button
               type="submit"
-              className="rounded-md bg-gold px-8 py-3 text-base font-bold text-navy shadow-lg transition-colors hover:bg-gold-light"
+              className="rounded-full bg-green px-8 py-3 text-base font-bold text-white shadow-green transition-all duration-300 hover:bg-green-dark hover:shadow-card-lg"
             >
               Submit Application
             </button>
@@ -257,3 +273,5 @@ export default function ApplicationForm() {
     </div>
   );
 }
+
+

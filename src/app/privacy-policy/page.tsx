@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Reveal from "@/components/Reveal";
 
 export const metadata: Metadata = {
   title: "Privacy Policy — FAITH Foundation",
@@ -79,73 +80,125 @@ const SECTIONS = [
 export default function PrivacyPolicyPage() {
   return (
     <>
-      {/* Page header */}
-      <section className="bg-gradient-to-b from-navy to-navy-light text-white">
-        <div className="mx-auto max-w-4xl px-6 py-20 text-center">
-          <span className="rounded-full border border-gold/60 px-4 py-1 text-xs font-semibold uppercase tracking-widest text-gold">
-            Your Privacy
-          </span>
-          <h1 className="mt-6 text-balance text-4xl font-extrabold leading-tight sm:text-5xl">
-            Privacy Policy
-          </h1>
-          <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-white/85">
-            FAITH Foundation respects your privacy and is committed to protecting
-            the personal information you share with us. This policy explains what
-            we collect, how we use it, and the rights you have under the GDPR and
-            the California Consumer Privacy Act (CCPA/CPRA).
-          </p>
+      {/* ===== HERO — dark navy with last-updated badge ===== */}
+      <section className="relative overflow-hidden bg-navy text-white">
+        <div className="absolute inset-0 bg-gradient-to-br from-navy via-navy to-navy-dark" />
+        <div className="absolute -right-24 top-1/4 h-96 w-96 rounded-full bg-gold/10 blur-3xl" />
+        <div className="absolute -left-24 bottom-0 h-80 w-80 rounded-full bg-gold/5 blur-3xl" />
+        <div className="relative mx-auto max-w-4xl px-6 pb-24 pt-40 text-center sm:px-8 sm:pt-44">
+          <Reveal>
+            <span className="inline-flex items-center rounded-full border border-green/50 bg-green/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-green-light backdrop-blur">
+              Your Privacy
+            </span>
+          </Reveal>
+          <Reveal delay={120}>
+            <h1 className="mt-6 text-balance text-4xl font-extrabold leading-[1.05] sm:text-5xl lg:text-6xl">
+              Privacy Policy
+            </h1>
+          </Reveal>
+          <Reveal delay={240}>
+            <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-white/85">
+              FAITH Foundation respects your privacy and is committed to protecting
+              the personal information you share with us. This policy explains what
+              we collect, how we use it, and the rights you have under the GDPR and
+              the California Consumer Privacy Act (CCPA/CPRA).
+            </p>
+          </Reveal>
+          <Reveal delay={320}>
+            <p className="mt-8 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-1.5 text-sm font-medium text-white/80 backdrop-blur">
+              <span className="h-2 w-2 rounded-full bg-gold" aria-hidden />
+              Last updated: June 12, 2026
+            </p>
+          </Reveal>
         </div>
       </section>
 
-      {/* Policy body */}
-      <section className="bg-white">
-        <div className="mx-auto max-w-4xl px-6 py-16">
-          <p className="mb-10 text-sm font-medium text-foreground/60">
-            Last updated: June 12, 2026
-          </p>
-          <div className="space-y-12">
-            {SECTIONS.map((section) => (
-              <div key={section.id} id={section.id}>
-                <h2 className="mb-4 text-2xl font-extrabold text-navy">
-                  {section.heading}
-                </h2>
-                <div className="space-y-4 text-lg leading-relaxed text-foreground/80">
-                  {section.body.map((paragraph, index) => (
-                    <p key={index}>{paragraph}</p>
+      {/* ===== LEGAL DOC + SECTION NAV ===== */}
+      <section className="bg-texture bg-cream">
+        <div className="mx-auto max-w-7xl px-6 py-24 sm:px-8 sm:py-32">
+          <div className="grid gap-12 lg:grid-cols-[260px_1fr] lg:gap-16">
+            {/* Sticky section nav */}
+            <aside className="lg:sticky lg:top-28 lg:self-start">
+              <nav aria-label="Privacy policy sections">
+                <p className="mb-4 text-sm font-bold uppercase tracking-widest text-green-dark">
+                  On this page
+                </p>
+                <ul className="space-y-1 border-l border-navy/10">
+                  {SECTIONS.map((section) => (
+                    <li key={section.id}>
+                      <a
+                        href={`#${section.id}`}
+                        className="-ml-px block border-l-2 border-transparent py-2 pl-4 text-sm font-medium leading-snug text-charcoal/70 transition-colors hover:border-green hover:text-navy"
+                      >
+                        {section.heading}
+                      </a>
+                    </li>
                   ))}
-                </div>
+                </ul>
+              </nav>
+            </aside>
+
+            {/* Prose sections */}
+            <div className="min-w-0">
+              <div className="space-y-12">
+                {SECTIONS.map((section) => (
+                  <section
+                    key={section.id}
+                    id={section.id}
+                    className="scroll-mt-28"
+                  >
+                    <Reveal className="rounded-3xl border border-navy/5 bg-white p-8 shadow-card sm:p-10">
+                      <h2 className="mb-5 text-2xl font-extrabold text-navy">
+                        {section.heading}
+                      </h2>
+                      <div className="space-y-4 text-lg leading-relaxed text-charcoal/80">
+                        {section.body.map((paragraph, index) => (
+                          <p key={index}>{paragraph}</p>
+                        ))}
+                      </div>
+                    </Reveal>
+                  </section>
+                ))}
               </div>
-            ))}
+            </div>
           </div>
         </div>
       </section>
 
-      {/* CTA */}
+      {/* ===== CTA ===== */}
       <section className="bg-navy-dark text-white">
-        <div className="mx-auto max-w-4xl px-6 py-16 text-center">
-          <h2 className="mb-4 text-3xl font-extrabold">
-            Questions about your privacy?
-          </h2>
-          <p className="mx-auto mb-8 max-w-2xl text-lg leading-relaxed text-white/85">
-            Our team is happy to explain how we handle your information or to help
-            you exercise your data rights.
-          </p>
-          <div className="flex flex-col justify-center gap-4 sm:flex-row">
-            <Link
-              href="/contact"
-              className="rounded-md bg-gold px-8 py-3 text-base font-bold text-navy shadow-lg transition-colors hover:bg-gold-light"
-            >
-              Contact Us
-            </Link>
-            <Link
-              href="/financial-transparency"
-              className="rounded-md border-2 border-gold px-8 py-3 text-base font-bold text-gold transition-colors hover:bg-gold hover:text-navy"
-            >
-              Financial Transparency
-            </Link>
-          </div>
+        <div className="mx-auto max-w-4xl px-6 py-24 text-center sm:px-8">
+          <Reveal>
+            <h2 className="mb-4 text-3xl font-extrabold sm:text-4xl">
+              Questions about your privacy?
+            </h2>
+          </Reveal>
+          <Reveal delay={120}>
+            <p className="mx-auto mb-8 max-w-2xl text-lg leading-relaxed text-white/85">
+              Our team is happy to explain how we handle your information or to help
+              you exercise your data rights.
+            </p>
+          </Reveal>
+          <Reveal delay={240}>
+            <div className="flex flex-col justify-center gap-4 sm:flex-row">
+              <Link
+                href="/contact"
+                className="rounded-full bg-green px-8 py-3.5 text-base font-bold text-white shadow-green transition-colors hover:bg-green-dark"
+              >
+                Contact Us
+              </Link>
+              <Link
+                href="/financial-transparency"
+                className="rounded-full border-2 border-gold px-8 py-3.5 text-base font-bold text-gold transition-colors hover:bg-gold hover:text-navy"
+              >
+                Financial Transparency
+              </Link>
+            </div>
+          </Reveal>
         </div>
       </section>
     </>
   );
 }
+
+

@@ -1,123 +1,255 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Reveal from "@/components/Reveal";
+import { img } from "@/lib/images";
 
 export const metadata: Metadata = {
   title: "Our Team — FAITH Foundation",
   description:
-    "Meet the board and leadership of FAITH Foundation — Pastor Jeremiah L. Busby, Founding Minister, and Reid L. Whitesides, Housing Facilitator — serving Central Texas families.",
+    "Meet the board and leadership of FAITH Foundation — Pastor Juan Valdez, Secretary & Protector; Scott Ellis, Treasurer & Board Chair; and Reid Whitesides, Founder & Executive Director — helping families across Texas achieve homeownership.",
 };
 
 const BOARD = [
   {
-    name: "Pastor Jeremiah L. Busby",
-    role: "Founding Minister",
-    initials: "JB",
+    name: "Reid Whitesides",
+    role: "Founder & President",
+    initials: "RW",
+    photo: "/Images/team/reid-whitesides.jpg",
     bio: [
-      "Pastor Jeremiah L. Busby is the founding minister of FAITH Foundation and the spiritual heart of its mission. For years, Pastor Busby has answered a clear calling: to stand alongside families in their hardest moments and to turn faith into tangible help. It was this conviction — that no neighbor should have to face the loss of a home or a future alone — that led him to establish FAITH Foundation as a 501(c)(3) nonprofit serving Burnet and the wider Central Texas community.",
-      "As Founding Minister, Pastor Busby sets the vision and values that guide everything the Foundation does. He shaped the organization around five enduring principles — Faith, Accountability, Instruction, Tenacity, and Hope — the very values that give the Foundation its name. Under his leadership, FAITH Foundation has remained rooted in compassion while holding itself to rigorous standards of stewardship and transparency, ensuring that every gift entrusted to the ministry produces real, measurable good in the lives of families.",
-      "Pastor Busby believes deeply that housing stability and education are inseparable from human dignity. He has championed programs that pair direct housing assistance with practical instruction in financial literacy and life skills, so that families are not only helped through a crisis but equipped to build lasting independence. His pastoral approach — meeting people where they are, with patience and without judgment — has made FAITH Foundation a trusted presence for families of every background and belief.",
-      "Beyond his administrative role, Pastor Busby remains a hands-on shepherd to the community he serves, offering counsel, encouragement, and a steady reminder that hope is always within reach. His tenacity in the face of difficult circumstances and his unwavering faith continue to inspire the volunteers, donors, and partners who make the Foundation's work possible.",
+      "Reid Whitesides is the Founder and President of The Faith Foundation, an organization dedicated to helping individuals experiencing homelessness, recovery, and reentry build stable, self-sufficient futures through affordable housing, education, and supportive opportunities.",
+      "With more than 20 years of experience in construction, roofing, project management, housing-related industries, sales, and consulting, Reid brings practical expertise and real-world insight to the Foundation\u0027s mission of creating sustainable pathways to stability and independence. He also has a passion for technology and spends much of his spare time developing websites, software applications, and automation tools that support nonprofit, housing, and community-focused initiatives.",
+      "His commitment to this work is deeply personal. During a prolonged struggle with addiction, Reid spent nearly twenty years incarcerated in the State of Texas. Those experiences gave him firsthand insight into the barriers many individuals face when attempting to rebuild their lives after addiction, incarceration, and homelessness. Today, he has been sober for more than fifteen years and remains committed to helping others overcome similar challenges and create lasting change.",
+      "Reid credits his Christian faith and God\u0027s transformative work in his life as the foundation of his recovery, purpose, and leadership. He believes that stable housing is often the first step toward restoring hope, rebuilding lives, and creating opportunities for long-term success. His vision for the Foundation is rooted in the conviction that every person deserves the opportunity to move beyond their circumstances and build a better future.",
     ],
   },
   {
-    name: "Reid L. Whitesides",
-    role: "Housing Facilitator",
-    initials: "RW",
+    name: "Pastor Juan Valdez",
+    role: "Secretary & Protector",
+    initials: "JV",
+    photo: "/Images/team/pastor-juan-valdez.jpg",
     bio: [
-      "Reid L. Whitesides serves as the Housing Facilitator for FAITH Foundation, where he leads the practical work of turning the organization's mission into stable homes for the families it serves. In this role, Reid is responsible for connecting families in need with the housing assistance that can keep them in their homes, and for building and maintaining the partnerships that fund that assistance.",
-      "At the center of Reid's work is the Foundation's landmark partnership with Bright Box Homes — a sustainable model in which every home purchased generates a $2,500 donation to FAITH Foundation. Reid manages the flow of these gifts into housing vouchers, ensuring that the generosity generated by each home purchase reaches the families who need it most. It is a simple but powerful idea: when one family puts down roots in a new home, another family receives the support they need to keep theirs. Reid's stewardship makes that cycle of generosity possible.",
-      "Reid brings a deep commitment to transparency and accountability to his role. He works directly with families to understand their circumstances, to navigate the path toward stable tenancy, and to pair housing support with the instruction families need to remain housed for the long term. He believes that lasting stability is built not through a single act of charity but through a relationship of trust, follow-through, and genuine care.",
-      "Driven by the conviction that no neighbor should fall through the cracks, Reid approaches every case with tenacity and hope. Whether coordinating with partners, managing voucher resources, or walking a family through a difficult season, he embodies the Foundation's belief that affordable instruction and tenancy hope, offered together, can change the trajectory of a family for generations to come.",
+      "Pastor Juan Valdez serves as Secretary and Protector of the Faith Foundation, providing spiritual oversight, governance accountability, and mission stewardship for the organization. With more than 40 years of Christian faith and nearly 30 years of ordained ministry experience, Pastor Valdez offers a lifetime of leadership grounded in biblical principles, service, and integrity.",
+      "His ministry has extended across the United States, South America, Central America, the Caribbean, and Africa, where he has taught, preached, and supported faith-based outreach initiatives. Known for his wisdom, humility, and commitment to discipleship, Pastor Valdez has dedicated his life to helping individuals and families discover hope, purpose, and restoration through faith.",
+      "Beyond ministry, Pastor Valdez and his wife, Martha, demonstrated an extraordinary commitment to their community through business ownership, operating a successful hair studio in the same San Antonio location for 34 years. Such longevity reflects the consistency, reliability, and stewardship that have characterized both his professional and ministry endeavors throughout his life.",
+      "Pastor Valdez currently serves as an Associate Pastor at Temple of Praise and resides in Texas with his wife, Martha. Together they have built a legacy of faith that spans generations, including three daughters, six grandchildren, and two great-grandchildren.",
     ],
+  },
+  {
+    name: "Scott Ellis",
+    role: "Treasurer & Board Chair",
+    initials: "SE",
+    photo: "/Images/team/scott-ellis.jpg",
+    bio: [
+      "Scott Ellis serves as Treasurer and Board Chair of the Faith Foundation, providing financial oversight, strategic guidance, and leadership in support of the Foundation\u0027s mission to expand affordable housing opportunities and strengthen communities through faith-based service.",
+      "Scott is the owner of E4 Roofing and Construction, a Georgetown, Texas-based company he has successfully led for more than 15 years. His experience as a business owner provides the Foundation with valuable expertise in financial management, operations, project coordination, and organizational leadership. He also brings extensive construction and housing industry knowledge that helps support the Foundation\u0027s affordable housing initiatives.",
+      "A longtime Georgetown resident of more than 24 years, Scott and his wife, Christy, have been married for 37 years and have raised two daughters together. Scott and Christy are active members of their local church, where they serve through ministry, fellowship, and community engagement. Scott has also participated in mission work in Mexico, demonstrating a commitment to serving others both locally and abroad.",
+    ],
+  },
+];
+
+const VALUES = [
+  {
+    letter: "F",
+    title: "Foundation",
+    body: "We are the financial foundation beneath a family's first home — closing the down payment gap that keeps ownership out of reach.",
+  },
+  {
+    letter: "A",
+    title: "Affordable",
+    body: "We keep the path to ownership affordable, directing assistance where it removes the single biggest barrier to buying a home.",
+  },
+  {
+    letter: "I",
+    title: "Instruction",
+    body: "We pair every voucher with homebuyer instruction so families buy with confidence and keep their homes for good.",
+  },
+  {
+    letter: "T",
+    title: "Tenancy",
+    body: "We protect housing stability and tenancy today so a setback never derails a family's road to ownership.",
+  },
+  {
+    letter: "H",
+    title: "Hope",
+    body: "Hope is the heartbeat of our work — we turn the hope of a home of one's own into keys in hand.",
   },
 ];
 
 export default function TeamPage() {
   return (
     <>
-      {/* Page header */}
-      <section className="bg-gradient-to-b from-navy to-navy-light text-white">
-        <div className="mx-auto max-w-4xl px-6 py-20 text-center">
-          <span className="rounded-full border border-gold/60 px-4 py-1 text-xs font-semibold uppercase tracking-widest text-gold">
-            Our Team
-          </span>
-          <h1 className="mt-6 text-balance text-4xl font-extrabold leading-tight sm:text-5xl">
-            The people behind the mission
-          </h1>
-          <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-white/85">
-            FAITH Foundation is led by a dedicated board committed to serving
-            Central Texas families with faith, accountability, and hope. Meet
-            the leaders who make our work possible.
-          </p>
+      {/* ===== HERO — dark photo + overlay ===== */}
+      <section className="relative flex min-h-[80vh] items-center overflow-hidden bg-navy text-white">
+        <img
+          src={img("teamMeeting", 2000)}
+          alt="The FAITH Foundation leadership team meeting together"
+          className="absolute inset-0 h-full w-full animate-slow-zoom object-cover"
+          loading="eager"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-green-deep/40" />
+        <div className="relative mx-auto w-full max-w-7xl px-6 pb-20 pt-40 sm:px-8">
+          <div className="max-w-3xl">
+            <Reveal>
+              <span className="inline-flex items-center rounded-full border border-green/50 bg-green/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-green-light backdrop-blur">
+                Our Team
+              </span>
+            </Reveal>
+            <Reveal delay={120}>
+              <h1 className="mt-6 text-balance text-4xl font-extrabold leading-[1.05] sm:text-5xl lg:text-6xl">
+                The people behind <span className="text-gold">the mission</span>
+              </h1>
+            </Reveal>
+            <Reveal delay={240}>
+              <p className="mt-6 max-w-2xl text-lg leading-relaxed text-white/85">
+                FAITH Foundation is led by a dedicated board committed to helping
+                families across Texas achieve homeownership with faith,
+                accountability, and hope. Meet the leaders who make our work
+                possible.
+              </p>
+            </Reveal>
+          </div>
         </div>
       </section>
 
-      {/* Board bios */}
-      <section className="bg-white">
-        <div className="mx-auto max-w-5xl px-6 py-20">
-          <h2 className="mb-3 text-center text-sm font-bold uppercase tracking-widest text-gold-dark">
-            Board of Directors
-          </h2>
-          <h3 className="mb-12 text-center text-3xl font-extrabold text-navy">
-            Leadership &amp; Board
-          </h3>
-          <div className="space-y-12">
-            {BOARD.map((member) => (
-              <article
+      {/* ===== LEADERSHIP DIRECTORY — photo cards ===== */}
+      <section className="bg-cream bg-texture py-24 sm:py-32">
+        <div className="mx-auto max-w-7xl px-6 sm:px-8">
+          <Reveal className="mx-auto max-w-3xl text-center">
+            <h2 className="text-sm font-bold uppercase tracking-[0.2em] text-green-dark">
+              Board of Directors
+            </h2>
+            <p className="mt-4 text-3xl font-extrabold text-navy sm:text-4xl">
+              Leadership &amp; Board
+            </p>
+          </Reveal>
+
+          <div className="mt-16 grid gap-10 lg:grid-cols-2">
+            {BOARD.map((member, i) => (
+              <Reveal
                 key={member.name}
-                className="grid gap-8 rounded-2xl border border-navy/10 bg-gold/5 p-8 shadow-sm lg:grid-cols-[200px_1fr] lg:items-start"
+                delay={i * 120}
+                as="article"
+                className="flex h-full flex-col overflow-hidden rounded-3xl bg-white shadow-card-lg ring-1 ring-navy/5"
               >
-                <div className="flex flex-col items-center text-center">
-                  <span
-                    aria-hidden
-                    className="flex h-28 w-28 items-center justify-center rounded-full bg-navy text-4xl font-extrabold text-gold"
-                  >
-                    {member.initials}
-                  </span>
-                  <h4 className="mt-4 text-xl font-bold text-navy">
-                    {member.name}
-                  </h4>
-                  <p className="mt-1 text-sm font-semibold uppercase tracking-widest text-gold-dark">
-                    {member.role}
-                  </p>
+                <div className="relative h-96 overflow-hidden sm:h-[28rem]">
+                  <img
+                    src={member.photo}
+                    alt={`${member.name}, ${member.role} at FAITH Foundation`}
+                    className="h-full w-full object-contain bg-[#1B2A4A]"
+                    loading="lazy"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
+                  <div className="absolute bottom-0 left-0 right-0 p-7">
+                    <span
+                      aria-hidden
+                      className="mb-3 inline-flex h-12 w-12 items-center justify-center rounded-full bg-gold text-lg font-extrabold text-navy shadow-card"
+                    >
+                      {member.initials}
+                    </span>
+                    <h3 className="text-2xl font-extrabold text-white">
+                      {member.name}
+                    </h3>
+                    <p className="mt-1 text-sm font-semibold uppercase tracking-widest text-gold">
+                      {member.role}
+                    </p>
+                  </div>
                 </div>
-                <div className="space-y-4 text-lg leading-relaxed text-foreground/80">
+                <div className="flex flex-1 flex-col gap-4 p-8 text-base leading-relaxed text-charcoal/80 sm:p-10">
                   {member.bio.map((paragraph, index) => (
                     <p key={index}>{paragraph}</p>
                   ))}
                 </div>
-              </article>
+              </Reveal>
             ))}
           </div>
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="bg-navy-dark text-white">
-        <div className="mx-auto max-w-4xl px-6 py-16 text-center">
-          <h2 className="mb-4 text-3xl font-extrabold">
-            Stand with our team
-          </h2>
-          <p className="mx-auto mb-8 max-w-2xl text-lg leading-relaxed text-white/85">
-            Your generosity gives our team the resources to keep families
-            learning and keep families housed across Central Texas.
-          </p>
-          <div className="flex flex-col justify-center gap-4 sm:flex-row">
-            <Link
-              href="/donate"
-              className="rounded-md bg-gold px-8 py-3 text-base font-bold text-navy shadow-lg transition-colors hover:bg-gold-light"
-            >
-              Donate Now
-            </Link>
-            <Link
-              href="/about"
-              className="rounded-md border-2 border-gold px-8 py-3 text-base font-bold text-gold transition-colors hover:bg-gold hover:text-navy"
-            >
-              Learn About Us
-            </Link>
+      {/* ===== VALUES STRIP — join us ===== */}
+      <section className="bg-navy py-24 text-white sm:py-32">
+        <div className="mx-auto max-w-7xl px-6 sm:px-8">
+          <Reveal className="mx-auto max-w-3xl text-center">
+            <h2 className="text-sm font-bold uppercase tracking-[0.2em] text-gold">
+              What Guides Us
+            </h2>
+            <p className="mt-4 text-3xl font-extrabold sm:text-4xl">
+              The values our team lives by
+            </p>
+            <p className="mt-6 text-lg leading-relaxed text-white/80">
+              Foundation, Affordable, Instruction, Tenancy, and Hope — the five
+              principles of the Foundation for Affordable Instruction and Tenancy
+              Hope that give our Foundation its name and shape every decision our
+              team makes.
+            </p>
+          </Reveal>
+          <div className="mt-14 grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-5">
+            {VALUES.map((value, i) => (
+              <Reveal
+                key={value.title}
+                delay={i * 100}
+                as="div"
+                className="rounded-3xl border border-white/10 bg-white/5 p-6 text-center shadow-card backdrop-blur"
+              >
+                <span
+                  aria-hidden
+                  className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-green text-2xl font-extrabold text-white shadow-green"
+                >
+                  {value.letter}
+                </span>
+                <h3 className="mt-4 text-lg font-bold text-green-light">
+                  {value.title}
+                </h3>
+                <p className="mt-2 text-sm leading-snug text-white/75">
+                  {value.body}
+                </p>
+              </Reveal>
+            ))}
           </div>
+        </div>
+      </section>
+
+      {/* ===== CTA ===== */}
+      <section className="bg-navy-dark py-24 text-white sm:py-32">
+        <div className="mx-auto max-w-4xl px-6 text-center sm:px-8">
+          <Reveal>
+            <h2 className="text-3xl font-extrabold sm:text-4xl">
+              Stand with our team
+            </h2>
+          </Reveal>
+          <Reveal delay={120}>
+            <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-white/85">
+              Your generosity gives our team the resources to close the down
+              payment gap and put families into homes of their own across Texas.
+            </p>
+          </Reveal>
+          <Reveal delay={200}>
+            <div className="mt-10 flex flex-col justify-center gap-4 sm:flex-row">
+              <Link
+                href="/donate"
+                className="rounded-full bg-gold px-8 py-3.5 text-base font-bold text-navy shadow-card transition-colors hover:bg-gold-light"
+              >
+                Donate Now
+              </Link>
+              <Link
+                href="/about"
+                className="rounded-full border-2 border-green px-8 py-3.5 text-base font-bold text-green-light transition-colors hover:bg-green hover:text-white"
+              >
+                Learn About Us
+              </Link>
+            </div>
+          </Reveal>
         </div>
       </section>
     </>
   );
 }
+
+
+
+
+
+
+
+
+

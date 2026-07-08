@@ -3,10 +3,17 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #1a1a1a;
-  --navy: #0a1f44;
+  --background: #faf8f1;
+  --foreground: #22262e;
+  --navy: #16243f;
+  --navy-light: #26395e;
+  --navy-deep: #0a1322;
   --gold: #c9a227;
+  --gold-light: #e2c45c;
+  --green: #255527;
+  --green-light: #4a8c53;
+  --green-dark: #1c4220;
+  --cream: #faf8f1;
 }
 
 html {
@@ -16,11 +23,207 @@ html {
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+@layer base {
+  /* Premium editorial display face for all headings. */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-display), Georgia, serif;
+    letter-spacing: -0.015em;
+  }
+
+  /* Accessible, on-brand focus ring for keyboard users. */
+  :focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  ::selection {
+    background: rgba(201, 162, 39, 0.28);
+    color: var(--navy);
+  }
 }
 
 @layer utilities {
+  /* Eyebrows, labels, nav and buttons set in caps read best in the clean
+     sans — keep uppercase text out of the serif display face. */
+  .uppercase {
+    font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  }
+
+  .font-display {
+    font-family: var(--font-display), Georgia, serif;
+  }
+
   .text-balance {
     text-wrap: balance;
+  }
+
+  .text-pretty {
+    text-wrap: pretty;
+  }
+
+  /* Liquid-gold gradient text for premium accent words. */
+  .text-gradient-gold {
+    background-image: linear-gradient(
+      100deg,
+      #9c7c1f 0%,
+      #c9a227 35%,
+      #e2c45c 58%,
+      #c9a227 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Fresh-green gradient text — brand leaf accent for highlight words. */
+  .text-gradient-green {
+    background-image: linear-gradient(
+      100deg,
+      #143017 0%,
+      #1c4220 35%,
+      #255527 58%,
+      #4a8c53 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Thin green rule — companion to .gold-rule. */
+  .green-rule::before {
+    content: "";
+    display: inline-block;
+    width: 2.5rem;
+    height: 2px;
+    margin-right: 0.75rem;
+    vertical-align: middle;
+    background: linear-gradient(90deg, var(--green-dark), var(--green-light));
+  }
+
+  /* Translucent, barely-perceptible home imagery for texture on light
+     sections. A near-opaque cream veil sits over a real home photo so only a
+     faint ghost of the picture reads through — warmth without distraction. */
+  .bg-texture {
+    background-image: linear-gradient(
+        to bottom,
+        rgba(250, 248, 241, 0.965),
+        rgba(250, 248, 241, 0.965)
+      ),
+      url("/photos/home-modern.png");
+    background-size: cover;
+    background-position: center;
+  }
+  .bg-texture-white {
+    background-image: linear-gradient(
+        to bottom,
+        rgba(255, 255, 255, 0.965),
+        rgba(255, 255, 255, 0.965)
+      ),
+      url("/photos/home-cabin.png");
+    background-size: cover;
+    background-position: center;
+  }
+
+  /* Editorial drop cap for long-form opening paragraphs. */
+  .drop-cap::first-letter {
+    float: left;
+    font-family: var(--font-display), Georgia, serif;
+    font-weight: 700;
+    font-size: 3.6em;
+    line-height: 0.78;
+    padding: 0.06em 0.12em 0 0;
+    color: var(--gold);
+  }
+
+  /* Scroll-reveal: elements start hidden, .is-visible reveals them */
+  .reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: opacity, transform;
+  }
+  .reveal.is-visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Decorative dotted texture */
+  .bg-dotted {
+    background-image: radial-gradient(
+      rgba(201, 162, 39, 0.25) 1px,
+      transparent 1px
+    );
+    background-size: 22px 22px;
+  }
+
+  /* Subtle paper grain to warm up large light surfaces. */
+  .bg-grain {
+    background-image: radial-gradient(
+        rgba(22, 36, 63, 0.025) 1px,
+        transparent 1.4px
+      ),
+      radial-gradient(rgba(22, 36, 63, 0.02) 1px, transparent 1.4px);
+    background-position: 0 0, 11px 11px;
+    background-size: 22px 22px;
+  }
+
+  /* Thin gold rule */
+  .gold-rule::before {
+    content: "";
+    display: inline-block;
+    width: 2.5rem;
+    height: 2px;
+    margin-right: 0.75rem;
+    vertical-align: middle;
+    background: linear-gradient(90deg, var(--gold), var(--gold-light));
+  }
+
+  /* Hairline section divider with a centered gold diamond. */
+  .rule-diamond {
+    position: relative;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(201, 162, 39, 0.5),
+      transparent
+    );
+  }
+  .rule-diamond::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 8px;
+    height: 8px;
+    transform: translate(-50%, -50%) rotate(45deg);
+    background: var(--gold);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+  .animate-slow-zoom,
+  .animate-float-slow {
+    animation: none !important;
   }
 }
