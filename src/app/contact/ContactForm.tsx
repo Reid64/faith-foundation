@@ -109,7 +109,7 @@ export default function ContactForm() {
             <option>Housing assistance</option>
             <option>Making a donation</option>
             <option>Volunteering</option>
-            <option>Bright Box Homes partnership</option>
+            <option>Corporate giving</option>
           </select>
         </div>
       </div>

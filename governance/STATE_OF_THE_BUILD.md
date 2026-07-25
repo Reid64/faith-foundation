@@ -310,3 +310,152 @@ build commands are approved.
 > page (navy/gold, header/footer, hero, mission, impact stats, Bright Box Homes
 > $2,500-per-home partnership, Donate/Apply CTAs, static export). Verified by inspection;
 > gates NOT executed.
+
+> 2026-07-24 [Maintenance]: ADDED `src/components/BackgroundSwirls.tsx` — a sitewide
+> decorative SVG background of four subtle green swirl/arc paths using the logo greens
+> `#4A7C59` and `#2D5940` (stroke-only, `fill="none"`, strokeWidth 70–110, opacity
+> 0.045–0.06; color/opacity set via inline SVG attributes so Tailwind purging cannot strip
+> them; no animation/blur/filter). Paths: top-left sweep, bottom-right sweep, a mid-page
+> diagonal, and a gentle lower-third S-curve, all large cubic-bezier (C) curves within a
+> `viewBox="0 0 1440 900"` slice. Rendered as a `pointer-events-none fixed inset-0 -z-10`
+> layer placed as the FIRST child of `<body>` in `src/app/layout.tsx` (before the schema
+> scripts); nothing else in layout changed. `pnpm run build` PASSED — zero TypeScript errors,
+> zero build errors, 31/31 static pages generated. Deployed to production via `vercel --prod`
+> (READY, aliased to https://www.faithfoundationsf.org). Verified the four fill=none
+> green-stroke paths and the `-z-10` container are present in the live HTML with inline
+> attributes intact. Sitewide SVG green swirl background implemented and deployed to production.
+
+> 2026-07-24 [Maintenance — BackgroundSwirls layering fix]: Applied the requested layering
+> change to the sitewide `BackgroundSwirls` SVG layer. EDITS: (1) `src/app/layout.tsx` —
+> removed `bg-cream` from the `<body>` className; wrapped `SiteHeader` + `main` + `SiteFooter`
+> in a new `<div className="relative z-0 flex min-h-screen flex-col">`; `<BackgroundSwirls />`
+> remains the first child of `<body>`. (2) `src/components/BackgroundSwirls.tsx` — outer div
+> changed from `-z-10` to `style={{ zIndex: 0 }}`; the four path opacities raised ~50%
+> (0.06→0.09, 0.05→0.075, 0.045→0.07, 0.055→0.08). (3) `src/app/globals.css` — `body` set to
+> `background: transparent`; the cream base was moved to `html { background: var(--background) }`
+> so the site does NOT fall back to a white browser canvas (no regression). Build PASSED (0 TS
+> errors, 31/31 pages); deployed via `vercel --prod` (READY, aliased to
+> https://www.faithfoundationsf.org). Verified live: body no longer carries `bg-cream`, wrapper
+> present, swirls at z-index 0, opacity 0.09 present, cream base on `html`.
+> HONEST STATUS (NOT "visible sitewide"): the swirls are still NOT visible across most of the
+> site. Root cause is NOT the body background — it is that 128 of 132 page `<section>` elements
+> have OPAQUE backgrounds (gradients, navy, white, hero images), and a `position: fixed` layer
+> behind opaque content cannot show through it. The only genuinely transparent section on the
+> whole site is the cornerstone "Problem/Solution" band (`py-20 px-4`), where the swirls will
+> now faintly show. TRUE sitewide visibility requires making the light (cream/white) section
+> backgrounds semi-transparent so the fixed swirl layer shows through — not yet done (would be a
+> broad design change; awaiting go-ahead).
+
+> 2026-07-24 [Maintenance — BackgroundSwirls re-architected to absolute-in-section]:
+> FIXED-POSITION SWIRL APPROACH PERMANENTLY ABANDONED. Root cause confirmed: a `position: fixed`
+> swirl layer is always invisible here because (a) the site's opaque background fills sit behind
+> everything and (b) 128 of 132 page `<section>` elements have their own OPAQUE backgrounds
+> (bg-navy, bg-gradient-to-b from-white/cream, hero images) — a fixed layer behind opaque content
+> can never show through. NEW ARCHITECTURE: `BackgroundSwirls` now renders a single
+> `position: absolute; inset: 0; z-index: 0; pointer-events: none` `<svg>` (no wrapping div, no
+> fixed positioning) placed INSIDE specific relative, light-background sections, so it paints on
+> top of that section's own cream/white fill and is therefore visible. Props: `variant`
+> (top-left | top-right | bottom-left | bottom-right | diagonal, default top-left), `color`
+> (default #255527, brand green), `opacity` (default 0.08); one broad organic cubic-bezier arc
+> per variant at strokeWidth 200, round caps, opacity applied to the SVG via style.
+> EDITS: `src/components/BackgroundSwirls.tsx` rewritten; `src/app/layout.tsx` reverted to the
+> original structure (import + `<BackgroundSwirls />` + `relative z-0` wrapper all removed;
+> `<body>` className restored to include `bg-cream`); `src/app/globals.css` reverted (body
+> `background: var(--background)` restored; the temporary `html { background }` rule removed).
+> APPLIED: homepage Mission section (`variant="top-left" opacity={0.07}`) and Two-Pillars section
+> (`variant="bottom-right" opacity={0.06}`), and About Mission & Vision section
+> (`variant="diagonal" opacity={0.06}`); each host section given `relative overflow-hidden`.
+> Build PASSED (0 TS errors, 31/31 pages); deployed via `vercel --prod` (READY, aliased to
+> https://www.faithfoundationsf.org). Verified live: absolute green (#255527) swirl SVGs present
+> inside the light sections on / and /about; body `bg-cream` restored; no fixed swirl layer.
+
+> 2026-07-24 [Maintenance — swirl green visibility]: Made the in-section BackgroundSwirls read
+> clearly as brand green. NOTE: the task referenced the pre-rewrite 4-path component
+> (`#4A7C59`/`#2D5940`, per-path opacity/strokeWidth) which no longer exists — the current
+> component was rewritten to the prop-based single-path form last session, and its stroke was
+> already `#255527` (brand green) at `strokeWidth={200}` (already larger than the requested
+> 130–180). The values that actually control visibility are the per-usage `opacity` props, which
+> were too low (0.06–0.07) and made the dark green read gray over cream. FIX: raised the opacity
+> — homepage Mission `top-left` 0.07→0.18, homepage Two-Pillars `bottom-right` 0.06→0.16, About
+> Mission & Vision `diagonal` 0.06→0.15 — and bumped the component default opacity 0.08→0.16.
+> Stroke color confirmed `#255527`; strokeWidth left at 200. Swirl colors corrected/confirmed to
+> brand green `#255527`, opacity increased (and strokeWidth already large) to make green visible
+> against the cream background. Build PASSED (0 TS errors, 31/31 pages); deployed via
+> `vercel --prod` (READY, aliased to https://www.faithfoundationsf.org). Verified live: green
+> `#255527` swirls at opacity 0.18/0.16 on / and 0.15 on /about; old 0.07 gone.
+
+> 2026-07-24 [Maintenance — swirls rebuilt as 3-path bands, applied sitewide]:
+> `src/components/BackgroundSwirls.tsx` rewritten to fix the "faint hairline" problem: each
+> variant now renders THREE overlapping arcs (slightly offset) instead of one, forming a soft
+> broad green band (no CSS blur), in a 1440x900 viewBox scaled to cover the section. All paths
+> `fill="none"`, `stroke="#255527"`, `strokeLinecap="round"`, `strokeWidth={300}`; SVG opacity
+> set via style at 0.22 (default). Props unchanged (variant default top-left, color #255527,
+> opacity 0.22); SVG style unchanged (absolute, inset 0, 100%x100%, overflow visible,
+> pointer-events none, z-index 0). Exact path sets provided per variant (top-left, top-right,
+> bottom-left, bottom-right, diagonal). APPLIED SITEWIDE to every LIGHT-background section across
+> 11 page files (home + about, programs, financial-transparency, team, contact, donate, apply,
+> impact, governance, faq): each light section given `relative overflow-hidden` with
+> `<BackgroundSwirls variant="…" />` as its first child, variants cycled per file
+> [top-left → bottom-right → diagonal, repeat]. Navy/dark and photo/video hero sections skipped;
+> forms (ContactForm, ApplicationForm, ZeffyEmbed) untouched. 27 swirl instances total
+> (14 top-left, 9 bottom-right, 4 diagonal); no duplicate imports; no per-usage opacity props
+> (all use the 0.22 default). Build PASSED (0 TS errors, 31/31 pages); deployed via `vercel --prod`
+> (READY, aliased to https://www.faithfoundationsf.org). Verified live: green #255527 swirls at
+> strokeWidth 300 / opacity 0.22 present on all 11 pages.
+
+> 2026-07-24 [Maintenance — About dropdown nav, housing-voucher copy, IRS link verify]:
+> (1) `src/components/SiteHeader.tsx` rewritten to add an "About" dropdown in the desktop nav:
+> ABOUT_LINKS = About Us (/about), Team (/team), Financial Transparency
+> (/financial-transparency), Governance (/governance). Hover-driven panel (bg-[#F5F5F5],
+> rounded-xl, shadow-lg, border, min-w-[200px], z-50) with a 12x12 chevron button; active state
+> when pathname starts with /about or equals /team, /financial-transparency, /governance. "Team"
+> RETAINED as a standalone top-level nav item after the dropdown (appears twice on desktop per
+> brief). Mobile menu: "About" caption label + ABOUT_LINKS indented (pl-3) + remaining NAV_LINKS
+> (Programs, Impact, Events, Contact). Mobile menu max-height raised max-h-96 → max-h-[36rem] so
+> the longer list is not clipped. Scroll behavior, hamburger, logo, and Donate button unchanged.
+> (2) `src/app/programs/housing-voucher/page.tsx` copy corrected — this program is homeownership
+> via down payment vouchers, NOT rental assistance: all "rental assistance" → "housing/down
+> payment assistance" (0 "rental" occurrences remain); gold stat band label + paragraph rewritten
+> ("Of every gift designated to this program goes directly to housing voucher assistance." /
+> "…every dollar funds direct housing assistance for families in need. Gifts designated for
+> operational support fund administration separately…"); STEPS step 3 → "direct down payment
+> assistance that helps families achieve homeownership", step 4 → "move toward homeownership";
+> "keeping families in stable housing" → "helping families reach homeownership"; metadata
+> description and hero subtitle updated to "down payment assistance … achieve homeownership".
+> (3) IRS determination letter link VERIFIED: `Test-Path public/documents/irs-determination-letter.pdf`
+> = True (121,126 bytes) — link left as-is; PDF serves 200 application/pdf live.
+> Build PASSED (0 TS errors, 31/31 pages); deployed via `vercel --prod` (READY, aliased to
+> https://www.faithfoundationsf.org). Verified live: About dropdown links present, 0 "rental" on
+> housing-voucher, IRS PDF linked + served.
+
+> 2026-07-24 [Maintenance — governance board language accuracy]: Removed inaccurate "volunteer"
+> board framing from `src/app/governance/page.tsx`. Ron Landers (President & Executive Director)
+> receives a modest part-time monthly stipend, so "volunteer board / volunteer leadership" was
+> inaccurate. Four targeted copy changes: (1) metadata description "overseen by our volunteer
+> board." → "overseen by a lean, mission-driven board committed to keeping every dollar working
+> for Texas families."; (2) hero paragraph "the volunteer board that oversees our 501(c)(3)
+> mission." → "the board that oversees our 501(c)(3) mission."; (3) board section h3 "Volunteer
+> leadership, accountable oversight" → "Mission-driven leadership, accountable oversight"; (4)
+> board section paragraph "governed by a volunteer board of directors …" → "governed by a lean
+> board of directors … Our leadership keeps administrative costs minimal so that donor generosity
+> flows to the families we serve — not to overhead." No "volunteer" reference to the BOARD remains;
+> the four unrelated policy references to organization volunteers (whistleblower / document-
+> retention policies, lines 39/44/57/58) were intentionally left untouched. Build PASSED (0 TS
+> errors, 31/31 pages); deployed via `vercel --prod` (READY, aliased to
+> https://www.faithfoundationsf.org). Verified live: new lean/mission-driven wording present,
+> 0 "volunteer board" on the page.
+
+> 2026-07-24 [Maintenance — Reid Whitesides bio rewrite]: In `src/app/team/page.tsx`, replaced
+> the `bio` array for the BOARD entry name "Reid Whitesides" (only that array changed; role,
+> initials, photo, and all other board members untouched). Shortened from 4 paragraphs to 3
+> (matching Scott Ellis length): (1) opening reframes his 20+ years in construction/roofing/
+> project management/sales/consulting PLUS technology & software development as a CORE operational
+> competency — building the operational systems, platforms, and automation tools that keep the
+> Foundation running and positioned to scale (no longer "spare time" hobby framing); (2) the
+> personal recovery paragraph retained and tightened (addiction, ~20 years incarcerated, 15+ years
+> sober, Christian faith / God's transformative work); (3) new closing — Reid and his wife, Mary
+> Ann, recently married and growing their family in Texas. Redundant mission restatement
+> ("creating sustainable pathways to stability and independence" / vision paragraph) removed.
+> Build PASSED (0 TS errors, 31/31 pages); deployed via `vercel --prod` (READY, aliased to
+> https://www.faithfoundationsf.org). Verified live: "Mary Ann" and the new opening present, old
+> mission-restatement line gone.

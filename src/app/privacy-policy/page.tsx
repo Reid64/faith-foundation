@@ -5,7 +5,7 @@ import Reveal from "@/components/Reveal";
 export const metadata: Metadata = {
   title: "Privacy Policy — FAITH Foundation",
   description:
-    "How FAITH Foundation collects, uses, and protects your personal information, including your rights under the GDPR and the California Consumer Privacy Act (CCPA/CPRA). A 501(c)(3) nonprofit in Burnet, Texas.",
+    "How FAITH Foundation collects, uses, and protects your personal information, including your rights under GDPR and the CCPA/CPRA. A Texas 501(c)(3).",
 };
 
 const SECTIONS = [
@@ -113,8 +113,10 @@ export default function PrivacyPolicyPage() {
         </div>
       </section>
 
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
+
       {/* ===== LEGAL DOC + SECTION NAV ===== */}
-      <section className="bg-texture bg-cream">
+      <section className="bg-gradient-to-b from-[#FAFAF5] to-[#e8e4d8]">
         <div className="mx-auto max-w-7xl px-6 py-24 sm:px-8 sm:py-32">
           <div className="grid gap-12 lg:grid-cols-[260px_1fr] lg:gap-16">
             {/* Sticky section nav */}
@@ -147,7 +149,7 @@ export default function PrivacyPolicyPage() {
                     id={section.id}
                     className="scroll-mt-28"
                   >
-                    <Reveal className="rounded-3xl border border-navy/5 bg-white p-8 shadow-card sm:p-10">
+                    <Reveal className="card-surface rounded-3xl p-8 sm:p-10">
                       <h2 className="mb-5 text-2xl font-extrabold text-navy">
                         {section.heading}
                       </h2>
@@ -164,6 +166,8 @@ export default function PrivacyPolicyPage() {
           </div>
         </div>
       </section>
+
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
 
       {/* ===== CTA ===== */}
       <section className="bg-navy-dark text-white">

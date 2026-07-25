@@ -2,11 +2,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Reveal from "@/components/Reveal";
 import { img } from "@/lib/images";
+import { Cite } from "@/components/Citations";
 
 export const metadata: Metadata = {
   title: "Second Chance Reentry — FAITH Foundation",
   description:
-    "FAITH Foundation's Second Chance Reentry program provides post-incarceration housing, case management, and employment support to help Texans returning home build a stable, lawful future.",
+    "FAITH Foundation's Second Chance Reentry offers post-incarceration housing, case management, and job support to help Texans returning home rebuild.",
 };
 
 const ELIGIBILITY = [
@@ -14,6 +15,7 @@ const ELIGIBILITY = [
   "Resident of, or returning to, Texas.",
   "Committed to compliance with the terms of parole, probation, or community supervision where applicable.",
   "Ready to pursue employment, education, or job training and to follow a reentry stability plan with a case manager.",
+  "Applicants should be comfortable living in a faith-informed community environment that includes optional Christian programming such as Celebrate Recovery, Bible studies, and prayer groups.",
 ];
 
 const SUPPORTS = [
@@ -107,7 +109,7 @@ export default function SecondChanceReentryPage() {
               <div className="mt-9 flex flex-col gap-4 sm:flex-row">
                 <Link
                   href="/contact"
-                  className="rounded-full bg-gold px-8 py-3.5 text-base font-bold text-navy shadow-lg transition-all duration-300 hover:bg-gold-light hover:shadow-xl"
+                  className="rounded-full bg-gold px-8 py-3.5 text-base font-bold text-navy shadow-lg transition-all duration-300 hover:bg-gold-light hover:shadow-xl ring-2 ring-[#C8A951]/30"
                 >
                   Apply Now
                 </Link>
@@ -123,30 +125,44 @@ export default function SecondChanceReentryPage() {
         </div>
       </section>
 
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
+
       {/* ===== INTRO ===== */}
-      <section className="bg-texture bg-cream py-24 sm:py-32">
+      <section className="bg-gradient-to-b from-[#FAFAF5] to-[#e8e4d8] py-24 sm:py-32">
         <div className="mx-auto max-w-4xl px-6 sm:px-8">
           <Reveal>
             <h2 className="mb-3 text-sm font-bold uppercase tracking-widest text-green-dark">
               Why it matters
             </h2>
-            <h3 className="mb-6 text-3xl font-extrabold text-navy sm:text-4xl">
+            <h3 className="heading-underline mb-6 text-3xl font-extrabold text-navy sm:text-4xl">
               A second chance begins with a front door
             </h3>
           </Reveal>
           <div className="space-y-5 text-lg leading-relaxed text-charcoal/80">
             <Reveal delay={100}>
               <p>
-                The first weeks after release are decisive. A person leaving
-                incarceration often walks out with little more than the clothes they
-                wore in — no stable address, no job, sometimes not even a valid ID.
-                Doors close fast: landlords turn away applicants with records,
-                employers screen them out, and the clock on parole or probation
-                starts ticking immediately. Without a safe place to sleep, every
-                other goal becomes nearly impossible, and the risk of returning to
-                prison climbs. Studies consistently show that stable housing is one
-                of the strongest protections against recidivism — and one of the
-                hardest things for a returning citizen to secure alone.
+                The first weeks after release are decisive. Each year, roughly
+                600,000 people are released from state and federal prisons
+                <Cite label="BJS" href="https://bjs.ojp.gov/library/publications/recidivism-prisoners-released-24-states-2008-10-year-follow-period-2008-2018" />, and far too many
+                walk out with little more than the clothes they wore in — no stable
+                address, no job, sometimes not even a valid ID. Doors close fast:
+                landlords turn away applicants with records, employers screen them
+                out, and the clock on parole or probation starts ticking
+                immediately. The consequences are stark: formerly incarcerated
+                people are nearly ten times more likely to experience homelessness
+                than the general public
+                <Cite label="PPI" href="https://www.prisonpolicy.org/reports/housing.html" />, and they
+                account for an estimated 23% to 48% of people entering homeless
+                shelters
+                <Cite label="CSG" href="https://csgjusticecenter.org" />. Without a
+                safe place to sleep, every other goal becomes nearly impossible, and
+                the risk of returning to prison climbs — about 66% of people released
+                from state prison are re-arrested within three years, and roughly
+                82% within ten years
+                <Cite label="BJS" href="https://bjs.ojp.gov/library/publications/recidivism-prisoners-released-24-states-2008-10-year-follow-period-2008-2018" />. Studies
+                consistently show that stable housing is one of the strongest
+                protections against recidivism, and one of the hardest things for a
+                returning citizen to secure alone.
               </p>
             </Reveal>
             <Reveal delay={150}>
@@ -164,22 +180,24 @@ export default function SecondChanceReentryPage() {
             </Reveal>
             <Reveal delay={200}>
               <p>
-                This program is sustained in part by the Bright Box Homes
-                partnership — every home purchased generates a $2,500 donation that
-                funds direct housing assistance that helps families move toward
-                homeownership. As Texas grows, so does our capacity to welcome
-                neighbors home and help them stay there.
+                This program is sustained by donations from individuals, businesses,
+                and community partners whose generosity funds direct housing
+                assistance that helps families move toward homeownership. As Texas
+                grows, so does our capacity to welcome neighbors home and help them
+                stay there.
               </p>
             </Reveal>
           </div>
         </div>
       </section>
 
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
+
       {/* ===== MILESTONE PATH (dominant module) ===== */}
       <section id="the-path" className="bg-navy py-24 text-white sm:py-32">
         <div className="mx-auto max-w-7xl px-6 sm:px-8">
           <Reveal className="mx-auto max-w-3xl text-center">
-            <h2 className="mb-3 text-sm font-bold uppercase tracking-widest text-gold">
+            <h2 className="mb-3 text-sm font-bold uppercase tracking-[0.2em] text-[#4A7C59]">
               The path home
             </h2>
             <h3 className="text-3xl font-extrabold sm:text-4xl">
@@ -201,7 +219,7 @@ export default function SecondChanceReentryPage() {
                 >
                   {i + 1}
                 </span>
-                <p className="text-xs font-bold uppercase tracking-widest text-gold">
+                <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#4A7C59]">
                   {m.label}
                 </p>
                 <h4 className="mt-1 text-xl font-extrabold text-white">
@@ -216,21 +234,23 @@ export default function SecondChanceReentryPage() {
         </div>
       </section>
 
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
+
       {/* ===== SUPPORT-SERVICE CARDS ===== */}
-      <section className="bg-white py-24 sm:py-32">
+      <section className="bg-gradient-to-b from-white to-[#f0ede4] py-24 sm:py-32">
         <div className="mx-auto max-w-7xl px-6 sm:px-8">
           <Reveal className="mx-auto max-w-3xl text-center">
             <h2 className="mb-3 text-sm font-bold uppercase tracking-widest text-green-dark">
               How we help
             </h2>
-            <h3 className="text-3xl font-extrabold text-navy sm:text-4xl">
+            <h3 className="heading-underline-center text-3xl font-extrabold text-navy sm:text-4xl">
               Support that lowers the barriers to a fresh start
             </h3>
           </Reveal>
           <div className="mt-16 grid gap-8 lg:grid-cols-3">
             {SUPPORTS.map((support, i) => (
               <Reveal key={support.title} delay={i * 100}>
-                <article className="group flex h-full flex-col rounded-2xl border-t-4 border-green bg-cream p-8 shadow-card transition-all duration-300 hover:-translate-y-1 hover:shadow-card-lg">
+                <article className={`${i % 2 === 0 ? "card-feature-cream" : "card-feature-white"} group flex h-full flex-col rounded-2xl p-8 transition-all duration-300`}>
                   <span
                     aria-hidden
                     className="mb-6 flex h-14 w-14 items-center justify-center rounded-xl bg-navy text-2xl font-extrabold text-green-light transition-colors duration-300 group-hover:bg-green group-hover:text-white"
@@ -250,14 +270,16 @@ export default function SecondChanceReentryPage() {
         </div>
       </section>
 
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
+
       {/* ===== ELIGIBILITY ===== */}
-      <section className="bg-cream py-24 sm:py-32">
+      <section className="bg-gradient-to-b from-[#FAFAF5] to-[#e8e4d8] py-24 sm:py-32">
         <div className="mx-auto max-w-4xl px-6 sm:px-8">
           <Reveal>
-            <h2 className="mb-3 text-sm font-bold uppercase tracking-widest text-gold-dark">
+            <h2 className="mb-3 text-sm font-bold uppercase tracking-[0.2em] text-[#4A7C59]">
               Eligibility
             </h2>
-            <h3 className="mb-6 text-3xl font-extrabold text-navy sm:text-4xl">
+            <h3 className="heading-underline mb-6 text-3xl font-extrabold text-navy sm:text-4xl">
               Who Second Chance Reentry serves
             </h3>
             <p className="mb-10 text-lg leading-relaxed text-charcoal/80">
@@ -270,7 +292,7 @@ export default function SecondChanceReentryPage() {
           <ul className="space-y-4">
             {ELIGIBILITY.map((item, i) => (
               <Reveal key={item} delay={i * 100} as="li">
-                <div className="flex gap-4 rounded-xl border-l-4 border-gold bg-white p-5 shadow-card">
+                <div className="card-surface flex gap-4 rounded-xl p-5">
                   <span className="mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-navy text-sm font-bold text-gold">
                     ✓
                   </span>
@@ -292,21 +314,23 @@ export default function SecondChanceReentryPage() {
         </div>
       </section>
 
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
+
       {/* ===== FAQ ===== */}
-      <section className="bg-white py-24 sm:py-32">
+      <section className="bg-gradient-to-b from-white to-[#f0ede4] py-24 sm:py-32">
         <div className="mx-auto max-w-4xl px-6 sm:px-8">
           <Reveal className="text-center">
-            <h2 className="mb-3 text-sm font-bold uppercase tracking-widest text-gold-dark">
+            <h2 className="mb-3 text-sm font-bold uppercase tracking-[0.2em] text-[#4A7C59]">
               Common questions
             </h2>
-            <h3 className="mb-12 text-3xl font-extrabold text-navy sm:text-4xl">
+            <h3 className="heading-underline-center mb-12 text-3xl font-extrabold text-navy sm:text-4xl">
               What returning citizens ask us
             </h3>
           </Reveal>
           <div className="space-y-4">
             {FAQS.map((faq, i) => (
               <Reveal key={faq.q} delay={i * 100}>
-                <details className="group rounded-2xl border border-navy/10 bg-cream p-6 shadow-card [&_summary::-webkit-details-marker]:hidden">
+                <details className="card-surface group rounded-2xl p-6 [&_summary::-webkit-details-marker]:hidden">
                   <summary className="flex cursor-pointer items-center justify-between gap-4 text-lg font-extrabold text-navy">
                     {faq.q}
                     <span
@@ -326,6 +350,8 @@ export default function SecondChanceReentryPage() {
         </div>
       </section>
 
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
+
       {/* ===== CTA ===== */}
       <section className="bg-navy-dark py-24 text-white sm:py-28">
         <div className="mx-auto max-w-4xl px-6 text-center sm:px-8">
@@ -341,7 +367,7 @@ export default function SecondChanceReentryPage() {
             <div className="flex flex-col justify-center gap-4 sm:flex-row">
               <Link
                 href="/contact"
-                className="rounded-full bg-gold px-8 py-3.5 text-base font-bold text-navy shadow-lg transition-all duration-300 hover:bg-gold-light hover:shadow-xl"
+                className="rounded-full bg-gold px-8 py-3.5 text-base font-bold text-navy shadow-lg transition-all duration-300 hover:bg-gold-light hover:shadow-xl ring-2 ring-[#C8A951]/30"
               >
                 Apply Now
               </Link>

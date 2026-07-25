@@ -6,9 +6,12 @@ import { useState } from "react";
 const PROGRAM_LINKS = [
   { href: "/programs/homeownership", label: "Homeownership" },
   { href: "/programs/housing-voucher", label: "Down Payment Vouchers" },
+  { href: "/programs/emergency", label: "Emergency Bridge Housing" },
   { href: "/programs/veterans", label: "Veterans Path Home" },
   { href: "/programs/recovery", label: "Recovery Housing" },
   { href: "/programs/reentry", label: "Second Chance Reentry" },
+  { href: "/programs/single-parents", label: "Single Parent Stability" },
+  { href: "/programs/cornerstone-communities", label: "Cornerstone Communities" },
   { href: "/programs/financial-literacy", label: "Financial Literacy" },
 ];
 
@@ -16,7 +19,6 @@ const GET_INVOLVED_LINKS = [
   { href: "/donate", label: "Make a Donation" },
   { href: "/apply", label: "Apply for Assistance" },
   { href: "/volunteer", label: "Volunteer With Us" },
-  { href: "/partnership", label: "Bright Box Partnership" },
   { href: "/events", label: "Upcoming Events" },
 ];
 
@@ -28,28 +30,39 @@ const ORG_LINKS = [
   { href: "/blog", label: "Blog" },
   { href: "/faq", label: "FAQ" },
   { href: "/financial-transparency", label: "Financial Transparency" },
+  { href: "/governance", label: "Governance" },
 ];
 
-const SOCIALS: { label: string; href: string; path: string }[] = [
+const SOCIALS: {
+  label: string;
+  href: string;
+  path: string;
+  /** Brand color used as the icon fill. */
+  fill: string;
+}[] = [
   {
     label: "Facebook",
     href: "https://facebook.com",
-    path: "M22 12.06C22 6.5 17.52 2 12 2S2 6.5 2 12.06c0 5 3.66 9.15 8.44 9.94v-7.03H7.9v-2.9h2.54V9.85c0-2.52 1.5-3.91 3.78-3.91 1.1 0 2.24.2 2.24.2v2.47h-1.26c-1.24 0-1.63.78-1.63 1.57v1.88h2.78l-.44 2.9h-2.34V22c4.78-.79 8.43-4.94 8.43-9.94Z",
+    fill: "#1877F2",
+    path: "M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z",
   },
   {
     label: "Instagram",
     href: "https://instagram.com",
-    path: "M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41a3.7 3.7 0 0 1-1.38-.9 3.7 3.7 0 0 1-.9-1.38c-.16-.42-.36-1.06-.41-2.23C2.17 15.58 2.16 15.2 2.16 12s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41C8.42 2.17 8.8 2.16 12 2.16Zm0 1.8c-3.15 0-3.5.01-4.74.07-1.14.05-1.76.24-2.17.4-.55.21-.94.47-1.35.88-.41.41-.67.8-.88 1.35-.16.41-.35 1.03-.4 2.17-.06 1.24-.07 1.59-.07 4.74s.01 3.5.07 4.74c.05 1.14.24 1.76.4 2.17.21.55.47.94.88 1.35.41.41.8.67 1.35.88.41.16 1.03.35 2.17.4 1.24.06 1.59.07 4.74.07s3.5-.01 4.74-.07c1.14-.05 1.76-.24 2.17-.4.55-.21.94-.47 1.35-.88.41-.41.67-.8.88-1.35.16-.41.35-1.03.4-2.17.06-1.24.07-1.59.07-4.74s-.01-3.5-.07-4.74c-.05-1.14-.24-1.76-.4-2.17a3.6 3.6 0 0 0-.88-1.35 3.6 3.6 0 0 0-1.35-.88c-.41-.16-1.03-.35-2.17-.4-1.24-.06-1.59-.07-4.74-.07Zm0 3.06a4.98 4.98 0 1 1 0 9.96 4.98 4.98 0 0 1 0-9.96Zm0 8.21a3.23 3.23 0 1 0 0-6.46 3.23 3.23 0 0 0 0 6.46Zm6.34-8.41a1.16 1.16 0 1 1-2.32 0 1.16 1.16 0 0 1 2.32 0Z",
+    fill: "#E1306C",
+    path: "M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z",
   },
   {
     label: "LinkedIn",
     href: "https://linkedin.com",
-    path: "M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28ZM5.34 7.43a2.07 2.07 0 1 1 0-4.14 2.07 2.07 0 0 1 0 4.14ZM7.12 20.45H3.56V9h3.56v11.45ZM22.22 0H1.77C.8 0 0 .78 0 1.74v20.5C0 23.2.8 24 1.77 24h20.45c.98 0 1.78-.8 1.78-1.76V1.74C24 .78 23.2 0 22.22 0Z",
+    fill: "#0A66C2",
+    path: "M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z",
   },
   {
     label: "YouTube",
     href: "https://youtube.com",
-    path: "M23.5 6.2a3.02 3.02 0 0 0-2.12-2.14C19.5 3.55 12 3.55 12 3.55s-7.5 0-9.38.51A3.02 3.02 0 0 0 .5 6.2 31.5 31.5 0 0 0 0 12a31.5 31.5 0 0 0 .5 5.8 3.02 3.02 0 0 0 2.12 2.14c1.88.51 9.38.51 9.38.51s7.5 0 9.38-.51a3.02 3.02 0 0 0 2.12-2.14A31.5 31.5 0 0 0 24 12a31.5 31.5 0 0 0-.5-5.8ZM9.6 15.6V8.4l6.27 3.6-6.27 3.6Z",
+    fill: "#FF0000",
+    path: "M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814z M9.545 15.568V8.432L15.818 12l-6.273 3.568z",
   },
 ];
 
@@ -59,6 +72,8 @@ export default function SiteFooter() {
 
   return (
     <footer className="relative overflow-hidden bg-navy text-white">
+      {/* Warm gold accent bar across the top of the footer. */}
+      <div className="h-1 w-full bg-gold-gradient" aria-hidden />
       <div className="pointer-events-none absolute inset-0 bg-dotted opacity-40" aria-hidden />
       <div className="relative">
         {/* Newsletter band */}
@@ -120,7 +135,7 @@ export default function SiteFooter() {
               501(c)(3) nonprofit helping families across Texas achieve
               homeownership through down payment assistance vouchers.
             </p>
-            <div className="mt-5 flex gap-3">
+            <div className="mt-5 flex gap-4">
               {SOCIALS.map((s) => (
                 <a
                   key={s.label}
@@ -128,12 +143,14 @@ export default function SiteFooter() {
                   aria-label={s.label}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 text-white/80 transition-all duration-300 hover:border-gold hover:bg-gold hover:text-navy"
+                  className="inline-flex transition-transform duration-300 hover:scale-110"
                 >
                   <svg
                     viewBox="0 0 24 24"
-                    className="h-4 w-4"
-                    fill="currentColor"
+                    width="24"
+                    height="24"
+                    className="h-6 w-6"
+                    fill={s.fill}
                     aria-hidden
                   >
                     <path d={s.path} />
@@ -173,11 +190,18 @@ export default function SiteFooter() {
           <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 px-6 py-6 text-xs text-white/60 sm:flex-row sm:px-8">
             <p>
               © {new Date().getFullYear()} FAITH Foundation. A registered
-              501(c)(3) nonprofit. All rights reserved.
+              501(c)(3) nonprofit.{" "}
+              EIN: 33-2640449. All rights reserved.
             </p>
-            <div className="flex items-center gap-4">
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
               <Link href="/privacy-policy" className="hover:text-gold">
                 Privacy Policy
+              </Link>
+              <Link href="/governance/donor-privacy" className="hover:text-gold">
+                Donor Privacy
+              </Link>
+              <Link href="/governance" className="hover:text-gold">
+                Governance
               </Link>
               <Link href="/financial-transparency" className="hover:text-gold">
                 Financial Transparency

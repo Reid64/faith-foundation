@@ -7,7 +7,7 @@ import { VIDEOS, PHOTOS } from "@/lib/media";
 export const metadata: Metadata = {
   title: "Homeownership Counseling — FAITH Foundation",
   description:
-    "FAITH Foundation's flagship homeownership counseling prepares families across Texas to buy with confidence through down payment assistance — covering mortgages, budgets, credit, and closing.",
+    "FAITH Foundation's homeownership counseling prepares Texas families to buy with confidence — covering mortgages, budgets, credit, and down payment help.",
 };
 
 const STEPS = [
@@ -70,8 +70,10 @@ export default function HomeownershipPage() {
         </div>
       </section>
 
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
+
       {/* ===== INTRO (text + side image: handshake) ===== */}
-      <section className="bg-texture bg-cream py-24 sm:py-32">
+      <section className="bg-gradient-to-b from-[#FAFAF5] to-[#e8e4d8] py-24 sm:py-32">
         <div className="mx-auto grid max-w-7xl items-center gap-14 px-6 sm:px-8 lg:grid-cols-12">
           <div className="lg:col-span-7">
             <Reveal>
@@ -80,7 +82,7 @@ export default function HomeownershipPage() {
               </p>
             </Reveal>
             <Reveal delay={100}>
-              <h2 className="mt-5 text-balance text-3xl font-extrabold leading-tight text-navy sm:text-4xl">
+              <h2 className="heading-underline mt-5 text-balance text-3xl font-extrabold leading-tight text-navy sm:text-4xl">
                 Buy with confidence, not crossed fingers
               </h2>
             </Reveal>
@@ -119,22 +121,24 @@ export default function HomeownershipPage() {
                 loading="lazy"
               />
             </div>
-            <div className="absolute -bottom-8 -left-4 hidden rounded-2xl border-l-4 border-green bg-navy px-7 py-6 text-white shadow-green sm:block">
-              <p className="text-3xl font-extrabold text-green-light">No pressure</p>
-              <p className="mt-1 text-sm text-white/75">Always on your side</p>
+            <div className="card-stat absolute -bottom-8 -left-4 hidden rounded-2xl px-7 py-6 text-white sm:block">
+              <p className="card-stat-figure text-3xl font-extrabold">No pressure</p>
+              <p className="mt-1 text-sm text-white/80">Always on your side</p>
             </div>
           </Reveal>
         </div>
       </section>
 
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
+
       {/* ===== JOURNEY ROADMAP (dominant module — horizontal stepper) ===== */}
-      <section className="bg-white py-24 sm:py-32">
+      <section className="bg-gradient-to-b from-white to-[#f0ede4] py-24 sm:py-32">
         <div className="mx-auto max-w-3xl px-6 text-center sm:px-8">
           <Reveal>
-            <p className="text-sm font-bold uppercase tracking-[0.2em] text-gold-dark">
+            <p className="text-sm font-bold uppercase tracking-[0.2em] text-[#4A7C59]">
               How it works
             </p>
-            <h2 className="mt-4 text-3xl font-extrabold text-navy sm:text-4xl">
+            <h2 className="heading-underline-center mt-4 text-3xl font-extrabold text-navy sm:text-4xl">
               Your roadmap to the closing table
             </h2>
             <p className="mt-4 text-lg leading-relaxed text-charcoal/75">
@@ -161,7 +165,7 @@ export default function HomeownershipPage() {
                 <span className="relative z-10 flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-navy text-xl font-extrabold text-gold shadow-card ring-4 ring-white">
                   {step.number}
                 </span>
-                <div className="mt-6 rounded-2xl border-t-4 border-gold bg-cream p-6 shadow-card">
+                <div className={`${i % 2 === 0 ? "card-feature-cream" : "card-feature-white"} mt-6 rounded-2xl p-6`}>
                   <h3 className="text-lg font-extrabold text-navy">
                     {step.title}
                   </h3>
@@ -175,8 +179,10 @@ export default function HomeownershipPage() {
         </div>
       </section>
 
-      {/* ===== BRIGHT BOX CONNECTION ===== */}
-      <section className="bg-cream py-24 sm:py-32">
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
+
+      {/* ===== HOW WE FUND THIS PROGRAM ===== */}
+      <section className="bg-gradient-to-b from-[#FAFAF5] to-[#e8e4d8] py-24 sm:py-32">
         <div className="mx-auto grid max-w-7xl items-center gap-14 px-6 sm:px-8 lg:grid-cols-12">
           <Reveal className="relative lg:col-span-5">
             <div className="relative overflow-hidden rounded-[2rem] shadow-card-lg ring-1 ring-navy/10">
@@ -191,35 +197,35 @@ export default function HomeownershipPage() {
               >
                 <source src={VIDEOS.vertical} type="video/mp4" />
               </video>
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
             </div>
-            <div className="absolute -bottom-8 -right-4 hidden rounded-2xl border-l-4 border-green bg-navy px-7 py-6 text-white shadow-green sm:block">
-              <p className="text-3xl font-extrabold text-green-light">$2,500</p>
-              <p className="mt-1 text-sm text-white/75">Donated per home</p>
+            <div className="card-stat absolute -bottom-8 -right-4 hidden rounded-2xl px-7 py-6 text-white sm:block">
+              <p className="card-stat-figure text-3xl font-extrabold">100%</p>
+              <p className="mt-1 text-sm text-white/80">Of designated housing donations support our mission</p>
             </div>
           </Reveal>
 
           <div className="lg:col-span-7">
             <Reveal>
-              <p className="gold-rule text-sm font-bold uppercase tracking-[0.2em] text-gold-dark">
-                A purchase that gives back
+              <p className="gold-rule text-sm font-bold uppercase tracking-[0.2em] text-[#4A7C59]">
+                A mission that gives back
               </p>
             </Reveal>
             <Reveal delay={100}>
-              <h2 className="mt-5 text-balance text-3xl font-extrabold leading-tight text-navy sm:text-4xl">
+              <h2 className="heading-underline mt-5 text-balance text-3xl font-extrabold leading-tight text-navy sm:text-4xl">
                 Your home, another family&apos;s hope
               </h2>
             </Reveal>
             <Reveal delay={180}>
               <p className="mt-6 text-lg leading-relaxed text-charcoal/80">
-                When you are ready to buy, your purchase can do more than build your
-                own future. Through FAITH Foundation&apos;s partnership with Bright
-                Box Homes, every home purchased generates a{" "}
-                <strong className="text-navy">$2,500 donation</strong> to the
-                Foundation — at no extra cost to you. Those donations fund housing
-                vouchers that keep struggling families in their homes. In other
-                words, the milestone of putting down roots becomes a gift that lifts
-                a neighbor at the very same time.
+                When you are ready to buy, your journey is part of something larger.
+                Our charitable housing programs are{" "}
+                <strong className="text-navy">
+                  made possible by charitable gifts and corporate donations
+                </strong>{" "}
+                from individuals, businesses, and community partners who believe
+                every family deserves a stable home. Those gifts become
+                housing vouchers that keep struggling families in their homes —
+                sustaining charitable housing programs for families in need.
               </p>
             </Reveal>
             <Reveal delay={260}>
@@ -236,6 +242,8 @@ export default function HomeownershipPage() {
           </div>
         </div>
       </section>
+
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
 
       {/* ===== CTA ===== */}
       <section className="bg-navy-dark text-white">

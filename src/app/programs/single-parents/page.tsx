@@ -6,7 +6,7 @@ import { img } from "@/lib/images";
 export const metadata: Metadata = {
   title: "Single Parent Stability — FAITH Foundation",
   description:
-    "FAITH Foundation's Single Parent Stability program provides affordable housing, childcare navigation, and financial coaching to help Texas single-parent families build a secure future.",
+    "FAITH Foundation's Single Parent Stability program offers affordable housing, childcare navigation, and financial coaching for Texas single-parent families.",
 };
 
 const ELIGIBILITY = [
@@ -88,7 +88,7 @@ export default function SingleParentStabilityPage() {
               <div className="mt-9 flex flex-col gap-4 sm:flex-row">
                 <Link
                   href="/contact"
-                  className="rounded-full bg-gold px-8 py-3.5 text-base font-bold text-navy shadow-lg transition-all duration-300 hover:bg-gold-light hover:shadow-xl"
+                  className="rounded-full bg-gold px-8 py-3.5 text-base font-bold text-navy shadow-lg transition-all duration-300 hover:bg-gold-light hover:shadow-xl ring-2 ring-[#C8A951]/30"
                 >
                   Apply Now
                 </Link>
@@ -104,14 +104,16 @@ export default function SingleParentStabilityPage() {
         </div>
       </section>
 
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
+
       {/* ===== INTRO ===== */}
-      <section className="bg-texture bg-cream py-24 sm:py-32">
+      <section className="bg-gradient-to-b from-[#FAFAF5] to-[#e8e4d8] py-24 sm:py-32">
         <div className="mx-auto max-w-4xl px-6 sm:px-8">
           <Reveal>
             <h2 className="mb-3 text-sm font-bold uppercase tracking-widest text-green-dark">
               Why it matters
             </h2>
-            <h3 className="mb-6 text-3xl font-extrabold text-navy sm:text-4xl">
+            <h3 className="heading-underline mb-6 text-3xl font-extrabold text-navy sm:text-4xl">
               One parent, doing the work of two
             </h3>
           </Reveal>
@@ -145,23 +147,25 @@ export default function SingleParentStabilityPage() {
             </Reveal>
             <Reveal delay={200}>
               <p>
-                Like all of FAITH Foundation&apos;s work, this program is funded in
-                part by the Bright Box Homes partnership — where every home
-                purchased generates a $2,500 donation that becomes direct housing
-                assistance on the path toward homeownership. When one family puts
-                down roots, another single-parent family gets the support to keep
-                their home.
+                Like all of FAITH Foundation&apos;s work, this program is made possible
+                by charitable gifts and corporate donations from individuals,
+                businesses, and community partners — generosity that becomes direct
+                housing assistance on the path toward homeownership. As that support
+                sustains our work, single-parent families get the help they need to
+                keep their homes.
               </p>
             </Reveal>
           </div>
         </div>
       </section>
 
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
+
       {/* ===== FAMILY SUPPORTS GRID (dominant module) ===== */}
       <section id="supports" className="bg-navy py-24 text-white sm:py-32">
         <div className="mx-auto max-w-7xl px-6 sm:px-8">
           <Reveal className="mx-auto max-w-3xl text-center">
-            <h2 className="mb-3 text-sm font-bold uppercase tracking-widest text-gold">
+            <h2 className="mb-3 text-sm font-bold uppercase tracking-[0.2em] text-[#4A7C59]">
               How we help
             </h2>
             <h3 className="text-3xl font-extrabold sm:text-4xl">
@@ -171,7 +175,7 @@ export default function SingleParentStabilityPage() {
           <div className="mt-16 grid gap-8 lg:grid-cols-3">
             {SUPPORTS.map((support, i) => (
               <Reveal key={support.title} delay={i * 100}>
-                <article className="group flex h-full flex-col rounded-2xl border-t-4 border-gold bg-navy-light/40 p-8 shadow-card-lg ring-1 ring-white/10 transition-all duration-300 hover:-translate-y-1 hover:ring-gold/40">
+                <article className="card-on-navy group flex h-full flex-col rounded-2xl p-8 transition-all duration-300">
                   <span
                     aria-hidden
                     className="mb-6 flex h-14 w-14 items-center justify-center rounded-xl bg-gold/15 text-2xl font-extrabold text-gold ring-1 ring-gold/30 transition-colors duration-300 group-hover:bg-gold group-hover:text-navy"
@@ -191,11 +195,13 @@ export default function SingleParentStabilityPage() {
         </div>
       </section>
 
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
+
       {/* ===== PULL-QUOTE / TESTIMONIAL CARD ===== */}
-      <section className="bg-white py-24 sm:py-32">
+      <section className="bg-gradient-to-b from-white to-[#f0ede4] py-24 sm:py-32">
         <div className="mx-auto max-w-5xl px-6 sm:px-8">
           <Reveal>
-            <figure className="relative overflow-hidden rounded-3xl bg-cream p-10 shadow-card-lg ring-1 ring-navy/5 sm:p-14">
+            <figure className="card-surface relative overflow-hidden rounded-3xl p-10 sm:p-14">
               <span
                 aria-hidden
                 className="pointer-events-none absolute -left-2 top-2 select-none font-serif text-[8rem] leading-none text-gold/20 sm:text-[10rem]"
@@ -206,7 +212,7 @@ export default function SingleParentStabilityPage() {
                 When one family puts down roots, another single-parent family gets
                 the support to keep their home.
               </blockquote>
-              <figcaption className="relative mt-6 text-sm font-bold uppercase tracking-widest text-gold-dark">
+              <figcaption className="relative mt-6 text-sm font-bold uppercase tracking-[0.2em] text-[#4A7C59]">
                 The Single Parent Stability promise
               </figcaption>
             </figure>
@@ -214,14 +220,16 @@ export default function SingleParentStabilityPage() {
         </div>
       </section>
 
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
+
       {/* ===== RESOURCE NAVIGATION BLOCK ===== */}
-      <section className="bg-cream py-24 sm:py-32">
+      <section className="bg-gradient-to-b from-[#FAFAF5] to-[#e8e4d8] py-24 sm:py-32">
         <div className="mx-auto max-w-7xl px-6 sm:px-8">
           <Reveal className="mx-auto max-w-3xl text-center">
             <h2 className="mb-3 text-sm font-bold uppercase tracking-widest text-green-dark">
               Resource navigation
             </h2>
-            <h3 className="text-3xl font-extrabold text-navy sm:text-4xl">
+            <h3 className="heading-underline-center text-3xl font-extrabold text-navy sm:text-4xl">
               One team to help you find every door
             </h3>
             <p className="mt-4 text-lg leading-relaxed text-charcoal/80">
@@ -232,7 +240,7 @@ export default function SingleParentStabilityPage() {
           <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {RESOURCES.map((r, i) => (
               <Reveal key={r.title} delay={i * 100}>
-                <div className="flex h-full flex-col rounded-2xl border border-navy/10 bg-white p-6 shadow-card transition-all duration-300 hover:-translate-y-1 hover:shadow-card-lg">
+                <div className={`${i % 2 === 0 ? "card-feature-cream" : "card-feature-white"} flex h-full flex-col rounded-2xl p-6 transition-all duration-300`}>
                   <span className="text-3xl font-extrabold text-green/40">
                     {String(i + 1).padStart(2, "0")}
                   </span>
@@ -249,14 +257,16 @@ export default function SingleParentStabilityPage() {
         </div>
       </section>
 
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
+
       {/* ===== ELIGIBILITY ===== */}
-      <section className="bg-white py-24 sm:py-32">
+      <section className="bg-gradient-to-b from-white to-[#f0ede4] py-24 sm:py-32">
         <div className="mx-auto max-w-4xl px-6 sm:px-8">
           <Reveal>
-            <h2 className="mb-3 text-sm font-bold uppercase tracking-widest text-gold-dark">
+            <h2 className="mb-3 text-sm font-bold uppercase tracking-[0.2em] text-[#4A7C59]">
               Eligibility
             </h2>
-            <h3 className="mb-6 text-3xl font-extrabold text-navy sm:text-4xl">
+            <h3 className="heading-underline mb-6 text-3xl font-extrabold text-navy sm:text-4xl">
               Who Single Parent Stability serves
             </h3>
             <p className="mb-10 text-lg leading-relaxed text-charcoal/80">
@@ -269,7 +279,7 @@ export default function SingleParentStabilityPage() {
           <ul className="space-y-4">
             {ELIGIBILITY.map((item, i) => (
               <Reveal key={item} delay={i * 100} as="li">
-                <div className="flex gap-4 rounded-xl border-l-4 border-gold bg-cream p-5 shadow-card">
+                <div className="card-surface flex gap-4 rounded-xl p-5">
                   <span className="mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-navy text-sm font-bold text-gold">
                     ✓
                   </span>
@@ -291,6 +301,8 @@ export default function SingleParentStabilityPage() {
         </div>
       </section>
 
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
+
       {/* ===== CTA ===== */}
       <section className="bg-navy-dark py-24 text-white sm:py-28">
         <div className="mx-auto max-w-4xl px-6 text-center sm:px-8">
@@ -306,7 +318,7 @@ export default function SingleParentStabilityPage() {
             <div className="flex flex-col justify-center gap-4 sm:flex-row">
               <Link
                 href="/contact"
-                className="rounded-full bg-gold px-8 py-3.5 text-base font-bold text-navy shadow-lg transition-all duration-300 hover:bg-gold-light hover:shadow-xl"
+                className="rounded-full bg-gold px-8 py-3.5 text-base font-bold text-navy shadow-lg transition-all duration-300 hover:bg-gold-light hover:shadow-xl ring-2 ring-[#C8A951]/30"
               >
                 Apply Now
               </Link>

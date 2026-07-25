@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Reveal from "@/components/Reveal";
+import BackgroundSwirls from "@/components/BackgroundSwirls";
 import StatCounter from "@/components/StatCounter";
-import { img } from "@/lib/images";
+import ZeffyEmbed from "@/components/ZeffyEmbed";
 
 export const metadata: Metadata = {
   title: "Donate — FAITH Foundation",
   description:
-    "Give to FAITH Foundation and help Texas families become homeowners through down payment assistance vouchers. Choose a donation tier and make a tax-deductible gift to a 501(c)(3) nonprofit in Burnet, Texas.",
+    "Donate to FAITH Foundation and help Texas families become homeowners through down payment assistance vouchers. Make a tax-deductible 501(c)(3) gift today.",
 };
 
 const TIERS = [
@@ -35,7 +36,7 @@ const TIERS = [
   {
     amount: "$500",
     name: "Guardian",
-    body: "Underwrites a significant share of a down payment assistance voucher, directly matching the spirit of our $2,500 Bright Box Homes gifts that lift two families at once.",
+    body: "Underwrites a significant share of a down payment assistance voucher, helping a family cross the threshold from renting toward lasting ownership.",
   },
   {
     amount: "Custom",
@@ -50,7 +51,7 @@ export default function DonatePage() {
       {/* Hero */}
       <section className="relative isolate overflow-hidden bg-navy text-white">
         <img
-          src={img("volunteersHands", 2000, 1100)}
+          src="/Images/donate-hero.jpg"
           alt="Volunteers joining hands in support of Texas families"
           className="absolute inset-0 -z-10 h-full w-full object-cover animate-slow-zoom"
         />
@@ -89,13 +90,15 @@ export default function DonatePage() {
       </section>
 
       {/* Why your gift matters — pull quote + asymmetric two-column */}
-      <section className="bg-texture bg-cream py-24 sm:py-32">
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
+      <section className="relative overflow-hidden bg-gradient-to-b from-[#FAFAF5] to-[#e8e4d8] py-24 sm:py-32">
+        <BackgroundSwirls variant="top-left" />
         <div className="mx-auto max-w-7xl px-6 sm:px-8">
           <Reveal>
             <h2 className="text-sm font-bold uppercase tracking-widest text-green-dark">
               Why Your Gift Matters
             </h2>
-            <h3 className="mt-3 text-3xl font-extrabold text-navy sm:text-4xl">
+            <h3 className="heading-underline mt-3 text-3xl font-extrabold text-navy sm:text-4xl">
               Stability begins with generosity
             </h3>
           </Reveal>
@@ -140,7 +143,7 @@ export default function DonatePage() {
             <Reveal className="lg:col-span-5 lg:sticky lg:top-28" delay={200}>
               <div className="overflow-hidden rounded-3xl shadow-card-lg">
                 <img
-                  src={img("finance", 1000, 1200)}
+                  src="/Images/donate-finance.jpg"
                   alt="A family planning a household budget together"
                   loading="lazy"
                   className="h-full w-full object-cover"
@@ -152,15 +155,16 @@ export default function DonatePage() {
       </section>
 
       {/* Stat band */}
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
       <section className="bg-navy py-20 text-white">
         <div className="mx-auto max-w-7xl px-6 sm:px-8">
           <div className="grid gap-10 sm:grid-cols-2">
             <Reveal className="text-center sm:border-r sm:border-white/15">
               <p className="text-5xl font-extrabold text-gold sm:text-6xl">
-                <StatCounter value={2500} prefix="$" />
+                <StatCounter value={100} suffix="%" />
               </p>
               <p className="mt-3 text-sm font-semibold uppercase tracking-widest text-white/80">
-                Each Bright Box Homes gift
+                Of every designated housing gift directly supports the program you choose
               </p>
             </Reveal>
             <Reveal delay={100} className="text-center">
@@ -176,13 +180,15 @@ export default function DonatePage() {
       </section>
 
       {/* Donation tiers — pricing cards */}
-      <section id="give" className="scroll-mt-24 bg-white py-24 sm:py-32">
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
+      <section id="give" className="relative overflow-hidden scroll-mt-24 bg-gradient-to-b from-white to-[#f0ede4] py-24 sm:py-32">
+        <BackgroundSwirls variant="bottom-right" />
         <div className="mx-auto max-w-7xl px-6 sm:px-8">
           <Reveal className="mx-auto max-w-3xl text-center">
-            <h2 className="text-sm font-bold uppercase tracking-widest text-gold-dark">
+            <h2 className="text-sm font-bold uppercase tracking-[0.2em] text-[#4A7C59]">
               Choose a Donation Tier
             </h2>
-            <h3 className="mt-3 text-3xl font-extrabold text-navy sm:text-4xl">
+            <h3 className="heading-underline-center mt-3 text-3xl font-extrabold text-navy sm:text-4xl">
               Every level changes a life
             </h3>
             <p className="mt-5 text-lg leading-relaxed text-charcoal/80">
@@ -201,10 +207,10 @@ export default function DonatePage() {
                 className={tier.featured ? "lg:-translate-y-4" : ""}
               >
                 <div
-                  className={`relative flex h-full flex-col rounded-3xl p-8 transition-transform duration-300 hover:-translate-y-1 ${
+                  className={`card-surface relative flex h-full flex-col rounded-3xl p-8 transition-transform duration-300 ${
                     tier.featured
-                      ? "bg-navy text-white shadow-card-lg ring-2 ring-gold"
-                      : "bg-cream shadow-card ring-1 ring-navy/5"
+                      ? "bg-navy text-white ring-2 ring-gold"
+                      : ""
                   }`}
                 >
                   {tier.featured && (
@@ -235,7 +241,7 @@ export default function DonatePage() {
                   </p>
                   <Link
                     href="#give-now"
-                    className={`mt-8 rounded-full px-6 py-3 text-center text-base font-bold transition-colors ${
+                    className={`mt-8 rounded-full px-6 py-3 text-center text-base font-bold transition-colors shadow-lg hover:shadow-xl ring-2 ring-[#C8A951]/30 ${
                       tier.featured
                         ? "bg-gold text-navy hover:bg-gold-light"
                         : "border-2 border-gold text-gold-dark hover:bg-gold hover:text-navy"
@@ -251,6 +257,7 @@ export default function DonatePage() {
       </section>
 
       {/* Give Now CTA */}
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
       <section
         id="give-now"
         className="scroll-mt-24 bg-navy-dark py-24 text-white sm:py-32"
@@ -270,21 +277,40 @@ export default function DonatePage() {
               Checks may be mailed to FAITH Foundation, 209 Surecast Drive, Suite
               105, Burnet, TX 78611. Call us at 888-497-6620 with any questions.
             </p>
-            <div className="mt-10 flex flex-col justify-center gap-4 sm:flex-row">
+            <p className="mx-auto mt-4 max-w-2xl text-sm font-semibold leading-relaxed text-white/80">
+              No goods or services were provided in exchange for your
+              contribution. FAITH Foundation is a 501(c)(3) nonprofit and your
+              gift is tax-deductible to the fullest extent allowed by law.
+            </p>
+            <ZeffyEmbed
+              src="https://www.zeffy.com/embed/donation-form/help-a-family-come-home"
+              title="FAITH Foundation Donation Form"
+            />
+            <div className="mt-8 flex justify-center">
               <Link
-                href="/contact"
-                className="rounded-full bg-green px-10 py-4 text-lg font-bold text-white shadow-green transition-colors hover:bg-green-dark"
+                href="/programs"
+                className="rounded-full border-2 border-gold px-10 py-4 text-lg font-bold text-gold transition-colors hover:bg-gold hover:text-navy shadow-lg hover:shadow-xl ring-2 ring-[#C8A951]/30"
               >
-                Give Now
-              </Link>
-              <Link
-                href="/partnership"
-                className="rounded-full border-2 border-gold px-10 py-4 text-lg font-bold text-gold transition-colors hover:bg-gold hover:text-navy"
-              >
-                Explore Partnership
+                Explore Our Programs
               </Link>
             </div>
           </Reveal>
+        </div>
+      </section>
+
+      {/* ===== DESIGNATED-GIFT DISCLOSURE ===== */}
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
+      <section className="relative overflow-hidden bg-gradient-to-b from-white to-[#f0ede4] py-12 sm:py-16">
+        <BackgroundSwirls variant="diagonal" />
+        <div className="mx-auto max-w-4xl px-6 sm:px-8">
+          <div className="rounded-2xl border-l-[5px] border-gold bg-cream px-7 py-6 shadow-card">
+            <p className="text-sm leading-relaxed text-navy">
+              Donations designated for our Housing Mission are used exclusively
+              to advance that mission. Executive leadership and administrative
+              operations are funded through separately designated operational
+              support.
+            </p>
+          </div>
         </div>
       </section>
     </>

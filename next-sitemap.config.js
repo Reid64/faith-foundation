@@ -1,6 +1,6 @@
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {
-  siteUrl: "https://faithfoundationsf.org",
+  siteUrl: "https://www.faithfoundationsf.org",
   generateRobotsTxt: true,
   generateIndexSitemap: false,
   // This project uses `output: "export"`, so the build output lives in `out/`.

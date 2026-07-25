@@ -6,7 +6,7 @@ import { img } from "@/lib/images";
 export const metadata: Metadata = {
   title: "Emergency Bridge Housing — FAITH Foundation",
   description:
-    "FAITH Foundation's Emergency Bridge Housing provides fast, short-term rental assistance that keeps families across Texas housed during a sudden crisis — preventing eviction and homelessness before they start.",
+    "FAITH Foundation's Emergency Bridge Housing offers fast, short-term rental help that keeps Texas families housed and prevents eviction during a crisis.",
 };
 
 const ELIGIBILITY = [
@@ -69,7 +69,7 @@ export default function EmergencyBridgeHousingPage() {
               <div className="mt-9 flex flex-col gap-4 sm:flex-row">
                 <Link
                   href="/contact"
-                  className="rounded-full bg-gold px-8 py-4 text-center text-base font-bold text-navy shadow-card transition-all duration-300 hover:bg-gold-light hover:shadow-card-lg"
+                  className="rounded-full bg-gold px-8 py-4 text-center text-base font-bold text-navy shadow-card transition-all duration-300 hover:bg-gold-light hover:shadow-card-lg shadow-lg hover:shadow-xl ring-2 ring-[#C8A951]/30"
                 >
                   Get Help Now
                 </Link>
@@ -79,8 +79,9 @@ export default function EmergencyBridgeHousingPage() {
         </div>
       </section>
 
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
       {/* ===== RAPID-RESPONSE CALLOUT BAND ===== */}
-      <section className="relative bg-cream">
+      <section className="relative bg-gradient-to-b from-[#FAFAF5] to-[#e8e4d8]">
         <div className="mx-auto -mt-12 max-w-7xl px-6 sm:px-8">
           <div className="overflow-hidden rounded-3xl bg-navy shadow-card-lg">
             <div className="grid items-center gap-6 px-8 py-10 sm:px-12 lg:grid-cols-[auto,1fr]">
@@ -107,8 +108,9 @@ export default function EmergencyBridgeHousingPage() {
         </div>
       </section>
 
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
       {/* ===== INTRO ===== */}
-      <section className="bg-texture bg-cream py-24 sm:py-32">
+      <section className="bg-gradient-to-b from-[#FAFAF5] to-[#e8e4d8] py-24 sm:py-32">
         <div className="mx-auto max-w-4xl px-6 sm:px-8">
           <Reveal>
             <p className="green-rule text-sm font-bold uppercase tracking-[0.2em] text-green-dark">
@@ -116,7 +118,7 @@ export default function EmergencyBridgeHousingPage() {
             </p>
           </Reveal>
           <Reveal delay={100}>
-            <h2 className="mt-5 text-balance text-3xl font-extrabold leading-tight text-navy sm:text-4xl">
+            <h2 className="heading-underline mt-5 text-balance text-3xl font-extrabold leading-tight text-navy sm:text-4xl">
               A short bridge over a sudden gap
             </h2>
           </Reveal>
@@ -150,25 +152,26 @@ export default function EmergencyBridgeHousingPage() {
                 assistance, employment resources, supporting financial literacy
                 guidance, and the other FAITH Foundation programs that turn a moment
                 of rescue into a path toward a home of their own. Like
-                all of our work, Emergency Bridge Housing is powered by the
-                renewable Bright Box Homes partnership, where every home purchased
-                generates a $2,500 donation that becomes direct housing assistance
-                for a neighbor in need. When the community grows, our ability to
-                respond to emergencies grows with it.
+                all of our work, Emergency Bridge Housing is sustained by donations
+                from individuals, businesses, and community partners whose generosity
+                becomes direct housing assistance for a neighbor in
+                need. When the community grows, our ability to respond to emergencies
+                grows with it.
               </p>
             </div>
           </Reveal>
         </div>
       </section>
 
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
       {/* ===== WHAT'S COVERED — CHECKLIST (dominant module) ===== */}
-      <section className="bg-white py-24 sm:py-32">
+      <section className="bg-gradient-to-b from-white to-[#f0ede4] py-24 sm:py-32">
         <div className="mx-auto max-w-3xl px-6 text-center sm:px-8">
           <Reveal>
-            <p className="text-sm font-bold uppercase tracking-[0.2em] text-gold-dark">
+            <p className="text-sm font-bold uppercase tracking-[0.2em] text-[#4A7C59]">
               How we help
             </p>
-            <h2 className="mt-4 text-3xl font-extrabold text-navy sm:text-4xl">
+            <h2 className="heading-underline-center mt-4 text-3xl font-extrabold text-navy sm:text-4xl">
               Fast help, aimed at keeping you housed
             </h2>
           </Reveal>
@@ -181,7 +184,7 @@ export default function EmergencyBridgeHousingPage() {
                 as="li"
                 key={support.title}
                 delay={i * 100}
-                className="flex gap-5 rounded-2xl border-l-4 border-gold bg-cream p-7 shadow-card"
+                className={`${i % 2 === 0 ? "card-feature-cream" : "card-feature-white"} flex gap-5 rounded-2xl p-7`}
               >
                 <span
                   aria-hidden
@@ -213,8 +216,9 @@ export default function EmergencyBridgeHousingPage() {
         </div>
       </section>
 
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
       {/* ===== ELIGIBILITY CARDS ===== */}
-      <section className="bg-cream py-24 sm:py-32">
+      <section className="bg-gradient-to-b from-[#FAFAF5] to-[#e8e4d8] py-24 sm:py-32">
         <div className="mx-auto max-w-4xl px-6 sm:px-8">
           <Reveal>
             <p className="green-rule text-sm font-bold uppercase tracking-[0.2em] text-green-dark">
@@ -222,7 +226,7 @@ export default function EmergencyBridgeHousingPage() {
             </p>
           </Reveal>
           <Reveal delay={100}>
-            <h2 className="mt-5 text-balance text-3xl font-extrabold leading-tight text-navy sm:text-4xl">
+            <h2 className="heading-underline mt-5 text-balance text-3xl font-extrabold leading-tight text-navy sm:text-4xl">
               Who Emergency Bridge Housing serves
             </h2>
           </Reveal>
@@ -241,7 +245,7 @@ export default function EmergencyBridgeHousingPage() {
                 as="li"
                 key={item}
                 delay={i * 90}
-                className="flex gap-4 rounded-2xl border-t-4 border-green bg-white p-7 shadow-card"
+                className={`${i % 2 === 0 ? "card-feature-cream" : "card-feature-white"} flex gap-4 rounded-2xl p-7`}
               >
                 <span
                   aria-hidden
@@ -278,6 +282,7 @@ export default function EmergencyBridgeHousingPage() {
         </div>
       </section>
 
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
       {/* ===== CTA ===== */}
       <section className="bg-navy-dark text-white">
         <div className="mx-auto max-w-4xl px-6 py-20 text-center sm:px-8">
@@ -293,7 +298,7 @@ export default function EmergencyBridgeHousingPage() {
             <div className="flex flex-col justify-center gap-4 sm:flex-row">
               <Link
                 href="/contact"
-                className="rounded-full bg-gold px-8 py-4 text-base font-bold text-navy shadow-card transition-all duration-300 hover:bg-gold-light hover:shadow-card-lg"
+                className="rounded-full bg-gold px-8 py-4 text-base font-bold text-navy shadow-card transition-all duration-300 hover:bg-gold-light hover:shadow-card-lg shadow-lg hover:shadow-xl ring-2 ring-[#C8A951]/30"
               >
                 Get Help Now
               </Link>

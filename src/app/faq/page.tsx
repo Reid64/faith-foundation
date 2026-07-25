@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import BackgroundSwirls from "@/components/BackgroundSwirls";
 import Reveal from "@/components/Reveal";
 import { img } from "@/lib/images";
 
 export const metadata: Metadata = {
   title: "Frequently Asked Questions — FAITH Foundation",
   description:
-    "Answers to common questions about FAITH Foundation — who we serve, how down payment assistance vouchers and the Bright Box Homes partnership work, eligibility, donations, tax-deductibility, and how to volunteer across Texas.",
+    "Answers to common questions about FAITH Foundation — who we serve, how down payment assistance vouchers work, eligibility, donations, and volunteering.",
 };
 
 const FAQS = [
@@ -26,9 +27,9 @@ const FAQS = [
       "We serve families and individuals across Texas who are working toward homeownership or facing housing instability. Our programs reach veterans, single parents, people in recovery, individuals reentering the community after incarceration, and families facing a housing emergency.",
   },
   {
-    question: "How does the Bright Box Homes partnership work?",
+    question: "How is FAITH Foundation funded?",
     answer:
-      "Through our partnership with Bright Box Homes, every home purchased generates a $2,500 donation to FAITH Foundation at no extra cost to the buyer. We convert that gift into down payment assistance vouchers that help other families buy a home of their own. It is a renewable cycle: one family becoming a homeowner helps the next family become one too.",
+      "FAITH Foundation is funded by the generosity of individual and corporate donors, grants, and community fundraising. One of our corporate donors is Bright Box Homes, a separate, independently operated company that donates a portion of revenue from each home it sells to help fund our housing vouchers. The two organizations are completely separate entities — FAITH Foundation does not own or operate any homebuilding company. Every gift, from every source, is directed into down payment assistance vouchers and our charitable housing programs.",
   },
   {
     question: "What is a housing voucher and how do I qualify?",
@@ -43,7 +44,7 @@ const FAQS = [
   {
     question: "Is there a cost to receive help from FAITH Foundation?",
     answer:
-      "No. Our programs and assistance are provided free of charge to the families we serve. We are funded by donations, the Bright Box Homes partnership, and the generosity of our community.",
+      "No. Our programs and assistance are provided free of charge to the families we serve. We are funded by individual and corporate donations, grants, and the generosity of our community.",
   },
   {
     question: "Do I have to share your faith to receive help?",
@@ -83,7 +84,47 @@ const FAQS = [
   {
     question: "How can my business or church partner with FAITH Foundation?",
     answer:
-      "We love partnering with businesses, churches, and community organizations — from the Bright Box Homes give-back model to event sponsorships and volunteer teams. Reach out through our Contact page and we will explore a partnership that fits your goals and multiplies impact for families in need.",
+      "We love partnering with businesses, churches, and community organizations — through event sponsorships, volunteer teams, and community collaborations. Reach out through our Contact page and we will explore a partnership that fits your goals and multiplies impact for families in need.",
+  },
+  {
+    question: "How do I qualify for down payment assistance in Texas?",
+    answer:
+      "To qualify for down payment assistance in Texas, you generally need to live in the state, demonstrate a genuine financial need, and be working toward stable homeownership. At FAITH Foundation, our down payment assistance vouchers are paired with a short application and a case-management conversation so we can understand your household, income, and goals. There is no cost to apply, and our team personally reviews every request. Start with our Apply for Housing Assistance page or call 888-497-6620 to learn what you may be eligible for.",
+  },
+  {
+    question: "What is a housing voucher and how does it work?",
+    answer:
+      "A housing voucher is direct financial assistance that helps a family cover a specific housing cost — for FAITH Foundation, that most often means the down payment needed to close on a home, or rental and deposit help during a transition. Rather than a loan, our vouchers are funded by individual and corporate donors and directed straight toward the gap standing between a family and stable housing. Each voucher is paired with case management and, where helpful, homebuyer instruction so families are set up to succeed. You can learn more on our Housing Voucher Program page.",
+  },
+  {
+    question: "Can felons get housing assistance in Texas?",
+    answer:
+      "Yes. FAITH Foundation serves people reentering the community after incarceration, and having a record does not automatically disqualify you from our housing assistance. Our Second Chance Reentry program provides post-incarceration transitional housing, case management, and employment support designed specifically for returning citizens rebuilding their lives. We serve families of every background and circumstance without condition or preference. Reach out through our Apply page and a real person will help you understand your options.",
+  },
+  {
+    question: "How do single mothers get help buying a home?",
+    answer:
+      "Single mothers can get help buying a home through FAITH Foundation's down payment assistance vouchers combined with our Single Parent Stability program. Together they provide the cash-to-close support that is often the biggest barrier to ownership, along with childcare navigation, resource connections, and financial coaching. We also offer homeownership counseling so single-parent families can buy with confidence and keep their home for the long term. Apply online or call 888-497-6620 to talk through your situation.",
+  },
+  {
+    question: "What is the difference between a housing voucher and Section 8?",
+    answer:
+      "Section 8 is a federal rental-assistance program run by public housing authorities, with long waitlists and strict federal rules. FAITH Foundation's housing vouchers are privately funded by donors, which lets us move faster and direct help where it is needed most — including down payment assistance that Section 8 does not provide. Our focus is on homeownership and lasting housing stability, not only subsidized rent. Because we are a nonprofit rather than a government agency, we can tailor support to each family through personal case management.",
+  },
+  {
+    question: "How do I apply for first-time homebuyer programs in Texas?",
+    answer:
+      "To apply for first-time homebuyer help through FAITH Foundation, start with our Apply for Housing Assistance page, which walks you through a short, confidential multi-step application. From there, our team pairs you with homeownership counseling and, if eligible, a down payment assistance voucher to help you close on your first home. We personally review every application — typically within three business days — and guide you on next steps. There is no cost to apply, and you can call 888-497-6620 with any questions.",
+  },
+  {
+    question: "Are there housing programs for veterans in Texas?",
+    answer:
+      "Yes. FAITH Foundation's Veterans Path Home program helps Texas veterans secure stable, affordable housing through rental assistance, case management, and connection to the benefits they have earned. For veterans working toward ownership, we also offer down payment assistance vouchers and homeownership counseling. Our goal is to move veterans from housing instability to a home of their own, honoring their service with practical support. Visit our Veterans Path Home page or apply online to get started.",
+  },
+  {
+    question: "What does a homeownership counselor do?",
+    answer:
+      "A homeownership counselor guides you through every step of buying and keeping a home — reviewing your budget and credit, explaining mortgages and closing costs, and helping you build a realistic plan to become a homeowner. At FAITH Foundation, our homeownership counseling is paired with down payment assistance so families are both prepared and financially supported. Counselors also help you avoid common pitfalls so you can hold onto your home for the long term. It is a free service designed to make ownership attainable and lasting.",
   },
 ];
 
@@ -96,7 +137,7 @@ const CATEGORIES = [
       "What is FAITH Foundation?",
       "What does the name FAITH stand for?",
       "Who does FAITH Foundation serve?",
-      "How does the Bright Box Homes partnership work?",
+      "How is FAITH Foundation funded?",
     ],
   },
   {
@@ -123,6 +164,19 @@ const CATEGORIES = [
       "How can I volunteer with FAITH Foundation?",
       "Where is FAITH Foundation located and what are your hours?",
       "How can my business or church partner with FAITH Foundation?",
+    ],
+  },
+  {
+    name: "Housing Assistance in Texas",
+    questions: [
+      "How do I qualify for down payment assistance in Texas?",
+      "What is a housing voucher and how does it work?",
+      "Can felons get housing assistance in Texas?",
+      "How do single mothers get help buying a home?",
+      "What is the difference between a housing voucher and Section 8?",
+      "How do I apply for first-time homebuyer programs in Texas?",
+      "Are there housing programs for veterans in Texas?",
+      "What does a homeownership counselor do?",
     ],
   },
 ];
@@ -185,8 +239,11 @@ export default function FAQPage() {
         </div>
       </section>
 
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
+
       {/* ===== ACCORDION FAQ — grouped by category ===== */}
-      <section className="bg-cream bg-texture">
+      <section className="relative overflow-hidden bg-gradient-to-b from-[#FAFAF5] to-[#e8e4d8]">
+        <BackgroundSwirls variant="top-left" />
         <div className="mx-auto max-w-4xl px-6 py-24 sm:px-8 sm:py-32">
           <div className="space-y-16">
             {CATEGORIES.map((category) => (
@@ -204,7 +261,7 @@ export default function FAQPage() {
                     const faq = byQuestion(q);
                     return (
                       <Reveal key={faq.question} delay={i * 80}>
-                        <details className="group overflow-hidden rounded-2xl border border-navy/5 bg-white shadow-card transition-shadow open:shadow-card-lg">
+                        <details className="card-surface group overflow-hidden rounded-2xl transition-shadow">
                           <summary className="flex cursor-pointer list-none items-center justify-between gap-5 px-6 py-5 text-left text-lg font-bold text-navy transition-colors hover:bg-gold/5 sm:px-8 sm:text-xl [&::-webkit-details-marker]:hidden">
                             <span>{faq.question}</span>
                             <span
@@ -228,6 +285,8 @@ export default function FAQPage() {
         </div>
       </section>
 
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
+
       {/* ===== CTA — still have questions ===== */}
       <section className="bg-navy-dark text-white">
         <div className="mx-auto max-w-4xl px-6 py-24 text-center sm:px-8">
@@ -246,7 +305,7 @@ export default function FAQPage() {
             <div className="flex flex-col justify-center gap-4 sm:flex-row">
               <Link
                 href="/contact"
-                className="rounded-full bg-gold px-8 py-3.5 text-base font-bold text-navy shadow-card transition-colors hover:bg-gold-light"
+                className="rounded-full bg-gold px-8 py-3.5 text-base font-bold text-navy shadow-card transition-colors hover:bg-gold-light shadow-lg hover:shadow-xl ring-2 ring-[#C8A951]/30"
               >
                 Contact Us
               </Link>

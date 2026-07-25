@@ -7,7 +7,7 @@ import { img } from "@/lib/images";
 export const metadata: Metadata = {
   title: "Financial Literacy — FAITH Foundation",
   description:
-    "FAITH Foundation's financial literacy is a supporting service that helps families across Texas prepare for and sustain homeownership through budgeting, credit, and debt guidance.",
+    "FAITH Foundation's financial-literacy program helps Texas families prepare for and sustain homeownership through budgeting, credit, and debt guidance.",
 };
 
 const FOCUS_AREAS = [
@@ -62,8 +62,9 @@ export default function FinancialLiteracyPage() {
         </div>
       </section>
 
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
       {/* ===== INTRO (alternating image + text) ===== */}
-      <section className="bg-texture bg-cream py-24 sm:py-32">
+      <section className="bg-gradient-to-b from-[#FAFAF5] to-[#e8e4d8] py-24 sm:py-32">
         <div className="mx-auto grid max-w-7xl items-center gap-14 px-6 sm:px-8 lg:grid-cols-12">
           <div className="lg:col-span-7">
             <Reveal>
@@ -72,7 +73,7 @@ export default function FinancialLiteracyPage() {
               </p>
             </Reveal>
             <Reveal delay={100}>
-              <h2 className="mt-5 text-balance text-3xl font-extrabold leading-tight text-navy sm:text-4xl">
+              <h2 className="heading-underline mt-5 text-balance text-3xl font-extrabold leading-tight text-navy sm:text-4xl">
                 Getting ready for a home of your own
               </h2>
             </Reveal>
@@ -115,14 +116,15 @@ export default function FinancialLiteracyPage() {
         </div>
       </section>
 
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
       {/* ===== CURRICULUM TIMELINE (dominant module) ===== */}
-      <section className="bg-white py-24 sm:py-32">
+      <section className="bg-gradient-to-b from-white to-[#f0ede4] py-24 sm:py-32">
         <div className="mx-auto max-w-3xl px-6 text-center sm:px-8">
           <Reveal>
             <p className="text-sm font-bold uppercase tracking-[0.2em] text-green-dark">
               What you&apos;ll learn
             </p>
-            <h2 className="mt-4 text-3xl font-extrabold text-navy sm:text-4xl">
+            <h2 className="heading-underline-center mt-4 text-3xl font-extrabold text-navy sm:text-4xl">
               Three steps toward home-readiness
             </h2>
             <p className="mt-4 text-lg leading-relaxed text-charcoal/75">
@@ -142,7 +144,7 @@ export default function FinancialLiteracyPage() {
                 >
                   {i + 1}
                 </span>
-                <div className="rounded-2xl border-t-4 border-gold bg-cream p-8 shadow-card">
+                <div className={`${i % 2 === 0 ? "card-feature-cream" : "card-feature-white"} rounded-2xl p-8`}>
                   <h3 className="text-xl font-extrabold text-navy sm:text-2xl">
                     {area.title}
                   </h3>
@@ -156,6 +158,7 @@ export default function FinancialLiteracyPage() {
         </div>
       </section>
 
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
       {/* ===== OUTCOMES STAT BAND ===== */}
       <section className="bg-navy py-20 sm:py-24">
         <div className="mx-auto max-w-7xl px-6 sm:px-8">
@@ -168,12 +171,12 @@ export default function FinancialLiteracyPage() {
               <Reveal
                 key={stat.label}
                 delay={i * 90}
-                className="bg-navy px-7 py-10 text-center"
+                className="card-stat px-7 py-10 text-center"
               >
-                <p className="text-5xl font-extrabold text-gold">
+                <p className="card-stat-figure text-5xl font-extrabold">
                   <StatCounter value={stat.value} suffix={stat.suffix} />
                 </p>
-                <p className="mt-3 text-sm leading-snug text-white/75">
+                <p className="mt-3 text-sm leading-snug text-white/80">
                   {stat.label}
                 </p>
               </Reveal>
@@ -182,8 +185,9 @@ export default function FinancialLiteracyPage() {
         </div>
       </section>
 
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
       {/* ===== HOW IT CONNECTS (alternating image + text) ===== */}
-      <section className="bg-cream py-24 sm:py-32">
+      <section className="bg-gradient-to-b from-[#FAFAF5] to-[#e8e4d8] py-24 sm:py-32">
         <div className="mx-auto grid max-w-7xl items-center gap-14 px-6 sm:px-8 lg:grid-cols-12">
           <Reveal className="relative lg:col-span-5">
             <div className="overflow-hidden rounded-[2rem] shadow-card-lg">
@@ -203,7 +207,7 @@ export default function FinancialLiteracyPage() {
               </p>
             </Reveal>
             <Reveal delay={100}>
-              <h2 className="mt-5 text-balance text-3xl font-extrabold leading-tight text-navy sm:text-4xl">
+              <h2 className="heading-underline mt-5 text-balance text-3xl font-extrabold leading-tight text-navy sm:text-4xl">
                 A stepping stone to homeownership
               </h2>
             </Reveal>
@@ -231,6 +235,7 @@ export default function FinancialLiteracyPage() {
         </div>
       </section>
 
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
       {/* ===== CTA ===== */}
       <section className="bg-navy-dark text-white">
         <div className="mx-auto max-w-4xl px-6 py-20 text-center sm:px-8">

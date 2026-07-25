@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Reveal from "@/components/Reveal";
-import VideoSection from "@/components/VideoSection";
 import { img } from "@/lib/images";
-import { VIDEOS, PHOTOS } from "@/lib/media";
+import { PHOTOS } from "@/lib/media";
+import BackgroundSwirls from "@/components/BackgroundSwirls";
 
 export const metadata: Metadata = {
   title: "Programs — FAITH Foundation",
   description:
-    "Explore FAITH Foundation's programs: homeownership through down payment assistance vouchers, the Bright Box Homes partnership, and supporting services. Serving families across Texas.",
+    "Explore FAITH Foundation's programs — homeownership, down payment vouchers, emergency and transitional housing, and supporting services across Texas.",
 };
 
 const PROGRAMS = [
@@ -28,7 +28,7 @@ const PROGRAMS = [
     href: "/programs/housing-voucher",
     eyebrow: "Flagship",
     title: "Down Payment & Housing Vouchers",
-    body: "Direct down payment and rental assistance funded by our Bright Box Homes partnership — a $2,500 donation per home purchased becomes a voucher that helps a neighboring family into stable housing.",
+    body: "Direct down payment and rental assistance funded by corporate and individual donations — becoming vouchers that help neighboring families across Texas into stable housing.",
     cta: "Explore Housing Vouchers",
     span: "lg:col-span-2",
   },
@@ -93,14 +93,17 @@ const PROGRAMS = [
 export default function ProgramsPage() {
   return (
     <>
-      {/* ===== HERO — full-bleed 4K video ===== */}
-      <VideoSection
-        src={VIDEOS.programs}
-        poster={PHOTOS.modern}
-        overlay="dark"
-        className="flex min-h-[78vh] items-center text-white"
-      >
-        <div className="relative mx-auto w-full max-w-4xl px-6 pb-20 pt-40 text-center sm:px-8">
+      {/* ===== HERO — static poster image (loads instantly) ===== */}
+      <section className="relative flex min-h-[78vh] items-center overflow-hidden bg-charcoal text-white">
+        <img
+          src={PHOTOS.modern}
+          alt=""
+          aria-hidden
+          fetchPriority="high"
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/55 to-black/70" />
+        <div className="relative z-10 mx-auto w-full max-w-4xl px-6 pb-20 pt-40 text-center sm:px-8">
           <Reveal>
             <span className="inline-flex items-center rounded-full border border-gold/50 bg-gold/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-gold backdrop-blur">
               Our Programs
@@ -121,16 +124,19 @@ export default function ProgramsPage() {
             </p>
           </Reveal>
         </div>
-      </VideoSection>
+      </section>
+
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
 
       {/* ===== PROGRAM BENTO GRID ===== */}
-      <section className="bg-cream">
+      <section className="relative overflow-hidden bg-gradient-to-b from-[#FAFAF5] to-[#e8e4d8]">
+        <BackgroundSwirls variant="top-left" />
         <div className="mx-auto max-w-7xl px-6 py-24 sm:px-8 sm:py-32">
           <Reveal className="mx-auto max-w-3xl text-center">
             <h2 className="mb-3 text-sm font-bold uppercase tracking-widest text-green-dark">
               Choose your path
             </h2>
-            <h3 className="mb-4 text-3xl font-extrabold text-navy sm:text-4xl">
+            <h3 className="heading-underline-center mb-4 text-3xl font-extrabold text-navy sm:text-4xl">
               One mission: a home of your own
             </h3>
             <p className="text-lg leading-relaxed text-charcoal/80">
@@ -161,7 +167,6 @@ export default function ProgramsPage() {
                         className="h-56 w-full object-cover lg:h-full"
                         loading="lazy"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent lg:bg-gradient-to-r" />
                     </div>
                     <div className="flex flex-1 flex-col p-8 sm:p-10">
                       <span className="inline-flex w-fit items-center rounded-full border border-green/50 bg-green/15 px-3 py-1 text-xs font-bold uppercase tracking-widest text-green-light">
@@ -182,13 +187,7 @@ export default function ProgramsPage() {
                     </div>
                   </article>
                 ) : (
-                  <article
-                    className={`group flex h-full flex-col rounded-3xl border-t-4 bg-white p-8 shadow-card ring-1 ring-navy/5 transition-all duration-300 hover:-translate-y-1 hover:shadow-card-lg ${
-                      program.eyebrow === "Flagship"
-                        ? "border-green"
-                        : "border-gold"
-                    }`}
-                  >
+                  <article className="card-program group flex h-full flex-col rounded-3xl p-8 transition-all duration-300">
                     <span
                       className={`inline-flex w-fit items-center rounded-full px-3 py-1 text-xs font-bold uppercase tracking-widest ${
                         program.eyebrow === "Flagship"
@@ -222,15 +221,18 @@ export default function ProgramsPage() {
         </div>
       </section>
 
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
+
       {/* ===== WHY THEY WORK TOGETHER — sticky text + image ===== */}
-      <section className="bg-texture bg-white">
+      <section className="relative overflow-hidden bg-gradient-to-b from-white to-[#f0ede4]">
+        <BackgroundSwirls variant="bottom-right" />
         <div className="mx-auto grid max-w-7xl gap-12 px-6 py-24 sm:px-8 sm:py-32 lg:grid-cols-2 lg:gap-16">
           <div className="lg:sticky lg:top-28 lg:self-start">
             <Reveal>
               <h2 className="mb-3 text-sm font-bold uppercase tracking-widest text-green-dark">
                 Why our programs work together
               </h2>
-              <h3 className="mb-6 text-3xl font-extrabold text-navy sm:text-4xl">
+              <h3 className="heading-underline mb-6 text-3xl font-extrabold text-navy sm:text-4xl">
                 Homeownership at the center
               </h3>
               <div className="space-y-5 text-lg leading-relaxed text-charcoal/80">
@@ -246,11 +248,11 @@ export default function ProgramsPage() {
                   steady footing with down payment and rental assistance, and one day
                   complete Homeownership Counseling to buy a home of their own.
                   Supporting services like financial literacy help them prepare for
-                  and sustain that home. Each step builds on the last, and the gift of
-                  one family&apos;s home purchase through Bright Box Homes helps fund
-                  the very vouchers that keep the cycle turning — a renewable model of
-                  community uplift, rooted in faith and powered by the generosity of
-                  neighbors.
+                  and sustain that home. Each step builds on the last, and because
+                  our programs are sustained by the generosity of individual and
+                  corporate donors, the very vouchers that keep the cycle turning
+                  are funded — a model of community uplift, rooted in faith and
+                  powered by the generosity of neighbors.
                 </p>
               </div>
             </Reveal>
@@ -259,7 +261,7 @@ export default function ProgramsPage() {
             <div className="overflow-hidden rounded-[2rem] shadow-card-lg ring-1 ring-navy/5">
               <img
                 src={img("handshake", 1100, 1300)}
-                alt="Two people shaking hands in agreement and partnership"
+                alt="Two people shaking hands in agreement"
                 className="h-full w-full object-cover"
                 loading="lazy"
               />
@@ -268,6 +270,8 @@ export default function ProgramsPage() {
           </Reveal>
         </div>
       </section>
+
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
 
       {/* ===== CTA ===== */}
       <section className="bg-navy-dark text-white">

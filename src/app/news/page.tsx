@@ -6,18 +6,18 @@ import { img } from "@/lib/images";
 export const metadata: Metadata = {
   title: "News & Announcements — FAITH Foundation",
   description:
-    "The latest news from FAITH Foundation — program milestones, Bright Box Homes partnership updates, grant announcements, and stories of families reaching homeownership through down payment assistance across Texas.",
+    "The latest from FAITH Foundation — program milestones, donor and grant announcements, and stories of Texas families reaching homeownership.",
 };
 
 const NEWS = [
   {
-    slug: "bright-box-partnership-funds-tenth-voucher",
-    title: "Bright Box Homes Partnership Funds Its Tenth Down Payment Voucher",
+    slug: "community-donations-grow-housing-fund",
+    title: "Community Donations Grow FAITH Foundation's Housing Fund",
     date: "June 5, 2026",
-    category: "Partnership",
+    category: "Impact",
     summary:
-      "A milestone for our renewable funding model: home purchases through Bright Box Homes have now generated enough in $2,500 gifts to fund ten down payment assistance vouchers for families across Texas.",
-    body: "Each time a family closes on a home through Bright Box Homes, a $2,500 donation flows to FAITH Foundation at no extra cost to the buyer. This month we crossed an encouraging threshold — those gifts have now funded our tenth down payment assistance voucher, helping ten families cover the down payment that put homeownership within reach. We are grateful to every homebuyer whose decision quietly lifted a neighbor they may never meet, and we remain committed to reporting exactly where each voucher dollar lands.",
+      "A sustainable engine for our mission: gifts from individual donors and corporate partners fund down payment assistance vouchers for families across Texas.",
+    body: "Our housing fund is made possible by the generosity of donors and community partners, and designated housing donations directly support our charitable housing mission. This funding model is designed to grow the pool of down payment assistance available to families working toward a home of their own, helping neighbors cover the down payment that puts homeownership within reach. As a brand-new organization, we are building this engine with care, and we remain committed to reporting openly to the donors who make it possible.",
   },
   {
     slug: "fall-financial-literacy-cohort-open",
@@ -77,8 +77,8 @@ export default function NewsPage() {
           </Reveal>
           <Reveal delay={240}>
             <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-white/85">
-              Milestones from our programs, updates on the Bright Box Homes
-              partnership, and announcements about how FAITH Foundation is helping
+              Milestones from our programs, updates on how community donations
+              fund our work, and announcements about how FAITH Foundation is helping
               families across Texas reach homeownership. We share our news openly because
               transparency is part of how we steward your trust — when the work
               moves forward, we want you to see it.
@@ -87,8 +87,9 @@ export default function NewsPage() {
         </div>
       </section>
 
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
       {/* ===== FEATURED ANNOUNCEMENT ===== */}
-      <section className="bg-cream bg-texture py-24 sm:py-32">
+      <section className="bg-gradient-to-b from-[#FAFAF5] to-[#e8e4d8] py-24 sm:py-32">
         <div className="mx-auto max-w-5xl px-6 sm:px-8">
           <Reveal>
             <span className="text-sm font-bold uppercase tracking-[0.2em] text-green-dark">
@@ -132,11 +133,12 @@ export default function NewsPage() {
         </div>
       </section>
 
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
       {/* ===== NEWSROOM TIMELINE — vertical dated rail ===== */}
-      <section className="bg-white py-24 sm:py-32">
+      <section className="bg-gradient-to-b from-white to-[#f0ede4] py-24 sm:py-32">
         <div className="mx-auto max-w-5xl px-6 sm:px-8">
           <Reveal>
-            <h2 className="text-3xl font-extrabold text-navy sm:text-4xl">
+            <h2 className="heading-underline text-3xl font-extrabold text-navy sm:text-4xl">
               The newsroom timeline
             </h2>
           </Reveal>
@@ -184,11 +186,12 @@ export default function NewsPage() {
         </div>
       </section>
 
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
       {/* ===== More stories ===== */}
-      <section className="bg-cream py-24 sm:py-32">
+      <section className="bg-gradient-to-b from-[#FAFAF5] to-[#e8e4d8] py-24 sm:py-32">
         <div className="mx-auto max-w-4xl px-6 text-center sm:px-8">
           <Reveal>
-            <h2 className="text-3xl font-extrabold text-navy sm:text-4xl">
+            <h2 className="heading-underline-center text-3xl font-extrabold text-navy sm:text-4xl">
               Looking for the full story?
             </h2>
           </Reveal>
@@ -218,6 +221,7 @@ export default function NewsPage() {
         </div>
       </section>
 
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
       {/* ===== CTA ===== */}
       <section className="bg-navy-dark py-24 text-white sm:py-32">
         <div className="mx-auto max-w-4xl px-6 text-center sm:px-8">
@@ -237,7 +241,7 @@ export default function NewsPage() {
             <div className="mt-10 flex flex-col justify-center gap-4 sm:flex-row">
               <Link
                 href="/donate"
-                className="rounded-md bg-gold px-8 py-3 text-base font-bold text-navy shadow-card transition-colors hover:bg-gold-light"
+                className="rounded-md bg-gold px-8 py-3 text-base font-bold text-navy shadow-card transition-colors hover:bg-gold-light shadow-lg hover:shadow-xl ring-2 ring-[#C8A951]/30"
               >
                 Donate Now
               </Link>

@@ -1,10 +1,11 @@
 import type { Metadata } from 'next';
+import { Fragment } from 'react';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
   title: 'Cornerstone Communities Program | FAITH Foundation',
   description:
-    'FAITH Foundation develops purpose-built Cornerstone Communities on donated land, with on-site support services, resource centers, and transitional housing that help residents reach stability and homeownership.',
+    "FAITH Foundation builds purpose-built Cornerstone Communities on donated land — with on-site support, resource centers, and transitional housing in Texas.",
 };
 
 type CommunityFeature = {
@@ -151,6 +152,57 @@ const landDonors = [
   },
 ];
 
+type GalleryImage = {
+  src: string;
+  caption: string;
+};
+
+const microHouseGallery: GalleryImage[] = [
+  {
+    src: '/Images/micro-houses/micro-house-1.jpg',
+    caption:
+      'Affordable manufactured housing keeps costs low, so donor dollars serve more families.',
+  },
+  {
+    src: '/Images/micro-houses/micro-house-2.jpg',
+    caption:
+      'Lower-cost homes mean every gift stretches further toward getting a family housed.',
+  },
+  {
+    src: '/Images/micro-houses/micro-house-3.jpg',
+    caption:
+      'Efficient, dignified homes help neighbors move from crisis to a place of their own.',
+  },
+  {
+    src: '/Images/micro-houses/micro-house-4.jpg',
+    caption:
+      'Keeping construction costs down lets us reach more families working toward stability.',
+  },
+];
+
+const microApartmentGallery: GalleryImage[] = [
+  {
+    src: '/Images/micro-apartments/micro-apartment-1.jpg',
+    caption:
+      'Transitional micro-apartments give residents a private, stable place to rebuild.',
+  },
+  {
+    src: '/Images/micro-apartments/micro-apartment-2.jpg',
+    caption:
+      'On-site support connects residents with employment, recovery, and family services.',
+  },
+  {
+    src: '/Images/micro-apartments/micro-apartment-3.jpg',
+    caption:
+      'Affordable transitional housing bridges the gap between crisis and a permanent home.',
+  },
+  {
+    src: '/Images/micro-apartments/micro-apartment-4.jpg',
+    caption:
+      'Community-centered design keeps costs low, so support reaches more neighbors in need.',
+  },
+];
+
 export default function CornerstoneCommunitiesPage() {
   return (
     <main className="min-h-screen bg-[#FAFAF5]">
@@ -174,12 +226,13 @@ export default function CornerstoneCommunitiesPage() {
         </div>
       </section>
 
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
       {/* Problem and Solution with How It Works */}
       <section className="py-20 px-4">
         <div className="max-w-5xl mx-auto">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
-              <h2 className="text-3xl font-bold text-[#1B2A4A] mb-6">
+              <h2 className="heading-underline text-3xl font-bold text-[#1B2A4A] mb-6">
                 The Missing Piece in Affordable Housing
               </h2>
               <p className="text-gray-700 text-lg mb-4 leading-relaxed">
@@ -200,7 +253,7 @@ export default function CornerstoneCommunitiesPage() {
                 construction for our residents.
               </p>
             </div>
-            <div className="bg-white p-8 rounded-2xl shadow-lg">
+            <div className="card-surface p-8 rounded-2xl">
               <h3 className="text-xl font-bold text-[#1B2A4A] mb-6 text-center">
                 How It Works
               </h3>
@@ -222,13 +275,19 @@ export default function CornerstoneCommunitiesPage() {
         </div>
       </section>
 
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
       {/* Community Types */}
       {communities.map((community, idx) => (
+        <Fragment key={community.id}>
+          {idx > 0 && (
+            <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
+          )}
         <section
-          key={community.id}
           id={community.id}
           className={
-            idx % 2 === 0 ? 'py-20 px-4 bg-white' : 'py-20 px-4 bg-[#FAFAF5]'
+            idx % 2 === 0
+              ? 'py-20 px-4 bg-gradient-to-b from-white to-[#f0ede4]'
+              : 'py-20 px-4 bg-gradient-to-b from-[#FAFAF5] to-[#e8e4d8]'
           }
         >
           <div className="max-w-6xl mx-auto">
@@ -236,7 +295,7 @@ export default function CornerstoneCommunitiesPage() {
               <p className="text-[#C8A951] font-semibold tracking-widest uppercase text-sm mb-2">
                 {community.subtitle}
               </p>
-              <h2 className="text-3xl md:text-4xl font-bold text-[#1B2A4A]">
+              <h2 className="heading-underline-center text-3xl md:text-4xl font-bold text-[#1B2A4A]">
                 {community.title}
               </h2>
             </div>
@@ -255,10 +314,10 @@ export default function CornerstoneCommunitiesPage() {
             </p>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {community.features.map((feature) => (
+              {community.features.map((feature, i) => (
                 <div
                   key={feature.name}
-                  className="bg-[#FAFAF5] border border-gray-200 p-6 rounded-xl hover:shadow-md transition-shadow"
+                  className={`${i % 2 === 0 ? "card-feature-cream" : "card-feature-white"} p-6 rounded-xl transition-shadow`}
                 >
                   <h3 className="text-lg font-bold text-[#1B2A4A] mb-2">
                     {feature.name}
@@ -271,12 +330,88 @@ export default function CornerstoneCommunitiesPage() {
             </div>
           </div>
         </section>
+        </Fragment>
       ))}
 
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
+      {/* Housing That Makes It Possible — micro house + micro apartment gallery */}
+      <section className="py-20 px-4 bg-gradient-to-b from-white to-[#f0ede4]">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-14">
+            <p className="text-[#C8A951] font-semibold tracking-widest uppercase text-sm mb-2">
+              The Housing Behind the Vision
+            </p>
+            <h2 className="text-3xl md:text-4xl font-bold text-[#1B2A4A]">
+              Housing That Makes It Possible
+            </h2>
+            <p className="text-gray-700 text-lg max-w-3xl mx-auto mt-4 leading-relaxed">
+              Cornerstone Communities are built from factory-finished, expandable
+              container homes and transitional micro-apartments, so donor dollars
+              go further and families reach stable housing faster.
+            </p>
+          </div>
+
+          {/* Container homes */}
+          <div className="mb-16">
+            <h3 className="text-2xl font-bold text-[#1B2A4A] mb-6">
+              Container Homes
+            </h3>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {microHouseGallery.map((image) => (
+                <figure
+                  key={image.src}
+                  className="card-feature-white flex flex-col overflow-hidden rounded-xl"
+                >
+                  <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#1B2A4A]">
+                    <img
+                      src={image.src}
+                      alt={image.caption}
+                      loading="lazy"
+                      className="h-full w-full object-cover"
+                    />
+                  </div>
+                  <figcaption className="flex-1 border-t-2 border-[#C8A951] p-4 text-sm leading-relaxed text-gray-700">
+                    {image.caption}
+                  </figcaption>
+                </figure>
+              ))}
+            </div>
+          </div>
+
+          {/* Transitional micro-apartments */}
+          <div>
+            <h3 className="text-2xl font-bold text-[#1B2A4A] mb-6">
+              Transitional Micro-Apartments
+            </h3>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {microApartmentGallery.map((image) => (
+                <figure
+                  key={image.src}
+                  className="card-feature-white flex flex-col overflow-hidden rounded-xl"
+                >
+                  <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#1B2A4A]">
+                    <img
+                      src={image.src}
+                      alt={image.caption}
+                      loading="lazy"
+                      className="h-full w-full object-cover"
+                    />
+                  </div>
+                  <figcaption className="flex-1 border-t-2 border-[#C8A951] p-4 text-sm leading-relaxed text-gray-700">
+                    {image.caption}
+                  </figcaption>
+                </figure>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
       {/* Who Can Donate Land */}
       <section className="py-20 px-4 bg-[#1B2A4A] text-white">
         <div className="max-w-5xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">
+          <h2 className="heading-underline-center text-3xl md:text-4xl font-bold text-center mb-4">
             Who Can <span className="text-[#C8A951]">Donate Land</span>?
           </h2>
           <p className="text-gray-300 text-center text-lg mb-12 max-w-3xl mx-auto">
@@ -288,7 +423,7 @@ export default function CornerstoneCommunitiesPage() {
             {landDonors.map((donor) => (
               <div
                 key={donor.title}
-                className="bg-white/10 backdrop-blur-sm p-6 rounded-xl text-center"
+                className="card-on-navy p-6 rounded-xl text-center"
               >
                 <h3 className="text-lg font-bold text-[#C8A951] mb-2">
                   {donor.title}
@@ -300,11 +435,12 @@ export default function CornerstoneCommunitiesPage() {
         </div>
       </section>
 
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
       {/* Land Inquiry Form */}
-      <section className="py-20 px-4 bg-white" id="land-inquiry">
+      <section className="py-20 px-4 bg-gradient-to-b from-white to-[#f0ede4]" id="land-inquiry">
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-10">
-            <h2 className="text-3xl font-bold text-[#1B2A4A] mb-4">
+            <h2 className="heading-underline-center text-3xl font-bold text-[#1B2A4A] mb-4">
               Inquire About a Land Donation
             </h2>
             <p className="text-gray-600 text-lg">
@@ -318,8 +454,9 @@ export default function CornerstoneCommunitiesPage() {
         </div>
       </section>
 
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
       {/* CTA Banner */}
-      <section className="py-16 px-4 bg-[#FAFAF5]">
+      <section className="py-16 px-4 bg-gradient-to-b from-[#FAFAF5] to-[#e8e4d8]">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-2xl font-bold text-[#1B2A4A] mb-4">
             Not a landowner? You can still help build communities.
@@ -327,7 +464,7 @@ export default function CornerstoneCommunitiesPage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href="/donate"
-              className="inline-block bg-[#C8A951] text-[#1B2A4A] font-bold px-8 py-4 rounded-lg hover:bg-[#b8993f] transition-colors text-lg"
+              className="inline-block bg-[#C8A951] text-[#1B2A4A] font-bold px-8 py-4 rounded-lg hover:bg-[#b8993f] transition-colors text-lg shadow-lg hover:shadow-xl ring-2 ring-[#C8A951]/30"
             >
               Donate to Housing Vouchers
             </Link>
@@ -350,7 +487,7 @@ function LandInquiryForm() {
   const labelClass = 'block text-sm font-semibold text-[#1B2A4A] mb-1';
 
   return (
-    <div className="bg-[#FAFAF5] rounded-2xl shadow-lg p-8">
+    <div className="bg-[#FAFAF5] rounded-2xl shadow-lg p-8 border-l-4 border-[#1B2A4A]">
       <form action="https://formspree.io/f/YOUR_FORMSPREE_LAND_ID" method="POST">
         <input type="hidden" name="_subject" value="New Land Donation Inquiry" />
 
@@ -479,7 +616,7 @@ function LandInquiryForm() {
           />
         </div>
 
-        <div className="bg-white p-4 rounded-lg mb-6 text-sm text-gray-600">
+        <div className="bg-white p-4 rounded-lg mb-6 text-sm text-gray-600 border-l-4 border-[#1B2A4A] shadow-sm">
           Submitting this form does not constitute a binding commitment to donate.
           Our team will contact you to discuss the opportunity, conduct a
           preliminary assessment, and answer any questions about the tax benefits
@@ -488,7 +625,7 @@ function LandInquiryForm() {
 
         <button
           type="submit"
-          className="w-full bg-[#C8A951] text-[#1B2A4A] font-bold text-lg py-4 rounded-lg hover:bg-[#b8993f] transition-colors"
+          className="w-full bg-[#C8A951] text-[#1B2A4A] font-bold text-lg py-4 rounded-lg hover:bg-[#b8993f] transition-colors shadow-lg hover:shadow-xl ring-2 ring-[#C8A951]/30"
         >
           Submit Land Inquiry
         </button>

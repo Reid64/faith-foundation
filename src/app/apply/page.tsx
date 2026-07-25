@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import Reveal from "@/components/Reveal";
+import BackgroundSwirls from "@/components/BackgroundSwirls";
 import { img } from "@/lib/images";
 import ApplicationForm from "./ApplicationForm";
 
 export const metadata: Metadata = {
   title: "Apply for Housing Assistance — FAITH Foundation",
   description:
-    "Apply for housing assistance from FAITH Foundation, a 501(c)(3) nonprofit in Burnet, Texas. Complete our confidential multi-step application for rent vouchers and eviction-prevention support.",
+    "Apply for housing assistance from FAITH Foundation, a 501(c)(3) nonprofit in Burnet, Texas — a confidential application for rent vouchers and eviction help.",
 };
 
 const STEPS_OVERVIEW = [
@@ -69,14 +70,17 @@ export default function ApplyPage() {
         </div>
       </section>
 
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
+
       {/* ===== WHAT TO EXPECT + STEPS ===== */}
-      <section className="bg-texture bg-cream">
+      <section className="relative overflow-hidden bg-gradient-to-b from-[#FAFAF5] to-[#e8e4d8]">
+        <BackgroundSwirls variant="top-left" />
         <div className="mx-auto max-w-5xl px-6 py-24 sm:px-8 sm:py-32">
           <Reveal>
             <h2 className="mb-3 text-sm font-bold uppercase tracking-widest text-green-dark">
               What to Expect
             </h2>
-            <h3 className="mb-6 text-3xl font-extrabold text-navy sm:text-4xl">
+            <h3 className="heading-underline mb-6 text-3xl font-extrabold text-navy sm:text-4xl">
               A simple, confidential process
             </h3>
           </Reveal>
@@ -116,7 +120,7 @@ export default function ApplyPage() {
             {STEPS_OVERVIEW.map((s, i) => (
               <li key={s.number} className="relative">
                 <Reveal delay={i * 100}>
-                  <div className="h-full rounded-3xl border border-navy/10 bg-white p-6 shadow-card transition-all duration-300 hover:-translate-y-1 hover:shadow-card-lg">
+                  <div className="card-surface h-full rounded-3xl p-6 transition-all duration-300">
                     <span
                       aria-hidden
                       className="relative z-10 flex h-12 w-12 items-center justify-center rounded-2xl bg-navy text-xl font-extrabold text-gold ring-4 ring-cream"
@@ -136,6 +140,8 @@ export default function ApplyPage() {
           </ol>
         </div>
       </section>
+
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
 
       {/* ===== APPLICATION FORM ===== */}
       <section className="relative overflow-hidden bg-navy text-white">

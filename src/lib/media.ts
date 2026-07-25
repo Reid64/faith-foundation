@@ -16,7 +16,7 @@ export const VIDEOS = {
   hero: "/videos/hero-720p.mp4",
   /** Highest-fidelity 60fps clip — the Programs overview statement. */
   programs: "/videos/programs-720p.mp4",
-  /** Partnership section background. */
+  /** Program/video section background. */
   partnership: "/videos/partnership-720p.mp4",
   /** Housing-voucher section background. */
   housing: "/videos/housing-720p.mp4",
@@ -39,9 +39,9 @@ export const PHOTOS = {
   /** Warm timber cabin in an open Texas field. */
   cabin: "/photos/home-cabin.jpg",
   /** Black home glowing at dusk with string lights + firepit. */
-  evening: "/photos/home-evening.png",
+  evening: "/photos/home-evening.jpg",
   /** Bright yellow family home under a clear blue sky. */
-  yellow: "/photos/home-yellow.png",
+  yellow: "/photos/home-yellow.jpg",
 } as const;
 
 export type PhotoKey = keyof typeof PHOTOS;

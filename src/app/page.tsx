@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import Reveal from "@/components/Reveal";
 import StatCounter from "@/components/StatCounter";
@@ -5,6 +6,13 @@ import HeroVideo from "@/components/HeroVideo";
 import ParallaxImage from "@/components/ParallaxImage";
 import { img } from "@/lib/images";
 import { HERO_VIDEOS, PHOTOS } from "@/lib/media";
+import { Cite } from "@/components/Citations";
+import BackgroundSwirls from "@/components/BackgroundSwirls";
+
+export const metadata: Metadata = {
+  description:
+    "FAITH Foundation is a 501(c)(3) nonprofit in Burnet, Texas helping families statewide reach homeownership through down payment assistance vouchers.",
+};
 
 const PILLARS = [
   {
@@ -26,29 +34,6 @@ const PILLARS = [
     image: PHOTOS.yellow,
     alt: "A bright, freshly built family home under a clear Texas sky",
     accent: "gold" as const,
-  },
-];
-
-const STEPS = [
-  {
-    n: "01",
-    title: "A family purchases a home",
-    body: "A buyer purchases a home through our partner, Bright Box Homes.",
-  },
-  {
-    n: "02",
-    title: "Bright Box donates $2,500",
-    body: "For every purchase, Bright Box Homes gives $2,500 to FAITH Foundation — at no extra cost to the buyer.",
-  },
-  {
-    n: "03",
-    title: "We fund down payment vouchers",
-    body: "FAITH Foundation converts that gift into down payment assistance vouchers for families pursuing homeownership.",
-  },
-  {
-    n: "04",
-    title: "One purchase lifts two families",
-    body: "Vouchers help another neighbor become an owner — a renewable cycle of community uplift.",
   },
 ];
 
@@ -76,7 +61,7 @@ export default function Home() {
               <div className="mt-9 flex flex-col gap-4 sm:flex-row">
                 <Link
                   href="/donate"
-                  className="rounded-full bg-green px-8 py-4 text-center text-base font-bold text-white shadow-green ring-1 ring-green-light/50 transition-all duration-300 hover:bg-green-dark hover:shadow-card-lg"
+                  className="rounded-full bg-green px-8 py-4 text-center text-base font-bold text-white shadow-green ring-1 ring-gold/60 transition-all duration-300 hover:bg-green-dark hover:ring-2 hover:ring-gold hover:shadow-card-lg"
                 >
                   Donate Now
                 </Link>
@@ -93,11 +78,12 @@ export default function Home() {
       </HeroVideo>
 
       {/* ===== OVERLAPPING STAT CARDS ===== */}
-      <section className="relative bg-cream">
+      <section className="relative overflow-hidden bg-gradient-to-b from-[#FAFAF5] to-[#e8e4d8]">
+        <BackgroundSwirls variant="top-left" />
         <div className="mx-auto -mt-16 max-w-7xl px-6 sm:px-8">
           <div className="grid gap-px overflow-hidden rounded-3xl bg-navy/10 shadow-card-lg sm:grid-cols-2 lg:grid-cols-4">
             {[
-              { value: 2500, prefix: "$", suffix: "", label: "Donated to FAITH Foundation per Bright Box home purchased" },
+              { value: 100, prefix: "", suffix: "%", label: "Of donations directed to our charitable housing mission" },
               { value: 100, prefix: "", suffix: "%", label: "Of vouchers directed to down payment assistance" },
               { value: 8, prefix: "", suffix: "", label: "Programs opening the door to homeownership" },
               { value: 1, prefix: "", suffix: "", label: "501(c)(3) nonprofit serving families across Texas" },
@@ -105,16 +91,16 @@ export default function Home() {
               <Reveal
                 key={stat.label}
                 delay={i * 90}
-                className="bg-white px-7 py-9 text-center"
+                className="card-stat px-7 py-9 text-center"
               >
-                <p className="text-4xl font-extrabold text-green-dark">
+                <p className="card-stat-figure text-4xl font-extrabold">
                   <StatCounter
                     value={stat.value}
                     prefix={stat.prefix}
                     suffix={stat.suffix}
                   />
                 </p>
-                <p className="mt-3 text-sm leading-snug text-charcoal/70">
+                <p className="mt-3 text-sm leading-snug text-white/80">
                   {stat.label}
                 </p>
               </Reveal>
@@ -123,24 +109,10 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ===== $2,500 BANNER ===== */}
-      <section className="bg-cream pt-16">
-        <div className="mx-auto max-w-7xl px-6 sm:px-8">
-          <Reveal className="overflow-hidden rounded-3xl bg-green-gradient px-8 py-10 text-center shadow-green sm:px-12 sm:py-12">
-            <p className="text-balance text-2xl font-extrabold leading-tight text-white sm:text-3xl">
-              $2,500 donated to the FAITH Foundation for every Bright Box home
-              purchased
-            </p>
-            <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-white/85 sm:text-base">
-              Every Bright Box home that closes funds down payment vouchers for
-              the next family — at no extra cost to the buyer.
-            </p>
-          </Reveal>
-        </div>
-      </section>
-
       {/* ===== MISSION (asymmetric image + text) ===== */}
-      <section className="bg-texture bg-cream py-24 sm:py-32">
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
+      <section className="relative overflow-hidden bg-gradient-to-b from-[#FAFAF5] to-[#e8e4d8] py-24 sm:py-32">
+        <BackgroundSwirls variant="bottom-right" />
         <div className="mx-auto grid max-w-7xl items-center gap-14 px-6 sm:px-8 lg:grid-cols-12">
           <Reveal className="relative lg:col-span-5">
             <ParallaxImage
@@ -163,7 +135,7 @@ export default function Home() {
               </p>
             </Reveal>
             <Reveal delay={100}>
-              <h2 className="mt-5 text-balance text-3xl font-extrabold leading-tight text-navy sm:text-4xl">
+              <h2 className="heading-underline mt-5 text-balance text-3xl font-extrabold leading-tight text-navy sm:text-4xl">
                 Removing the barriers between families and a home of their own
               </h2>
             </Reveal>
@@ -181,6 +153,13 @@ export default function Home() {
                 Every dollar we raise is stewarded with care and directed toward
                 measurable, local impact — putting families into homes they own
                 and equipping them to keep them for generations.
+              </p>
+            </Reveal>
+            <Reveal delay={300}>
+              <p className="mt-4 border-l-4 border-green/40 pl-5 text-base leading-relaxed text-charcoal/70">
+                Our housing vouchers are funded in part by corporate donors
+                including Bright Box Homes, which contributes a portion of
+                revenue from each home sold.
               </p>
             </Reveal>
             <Reveal delay={340}>
@@ -204,13 +183,15 @@ export default function Home() {
       </section>
 
       {/* ===== TWO PILLARS (alternating image-text) ===== */}
-      <section className="bg-texture-white bg-white py-24 sm:py-28">
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
+      <section className="relative overflow-hidden bg-gradient-to-b from-white to-[#f0ede4] py-24 sm:py-28">
+        <BackgroundSwirls variant="diagonal" />
         <div className="mx-auto max-w-3xl px-6 text-center sm:px-8">
           <Reveal>
             <p className="text-sm font-bold uppercase tracking-[0.2em] text-green-dark">
               How We Help
             </p>
-            <h2 className="mt-4 text-3xl font-extrabold text-navy sm:text-4xl">
+            <h2 className="heading-underline-center mt-4 text-3xl font-extrabold text-navy sm:text-4xl">
               Two pillars, one foundation
             </h2>
             <p className="mt-4 text-lg leading-relaxed text-charcoal/75">
@@ -241,7 +222,7 @@ export default function Home() {
               <Reveal delay={120} className={i % 2 === 1 ? "lg:order-1" : ""}>
                 <p
                   className={`text-sm font-bold uppercase tracking-[0.2em] ${
-                    pillar.accent === "green" ? "text-green-dark" : "text-gold-dark"
+                    pillar.accent === "green" ? "text-green-dark" : "text-[#4A7C59]"
                   }`}
                 >
                   {pillar.eyebrow}
@@ -251,6 +232,12 @@ export default function Home() {
                 </h3>
                 <p className="mt-5 text-lg leading-relaxed text-charcoal/80">
                   {pillar.body}
+                  {i === 0 && (
+                    <Cite
+                      label="NAR"
+                      href="https://www.nar.realtor/blogs/economists-outlook/top-10-takeaways-from-nars-2025-profile-of-home-buyers-and-sellers"
+                    />
+                  )}
                 </p>
                 <Link
                   href={pillar.href}
@@ -269,68 +256,12 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ===== BRIGHT BOX TIMELINE ===== */}
-      <section className="relative overflow-hidden bg-navy py-24 text-white sm:py-32">
-        <div className="pointer-events-none absolute inset-0 bg-dotted opacity-30" aria-hidden />
-        <div className="relative mx-auto max-w-7xl px-6 sm:px-8">
-          <div className="grid gap-12 lg:grid-cols-12 lg:items-end">
-            <Reveal className="lg:col-span-6">
-              <p className="text-sm font-bold uppercase tracking-[0.2em] text-green-light">
-                Partnership Spotlight
-              </p>
-              <h2 className="mt-4 text-3xl font-extrabold leading-tight sm:text-4xl">
-                The Bright Box Homes partnership
-              </h2>
-            </Reveal>
-            <Reveal delay={120} className="lg:col-span-6">
-              <p className="text-lg leading-relaxed text-white/80">
-                Every home purchased through Bright Box Homes generates a{" "}
-                <strong className="text-green-light">$2,500 donation</strong> to
-                FAITH Foundation — funding down payment vouchers that help another
-                family become an owner. When one family puts down roots, another
-                gets the support to buy.
-              </p>
-            </Reveal>
-          </div>
-
-          <ol className="mt-16 grid gap-8 md:grid-cols-2 lg:grid-cols-4">
-            {STEPS.map((step, i) => (
-              <Reveal
-                key={step.n}
-                delay={i * 110}
-                as="li"
-                className="relative rounded-2xl border border-white/10 bg-white/5 p-7 backdrop-blur transition-colors hover:border-green/40"
-              >
-                <span className="text-4xl font-extrabold text-green-light/50">
-                  {step.n}
-                </span>
-                <h3 className="mt-3 text-lg font-bold text-white">
-                  {step.title}
-                </h3>
-                <p className="mt-2 text-sm leading-relaxed text-white/70">
-                  {step.body}
-                </p>
-              </Reveal>
-            ))}
-          </ol>
-
-          <Reveal delay={200}>
-            <div className="mt-12">
-              <Link
-                href="/partnership"
-                className="inline-flex rounded-full bg-green px-8 py-4 text-base font-bold text-white shadow-card transition-all hover:bg-green-dark hover:shadow-card-lg"
-              >
-                Explore the Partnership
-              </Link>
-            </div>
-          </Reveal>
-        </div>
-      </section>
-
       {/* ===== TESTIMONIAL ===== */}
-      <section className="bg-texture bg-cream py-24 sm:py-28">
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
+      <section className="relative overflow-hidden bg-gradient-to-b from-[#FAFAF5] to-[#e8e4d8] py-24 sm:py-28">
+        <BackgroundSwirls variant="top-left" />
         <div className="mx-auto max-w-5xl px-6 sm:px-8">
-          <Reveal className="relative overflow-hidden rounded-[2.5rem] bg-white p-10 shadow-card-lg sm:p-16">
+          <Reveal className="card-surface relative overflow-hidden rounded-[2.5rem] p-10 sm:p-16">
             <span
               aria-hidden
               className="absolute -left-2 -top-10 select-none font-serif text-[12rem] leading-none text-green/15"
@@ -361,6 +292,7 @@ export default function Home() {
       </section>
 
       {/* ===== CLOSING CTA ===== */}
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
       <section className="relative overflow-hidden bg-navy-dark py-28 text-white">
         <img
           src={img("communityGathering", 1800)}
@@ -382,7 +314,7 @@ export default function Home() {
             <div className="mt-9 flex flex-col justify-center gap-4 sm:flex-row">
               <Link
                 href="/donate"
-                className="rounded-full bg-green px-8 py-4 text-base font-bold text-white shadow-green ring-1 ring-green-light/50 transition-all hover:bg-green-dark hover:shadow-card-lg"
+                className="rounded-full bg-green px-8 py-4 text-base font-bold text-white shadow-green ring-1 ring-gold/60 transition-all hover:bg-green-dark hover:ring-2 hover:ring-gold hover:shadow-card-lg"
               >
                 Donate Now
               </Link>

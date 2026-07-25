@@ -99,3 +99,85 @@ Remaining for full Ad Grants/SEO sign-off: run the build gate sequence (`postbui
 `pnpm dlx next-sitemap` regenerates the sitemap/robots into `out/` on deploy); validate the
 Organization + FAQ JSON-LD with Google's Rich Results test; add a Playwright suite (Law 6);
 confirm HTTPS + the live domain at deploy. No gate result was fabricated (Iron Law 3).
+
+## 2026-07-24 — Sitewide background swirls
+- **Change:** BackgroundSwirls component added (`src/components/BackgroundSwirls.tsx`) — a
+  sitewide SVG green swirl background (four subtle logo-green arc/swirl paths, inline
+  stroke/opacity attributes, `pointer-events-none fixed inset-0 -z-10`), mounted as the first
+  child of `<body>` in `src/app/layout.tsx`.
+- **Gates:** `pnpm run build` ✅ PASS (0 TypeScript errors, 0 build errors, 31/31 pages).
+- **Deploy:** `vercel --prod` ✅ READY, aliased to https://www.faithfoundationsf.org.
+- **Result:** Sitewide SVG green swirl background implemented and deployed to production.
+
+## 2026-07-24 — BackgroundSwirls layering fix (applied; visibility still blocked by opaque sections)
+- **Edits:** `layout.tsx` (removed `bg-cream` from `<body>`; wrapped header/main/footer in
+  `relative z-0 flex min-h-screen flex-col`; swirls stay first child), `BackgroundSwirls.tsx`
+  (`-z-10` → `style={{ zIndex: 0 }}`; path opacities +50% → 0.09 / 0.075 / 0.07 / 0.08),
+  `globals.css` (`body { background: transparent }`; cream base moved to `html` to avoid a
+  white canvas).
+- **Gates:** `pnpm run build` ✅ PASS (0 TS errors, 31/31 pages). Deploy ✅ READY / aliased.
+- **HONEST outcome:** NOT visible sitewide. The real blocker is opaque page sections — 128 of
+  132 `<section>` tags set an opaque background, so a fixed layer behind them cannot show
+  through. Swirls will only surface on the 1 transparent section (cornerstone Problem/Solution).
+  To make them visible sitewide, the light section backgrounds must be made semi-transparent
+  (broad change; not done without approval). No false "visible sitewide" claim recorded (Iron Law 3).
+
+## 2026-07-24 — BackgroundSwirls re-architected (fixed → absolute-in-section)
+- **Fixed-position approach permanently abandoned.** Opaque html/body fills AND opaque section
+  backgrounds (128/132 sections) make any fixed layer invisible.
+- **New architecture:** `BackgroundSwirls` = a single `position:absolute; inset:0; z-index:0;
+  pointer-events:none` `<svg>` (no fixed positioning, no wrapper div) rendered INSIDE specific
+  relative light-background sections, so it sits on top of that section's own cream fill and is
+  visible. Props: `variant` / `color` (#255527) / `opacity`; one broad cubic-bezier arc per
+  variant at strokeWidth 200.
+- **Layout & globals reverted** to the original (body `bg-cream` restored; temporary `html`
+  background rule removed; fixed swirl + wrapper removed from layout).
+- **Applied to:** homepage (Mission `top-left` 0.07, Two-Pillars `bottom-right` 0.06) and About
+  (Mission & Vision `diagonal` 0.06); host sections given `relative overflow-hidden`.
+- **Gates:** `pnpm run build` ✅ PASS (0 TS errors, 31/31 pages). Deploy ✅ READY / aliased.
+  Verified absolute green swirl SVGs live inside the light sections on / and /about.
+
+## 2026-07-24 — BackgroundSwirls rebuilt (3-path bands) + applied sitewide
+- **Component:** rewritten so each variant renders 3 overlapping offset arcs (soft broad band,
+  no CSS blur), 1440x900 viewBox, `stroke="#255527"`, `strokeWidth={300}`, `strokeLinecap="round"`,
+  SVG `opacity 0.22`. Props/SVG-style unchanged (absolute inset-0, overflow visible,
+  pointer-events none, z-index 0).
+- **Applied sitewide** to every light-background section across 11 page files (home + about,
+  programs, financial-transparency, team, contact, donate, apply, impact, governance, faq):
+  section given `relative overflow-hidden`, `<BackgroundSwirls variant="…" />` as first child,
+  variants cycled [top-left, bottom-right, diagonal] per file. Navy/dark + photo/video hero
+  sections skipped; form components untouched. 27 swirls total; single import per file; no
+  per-usage opacity props (default 0.22).
+- **Gates:** `pnpm run build` ✅ PASS (0 TS errors, 31/31 pages). Deploy ✅ READY / aliased.
+  Verified live: green swirl bands (strokeWidth 300, opacity 0.22) on all 11 pages.
+
+## 2026-07-24 — About dropdown nav + housing-voucher copy + IRS link verify
+- **About dropdown** added to SiteHeader (desktop hover panel + mobile grouped label): sub-links
+  About Us, Team, Financial Transparency, Governance. **Team retained as a top-level nav item**
+  (appears twice on desktop, per brief). Mobile menu max-height raised to `max-h-[36rem]` to fit
+  the longer list. Scroll/hamburger/logo/Donate unchanged.
+- **Housing-voucher page language corrected**: rental assistance → housing/down payment
+  assistance throughout (0 "rental" left); stat band label + paragraph, STEPS 3 & 4, metadata,
+  and hero subtitle rewritten toward the homeownership mission.
+- **IRS determination letter link verified**: `Test-Path` = True (PDF present, 121,126 bytes) →
+  link left as-is; serves 200 application/pdf.
+- **Gates:** `pnpm run build` ✅ PASS (0 TS errors, 31/31 pages). Deploy ✅ READY / aliased.
+
+## 2026-07-24 — Governance board language accuracy
+- **Removed inaccurate "volunteer board" language** from `governance/page.tsx` (board receives a
+  modest part-time stipend, so "volunteer" was inaccurate). 4 targeted changes: metadata
+  description, hero paragraph, board h3, and board paragraph — reframed as a lean, mission-driven
+  board that keeps administrative costs minimal so donor dollars reach families, not overhead.
+- Unrelated policy references to organization volunteers (whistleblower / document-retention)
+  left untouched. No board "volunteer" wording remains.
+- **Gates:** `pnpm run build` ✅ PASS (0 TS errors, 31/31 pages). Deploy ✅ READY / aliased.
+  Verified live: new wording present, 0 "volunteer board" on the governance page.
+
+## 2026-07-24 — Reid Whitesides bio rewrite (team page)
+- **Reid Whitesides bio** in `team/page.tsx` rewritten: shortened to 3 paragraphs (matching Scott
+  Ellis length), redundant mission restatement removed, wife **Mary Ann** added / family reference
+  updated (recently married, growing their family in Texas), and his technology/software background
+  reframed as a core operational competency (building the Foundation's systems/platforms/automation),
+  not a spare-time hobby. Only Reid's `bio` array changed — nothing else in the file.
+- **Gates:** `pnpm run build` ✅ PASS (0 TS errors, 31/31 pages). Deploy ✅ READY / aliased.
+  Verified live: "Mary Ann" + new opening present, old mission-restatement line gone.

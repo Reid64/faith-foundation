@@ -4,7 +4,7 @@ import VolunteerForm from "./VolunteerForm";
 export const metadata: Metadata = {
   title: "Volunteer — FAITH Foundation",
   description:
-    "Volunteer with FAITH Foundation in Burnet, Texas. Tutor financial literacy, coach tenancy skills, support events, or serve as a community ambassador. Sign up to give your time and talents.",
+    "Volunteer with FAITH Foundation in Burnet, Texas — tutor financial literacy, coach tenancy skills, support events, or serve as a community ambassador.",
 };
 
 const OPPORTUNITIES = [
@@ -61,13 +61,15 @@ export default function VolunteerPage() {
         </div>
       </section>
 
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
+
       {/* Why volunteer */}
-      <section className="bg-white">
+      <section className="bg-gradient-to-b from-white to-[#f0ede4]">
         <div className="mx-auto max-w-4xl px-6 py-20">
-          <h2 className="mb-3 text-sm font-bold uppercase tracking-widest text-gold-dark">
+          <h2 className="mb-3 text-sm font-bold uppercase tracking-[0.2em] text-[#4A7C59]">
             Why Volunteer
           </h2>
-          <h3 className="mb-6 text-3xl font-extrabold text-navy">
+          <h3 className="heading-underline mb-6 text-3xl font-extrabold text-navy">
             Your time changes trajectories
           </h3>
           <div className="space-y-5 text-lg leading-relaxed text-foreground/80">
@@ -100,14 +102,16 @@ export default function VolunteerPage() {
         </div>
       </section>
 
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
+
       {/* Opportunities */}
       <section className="bg-gold/10">
         <div className="mx-auto max-w-6xl px-6 py-20">
           <div className="mx-auto max-w-3xl text-center">
-            <h2 className="mb-3 text-sm font-bold uppercase tracking-widest text-gold-dark">
+            <h2 className="mb-3 text-sm font-bold uppercase tracking-[0.2em] text-[#4A7C59]">
               Volunteer Opportunities
             </h2>
-            <h3 className="mb-4 text-3xl font-extrabold text-navy">
+            <h3 className="heading-underline-center mb-4 text-3xl font-extrabold text-navy">
               Find the role that fits you
             </h3>
             <p className="text-lg leading-relaxed text-foreground/80">
@@ -120,10 +124,10 @@ export default function VolunteerPage() {
             {OPPORTUNITIES.map((opp) => (
               <li
                 key={opp.title}
-                className="flex flex-col rounded-lg border-t-4 border-gold bg-white p-6 shadow-sm"
+                className="card-surface flex flex-col rounded-lg p-6"
               >
                 <h4 className="text-lg font-bold text-navy">{opp.title}</h4>
-                <p className="mt-1 text-xs font-semibold uppercase tracking-widest text-gold-dark">
+                <p className="mt-1 text-xs font-bold uppercase tracking-[0.2em] text-[#4A7C59]">
                   {opp.commitment}
                 </p>
                 <p className="mt-3 flex-1 text-sm leading-relaxed text-foreground/80">
@@ -135,14 +139,16 @@ export default function VolunteerPage() {
         </div>
       </section>
 
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
+
       {/* Signup */}
-      <section className="bg-white">
+      <section className="bg-gradient-to-b from-white to-[#f0ede4]">
         <div className="mx-auto max-w-3xl px-6 py-20">
           <div className="mb-8 text-center">
-            <h2 className="mb-3 text-sm font-bold uppercase tracking-widest text-gold-dark">
+            <h2 className="mb-3 text-sm font-bold uppercase tracking-[0.2em] text-[#4A7C59]">
               Sign Up to Volunteer
             </h2>
-            <h3 className="mb-4 text-3xl font-extrabold text-navy">
+            <h3 className="heading-underline-center mb-4 text-3xl font-extrabold text-navy">
               Ready to get started?
             </h3>
             <p className="text-lg leading-relaxed text-foreground/80">

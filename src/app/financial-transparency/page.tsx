@@ -3,11 +3,12 @@ import Link from "next/link";
 import Reveal from "@/components/Reveal";
 import StatCounter from "@/components/StatCounter";
 import { img } from "@/lib/images";
+import BackgroundSwirls from "@/components/BackgroundSwirls";
 
 export const metadata: Metadata = {
   title: "Financial Transparency — FAITH Foundation",
   description:
-    "FAITH Foundation's commitment to financial transparency and stewardship — how we steward every donation, our 501(c)(3) status, our reporting practices, and the standards that guide our use of your gifts.",
+    "See how FAITH Foundation stewards every donation — our 501(c)(3) status, reporting practices, and the standards guiding our use of your gifts in Texas.",
 };
 
 const COMMITMENTS = [
@@ -24,8 +25,8 @@ const COMMITMENTS = [
     body: "FAITH Foundation is a registered 501(c)(3) tax-exempt nonprofit organization. Contributions are tax-deductible to the fullest extent allowed by law, and we provide receipts for your records so you can give with confidence.",
   },
   {
-    title: "The Bright Box model is transparent by design",
-    body: "Our partnership with Bright Box Homes generates a $2,500 donation for every home purchased, which we convert directly into down payment assistance vouchers. Because the funding source is visible and renewable, donors can trace how the model sustains our work over time.",
+    title: "Our funding sources are disclosed",
+    body: "Our housing programs are funded by individual and corporate donors, grants, and community fundraising. Among our corporate donors is Bright Box Homes, a separate, independently operated company that donates a portion of revenue from each home it sells to FAITH Foundation. Because our funding sources are disclosed, donors can trace how gifts sustain our work over time.",
   },
   {
     title: "Donor privacy is protected",
@@ -37,11 +38,12 @@ const COMMITMENTS = [
   },
 ];
 
-const DOCUMENTS = [
+const DOCUMENTS: { label: string; detail: string; link?: string }[] = [
   {
-    label: "501(c)(3) determination",
+    label: "IRS determination letter",
     detail:
-      "FAITH Foundation is recognized by the IRS as a 501(c)(3) tax-exempt charitable organization. Our determination documentation is available on request.",
+      "Our IRS 501(c)(3) determination letter is available below, confirming FAITH Foundation's tax-exempt status.",
+    link: "/documents/irs-determination-letter.pdf",
   },
   {
     label: "Annual reporting",
@@ -109,14 +111,17 @@ export default function FinancialTransparencyPage() {
         </div>
       </section>
 
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
+
       {/* ===== STAT CARDS — at a glance ===== */}
-      <section className="relative -mt-px bg-cream bg-texture">
+      <section className="relative -mt-px overflow-hidden bg-gradient-to-b from-[#FAFAF5] to-[#e8e4d8]">
+        <BackgroundSwirls variant="top-left" />
         <div className="mx-auto max-w-7xl px-6 py-24 sm:px-8 sm:py-32">
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {[
               {
-                node: <StatCounter value={2500} prefix="$" />,
-                label: "Donated to FAITH for every Bright Box home purchased",
+                node: <StatCounter value={100} suffix="%" />,
+                label: "Of every designated housing gift directly supports the program you choose",
               },
               {
                 node: <>501(c)(3)</>,
@@ -136,11 +141,11 @@ export default function FinancialTransparencyPage() {
               },
             ].map((stat, i) => (
               <Reveal key={stat.label} delay={i * 100}>
-                <div className="h-full rounded-3xl border-t-4 border-gold bg-white p-8 text-center shadow-card">
-                  <div className="text-4xl font-extrabold text-navy sm:text-5xl">
+                <div className="card-stat h-full rounded-3xl p-8 text-center">
+                  <div className="card-stat-figure text-4xl font-extrabold sm:text-5xl">
                     {stat.node}
                   </div>
-                  <p className="mt-4 text-sm font-medium leading-relaxed text-charcoal/70">
+                  <p className="mt-4 text-sm font-medium leading-relaxed text-white/80">
                     {stat.label}
                   </p>
                 </div>
@@ -150,8 +155,11 @@ export default function FinancialTransparencyPage() {
         </div>
       </section>
 
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
+
       {/* ===== WHY TRANSPARENCY MATTERS ===== */}
-      <section className="bg-white">
+      <section className="relative overflow-hidden bg-gradient-to-b from-white to-[#f0ede4]">
+        <BackgroundSwirls variant="bottom-right" />
         <div className="mx-auto max-w-4xl px-6 py-24 sm:px-8 sm:py-32">
           <Reveal>
             <h2 className="mb-3 text-sm font-bold uppercase tracking-widest text-green-dark">
@@ -159,7 +167,7 @@ export default function FinancialTransparencyPage() {
             </h2>
           </Reveal>
           <Reveal delay={100}>
-            <h3 className="mb-6 text-3xl font-extrabold text-navy sm:text-4xl">
+            <h3 className="heading-underline mb-6 text-3xl font-extrabold text-navy sm:text-4xl">
               Why transparency is non-negotiable for us
             </h3>
           </Reveal>
@@ -195,12 +203,14 @@ export default function FinancialTransparencyPage() {
         </div>
       </section>
 
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
+
       {/* ===== WHERE FUNDS GO — allocation bars (qualitative) ===== */}
       <section className="bg-navy text-white">
         <div className="mx-auto max-w-5xl px-6 py-24 sm:px-8 sm:py-32">
           <div className="mx-auto max-w-3xl text-center">
             <Reveal>
-              <h2 className="mb-3 text-sm font-bold uppercase tracking-widest text-gold">
+              <h2 className="mb-3 text-sm font-bold uppercase tracking-[0.2em] text-[#4A7C59]">
                 Where Your Gift Goes
               </h2>
             </Reveal>
@@ -239,8 +249,11 @@ export default function FinancialTransparencyPage() {
         </div>
       </section>
 
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
+
       {/* ===== COMMITMENTS ===== */}
-      <section className="bg-cream">
+      <section className="relative overflow-hidden bg-gradient-to-b from-[#FAFAF5] to-[#e8e4d8]">
+        <BackgroundSwirls variant="diagonal" />
         <div className="mx-auto max-w-7xl px-6 py-24 sm:px-8 sm:py-32">
           <div className="mx-auto max-w-3xl text-center">
             <Reveal>
@@ -249,7 +262,7 @@ export default function FinancialTransparencyPage() {
               </h2>
             </Reveal>
             <Reveal delay={100}>
-              <h3 className="mb-4 text-3xl font-extrabold text-navy sm:text-4xl">
+              <h3 className="heading-underline-center mb-4 text-3xl font-extrabold text-navy sm:text-4xl">
                 The standards we hold ourselves to
               </h3>
             </Reveal>
@@ -263,7 +276,7 @@ export default function FinancialTransparencyPage() {
           <ul className="mt-14 grid gap-6 sm:grid-cols-2">
             {COMMITMENTS.map((commitment, i) => (
               <Reveal as="li" key={commitment.title} delay={(i % 2) * 100}>
-                <div className="h-full rounded-3xl border-t-4 border-green bg-white p-8 shadow-card">
+                <div className="card-surface h-full rounded-3xl p-8">
                   <h4 className="text-xl font-bold text-navy">
                     {commitment.title}
                   </h4>
@@ -277,16 +290,19 @@ export default function FinancialTransparencyPage() {
         </div>
       </section>
 
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
+
       {/* ===== DOCUMENTS ===== */}
-      <section className="bg-white">
+      <section className="relative overflow-hidden bg-gradient-to-b from-white to-[#f0ede4]">
+        <BackgroundSwirls variant="top-left" />
         <div className="mx-auto max-w-4xl px-6 py-24 sm:px-8 sm:py-32">
           <Reveal>
-            <h2 className="mb-3 text-sm font-bold uppercase tracking-widest text-gold-dark">
+            <h2 className="mb-3 text-sm font-bold uppercase tracking-[0.2em] text-[#4A7C59]">
               Records &amp; Reporting
             </h2>
           </Reveal>
           <Reveal delay={100}>
-            <h3 className="mb-6 text-3xl font-extrabold text-navy sm:text-4xl">
+            <h3 className="heading-underline mb-6 text-3xl font-extrabold text-navy sm:text-4xl">
               Available for your review
             </h3>
           </Reveal>
@@ -307,7 +323,7 @@ export default function FinancialTransparencyPage() {
           <div className="space-y-5">
             {DOCUMENTS.map((doc, i) => (
               <Reveal key={doc.label} delay={i * 100}>
-                <div className="flex gap-5 rounded-3xl border border-navy/5 bg-cream/60 p-7 shadow-card">
+                <div className="card-surface flex gap-5 rounded-3xl p-7">
                   <span
                     aria-hidden
                     className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-navy text-gold"
@@ -331,6 +347,16 @@ export default function FinancialTransparencyPage() {
                     <p className="mt-2 text-lg leading-relaxed text-charcoal/80">
                       {doc.detail}
                     </p>
+                    {doc.link && (
+                      <a
+                        href={doc.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-4 inline-flex items-center gap-2 bg-[#1B2A4A] text-white font-semibold px-6 py-3 rounded-lg hover:bg-[#243558] transition-colors"
+                      >
+                        View IRS Determination Letter (PDF)
+                      </a>
+                    )}
                   </div>
                 </div>
               </Reveal>
@@ -338,6 +364,8 @@ export default function FinancialTransparencyPage() {
           </div>
         </div>
       </section>
+
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
 
       {/* ===== CTA ===== */}
       <section className="bg-navy-dark text-white">
@@ -357,7 +385,7 @@ export default function FinancialTransparencyPage() {
             <div className="flex flex-col justify-center gap-4 sm:flex-row">
               <Link
                 href="/donate"
-                className="rounded-full bg-gold px-8 py-3.5 text-base font-bold text-navy shadow-card transition-colors hover:bg-gold-light"
+                className="rounded-full bg-gold px-8 py-3.5 text-base font-bold text-navy shadow-card transition-colors hover:bg-gold-light shadow-lg hover:shadow-xl ring-2 ring-[#C8A951]/30"
               >
                 Donate Now
               </Link>
@@ -369,6 +397,23 @@ export default function FinancialTransparencyPage() {
               </Link>
             </div>
           </Reveal>
+        </div>
+      </section>
+
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
+
+      {/* ===== DESIGNATED-GIFT DISCLOSURE ===== */}
+      <section className="relative overflow-hidden bg-gradient-to-b from-white to-[#f0ede4] py-12 sm:py-16">
+        <BackgroundSwirls variant="bottom-right" />
+        <div className="mx-auto max-w-4xl px-6 sm:px-8">
+          <div className="rounded-2xl border-l-[5px] border-gold bg-cream px-7 py-6 shadow-card">
+            <p className="text-sm leading-relaxed text-navy">
+              Donations designated for our Housing Mission are used exclusively
+              to advance that mission. Executive leadership and administrative
+              operations are funded through separately designated operational
+              support.
+            </p>
+          </div>
         </div>
       </section>
     </>

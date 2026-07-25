@@ -10,7 +10,7 @@ const STEPS = [
 ];
 
 const inputClass =
-  "w-full rounded-xl border border-navy/15 bg-white px-4 py-3 text-charcoal placeholder:text-charcoal/40 focus:border-green focus:outline-none focus:ring-2 focus:ring-green/40";
+  "w-full rounded-xl border border-gray-400 bg-white px-4 py-3 font-medium text-[#1B2A4A] placeholder:text-gray-500 focus:border-green focus:outline-none focus:ring-2 focus:ring-green/40";
 const labelClass = "mb-2 block text-sm font-semibold text-navy";
 
 export default function ApplicationForm() {
@@ -32,7 +32,7 @@ export default function ApplicationForm() {
 
   if (submitted) {
     return (
-      <div className="rounded-3xl bg-white p-8 shadow-card-lg sm:p-10">
+      <div className="card-surface rounded-3xl p-8 sm:p-10">
         <span
           aria-hidden
           className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-gold text-navy"
@@ -67,7 +67,7 @@ export default function ApplicationForm() {
   }
 
   return (
-    <div className="rounded-3xl bg-white p-8 shadow-card-lg sm:p-10">
+    <div className="card-surface rounded-3xl p-8 sm:p-10">
       {/* Step indicator */}
       <ol className="mb-8 flex flex-wrap gap-x-2 gap-y-3">
         {STEPS.map((s) => (

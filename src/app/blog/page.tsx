@@ -6,23 +6,23 @@ import { img } from "@/lib/images";
 export const metadata: Metadata = {
   title: "Blog — FAITH Foundation",
   description:
-    "Stories, updates, and insights from FAITH Foundation — news on the Bright Box Homes partnership, down payment assistance, and the families reaching homeownership across Texas.",
+    "Stories and updates from FAITH Foundation on how community donations fund down payment assistance and help Texas families reach homeownership.",
 };
 
 const POSTS = [
   {
-    slug: "bright-box-homes-partnership-milestone",
-    title: "How One Home Purchase Helps Another Family Become Owners",
-    category: "Partnership",
+    slug: "how-housing-vouchers-work",
+    title: "How Down Payment Assistance Vouchers Open the Door to Ownership",
+    category: "Programs",
     date: "June 2, 2026",
     author: "FAITH Foundation Team",
     readTime: "4 min read",
     excerpt:
-      "Our partnership with Bright Box Homes turns every home purchase into a $2,500 gift that funds down payment assistance vouchers. Here is how that renewable cycle of generosity is helping families reach homeownership across Texas.",
+      "A down payment is the single biggest barrier standing between a hardworking family and a home of their own. Here is how our assistance vouchers, made possible by the generosity of donors and community partners, help families cross that threshold across Texas.",
     body: [
-      "When a family closes on a home through Bright Box Homes, something remarkable happens: a $2,500 donation flows to FAITH Foundation at no extra cost to the buyer. We convert that gift directly into down payment assistance vouchers for neighbors working toward a home of their own. One purchase, another family lifted onto the path to ownership.",
-      "Over the past several months we have watched this model prove itself again and again. A young couple buying their first home had no idea that their signature would, weeks later, help a single mother in Texas cover the down payment that finally made homeownership possible. That is the quiet power of a renewable funding source — it grows as our community grows.",
-      "We believe transparency is part of stewardship, so we report where every voucher dollar lands. As Bright Box Homes expands, the pool of down payment assistance expands with it, creating a steady, sustainable engine for homeownership that does not depend on any single grant or season of giving.",
+      "Many families can comfortably afford a monthly mortgage yet can never save the lump sum needed to close. A down payment assistance voucher closes that gap directly, turning a qualified renter into a homeowner. Every voucher is funded by corporate and individual donations and paired with homebuyer instruction so families buy with confidence.",
+      "As a brand-new organization, we are building this model with care. Our aim is for community generosity to help a family in Texas cover the down payment that makes homeownership possible. That is the quiet power of pooled giving — it grows as our community grows.",
+      "We believe transparency is part of stewardship, so we report where every voucher dollar lands. As our base of donors and partners grows, the pool of down payment assistance expands with it, creating a steady, sustainable engine for homeownership that does not depend on any single grant or season of giving.",
     ],
   },
   {
@@ -89,7 +89,7 @@ export default function BlogPage() {
           </Reveal>
           <Reveal delay={240}>
             <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-white/85">
-              Updates from our programs, news on the Bright Box Homes partnership,
+              Updates from our programs, how community donations fund our work,
               and the stories of families reaching homeownership through down payment
               assistance across Texas. We share where the work is going and who it
               is reaching, because transparency is part of how we steward your
@@ -99,8 +99,9 @@ export default function BlogPage() {
         </div>
       </section>
 
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
       {/* ===== FEATURED POST — large wide card, image on top ===== */}
-      <section className="bg-cream bg-texture py-24 sm:py-32">
+      <section className="bg-gradient-to-b from-[#FAFAF5] to-[#e8e4d8] py-24 sm:py-32">
         <div className="mx-auto max-w-7xl px-6 sm:px-8">
           <Reveal>
             <span className="text-sm font-bold uppercase tracking-[0.2em] text-green-dark">
@@ -108,7 +109,7 @@ export default function BlogPage() {
             </span>
           </Reveal>
           <Reveal delay={100}>
-            <article className="group mt-6 overflow-hidden rounded-[2rem] bg-white shadow-card-lg ring-1 ring-navy/5">
+            <article className="card-surface group mt-6 overflow-hidden rounded-[2rem]">
               <div className="relative aspect-[21/9] w-full overflow-hidden">
                 <img
                   src={img(POST_IMAGES[0], 1700, 740)}
@@ -146,18 +147,19 @@ export default function BlogPage() {
         </div>
       </section>
 
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
       {/* ===== MAGAZINE GRID — remaining posts ===== */}
-      <section className="bg-white py-24 sm:py-32">
+      <section className="bg-gradient-to-b from-white to-[#f0ede4] py-24 sm:py-32">
         <div className="mx-auto max-w-7xl px-6 sm:px-8">
           <Reveal>
-            <h2 className="text-3xl font-extrabold text-navy sm:text-4xl">
+            <h2 className="heading-underline text-3xl font-extrabold text-navy sm:text-4xl">
               More from the blog
             </h2>
           </Reveal>
           <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-2">
             {rest.map((post, i) => (
               <Reveal key={post.slug} delay={i * 100}>
-                <article className="group flex h-full flex-col overflow-hidden rounded-[1.75rem] bg-cream shadow-card ring-1 ring-navy/5 transition-shadow duration-300 hover:shadow-card-lg">
+                <article className="card-surface group flex h-full flex-col overflow-hidden rounded-[1.75rem] transition-shadow duration-300">
                   <div className="relative aspect-[16/10] w-full overflow-hidden">
                     <img
                       src={img(POST_IMAGES[(i + 1) % POST_IMAGES.length], 900, 560)}
@@ -197,6 +199,7 @@ export default function BlogPage() {
         </div>
       </section>
 
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
       {/* ===== CTA — newsletter nudge ===== */}
       <section className="bg-navy-dark py-24 text-white sm:py-32">
         <div className="mx-auto max-w-4xl px-6 text-center sm:px-8">
@@ -215,7 +218,7 @@ export default function BlogPage() {
             <div className="mt-10 flex flex-col justify-center gap-4 sm:flex-row">
               <Link
                 href="/donate"
-                className="rounded-md bg-gold px-8 py-3 text-base font-bold text-navy shadow-card transition-colors hover:bg-gold-light"
+                className="rounded-md bg-gold px-8 py-3 text-base font-bold text-navy shadow-card transition-colors hover:bg-gold-light shadow-lg hover:shadow-xl ring-2 ring-[#C8A951]/30"
               >
                 Donate Now
               </Link>

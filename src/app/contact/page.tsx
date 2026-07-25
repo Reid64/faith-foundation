@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
+import BackgroundSwirls from "@/components/BackgroundSwirls";
 import ContactForm from "./ContactForm";
 
 export const metadata: Metadata = {
   title: "Contact Us — FAITH Foundation",
   description:
-    "Get in touch with FAITH Foundation at 209 Surecast Drive, Suite 105, Burnet, TX 78611, or call 888-497-6620. Reach our team about housing assistance, donations, volunteering, or partnership.",
+    "Contact FAITH Foundation in Burnet, TX at 888-497-6620 about housing assistance, donations, volunteering, or corporate giving. We respond personally.",
 };
 
 const MAP_QUERY = encodeURIComponent(
@@ -32,14 +33,17 @@ export default function ContactPage() {
         </div>
       </section>
 
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
+
       {/* Contact details + form */}
-      <section className="bg-white">
+      <section className="relative overflow-hidden bg-gradient-to-b from-white to-[#f0ede4]">
+        <BackgroundSwirls variant="top-left" />
         <div className="mx-auto grid max-w-6xl gap-12 px-6 py-20 lg:grid-cols-2">
           <div>
-            <h2 className="mb-3 text-sm font-bold uppercase tracking-widest text-gold-dark">
+            <h2 className="mb-3 text-sm font-bold uppercase tracking-[0.2em] text-[#4A7C59]">
               Reach Our Team
             </h2>
-            <h3 className="mb-6 text-3xl font-extrabold text-navy">
+            <h3 className="heading-underline mb-6 text-3xl font-extrabold text-navy">
               Here to help, every step of the way
             </h3>
             <p className="mb-8 text-lg leading-relaxed text-foreground/80">
@@ -53,7 +57,7 @@ export default function ContactPage() {
 
             <dl className="space-y-6">
               <div>
-                <dt className="text-sm font-bold uppercase tracking-widest text-gold-dark">
+                <dt className="text-sm font-bold uppercase tracking-[0.2em] text-[#4A7C59]">
                   Address
                 </dt>
                 <dd className="mt-1">
@@ -65,7 +69,7 @@ export default function ContactPage() {
                 </dd>
               </div>
               <div>
-                <dt className="text-sm font-bold uppercase tracking-widest text-gold-dark">
+                <dt className="text-sm font-bold uppercase tracking-[0.2em] text-[#4A7C59]">
                   Phone
                 </dt>
                 <dd className="mt-1">
@@ -78,7 +82,7 @@ export default function ContactPage() {
                 </dd>
               </div>
               <div>
-                <dt className="text-sm font-bold uppercase tracking-widest text-gold-dark">
+                <dt className="text-sm font-bold uppercase tracking-[0.2em] text-[#4A7C59]">
                   Email
                 </dt>
                 <dd className="mt-1">
@@ -91,7 +95,7 @@ export default function ContactPage() {
                 </dd>
               </div>
               <div>
-                <dt className="text-sm font-bold uppercase tracking-widest text-gold-dark">
+                <dt className="text-sm font-bold uppercase tracking-[0.2em] text-[#4A7C59]">
                   Office Hours
                 </dt>
                 <dd className="mt-1 leading-relaxed text-foreground/80">
@@ -103,10 +107,10 @@ export default function ContactPage() {
           </div>
 
           <div>
-            <h2 className="mb-3 text-sm font-bold uppercase tracking-widest text-gold-dark">
+            <h2 className="mb-3 text-sm font-bold uppercase tracking-[0.2em] text-[#4A7C59]">
               Send a Message
             </h2>
-            <h3 className="mb-6 text-3xl font-extrabold text-navy">
+            <h3 className="heading-underline mb-6 text-3xl font-extrabold text-navy">
               Tell us how we can serve you
             </h3>
             <ContactForm />
@@ -114,14 +118,17 @@ export default function ContactPage() {
         </div>
       </section>
 
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
+
       {/* Map */}
-      <section className="bg-gold/10">
+      <section className="relative overflow-hidden bg-gold/10">
+        <BackgroundSwirls variant="bottom-right" />
         <div className="mx-auto max-w-6xl px-6 py-16">
           <div className="mx-auto mb-8 max-w-3xl text-center">
-            <h2 className="mb-3 text-sm font-bold uppercase tracking-widest text-gold-dark">
+            <h2 className="mb-3 text-sm font-bold uppercase tracking-[0.2em] text-[#4A7C59]">
               Find Us
             </h2>
-            <h3 className="mb-4 text-3xl font-extrabold text-navy">
+            <h3 className="heading-underline-center mb-4 text-3xl font-extrabold text-navy">
               Visit our Burnet office
             </h3>
             <p className="text-lg leading-relaxed text-foreground/80">

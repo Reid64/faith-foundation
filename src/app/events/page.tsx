@@ -4,7 +4,7 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Events — FAITH Foundation",
   description:
-    "Join FAITH Foundation at upcoming events across Central Texas — financial-literacy workshops, volunteer days, donor gatherings, and community fundraisers supporting affordable instruction and tenancy hope.",
+    "Join FAITH Foundation at upcoming Central Texas events — financial-literacy workshops, volunteer days, donor gatherings, and community fundraisers.",
 };
 
 const EVENTS = [
@@ -33,7 +33,7 @@ const EVENTS = [
     location: "Hill Country Event Hall, Burnet, TX",
     type: "Fundraiser",
     description:
-      "Our annual benefit dinner celebrates the families served this year and raises funds for housing vouchers. The evening includes dinner, stories from the families we serve, and a chance to learn how the Bright Box Homes partnership turns each home purchase into lasting community uplift.",
+      "Our annual benefit dinner celebrates the families we serve and raises funds for housing vouchers. The evening includes dinner, stories from the families we serve, and a chance to learn how the generosity of donors and community partners funds down payment assistance for neighbors across Texas.",
   },
   {
     title: "Homeownership Readiness Information Night",
@@ -42,7 +42,7 @@ const EVENTS = [
     location: "Virtual (online) and FAITH Foundation Office",
     type: "Information Session",
     description:
-      "An informal evening for anyone curious about the path to homeownership. Our counselors will walk through credit preparation, saving for a down payment, and how the Bright Box Homes give-back model works. Bring your questions — no commitment required.",
+      "An informal evening for anyone curious about the path to homeownership. Our counselors will walk through credit preparation, saving for a down payment, and how donations and community partnerships fund the assistance vouchers behind our charitable housing programs. Bring your questions — no commitment required.",
   },
   {
     title: "Back-to-School Family Resource Fair",
@@ -86,13 +86,15 @@ export default function EventsPage() {
         </div>
       </section>
 
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
+
       {/* Why attend */}
-      <section className="bg-white">
+      <section className="bg-gradient-to-b from-white to-[#f0ede4]">
         <div className="mx-auto max-w-4xl px-6 py-16">
-          <h2 className="mb-3 text-sm font-bold uppercase tracking-widest text-gold-dark">
+          <h2 className="mb-3 text-sm font-bold uppercase tracking-[0.2em] text-[#4A7C59]">
             Why come to an event
           </h2>
-          <h3 className="mb-6 text-3xl font-extrabold text-navy">
+          <h3 className="heading-underline mb-6 text-3xl font-extrabold text-navy">
             Connection is part of the mission
           </h3>
           <div className="space-y-5 text-lg leading-relaxed text-foreground/80">
@@ -123,17 +125,19 @@ export default function EventsPage() {
         </div>
       </section>
 
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
+
       {/* Events list */}
       <section className="bg-gold/10">
         <div className="mx-auto max-w-4xl px-6 py-16">
-          <h2 className="mb-10 text-center text-3xl font-extrabold text-navy">
+          <h2 className="heading-underline-center mb-10 text-center text-3xl font-extrabold text-navy">
             Mark your calendar
           </h2>
           <ul className="space-y-6">
             {EVENTS.map((event) => (
               <li
                 key={event.title}
-                className="rounded-lg border-t-4 border-gold bg-white p-8 shadow-sm"
+                className="card-surface rounded-lg p-8"
               >
                 <div className="flex flex-wrap items-center gap-3">
                   <span
@@ -162,6 +166,8 @@ export default function EventsPage() {
         </div>
       </section>
 
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
+
       {/* CTA */}
       <section className="bg-navy-dark text-white">
         <div className="mx-auto max-w-4xl px-6 py-16 text-center">
@@ -175,7 +181,7 @@ export default function EventsPage() {
           <div className="flex flex-col justify-center gap-4 sm:flex-row">
             <Link
               href="/volunteer"
-              className="rounded-md bg-gold px-8 py-3 text-base font-bold text-navy shadow-lg transition-colors hover:bg-gold-light"
+              className="rounded-md bg-gold px-8 py-3 text-base font-bold text-navy shadow-lg transition-colors hover:bg-gold-light hover:shadow-xl ring-2 ring-[#C8A951]/30"
             >
               Volunteer With Us
             </Link>

@@ -5,11 +5,16 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
+const ABOUT_LINKS = [
+  { href: "/about", label: "About Us" },
+  { href: "/team", label: "Team" },
+  { href: "/financial-transparency", label: "Financial Transparency" },
+  { href: "/governance", label: "Governance" },
+];
+
 const NAV_LINKS = [
-  { href: "/about", label: "About" },
   { href: "/programs", label: "Programs" },
   { href: "/impact", label: "Impact" },
-  { href: "/partnership", label: "Partnership" },
   { href: "/events", label: "Events" },
   { href: "/contact", label: "Contact" },
 ];
@@ -17,6 +22,7 @@ const NAV_LINKS = [
 export default function SiteHeader() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const [aboutOpen, setAboutOpen] = useState(false);
   const pathname = usePathname();
 
   useEffect(() => {
@@ -32,6 +38,12 @@ export default function SiteHeader() {
   }, [pathname]);
 
   const solid = scrolled || open;
+
+  const aboutActive =
+    pathname.startsWith("/about") ||
+    pathname === "/team" ||
+    pathname === "/financial-transparency" ||
+    pathname === "/governance";
 
   return (
     <header
@@ -52,6 +64,68 @@ export default function SiteHeader() {
         </Link>
 
         <nav aria-label="Primary" className="hidden items-center gap-8 lg:flex">
+          {/* About dropdown */}
+          <div
+            className="relative"
+            onMouseEnter={() => setAboutOpen(true)}
+            onMouseLeave={() => setAboutOpen(false)}
+          >
+            <button
+              type="button"
+              aria-expanded={aboutOpen}
+              onClick={() => setAboutOpen((v) => !v)}
+              className={`relative inline-flex items-center gap-1 text-sm font-semibold tracking-wide transition-colors after:absolute after:-bottom-1.5 after:left-0 after:h-0.5 after:bg-green after:transition-all after:duration-300 hover:text-green ${
+                aboutActive
+                  ? "text-green after:w-full"
+                  : "text-charcoal after:w-0 hover:after:w-full"
+              }`}
+            >
+              About
+              <svg
+                width="12"
+                height="12"
+                viewBox="0 0 12 12"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2}
+                aria-hidden
+              >
+                <path d="M3 5l3 3 3-3" />
+              </svg>
+            </button>
+
+            {aboutOpen && (
+              <div className="absolute left-0 top-full z-50 mt-2 min-w-[200px] rounded-xl border border-black/10 bg-[#F5F5F5] py-2 shadow-lg">
+                {ABOUT_LINKS.map((link) => {
+                  const active = pathname === link.href;
+                  return (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      className={`block px-5 py-2.5 text-sm font-semibold transition-colors hover:bg-black/5 hover:text-green ${
+                        active ? "text-green" : "text-charcoal"
+                      }`}
+                    >
+                      {link.label}
+                    </Link>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
+          {/* Team — retained as a standalone top-level nav item */}
+          <Link
+            href="/team"
+            className={`relative text-sm font-semibold tracking-wide transition-colors after:absolute after:-bottom-1.5 after:left-0 after:h-0.5 after:bg-green after:transition-all after:duration-300 hover:text-green ${
+              pathname === "/team"
+                ? "text-green after:w-full"
+                : "text-charcoal after:w-0 hover:after:w-full"
+            }`}
+          >
+            Team
+          </Link>
+
           {NAV_LINKS.map((link) => {
             const active =
               pathname === link.href || pathname.startsWith(`${link.href}/`);
@@ -71,7 +145,7 @@ export default function SiteHeader() {
           })}
           <Link
             href="/donate"
-            className="rounded-full bg-green px-6 py-2.5 text-sm font-bold text-white shadow-green transition-all duration-300 hover:bg-green-dark hover:shadow-lg"
+            className="rounded-full bg-green px-6 py-2.5 text-sm font-bold text-white shadow-green ring-1 ring-gold/50 transition-all duration-300 hover:bg-green-dark hover:ring-2 hover:ring-gold hover:shadow-lg"
           >
             Donate
           </Link>
@@ -107,10 +181,22 @@ export default function SiteHeader() {
       {/* Mobile menu */}
       <div
         className={`overflow-hidden border-t border-black/10 bg-[#F5F5F5] transition-[max-height] duration-300 lg:hidden ${
-          open ? "max-h-96" : "max-h-0"
+          open ? "max-h-[36rem]" : "max-h-0"
         }`}
       >
         <nav aria-label="Mobile" className="flex flex-col px-6 py-4">
+          <p className="pt-2 pb-1 text-xs font-bold uppercase tracking-widest text-charcoal/50">
+            About
+          </p>
+          {ABOUT_LINKS.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className="border-b border-black/5 py-3 pl-3 text-sm font-semibold text-charcoal transition-colors hover:text-green"
+            >
+              {link.label}
+            </Link>
+          ))}
           {NAV_LINKS.map((link) => (
             <Link
               key={link.href}
@@ -131,8 +217,3 @@ export default function SiteHeader() {
     </header>
   );
 }
-
-
-
-
-

@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Reveal from "@/components/Reveal";
-import { img } from "@/lib/images";
 
 export const metadata: Metadata = {
   title: "Recovery Housing — FAITH Foundation",
   description:
-    "FAITH Foundation's Recovery Housing program guides Texas residents from sober living into permanent, independent housing with structure, accountability, and long-term support.",
+    "FAITH Foundation's Recovery Housing guides Texas residents from sober living to permanent, independent housing with structure, accountability, and support.",
 };
 
 const ELIGIBILITY = [
@@ -45,8 +44,8 @@ export default function RecoveryHousingPage() {
       {/* ===== HERO ===== */}
       <section className="relative flex min-h-[80vh] items-center overflow-hidden bg-navy">
         <img
-          src={img("sunrise", 2000)}
-          alt="Sunrise breaking over the hills — a new day"
+          src="/Images/micro-apartments/micro-apartment-1.jpg"
+          alt="A FAITH Foundation recovery housing micro-apartment residence"
           className="absolute inset-0 h-full w-full animate-slow-zoom object-cover"
           loading="eager"
         />
@@ -77,7 +76,7 @@ export default function RecoveryHousingPage() {
               <div className="mt-9 flex flex-col gap-4 sm:flex-row">
                 <Link
                   href="/contact"
-                  className="rounded-full bg-gold px-8 py-3.5 text-base font-bold text-navy shadow-lg transition-all duration-300 hover:bg-gold-light hover:shadow-xl"
+                  className="rounded-full bg-gold px-8 py-3.5 text-base font-bold text-navy shadow-lg transition-all duration-300 hover:bg-gold-light hover:shadow-xl ring-2 ring-[#C8A951]/30"
                 >
                   Apply Now
                 </Link>
@@ -93,14 +92,16 @@ export default function RecoveryHousingPage() {
         </div>
       </section>
 
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
+
       {/* ===== INTRO (image + text) ===== */}
-      <section className="bg-texture bg-cream py-24 sm:py-32">
+      <section className="bg-gradient-to-b from-[#FAFAF5] to-[#e8e4d8] py-24 sm:py-32">
         <div className="mx-auto grid max-w-7xl items-center gap-12 px-6 sm:px-8 lg:grid-cols-2 lg:gap-16">
           <Reveal>
             <div className="overflow-hidden rounded-3xl shadow-card-lg">
               <img
-                src={img("cozyHome", 1100, 900)}
-                alt="A warm, welcoming home where recovery can take root"
+                src="/Images/micro-apartments/micro-apartment-2.jpg"
+                alt="Inside a recovery housing micro-apartment — a warm, welcoming space where recovery can take root"
                 className="h-full w-full object-cover"
                 loading="lazy"
               />
@@ -111,7 +112,7 @@ export default function RecoveryHousingPage() {
               <h2 className="mb-3 text-sm font-bold uppercase tracking-widest text-green-dark">
                 Why it matters
               </h2>
-              <h3 className="mb-6 text-3xl font-extrabold text-navy sm:text-4xl">
+              <h3 className="heading-underline mb-6 text-3xl font-extrabold text-navy sm:text-4xl">
                 Recovery needs a stable place to stand
               </h3>
             </Reveal>
@@ -143,12 +144,11 @@ export default function RecoveryHousingPage() {
               </Reveal>
               <Reveal delay={200}>
                 <p>
-                  Like all of our programs, Recovery Housing is sustained in part by
-                  the Bright Box Homes partnership, where every home purchased
-                  generates a $2,500 donation that funds direct housing assistance
-                  on the path toward homeownership. That renewable model lets us help
-                  neighbors reclaim their lives while strengthening communities
-                  across Texas.
+                  Like all of our programs, Recovery Housing is sustained by donations
+                  from individuals, businesses, and community partners whose generosity
+                  funds direct housing assistance on the path toward homeownership. That
+                  steady support lets us help neighbors reclaim their lives while
+                  strengthening communities across Texas.
                 </p>
               </Reveal>
             </div>
@@ -156,11 +156,13 @@ export default function RecoveryHousingPage() {
         </div>
       </section>
 
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
+
       {/* ===== STAGES PROGRESSION (dominant module) ===== */}
       <section id="the-path" className="bg-navy py-24 text-white sm:py-32">
         <div className="mx-auto max-w-5xl px-6 sm:px-8">
           <Reveal className="mx-auto max-w-3xl text-center">
-            <h2 className="mb-3 text-sm font-bold uppercase tracking-widest text-gold">
+            <h2 className="mb-3 text-sm font-bold uppercase tracking-[0.2em] text-[#4A7C59]">
               The path
             </h2>
             <h3 className="text-3xl font-extrabold sm:text-4xl">
@@ -193,7 +195,7 @@ export default function RecoveryHousingPage() {
                   {stage.number}
                 </span>
                 <div
-                  className="rounded-2xl border-l-4 border-gold bg-navy-light/40 p-7 shadow-card-lg ring-1 ring-white/10 transition-transform duration-300 hover:-translate-y-1"
+                  className="card-on-navy rounded-2xl p-7 transition-transform duration-300"
                   style={{ marginRight: `${(STAGES.length - 1 - i) * 8}px` }}
                 >
                   <div className="flex items-center gap-3">
@@ -223,14 +225,46 @@ export default function RecoveryHousingPage() {
         </div>
       </section>
 
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
+
+      {/* ===== WHAT RECOVERY HOUSING LOOKS LIKE ===== */}
+      <section className="bg-gradient-to-b from-[#FAFAF5] to-[#e8e4d8] py-20 sm:py-24">
+        <div className="mx-auto max-w-6xl px-6 sm:px-8">
+          <Reveal className="mx-auto max-w-2xl text-center">
+            <h2 className="mb-3 text-sm font-bold uppercase tracking-widest text-green-dark">
+              A place to call home
+            </h2>
+            <h3 className="heading-underline-center mb-8 text-3xl font-extrabold text-navy sm:text-4xl">
+              What recovery housing looks like
+            </h3>
+          </Reveal>
+          <Reveal delay={120}>
+            <div className="overflow-hidden rounded-3xl shadow-card-lg">
+              <img
+                src="/Images/micro-apartments/micro-apartment-3.jpg"
+                alt="A FAITH Foundation recovery housing micro-apartment community in Texas"
+                className="h-72 w-full object-cover sm:h-[28rem]"
+                loading="lazy"
+              />
+            </div>
+            <p className="mt-4 text-center text-sm italic text-gray-500">
+              Fully furnished micro-apartments provide private, self-contained
+              housing for residents in recovery programs.
+            </p>
+          </Reveal>
+        </div>
+      </section>
+
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
+
       {/* ===== ELIGIBILITY ===== */}
-      <section className="bg-white py-24 sm:py-32">
+      <section className="bg-gradient-to-b from-white to-[#f0ede4] py-24 sm:py-32">
         <div className="mx-auto max-w-4xl px-6 sm:px-8">
           <Reveal>
             <h2 className="mb-3 text-sm font-bold uppercase tracking-widest text-green-dark">
               Eligibility
             </h2>
-            <h3 className="mb-6 text-3xl font-extrabold text-navy sm:text-4xl">
+            <h3 className="heading-underline mb-6 text-3xl font-extrabold text-navy sm:text-4xl">
               Who Recovery Housing serves
             </h3>
             <p className="mb-10 text-lg leading-relaxed text-charcoal/80">
@@ -243,7 +277,7 @@ export default function RecoveryHousingPage() {
           <ul className="space-y-4">
             {ELIGIBILITY.map((item, i) => (
               <Reveal key={item} delay={i * 100} as="li">
-                <div className="flex gap-4 rounded-xl border-l-4 border-green bg-cream p-5 shadow-card">
+                <div className="card-surface flex gap-4 rounded-xl p-5">
                   <span className="mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-navy text-sm font-bold text-green-light">
                     ✓
                   </span>
@@ -264,6 +298,8 @@ export default function RecoveryHousingPage() {
         </div>
       </section>
 
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
+
       {/* ===== CTA ===== */}
       <section className="bg-navy-dark py-24 text-white sm:py-28">
         <div className="mx-auto max-w-4xl px-6 text-center sm:px-8">
@@ -279,7 +315,7 @@ export default function RecoveryHousingPage() {
             <div className="flex flex-col justify-center gap-4 sm:flex-row">
               <Link
                 href="/contact"
-                className="rounded-full bg-gold px-8 py-3.5 text-base font-bold text-navy shadow-lg transition-all duration-300 hover:bg-gold-light hover:shadow-xl"
+                className="rounded-full bg-gold px-8 py-3.5 text-base font-bold text-navy shadow-lg transition-all duration-300 hover:bg-gold-light hover:shadow-xl ring-2 ring-[#C8A951]/30"
               >
                 Apply Now
               </Link>

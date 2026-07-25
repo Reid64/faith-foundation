@@ -3,11 +3,12 @@ import Link from "next/link";
 import Reveal from "@/components/Reveal";
 import StatCounter from "@/components/StatCounter";
 import { img } from "@/lib/images";
+import { Cite } from "@/components/Citations";
 
 export const metadata: Metadata = {
   title: "Veterans Path Home — FAITH Foundation",
   description:
-    "FAITH Foundation's Veterans Path Home program helps Texas veterans secure stable, affordable housing through rental assistance, case management, and connection to benefits they have earned.",
+    "FAITH Foundation's Veterans Path Home helps Texas veterans secure stable, affordable housing through rental assistance, case management, and benefits help.",
 };
 
 const ELIGIBILITY = [
@@ -93,7 +94,7 @@ export default function VeteransPathHomePage() {
               <div className="mt-9 flex flex-col gap-4 sm:flex-row">
                 <Link
                   href="/contact"
-                  className="rounded-full bg-gold px-8 py-3.5 text-base font-bold text-navy shadow-lg transition-all duration-300 hover:bg-gold-light hover:shadow-xl"
+                  className="rounded-full bg-gold px-8 py-3.5 text-base font-bold text-navy shadow-lg transition-all duration-300 hover:bg-gold-light hover:shadow-xl ring-2 ring-[#C8A951]/30"
                 >
                   Apply Now
                 </Link>
@@ -109,14 +110,16 @@ export default function VeteransPathHomePage() {
         </div>
       </section>
 
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
+
       {/* ===== INTRO ===== */}
-      <section className="bg-texture bg-cream py-24 sm:py-32">
+      <section className="bg-gradient-to-b from-[#FAFAF5] to-[#e8e4d8] py-24 sm:py-32">
         <div className="mx-auto max-w-4xl px-6 sm:px-8">
           <Reveal>
             <h2 className="mb-3 text-sm font-bold uppercase tracking-widest text-green-dark">
               Why it matters
             </h2>
-            <h3 className="mb-6 text-3xl font-extrabold text-navy sm:text-4xl">
+            <h3 className="heading-underline mb-6 text-3xl font-extrabold text-navy sm:text-4xl">
               Honoring service with stable housing
             </h3>
           </Reveal>
@@ -129,8 +132,10 @@ export default function VeteransPathHomePage() {
                 connected disability, a marriage under strain, or simply the rising
                 cost of rent can push a veteran from stability into a car, a couch,
                 or the street. Across Texas, veterans are overrepresented among
-                those facing homelessness, and every one of them represents a
-                promise our community has a duty to keep.
+                those facing homelessness
+                <Cite label="VA/HUD" href="https://www.va.gov/homeless/pit-count.asp" />,
+                and every one of them represents a promise our community has a duty
+                to keep.
               </p>
             </Reveal>
             <Reveal delay={150}>
@@ -147,23 +152,24 @@ export default function VeteransPathHomePage() {
             </Reveal>
             <Reveal delay={200}>
               <p>
-                This program is funded in part through the same renewable model
-                that powers all of FAITH Foundation&apos;s work — the Bright Box
-                Homes partnership, where every home purchased generates a $2,500
-                donation that becomes direct housing assistance — helping neighbors
-                move toward homeownership. When the community grows, so does our
-                ability to bring veterans home.
+                This program is funded by the generosity of corporate and individual
+                donors who share our commitment to those who served — charitable gifts
+                that support direct housing assistance and help neighbors move toward
+                homeownership. When the community grows, so does our ability to bring
+                veterans home.
               </p>
             </Reveal>
           </div>
         </div>
       </section>
 
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
+
       {/* ===== SERVICE / BENEFITS GRID (dominant module) ===== */}
       <section id="how-we-help" className="bg-navy py-24 text-white sm:py-32">
         <div className="mx-auto max-w-7xl px-6 sm:px-8">
           <Reveal className="mx-auto max-w-3xl text-center">
-            <h2 className="mb-3 text-sm font-bold uppercase tracking-widest text-gold">
+            <h2 className="mb-3 text-sm font-bold uppercase tracking-[0.2em] text-[#4A7C59]">
               How we help
             </h2>
             <h3 className="text-3xl font-extrabold sm:text-4xl">
@@ -173,7 +179,7 @@ export default function VeteransPathHomePage() {
           <div className="mt-16 grid gap-8 lg:grid-cols-3">
             {SUPPORTS.map((support, i) => (
               <Reveal key={support.title} delay={i * 100}>
-                <article className="group flex h-full flex-col rounded-2xl border-t-4 border-gold bg-navy-light/40 p-8 shadow-card-lg ring-1 ring-white/10 transition-all duration-300 hover:-translate-y-1 hover:ring-gold/40">
+                <article className="card-on-navy group flex h-full flex-col rounded-2xl p-8 transition-all duration-300">
                   <span
                     aria-hidden
                     className="mb-6 flex h-14 w-14 items-center justify-center rounded-xl bg-gold/15 text-2xl font-extrabold text-gold ring-1 ring-gold/30 transition-colors duration-300 group-hover:bg-gold group-hover:text-navy"
@@ -193,28 +199,28 @@ export default function VeteransPathHomePage() {
 
           {/* Stat band */}
           <Reveal>
-            <div className="mt-16 grid gap-8 rounded-2xl bg-navy-dark/60 p-10 ring-1 ring-white/10 sm:grid-cols-3">
+            <div className="card-stat mt-16 grid gap-8 rounded-2xl p-10 sm:grid-cols-3">
               <div className="text-center">
-                <p className="text-4xl font-extrabold text-gold sm:text-5xl">
-                  <StatCounter value={2500} prefix="$" />
+                <p className="card-stat-figure text-4xl font-extrabold sm:text-5xl">
+                  <StatCounter value={100} suffix="%" />
                 </p>
-                <p className="mt-2 text-sm font-semibold uppercase tracking-wide text-white/70">
-                  Donated per Bright Box home
+                <p className="mt-2 text-sm font-semibold uppercase tracking-wide text-white/80">
+                  Of designated housing donations directly support our charitable housing mission
                 </p>
               </div>
               <div className="text-center">
-                <p className="text-4xl font-extrabold text-gold sm:text-5xl">
+                <p className="card-stat-figure text-4xl font-extrabold sm:text-5xl">
                   <StatCounter value={100} suffix="%" />
                 </p>
-                <p className="mt-2 text-sm font-semibold uppercase tracking-wide text-white/70">
+                <p className="mt-2 text-sm font-semibold uppercase tracking-wide text-white/80">
                   Confidential &amp; cost-free to apply
                 </p>
               </div>
               <div className="text-center">
-                <p className="text-4xl font-extrabold text-gold sm:text-5xl">
+                <p className="card-stat-figure text-4xl font-extrabold sm:text-5xl">
                   <StatCounter value={4} />
                 </p>
-                <p className="mt-2 text-sm font-semibold uppercase tracking-wide text-white/70">
+                <p className="mt-2 text-sm font-semibold uppercase tracking-wide text-white/80">
                   Steps from connection to a home
                 </p>
               </div>
@@ -223,21 +229,23 @@ export default function VeteransPathHomePage() {
         </div>
       </section>
 
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
+
       {/* ===== CASE-MANAGEMENT STEPS ROW ===== */}
-      <section className="bg-white py-24 sm:py-32">
+      <section className="bg-gradient-to-b from-white to-[#f0ede4] py-24 sm:py-32">
         <div className="mx-auto max-w-7xl px-6 sm:px-8">
           <Reveal className="mx-auto max-w-3xl text-center">
             <h2 className="mb-3 text-sm font-bold uppercase tracking-widest text-green-dark">
               Case management
             </h2>
-            <h3 className="text-3xl font-extrabold text-navy sm:text-4xl">
+            <h3 className="heading-underline-center text-3xl font-extrabold text-navy sm:text-4xl">
               One advocate, walking beside you
             </h3>
           </Reveal>
           <ol className="mt-16 grid gap-8 md:grid-cols-2 lg:grid-cols-4">
             {CASE_STEPS.map((step, i) => (
               <Reveal key={step.number} delay={i * 100} as="li" className="relative">
-                <div className="flex h-full flex-col rounded-2xl border border-navy/10 bg-cream p-7 shadow-card transition-all duration-300 hover:-translate-y-1 hover:shadow-card-lg">
+                <div className={`${i % 2 === 0 ? "card-feature-cream" : "card-feature-white"} flex h-full flex-col rounded-2xl p-7 transition-all duration-300`}>
                   <span className="text-4xl font-extrabold text-green/40">
                     {step.number}
                   </span>
@@ -254,14 +262,16 @@ export default function VeteransPathHomePage() {
         </div>
       </section>
 
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
+
       {/* ===== ELIGIBILITY ===== */}
-      <section className="bg-cream py-24 sm:py-32">
+      <section className="bg-gradient-to-b from-[#FAFAF5] to-[#e8e4d8] py-24 sm:py-32">
         <div className="mx-auto max-w-4xl px-6 sm:px-8">
           <Reveal>
-            <h2 className="mb-3 text-sm font-bold uppercase tracking-widest text-gold-dark">
+            <h2 className="mb-3 text-sm font-bold uppercase tracking-[0.2em] text-[#4A7C59]">
               Eligibility
             </h2>
-            <h3 className="mb-6 text-3xl font-extrabold text-navy sm:text-4xl">
+            <h3 className="heading-underline mb-6 text-3xl font-extrabold text-navy sm:text-4xl">
               Who Veterans Path Home serves
             </h3>
             <p className="mb-10 text-lg leading-relaxed text-charcoal/80">
@@ -274,7 +284,7 @@ export default function VeteransPathHomePage() {
           <ul className="space-y-4">
             {ELIGIBILITY.map((item, i) => (
               <Reveal key={item} delay={i * 100} as="li">
-                <div className="flex gap-4 rounded-xl border-l-4 border-gold bg-white p-5 shadow-card">
+                <div className="card-surface flex gap-4 rounded-xl p-5">
                   <span className="mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-navy text-sm font-bold text-gold">
                     ✓
                   </span>
@@ -294,6 +304,8 @@ export default function VeteransPathHomePage() {
           </Reveal>
         </div>
       </section>
+
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
 
       {/* ===== CTA ===== */}
       <section className="relative overflow-hidden bg-navy-dark py-24 text-white sm:py-28">
@@ -318,7 +330,7 @@ export default function VeteransPathHomePage() {
             <div className="flex flex-col justify-center gap-4 sm:flex-row">
               <Link
                 href="/contact"
-                className="rounded-full bg-gold px-8 py-3.5 text-base font-bold text-navy shadow-lg transition-all duration-300 hover:bg-gold-light hover:shadow-xl"
+                className="rounded-full bg-gold px-8 py-3.5 text-base font-bold text-navy shadow-lg transition-all duration-300 hover:bg-gold-light hover:shadow-xl ring-2 ring-[#C8A951]/30"
               >
                 Apply Now
               </Link>

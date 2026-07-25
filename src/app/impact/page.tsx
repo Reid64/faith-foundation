@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import BackgroundSwirls from "@/components/BackgroundSwirls";
 import Reveal from "@/components/Reveal";
 import StatCounter from "@/components/StatCounter";
 import { img } from "@/lib/images";
@@ -7,12 +8,12 @@ import { img } from "@/lib/images";
 export const metadata: Metadata = {
   title: "Our Impact — FAITH Foundation",
   description:
-    "See the measurable impact of FAITH Foundation across Texas — down payment assistance vouchers funded, families served, dollars stewarded, and the real stories of neighbors who became homeowners.",
+    "See FAITH Foundation's measurable impact across Texas — down payment vouchers funded, families served, dollars stewarded, and neighbors who became owners.",
 };
 
 const METRICS = [
-  { value: "$2,500", label: "Donated to FAITH for every Bright Box home purchased" },
-  { value: "100%", label: "Of vouchers directed to down payment assistance" },
+  { value: "100%", label: "Of every designated housing gift directly supports the program you choose" },
+  { value: "100%", label: "Of every designated voucher gift supports down payment assistance" },
   { value: "8", label: "Distinct programs serving families across Texas" },
   { value: "501(c)(3)", label: "Tax-exempt nonprofit, accountable and transparent" },
 ];
@@ -33,15 +34,15 @@ const STORIES = [
   {
     name: "A family putting down roots",
     quote:
-      "We bought our home through Bright Box Homes — and learning that our purchase helped another family stay housed made it mean even more.",
-    body: "When the Carter family (name changed) closed on their first home, the $2,500 give-back from Bright Box Homes funded a voucher for a family they will never meet. That is the cycle in action: one family putting down roots, another family keeping the roof overhead.",
+      "Knowing that a neighbor's generosity helped fund the assistance that got us into our home makes ownership mean even more.",
+    body: "Our housing fund is made possible by the generosity of donors and community partners, and every designated housing gift directly supports the program the donor chooses — while administrative and operational costs are funded separately through gifts designated for operational support. This illustrates the model we are building: pooled community giving that helps fund down payment assistance for neighbors working toward a home of their own.",
   },
 ];
 
 // Numeric stats parsed from METRICS for animated counters; non-numeric
 // values (e.g. "501(c)(3)") are rendered as styled text instead.
 const STAT_COUNTERS = [
-  { prefix: "$", value: 2500, suffix: "", label: METRICS[0].label },
+  { prefix: "", value: 100, suffix: "%", label: METRICS[0].label },
   { prefix: "", value: 100, suffix: "%", label: METRICS[1].label },
   { prefix: "", value: 8, suffix: "", label: METRICS[2].label },
   { text: "501(c)(3)", label: METRICS[3].label },
@@ -63,9 +64,9 @@ const NARRATIVE = [
     alt: "Neighbors learning financial-literacy skills in a classroom",
   },
   {
-    eyebrow: "Generosity multiplied",
-    title: "One purchase lifting two families",
-    body: "The Bright Box Homes partnership turns each home purchase into a renewable $2,500 gift, so our capacity to help grows right alongside our community.",
+    eyebrow: "Community-powered funding",
+    title: "Generosity that grows the mission",
+    body: "The generosity of donors and community partners funds our down payment assistance, so our capacity to help grows right alongside the community it serves.",
     image: "newKeys" as const,
     alt: "A new homeowner receiving the keys to their home",
   },
@@ -111,14 +112,20 @@ export default function ImpactPage() {
       </section>
 
       {/* ===== BY THE NUMBERS — animated stat counters ===== */}
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
       <section className="bg-navy-dark py-24 text-white sm:py-32">
         <div className="mx-auto max-w-7xl px-6 sm:px-8">
           <Reveal className="mx-auto max-w-3xl text-center">
-            <h2 className="text-sm font-bold uppercase tracking-[0.2em] text-gold">
-              By the Numbers
+            <h2 className="text-sm font-bold uppercase tracking-[0.2em] text-[#4A7C59]">
+              Our Year 1 Targets &amp; Standards
             </h2>
             <p className="mt-4 text-3xl font-extrabold sm:text-4xl">
-              Stewardship you can count on
+              The goals we intend to achieve
+            </p>
+            <p className="mt-4 text-base leading-relaxed text-white/75">
+              FAITH Foundation is a newly established 501(c)(3). The figures below
+              represent our operating standards and our Year 1 targets — the goals
+              we intend to achieve — not a claim of results already delivered.
             </p>
           </Reveal>
           <dl className="mt-16 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -127,9 +134,9 @@ export default function ImpactPage() {
                 key={stat.label}
                 delay={i * 100}
                 as="div"
-                className="rounded-3xl border border-white/10 bg-white/5 px-6 py-10 text-center shadow-card backdrop-blur"
+                className="card-stat rounded-3xl px-6 py-10 text-center"
               >
-                <dt className="text-5xl font-extrabold tracking-tight text-gold sm:text-6xl">
+                <dt className="card-stat-figure text-5xl font-extrabold tracking-tight sm:text-6xl">
                   {"text" in stat ? (
                     stat.text
                   ) : (
@@ -158,19 +165,22 @@ export default function ImpactPage() {
       </section>
 
       {/* ===== HOW IMPACT HAPPENS — alternating image-text blocks ===== */}
-      <section className="bg-texture bg-cream py-24 sm:py-32">
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
+      <section className="relative overflow-hidden bg-gradient-to-b from-[#FAFAF5] to-[#e8e4d8] py-24 sm:py-32">
+        <BackgroundSwirls variant="top-left" />
         <div className="mx-auto max-w-7xl px-6 sm:px-8">
           <Reveal className="mx-auto max-w-3xl text-center">
             <h2 className="text-sm font-bold uppercase tracking-[0.2em] text-green-dark">
               How Impact Happens
             </h2>
-            <p className="mt-4 text-3xl font-extrabold text-navy sm:text-4xl">
+            <p className="heading-underline-center mt-4 text-3xl font-extrabold text-navy sm:text-4xl">
               Three ways your support changes lives
             </p>
             <p className="mt-6 text-lg leading-relaxed text-charcoal/80">
               Our model is simple and sustainable: keep families housed, equip
-              them with instruction that lasts, and multiply generosity through
-              the Bright Box Homes partnership so the cycle keeps growing.
+              them with instruction that lasts, and support the mission through
+              the generosity of donors and community partners, so our capacity to
+              help keeps growing.
             </p>
           </Reveal>
 
@@ -197,7 +207,7 @@ export default function ImpactPage() {
                   className={i % 2 === 1 ? "lg:order-1" : ""}
                   delay={i % 2 === 1 ? 0 : 120}
                 >
-                  <span className="text-sm font-bold uppercase tracking-[0.2em] text-gold-dark">
+                  <span className="text-sm font-bold uppercase tracking-[0.2em] text-[#4A7C59]">
                     {block.eyebrow}
                   </span>
                   <h3 className="mt-4 text-3xl font-extrabold text-navy">
@@ -214,19 +224,22 @@ export default function ImpactPage() {
       </section>
 
       {/* ===== STORIES OF HOPE — testimonial / impact-story cards ===== */}
-      <section className="bg-white py-24 sm:py-32">
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
+      <section className="relative overflow-hidden bg-gradient-to-b from-white to-[#f0ede4] py-24 sm:py-32">
+        <BackgroundSwirls variant="bottom-right" />
         <div className="mx-auto max-w-7xl px-6 sm:px-8">
           <Reveal className="mx-auto max-w-3xl text-center">
-            <h2 className="text-sm font-bold uppercase tracking-[0.2em] text-gold-dark">
+            <h2 className="text-sm font-bold uppercase tracking-[0.2em] text-[#4A7C59]">
               Stories of Hope
             </h2>
             <p className="mt-4 text-3xl font-extrabold text-navy sm:text-4xl">
               The neighbors behind the numbers
             </p>
             <p className="mt-6 text-lg leading-relaxed text-charcoal/80">
-              Names and details have been changed to protect privacy, but every
-              story reflects the real work happening across Texas because
-              of supporters like you.
+              As a newly established organization, the following are illustrative
+              examples of the kind of help our programs are designed to provide.
+              They show the outcomes we intend to achieve for families across
+              Texas with the support of donors like you.
             </p>
           </Reveal>
 
@@ -236,7 +249,7 @@ export default function ImpactPage() {
                 key={story.name}
                 delay={i * 100}
                 as="figure"
-                className="flex h-full flex-col rounded-3xl bg-cream p-8 shadow-card ring-1 ring-navy/5"
+                className="card-surface flex h-full flex-col rounded-3xl p-8"
               >
                 <span
                   aria-hidden
@@ -260,6 +273,7 @@ export default function ImpactPage() {
       </section>
 
       {/* ===== HIGHLIGHT BAND ===== */}
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
       <section className="relative overflow-hidden bg-navy py-20 text-white">
         <img
           src={img("texasHills", 1800, 600)}
@@ -271,14 +285,16 @@ export default function ImpactPage() {
         <div className="relative mx-auto max-w-4xl px-6 text-center sm:px-8">
           <Reveal>
             <p className="text-2xl font-bold leading-relaxed sm:text-3xl">
-              One family putting down roots, another family keeping the roof
-              overhead. <span className="text-gold">That is the cycle in action.</span>
+              Community generosity funding charitable housing, so more
+              neighbors can reach a home of their own.{" "}
+              <span className="text-gold">That is the model we are building.</span>
             </p>
           </Reveal>
         </div>
       </section>
 
       {/* ===== CTA ===== */}
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
       <section className="bg-navy-dark py-24 text-white sm:py-32">
         <div className="mx-auto max-w-4xl px-6 text-center sm:px-8">
           <Reveal>
@@ -303,7 +319,7 @@ export default function ImpactPage() {
               </Link>
               <Link
                 href="/financial-transparency"
-                className="rounded-full border-2 border-gold px-8 py-3.5 text-base font-bold text-gold transition-colors hover:bg-gold hover:text-navy"
+                className="rounded-full border-2 border-gold px-8 py-3.5 text-base font-bold text-gold transition-colors hover:bg-gold hover:text-navy shadow-lg hover:shadow-xl ring-2 ring-[#C8A951]/30"
               >
                 See Our Transparency
               </Link>
