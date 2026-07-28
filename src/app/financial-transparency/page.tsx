@@ -9,6 +9,7 @@ export const metadata: Metadata = {
   title: "Financial Transparency — FAITH Foundation",
   description:
     "See how FAITH Foundation stewards every donation — our 501(c)(3) status, reporting practices, and the standards guiding our use of your gifts in Texas.",
+  alternates: { canonical: "/financial-transparency" },
 };
 
 const COMMITMENTS = [
@@ -26,7 +27,7 @@ const COMMITMENTS = [
   },
   {
     title: "Our funding sources are disclosed",
-    body: "Our housing programs are funded by individual and corporate donors, grants, and community fundraising. Among our corporate donors is Bright Box Homes, a separate, independently operated company that donates a portion of revenue from each home it sells to FAITH Foundation. Because our funding sources are disclosed, donors can trace how gifts sustain our work over time.",
+    body: "Our housing programs are funded by individual and corporate donors, grants, and community fundraising. Among our corporate donors is Bright Box Homes, a separate, independently operated company. Bright Box Homes honors FAITH Foundation down payment assistance vouchers — applying a $2,500 voucher as a direct discount to qualifying buyers — and contributes an additional $2,500 charitable donation to FAITH Foundation for every home sold, creating a combined $5,000 benefit for families we serve. Because our funding sources are disclosed, donors can trace how gifts sustain our work over time.",
   },
   {
     title: "Donor privacy is protected",

@@ -7,6 +7,7 @@ export const metadata: Metadata = {
   title: "Emergency Bridge Housing — FAITH Foundation",
   description:
     "FAITH Foundation's Emergency Bridge Housing offers fast, short-term rental help that keeps Texas families housed and prevents eviction during a crisis.",
+  alternates: { canonical: "/programs/emergency" },
 };
 
 const ELIGIBILITY = [

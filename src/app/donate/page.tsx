@@ -9,6 +9,7 @@ export const metadata: Metadata = {
   title: "Donate — FAITH Foundation",
   description:
     "Donate to FAITH Foundation and help Texas families become homeowners through down payment assistance vouchers. Make a tax-deductible 501(c)(3) gift today.",
+  alternates: { canonical: "/donate" },
 };
 
 const TIERS = [

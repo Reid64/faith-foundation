@@ -8,6 +8,7 @@ export const metadata: Metadata = {
   title: "Our Team — FAITH Foundation",
   description:
     "Meet FAITH Foundation's board — Ron Landers, Pastor Juan Valdez, Scott Ellis, and Reid Whitesides — leading our mission to help Texas families reach homeownership.",
+  alternates: { canonical: "/team" },
 };
 
 const BOARD = [

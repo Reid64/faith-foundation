@@ -7,6 +7,7 @@ export const metadata: Metadata = {
   title: "News & Announcements — FAITH Foundation",
   description:
     "The latest from FAITH Foundation — program milestones, donor and grant announcements, and stories of Texas families reaching homeownership.",
+  alternates: { canonical: "/news" },
 };
 
 const NEWS = [

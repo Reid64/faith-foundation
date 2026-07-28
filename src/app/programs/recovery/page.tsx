@@ -6,6 +6,7 @@ export const metadata: Metadata = {
   title: "Recovery Housing — FAITH Foundation",
   description:
     "FAITH Foundation's Recovery Housing guides Texas residents from sober living to permanent, independent housing with structure, accountability, and support.",
+  alternates: { canonical: "/programs/recovery" },
 };
 
 const ELIGIBILITY = [

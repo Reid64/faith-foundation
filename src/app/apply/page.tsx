@@ -8,6 +8,7 @@ export const metadata: Metadata = {
   title: "Apply for Housing Assistance — FAITH Foundation",
   description:
     "Apply for housing assistance from FAITH Foundation, a 501(c)(3) nonprofit in Burnet, Texas — a confidential application for rent vouchers and eviction help.",
+  alternates: { canonical: "/apply" },
 };
 
 const STEPS_OVERVIEW = [

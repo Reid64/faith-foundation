@@ -9,6 +9,7 @@ export const metadata: Metadata = {
   title: "Programs — FAITH Foundation",
   description:
     "Explore FAITH Foundation's programs — homeownership, down payment vouchers, emergency and transitional housing, and supporting services across Texas.",
+  alternates: { canonical: "/programs" },
 };
 
 const PROGRAMS = [

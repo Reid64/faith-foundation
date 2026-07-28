@@ -6,6 +6,7 @@ export const metadata: Metadata = {
   title: "Privacy Policy — FAITH Foundation",
   description:
     "How FAITH Foundation collects, uses, and protects your personal information, including your rights under GDPR and the CCPA/CPRA. A Texas 501(c)(3).",
+  alternates: { canonical: "/privacy-policy" },
 };
 
 const SECTIONS = [

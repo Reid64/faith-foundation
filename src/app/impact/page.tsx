@@ -9,6 +9,7 @@ export const metadata: Metadata = {
   title: "Our Impact — FAITH Foundation",
   description:
     "See FAITH Foundation's measurable impact across Texas — down payment vouchers funded, families served, dollars stewarded, and neighbors who became owners.",
+  alternates: { canonical: "/impact" },
 };
 
 const METRICS = [

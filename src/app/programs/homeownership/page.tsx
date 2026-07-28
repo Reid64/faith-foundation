@@ -8,6 +8,7 @@ export const metadata: Metadata = {
   title: "Homeownership Counseling — FAITH Foundation",
   description:
     "FAITH Foundation's homeownership counseling prepares Texas families to buy with confidence — covering mortgages, budgets, credit, and down payment help.",
+  alternates: { canonical: "/programs/homeownership" },
 };
 
 const STEPS = [

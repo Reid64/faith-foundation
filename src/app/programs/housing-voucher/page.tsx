@@ -9,6 +9,7 @@ export const metadata: Metadata = {
   title: "Housing Voucher Program — FAITH Foundation",
   description:
     "FAITH Foundation's Housing Voucher Program turns donor generosity into down payment assistance that helps Texas families reach homeownership.",
+  alternates: { canonical: "/programs/housing-voucher" },
 };
 
 const STEPS = [

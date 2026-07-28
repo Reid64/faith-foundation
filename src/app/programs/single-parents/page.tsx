@@ -7,6 +7,7 @@ export const metadata: Metadata = {
   title: "Single Parent Stability — FAITH Foundation",
   description:
     "FAITH Foundation's Single Parent Stability program offers affordable housing, childcare navigation, and financial coaching for Texas single-parent families.",
+  alternates: { canonical: "/programs/single-parents" },
 };
 
 const ELIGIBILITY = [

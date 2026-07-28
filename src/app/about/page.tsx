@@ -9,6 +9,7 @@ export const metadata: Metadata = {
   title: "About Us — FAITH Foundation",
   description:
     "Learn FAITH Foundation's mission, vision, values, and story — a 501(c)(3) nonprofit helping Texas families reach homeownership through down payment help.",
+  alternates: { canonical: "/about" },
 };
 
 const CORE_VALUES = [

@@ -6,6 +6,7 @@ export const metadata: Metadata = {
   title: 'Cornerstone Communities Program | FAITH Foundation',
   description:
     "FAITH Foundation builds purpose-built Cornerstone Communities on donated land — with on-site support, resource centers, and transitional housing in Texas.",
+  alternates: { canonical: "/programs/cornerstone-communities" },
 };
 
 type CommunityFeature = {

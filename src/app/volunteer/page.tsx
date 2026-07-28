@@ -5,6 +5,7 @@ export const metadata: Metadata = {
   title: "Volunteer — FAITH Foundation",
   description:
     "Volunteer with FAITH Foundation in Burnet, Texas — tutor financial literacy, coach tenancy skills, support events, or serve as a community ambassador.",
+  alternates: { canonical: "/volunteer" },
 };
 
 const OPPORTUNITIES = [

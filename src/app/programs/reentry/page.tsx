@@ -8,6 +8,7 @@ export const metadata: Metadata = {
   title: "Second Chance Reentry — FAITH Foundation",
   description:
     "FAITH Foundation's Second Chance Reentry offers post-incarceration housing, case management, and job support to help Texans returning home rebuild.",
+  alternates: { canonical: "/programs/reentry" },
 };
 
 const ELIGIBILITY = [

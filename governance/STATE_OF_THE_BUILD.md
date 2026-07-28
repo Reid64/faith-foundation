@@ -459,3 +459,62 @@ build commands are approved.
 > Build PASSED (0 TS errors, 31/31 pages); deployed via `vercel --prod` (READY, aliased to
 > https://www.faithfoundationsf.org). Verified live: "Mary Ann" and the new opening present, old
 > mission-restatement line gone.
+
+> 2026-07-24 [SEO — per-page canonical URLs]: Fixed the sitewide canonical bug where every
+> interior page inherited `canonical: "/"` from `layout.tsx` (Lighthouse SEO 92 instead of 100).
+> (1) Removed `alternates: { canonical: "/" }` from the root metadata in `src/app/layout.tsx` so
+> it is no longer inherited. (2) Added `alternates: { canonical: "<own-path>" }` to the metadata
+> export of all 24 listed page files (home "/", about, team, programs + 9 program subpages,
+> impact, financial-transparency, donate, apply, contact, events, faq, blog, news, volunteer,
+> privacy-policy). The two governance pages (`/governance`, `/governance/donor-privacy`) already
+> had their own canonicals and were left as-is. Verified: layout has 0 canonical; 26 total
+> canonical values across page files, no duplicates, all 24 targets present. Built HTML confirms
+> each page now emits `<link rel="canonical">` to its OWN URL (e.g. /programs/recovery/, /about/,
+> home /) — no interior page points to bare root. Build PASSED (0 TS errors, 31/31 pages);
+> deployed via `vercel --prod` (READY, aliased to https://www.faithfoundationsf.org); live
+> canonical tags verified self-referencing on 8 sampled pages.
+> Expected Lighthouse SEO improvement 92 → 100 (the "valid rel=canonical" audit now passes).
+> NOTE: Lighthouse CLI was NOT run in this environment (no headless Chrome/lighthouse available) —
+> the canonical fix was verified directly against the served HTML instead; no score was fabricated.
+> LOGO WEBP (remaining perf optimization, NOT done): the header logo is served as PNG
+> (`/Images/faith-foundation-logo.png`, ~407 KB, referenced in `SiteHeader.tsx`); no `.webp`
+> version exists on disk, so the reference was left as PNG. Exporting a WebP (e.g. via sharp) and
+> pointing SiteHeader at it would shrink the logo substantially and recover the remaining
+> Performance points — flagged here as a follow-up.
+
+> 2026-07-24 [PERF — logo converted to WebP]: Completed the WebP follow-up flagged in the prior
+> canonical entry. (1) Installed `sharp` as a devDependency. (2) Converted
+> `public/Images/faith-foundation-logo.png` (407,417 bytes) to
+> `public/Images/faith-foundation-logo.webp` at quality 90 — **22,136 bytes, a ~94.6% reduction**
+> (800×800). (3) Updated the header `<Image>` src in `src/components/SiteHeader.tsx` from the PNG
+> to the WebP. (4) Added a high-priority preload hint as the FIRST child of `<head>` in
+> `src/app/layout.tsx`: `<link rel="preload" as="image" href="/Images/faith-foundation-logo.webp"
+> fetchPriority="high" />`. NOTE: the Open Graph / Twitter / JSON-LD social image (`OG_IMAGE` in
+> layout.tsx) was deliberately LEFT as PNG — several social platforms do not reliably render WebP
+> share images. Build PASSED (0 TS errors, 31/31 pages); deployed via `vercel --prod`. Verified
+> LIVE: home page emits the preload tag and the header references the WebP; the asset serves
+> HTTP 200 with `Content-Type: image/webp` and `Content-Length: 22136`.
+> ✅ LOGO WEBP FOLLOW-UP ITEM CLEARED — the header logo is now served as WebP with a preload hint;
+> no outstanding logo-format optimization remains.
+
+> 2026-07-27 [Maintenance — Bright Box Homes description corrected sitewide]: The prior copy
+> described the arrangement vaguely as Bright Box Homes donating "a portion of revenue from each
+> home it sells," which understated and misstated the actual relationship. Corrected in THREE
+> files to state the **two distinct benefits**: (1) Bright Box Homes **honors FAITH Foundation
+> down payment assistance vouchers**, applying a **$2,500 voucher as a direct discount** to
+> qualifying buyers, and (2) Bright Box Homes makes a **separate $2,500 charitable donation** to
+> FAITH Foundation **for every home sold** — a combined **$5,000 benefit** for the families we
+> serve. EDITS: (a) `src/app/faq/page.tsx` — the "How is FAITH Foundation funded?" answer
+> (`FAQS` array) rewritten; because the FAQ's JSON-LD `FAQPage` block is generated from that same
+> `FAQS` array, the structured data updated automatically and cannot drift from the visible copy.
+> (b) `src/app/financial-transparency/page.tsx` — the "Our funding sources are disclosed"
+> commitment `body` rewritten. (c) `src/app/page.tsx` — the homepage Mission-section attribution
+> paragraph (the green left-border callout) rewritten to the same accurate language; all
+> surrounding JSX (`Reveal` wrappers, Tailwind classes, CTA links) left intact. The
+> "separate, independently operated company" disclosure was preserved in all three places.
+> Build: `pnpm run build` PASSED — compiled successfully, 0 TypeScript errors, 31/31 static pages
+> (only the pre-existing `@next/next/no-img-element` warnings). NOTE: the local `postbuild`
+> (`pnpm dlx next-sitemap`) failed on an npm-registry network timeout — a local fetch issue, not a
+> code error, and non-fatal by design (`|| exit 0`); it ran normally on the Vercel build. Deployed
+> via `vercel --prod` — deployment `dpl_EyYKsLpAhJVyBNNTfECFJxi2hdpv` READY, aliased to
+> https://www.faithfoundationsf.org.

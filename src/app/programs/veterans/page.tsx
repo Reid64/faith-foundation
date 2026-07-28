@@ -9,6 +9,7 @@ export const metadata: Metadata = {
   title: "Veterans Path Home — FAITH Foundation",
   description:
     "FAITH Foundation's Veterans Path Home helps Texas veterans secure stable, affordable housing through rental assistance, case management, and benefits help.",
+  alternates: { canonical: "/programs/veterans" },
 };
 
 const ELIGIBILITY = [

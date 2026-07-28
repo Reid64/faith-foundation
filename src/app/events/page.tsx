@@ -5,6 +5,7 @@ export const metadata: Metadata = {
   title: "Events — FAITH Foundation",
   description:
     "Join FAITH Foundation at upcoming Central Texas events — financial-literacy workshops, volunteer days, donor gatherings, and community fundraisers.",
+  alternates: { canonical: "/events" },
 };
 
 const EVENTS = [

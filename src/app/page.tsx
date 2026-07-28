@@ -12,6 +12,7 @@ import BackgroundSwirls from "@/components/BackgroundSwirls";
 export const metadata: Metadata = {
   description:
     "FAITH Foundation is a 501(c)(3) nonprofit in Burnet, Texas helping families statewide reach homeownership through down payment assistance vouchers.",
+  alternates: { canonical: "/" },
 };
 
 const PILLARS = [
@@ -158,8 +159,10 @@ export default function Home() {
             <Reveal delay={300}>
               <p className="mt-4 border-l-4 border-green/40 pl-5 text-base leading-relaxed text-charcoal/70">
                 Our housing vouchers are funded in part by corporate donors
-                including Bright Box Homes, which contributes a portion of
-                revenue from each home sold.
+                including Bright Box Homes, which honors our $2,500 down payment
+                assistance vouchers as a direct discount to qualifying buyers
+                and donates an additional $2,500 to FAITH Foundation for every
+                home sold.
               </p>
             </Reveal>
             <Reveal delay={340}>

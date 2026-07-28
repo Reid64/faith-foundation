@@ -6,6 +6,7 @@ export const metadata: Metadata = {
   title: "Contact Us — FAITH Foundation",
   description:
     "Contact FAITH Foundation in Burnet, TX at 888-497-6620 about housing assistance, donations, volunteering, or corporate giving. We respond personally.",
+  alternates: { canonical: "/contact" },
 };
 
 const MAP_QUERY = encodeURIComponent(

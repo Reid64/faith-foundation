@@ -7,6 +7,7 @@ export const metadata: Metadata = {
   title: "Blog — FAITH Foundation",
   description:
     "Stories and updates from FAITH Foundation on how community donations fund down payment assistance and help Texas families reach homeownership.",
+  alternates: { canonical: "/blog" },
 };
 
 const POSTS = [

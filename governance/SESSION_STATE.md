@@ -181,3 +181,40 @@ confirm HTTPS + the live domain at deploy. No gate result was fabricated (Iron L
   not a spare-time hobby. Only Reid's `bio` array changed — nothing else in the file.
 - **Gates:** `pnpm run build` ✅ PASS (0 TS errors, 31/31 pages). Deploy ✅ READY / aliased.
   Verified live: "Mary Ann" + new opening present, old mission-restatement line gone.
+
+## 2026-07-24 — Per-page canonical URLs (SEO fix)
+- **Root canonical removed** from `layout.tsx` (`alternates: { canonical: "/" }`) so interior
+  pages no longer inherit it. **Added `alternates.canonical` to all 24 listed page files**
+  (each pointing to its own path). The two governance pages already had canonicals — left as-is.
+- Verified: layout 0 canonical; 26 canonical values across page files, no duplicates, all targets
+  present; built + live HTML each emit `<link rel="canonical">` to the page's OWN URL (no interior
+  page points to bare root).
+- **Expected Lighthouse SEO 92 → 100** (valid rel=canonical audit now passes). Lighthouse CLI not
+  runnable in this environment — verified canonical tags directly in served HTML instead (no score
+  fabricated).
+- **Logo WebP flagged** as remaining perf optimization: header logo still served as PNG (~407 KB);
+  no `.webp` exists, so reference left as PNG — exporting a WebP would recover the remaining points.
+  (Cleared in a later session — logo now served as WebP with a preload hint.)
+- **Gates:** `pnpm run build` ✅ PASS (0 TS errors, 31/31 pages). Deploy ✅ READY / aliased.
+
+## 2026-07-27 — Bright Box Homes description corrected (3 files)
+- **Why:** the old copy ("donates a portion of revenue from each home it sells") was vague and
+  inaccurate. The real arrangement is **two distinct benefits**: Bright Box Homes **honors FAITH
+  Foundation down payment assistance vouchers** — a **$2,500 voucher applied as a direct discount**
+  to qualifying buyers — **and** makes a **separate $2,500 charitable donation** to FAITH
+  Foundation **for every home sold**, a combined **$5,000 benefit** to the families we serve.
+- **Files changed:**
+  - `src/app/faq/page.tsx` — "How is FAITH Foundation funded?" answer in the `FAQS` array. The
+    page's JSON-LD `FAQPage` schema is generated from this same array, so the structured data
+    updated with it (no drift between markup and visible copy).
+  - `src/app/financial-transparency/page.tsx` — "Our funding sources are disclosed" commitment body.
+  - `src/app/page.tsx` — homepage Mission-section attribution paragraph (green left-border
+    callout); surrounding JSX (`Reveal` wrappers, classes, CTAs) untouched.
+- The "separate, independently operated company" disclosure was retained in all three places.
+- **Gates:** `pnpm run build` ✅ PASS (compiled successfully, 0 TS errors, 31/31 pages; only the
+  pre-existing `no-img-element` warnings). Local `postbuild` (`pnpm dlx next-sitemap`) failed on an
+  npm-registry network timeout — non-fatal by design (`|| exit 0`), a local fetch issue not a code
+  error; it ran normally in the Vercel build.
+- **Deploy:** `vercel --prod` ✅ READY (`dpl_EyYKsLpAhJVyBNNTfECFJxi2hdpv`), aliased to
+  https://www.faithfoundationsf.org.
+- **Last updated:** 2026-07-27

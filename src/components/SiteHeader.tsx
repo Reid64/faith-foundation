@@ -54,7 +54,7 @@ export default function SiteHeader() {
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-0 sm:px-8">
         <Link href="/" className="group flex items-center" aria-label="FAITH Foundation home">
           <Image
-            src="/Images/faith-foundation-logo.png"
+            src="/Images/faith-foundation-logo.webp"
             alt="FAITH Foundation logo"
             width={300}
             height={200}

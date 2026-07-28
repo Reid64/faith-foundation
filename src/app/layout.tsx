@@ -34,7 +34,6 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: SITE_TITLE,
   description: SITE_DESCRIPTION,
-  alternates: { canonical: "/" },
   openGraph: {
     type: "website",
     url: SITE_URL,
@@ -113,6 +112,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        {/* Preload the header logo — it is the LCP-adjacent brand mark on
+            every page, so fetch it at high priority right away. */}
+        <link rel="preload" as="image" href="/Images/faith-foundation-logo.webp" fetchPriority="high" />
         {/* Warm up the connection to the remote image host before any
             eager hero image on interior pages is discovered. */}
         <link rel="preconnect" href="https://images.unsplash.com" crossOrigin="" />

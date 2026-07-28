@@ -8,6 +8,7 @@ export const metadata: Metadata = {
   title: "Financial Literacy — FAITH Foundation",
   description:
     "FAITH Foundation's financial-literacy program helps Texas families prepare for and sustain homeownership through budgeting, credit, and debt guidance.",
+  alternates: { canonical: "/programs/financial-literacy" },
 };
 
 const FOCUS_AREAS = [
