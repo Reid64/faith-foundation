@@ -1,7 +1,16 @@
 # faith-foundation — STATE OF THE BUILD
 
 > Updated from a LIVE codebase audit on 2026-08-14 (BLUEPRINT Canonical Rule 9).
-> Last action: **Comprehensive cleanup pass (8 tasks)** — retired **Financial Literacy** and
+> Last action: **`next-sitemap` made the single source of truth for sitemap.xml + robots.txt.**
+> Two passes: (1) config fixed — `/icon.png` and the three retired program URLs excluded,
+> per-page priorities set (`/` 1.0, `/donate` 0.9, the five key section pages 0.8, everything
+> else 0.7) and `changefreq: weekly` applied to every entry via a `transform` function;
+> (2) the stale committed fallbacks `public/sitemap.xml` and `public/robots.txt` were **DELETED**,
+> ending the dual-source conflict. Build PASSED both times, deployed `vercel --prod` both times,
+> verified LIVE: 23 URLs, all on the **www** host, zero excluded routes, both files HTTP 200.
+> See the two 2026-08-14 log entries at the end of this file.
+>
+> Prior action: **Comprehensive cleanup pass (8 tasks)** — retired **Financial Literacy** and
 > **Single Parent Stability** as programs, removed **rental assistance** language from
 > Veterans/Recovery/Reentry, added an **applicant vetting transparency** section to Recovery
 > and Reentry, added a **development roadmap** to Cornerstone Communities, and verified the
@@ -399,9 +408,12 @@ build commands are approved.
 - **Per-page metadata:** unique `title` + `description` on **every** page (all `page.tsx`
   export `metadata`; home inherits the unique root metadata from `layout.tsx`).
 - **SEO files:** `next-sitemap` configured (`next-sitemap.config.js` + non-fatal `postbuild`
-  via `pnpm dlx next-sitemap`) → generates `out/sitemap.xml` + `out/robots.txt` on deploy;
-  committed static `public/sitemap.xml` (24 routes) + `public/robots.txt` fallback guarantee
-  both at the site root from the first export.
+  via `pnpm dlx next-sitemap`) → generates `out/sitemap.xml` + `out/robots.txt` on deploy.
+  It is the **single source of truth** for both files as of 2026-08-14: the committed static
+  `public/sitemap.xml` + `public/robots.txt` fallbacks were DELETED because they had gone stale
+  (non-www host, missing routes) and could ship instead of the generated files if `postbuild`
+  ever failed. The sitemap carries per-page priorities and `changefreq: weekly` via a
+  `transform`, and excludes `/icon.png` plus the three retired program routes.
 - **Nav links defined:** 6 header links — Home, About, **Programs**, **Partnership**,
   **Donate**, **Contact** — all built (no 404s in primary nav). The **footer now links every
   page** (Get Involved: Donate/Apply/Volunteer/Partnership/Events; Learn More:
@@ -734,3 +746,92 @@ build commands are approved.
 > Deployed via `vercel --prod` — deployment `dpl_83Cjab4RL7WtwnZtb3fXYcRj2QYd` READY, target
 > production. Verified LIVE at https://www.faithfoundationsf.org/events/: both confirmed events
 > present, ZERO occurrences of any of the five fabricated events.
+
+> 2026-08-14 [SEO — next-sitemap config corrected: exclusions, priorities, changefreq]: The
+> generated sitemap was advertising a non-page asset and treating every URL as equally important.
+> FIXED in `next-sitemap.config.js` (the ONLY file changed):
+> (1) **`/icon.png` excluded.** The App Router emits `src/app/icon.png` as a route — it appears in
+> the Next.js build manifest as `○ /icon.png` — so next-sitemap was scanning it out of `out/` and
+> listing a PNG favicon as a crawlable page. Both `/icon.png` and `/icon.png/` were added to
+> `exclude` (the trailing-slash variant is required because `trailingSlash: true` is set).
+> (2) **Retired program URLs excluded** — `/programs/emergency`, `/programs/financial-literacy`,
+> `/programs/single-parents`, each with its trailing-slash variant. NOTE: these six entries were
+> ALREADY present from the 2026-08-14 cleanup pass and were verified, not newly added; the brief
+> asked for them and they are confirmed correct. Those routes exist only as 308 redirects to
+> `/programs/` and must never be advertised as destinations.
+> (3) **Per-page priorities set** via a new `transform` function, since next-sitemap's top-level
+> `priority` is a flat default and cannot express a hierarchy. A `PRIORITY_BY_PATH` map holds the
+> overrides — `/` = **1.0**, `/donate` = **0.9**, and `/programs`, `/about`, `/contact`,
+> `/impact`, `/financial-transparency` = **0.8** — with `DEFAULT_PRIORITY` = **0.7** for every
+> other page. The transform strips trailing slashes before lookup (`path.replace(/\/+$/, "")`,
+> with the home page normalizing to `""`) so the map resolves correctly under `trailingSlash: true`;
+> keying the map on unslashed paths alone would have silently fallen through to 0.7 for all seven
+> overrides. `lastmod` is passed through guarded on `config.autoLastmod` so defining a custom
+> transform does not drop next-sitemap's default lastmod behaviour.
+> (4) **`changefreq: "weekly"`** set explicitly inside the transform as well as at the top level —
+> a custom `transform` REPLACES the default field generation, so the top-level `changefreq` alone
+> would have produced entries with no `<changefreq>` element at all.
+> (5) `siteUrl` confirmed as `https://www.faithfoundationsf.org` (already correct — the **www**
+> host is canonical and matches the Vercel alias).
+> Build: `pnpm run build` PASSED — 0 TypeScript errors, 31/31 static pages, `postbuild`
+> (`pnpm dlx next-sitemap`) completed normally and regenerated `out/sitemap.xml` (1 sitemap, 0
+> index sitemaps). Deployed via `vercel --prod` — deployment `dpl_Eja29QcsJs6VRhizzjAFRFN81AUh`
+> READY, target production, aliased to https://www.faithfoundationsf.org.
+> VERIFIED LIVE at https://www.faithfoundationsf.org/sitemap.xml: **23 `<url>` entries**; grep for
+> `icon.png`, `/emergency`, `financial-literacy`, `single-parents` returns **0 hits**; every `<loc>`
+> uses the **www** host; priority distribution is exactly **1 × 1.0, 1 × 0.9, 5 × 0.8, 16 × 0.7**
+> and all 23 entries carry `<changefreq>weekly</changefreq>`.
+>
+> ⚠️ FOLLOW-UP ITEM OPENED — stale hand-maintained `public/sitemap.xml`: `public/sitemap.xml` still
+> exists and is now DEAD but MISLEADING. It lists **21 URLs on the non-www host**
+> (`https://faithfoundationsf.org/...`), omits `/governance/` and `/governance/donor-privacy/`, and
+> predates this work. It currently has no live effect ONLY because of build ordering: `next build`
+> copies `public/` into `out/`, then `postbuild` runs next-sitemap which OVERWRITES
+> `out/sitemap.xml` with the generated file — confirmed, the deployed sitemap is the 23-URL www
+> version. The risk is that the two files silently disagree, and any future change that reorders
+> or skips `postbuild` (it is deliberately non-fatal — `pnpm dlx next-sitemap || exit 0`, and it
+> HAS failed on a network timeout before, see 2026-07-27) would publish the stale non-www sitemap
+> instead. `public/robots.txt` has the same shape of conflict with the generated `out/robots.txt`.
+> RECOMMENDED: delete both `public/sitemap.xml` and `public/robots.txt` and let next-sitemap be the
+> single source of truth. NOT DONE — outside the scope of this brief; flagged for an explicit
+> decision.
+> ✅ **CLEARED same day** — the deletion was approved and executed; see the next log entry.
+
+> 2026-08-14 [SEO — static sitemap/robots fallbacks DELETED; next-sitemap is now the single
+> source of truth]: Follow-up to the config fix logged immediately above, executed on explicit
+> approval. DELETED (via `git rm`, both were tracked): **`public/sitemap.xml`** and
+> **`public/robots.txt`**. No other file changed.
+> WHY: the two files were a second, hand-maintained source of truth that had drifted badly.
+> `public/sitemap.xml` listed **21 URLs on the non-www host** (`https://faithfoundationsf.org/...`,
+> contradicting the `www` canonical), omitted `/governance/` and `/governance/donor-privacy/`,
+> and still carried none of the priority/changefreq work. It had no live effect ONLY because of
+> build ordering — `next build` copies `public/` into `out/`, then `postbuild` overwrites
+> `out/sitemap.xml` with the generated file. That safety was incidental, not designed: `postbuild`
+> is deliberately non-fatal (`pnpm dlx next-sitemap || exit 0`) and HAS failed before on an
+> npm-registry network timeout (logged 2026-07-27). Had that happened on a Vercel build, the
+> stale non-www 21-URL sitemap would have shipped to production and been served to crawlers as
+> authoritative.
+> SAFETY CHECK BEFORE DELETING: `public/robots.txt` was diffed against the generated
+> `out/robots.txt` — semantically identical (same `User-agent: *` / `Allow: /` policy, same
+> `Host:`, same `Sitemap:` pointer; the generated file differs only in comment headers), so no
+> directive was lost. A repo-wide grep for `sitemap.xml` / `robots.txt` outside
+> `node_modules|.next|out|.git` returned **zero references from source** — every remaining hit is
+> prose in `governance/` or `PRD.md`. Nothing imports, copies, or links these files.
+> ACCEPTED TRADE-OFF: with no committed fallback, a `postbuild` failure now yields **no**
+> sitemap/robots at the site root rather than a stale one. This is the better failure mode — a
+> 404 tells Google "not available, retry", whereas a stale sitemap actively asserts wrong,
+> non-canonical URLs. If a fallback is ever wanted again it must be GENERATED, never
+> hand-maintained.
+> Build: `pnpm run build` PASSED — 0 TypeScript errors, 31/31 static pages; `postbuild`
+> (`pnpm dlx next-sitemap`) completed normally and wrote both `out/sitemap.xml` (4250 bytes, 23
+> URLs) and `out/robots.txt` (142 bytes) from scratch with no `public/` copy underneath them,
+> confirming next-sitemap alone produces both.
+> Deployed via `vercel --prod` — deployment `dpl_5YoGNPQyKMgBGjtfdCoyRnLYSYjA` READY, target
+> production, aliased to https://www.faithfoundationsf.org.
+> VERIFIED LIVE: `/sitemap.xml` → **HTTP 200**, **23 `<url>` entries**, **all 23 `<loc>` on the
+> www host** (0 non-www — the drift is gone), **0 hits** for `icon.png` / `/emergency` /
+> `financial-literacy` / `single-parents`, and **both governance pages present** (they were
+> missing from the deleted static file). `/robots.txt` → **HTTP 200**, serving the generated
+> policy with the correct `www` `Host:` and `Sitemap:` pointer.
+> ✅ FOLLOW-UP ITEM CLEARED — the dual-source sitemap/robots conflict opened in the entry above is
+> resolved; `next-sitemap.config.js` is now the ONLY place either file is defined.

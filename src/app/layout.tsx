@@ -1,10 +1,10 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 
-// Body / UI typeface — clean, highly legible humanist sans. Used in the
+// Body / UI typeface â€” clean, highly legible humanist sans. Used in the
 // above-the-fold hero headline, so it stays on the preload critical path.
 const inter = Inter({
   subsets: ["latin"],
@@ -12,7 +12,7 @@ const inter = Inter({
   display: "swap",
 });
 
-// Display typeface — only renders in below-the-fold / decorative spots
+// Display typeface â€” only renders in below-the-fold / decorative spots
 // (drop-caps, oversized quote marks, footer wordmark, error pages), so we
 // keep it OFF the preload critical path and ship only the weights we use.
 const playfair = Playfair_Display({
@@ -25,7 +25,7 @@ const playfair = Playfair_Display({
 
 const SITE_URL = "https://www.faithfoundationsf.org";
 const SITE_TITLE =
-  "FAITH Foundation — Foundation for Affordable Instruction and Tenancy Hope";
+  "FAITH Foundation â€” Foundation for Affordable Instruction and Tenancy Hope";
 const SITE_DESCRIPTION =
   "FAITH Foundation is a 501(c)(3) nonprofit based in Burnet, Texas helping families across Texas achieve homeownership through down payment assistance vouchers.";
 const OG_IMAGE = "/Images/faith-foundation-logo.png";
@@ -62,7 +62,7 @@ const ORGANIZATION_SCHEMA = {
   "@type": "NGO",
   name: "FAITH Foundation",
   legalName:
-    "FAITH Foundation — Foundation for Affordable Instruction and Tenancy Hope",
+    "FAITH Foundation â€” Foundation for Affordable Instruction and Tenancy Hope",
   alternateName: "Foundation for Affordable Instruction and Tenancy Hope",
   url: SITE_URL,
   description: SITE_DESCRIPTION,
@@ -112,8 +112,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        {/* Preload the header logo — it is the LCP-adjacent brand mark on
+        {/* Preload the header logo â€” it is the LCP-adjacent brand mark on
             every page, so fetch it at high priority right away. */}
+        <meta name="google-site-verification" content="MFmAYirdT2b-A8fwBlQZYA0I2NAPON88ebDLday6ww0" />
         <link rel="preload" as="image" href="/Images/faith-foundation-logo.webp" fetchPriority="high" />
         {/* Warm up the connection to the remote image host before any
             eager hero image on interior pages is discovered. */}
@@ -142,5 +143,6 @@ export default function RootLayout({
     </html>
   );
 }
+
 
 

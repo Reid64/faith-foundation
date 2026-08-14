@@ -1,17 +1,30 @@
 # faith-foundation — SESSION STATE
 
-> Tracks the live execution session. Updated after a **comprehensive cleanup pass (8 tasks)**:
+> Tracks the live execution session. LATEST: **`next-sitemap` made the single source of truth
+> for `sitemap.xml` + `robots.txt`** (2026-08-14, two passes) — config corrected (exclusions,
+> per-page priorities, weekly changefreq) and the stale committed `public/sitemap.xml` +
+> `public/robots.txt` fallbacks deleted. Both passes built clean and deployed to production;
+> verified live at 23 www URLs. See "## 2026-08-14 — next-sitemap single source of truth" at the
+> end of this file.
+>
+> PRIOR: a **comprehensive cleanup pass (8 tasks)**:
 > Financial Literacy and Single Parent Stability retired as programs, rental-assistance language
 > removed from Veterans/Recovery/Reentry, applicant vetting transparency added to Recovery and
 > Reentry, a development roadmap added to Cornerstone Communities, and Tasks 6–8 (About faith
 > paragraph, StatCounter SSR fix, Contact geographic copy) verified already applied.
 
-- **Current phase:** Phase 3 (Build Executor) — comprehensive cleanup pass
-- **Current prompt:** comprehensive cleanup (8 tasks) — delete Financial Literacy; delete Single
-  Parent Stability; remove all rental-assistance language from Veterans/Recovery/Reentry; add
-  applicant vetting transparency to Recovery + Reentry; add the Cornerstone Communities
-  development roadmap; About faith paragraph; StatCounter SSR fix; Contact geographic language;
-  then build and deploy.
+- **Current phase:** Phase 3 (Build Executor) — SEO / sitemap ownership pass
+- **Current prompt:** fix `next-sitemap.config.js` (exclude `/icon.png` and the three retired
+  program URLs; set per-page priorities; `changefreq: weekly`; confirm `siteUrl`), then — on
+  follow-up approval — delete the stale `public/sitemap.xml` and `public/robots.txt` so
+  next-sitemap owns both; build and deploy after each pass.
+- **Prompt outcome:** COMPLETE, both passes. Build PASSED each time (0 TypeScript errors, 31/31
+  static pages); `vercel --prod` READY each time; verified live at 23 www URLs with correct
+  priorities and no excluded routes. Full detail in
+  "## 2026-08-14 — next-sitemap single source of truth" at the end of this file.
+
+### Prior prompt this session (comprehensive cleanup, 8 tasks)
+
 - **Prompt outcome:** ALL 8 tasks COMPLETE. `pnpm run build` PASSED (exit 0, 0 TypeScript
   errors, 31/31 static pages generated, next-sitemap regenerated). Only pre-existing
   `@next/next/no-img-element` lint warnings remain — no new warnings introduced. Tasks 6, 7,
@@ -366,3 +379,50 @@ confirm HTTPS + the live domain at deploy. No gate result was fabricated (Iron L
   Verified live at https://www.faithfoundationsf.org/events/ — both confirmed events present,
   **zero** occurrences of any fabricated event.
 - **Last updated:** 2026-08-04
+
+## 2026-08-14 — next-sitemap single source of truth (sitemap.xml + robots.txt)
+
+Two passes, both built and deployed to production.
+
+**Pass 1 — `next-sitemap.config.js` corrected.**
+
+| File | Change |
+| --- | --- |
+| `next-sitemap.config.js` | `/icon.png` (+ trailing-slash variant) added to `exclude` — the App Router emits `src/app/icon.png` as a route (`○ /icon.png` in the build manifest), so a favicon was being listed as a crawlable page. Added a `transform` function setting per-page `priority` from a `PRIORITY_BY_PATH` map (`/` 1.0, `/donate` 0.9, `/programs` `/about` `/contact` `/impact` `/financial-transparency` 0.8, default 0.7) and `changefreq: "weekly"` on every entry. The six retired-program exclusions and `siteUrl` were already correct and were verified, not re-added. |
+
+Two details that would have silently broken it: the transform strips trailing slashes before the
+priority lookup (`trailingSlash: true` means paths arrive as `/donate/`, so an unslashed map would
+have fallen through to 0.7 for all seven overrides); and `changefreq` is set INSIDE the transform
+because a custom `transform` replaces default field generation, so the top-level value alone would
+have emitted no `<changefreq>` element at all.
+
+**Pass 2 — stale static fallbacks deleted.**
+
+| File | Change |
+| --- | --- |
+| `public/sitemap.xml` | **DELETED** (`git rm`). Listed 21 URLs on the **non-www** host, contradicting the `www` canonical, and omitted `/governance/` + `/governance/donor-privacy/`. |
+| `public/robots.txt` | **DELETED** (`git rm`). Diffed against the generated `out/robots.txt` first — semantically identical, no directive lost. |
+
+These were a second hand-maintained source of truth that had drifted. They were inert only by
+build ordering (`next build` copies `public/` → `out/`, then `postbuild` overwrites
+`out/sitemap.xml`), and `postbuild` is non-fatal (`|| exit 0`) and has failed before on a network
+timeout (2026-07-27) — which would have shipped the stale non-www sitemap as authoritative.
+Repo-wide grep confirmed **zero source references** to either file before deleting.
+
+**Accepted trade-off:** a `postbuild` failure now yields no sitemap/robots rather than a stale
+one — the better failure mode, since a 404 tells Google to retry while a stale sitemap asserts
+wrong URLs. Any future fallback must be generated, never hand-maintained.
+
+- **Build:** `pnpm run build` PASSED both passes — 0 TypeScript errors, 31/31 static pages,
+  `postbuild` completed normally each time.
+- **Deploy:** `vercel --prod` ✅ READY both passes — `dpl_Eja29QcsJs6VRhizzjAFRFN81AUh` (pass 1)
+  and `dpl_5YoGNPQyKMgBGjtfdCoyRnLYSYjA` (pass 2), target production, aliased to
+  https://www.faithfoundationsf.org.
+- **Verified live with `curl`:** `/sitemap.xml` → HTTP 200, **23 `<url>` entries**, all 23 `<loc>`
+  on the **www** host (0 non-www), **0 hits** for `icon.png` / `/emergency` /
+  `financial-literacy` / `single-parents`, both governance pages present, priority distribution
+  exactly **1 × 1.0, 1 × 0.9, 5 × 0.8, 16 × 0.7**, all entries `weekly`. `/robots.txt` → HTTP 200
+  with the correct `www` `Host:` and `Sitemap:` pointer.
+- **Note on history above:** the "Prior phase (superseded)" section still describes the committed
+  `public/` fallbacks as NEW. That is an accurate record of 2026-06-12 and was left intact; those
+  files no longer exist as of this entry.
