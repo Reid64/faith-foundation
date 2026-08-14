@@ -29,7 +29,7 @@ const PILLARS = [
   {
     eyebrow: "Pillar Two — Tenancy Hope",
     title: "Housing stability while families prepare to buy",
-    body: "Down payment vouchers, emergency bridge housing, and counseling keep Texas families securely housed today while they build toward ownership tomorrow — stopping a setback before it becomes a crisis.",
+    body: "Down payment vouchers, housing assistance, and referrals to HUD-approved counseling partners keep Texas families securely housed today while they build toward ownership tomorrow.",
     href: "/programs/housing-voucher",
     cta: "Explore housing assistance",
     image: PHOTOS.yellow,
@@ -86,7 +86,7 @@ export default function Home() {
             {[
               { value: 100, prefix: "", suffix: "%", label: "Of donations directed to our charitable housing mission" },
               { value: 100, prefix: "", suffix: "%", label: "Of vouchers directed to down payment assistance" },
-              { value: 8, prefix: "", suffix: "", label: "Programs opening the door to homeownership" },
+              { value: 6, prefix: "", suffix: "", label: "Programs opening the door to homeownership" },
               { value: 1, prefix: "", suffix: "", label: "501(c)(3) nonprofit serving families across Texas" },
             ].map((stat, i) => (
               <Reveal

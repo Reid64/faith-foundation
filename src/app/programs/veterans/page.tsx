@@ -8,7 +8,7 @@ import { Cite } from "@/components/Citations";
 export const metadata: Metadata = {
   title: "Veterans Path Home — FAITH Foundation",
   description:
-    "FAITH Foundation's Veterans Path Home helps Texas veterans secure stable, affordable housing through rental assistance, case management, and benefits help.",
+    "FAITH Foundation's Veterans Path Home helps Texas veterans secure stable, affordable housing through housing assistance, case management, and benefits help.",
   alternates: { canonical: "/programs/veterans" },
 };
 
@@ -21,8 +21,8 @@ const ELIGIBILITY = [
 
 const SUPPORTS = [
   {
-    title: "Rapid rental assistance",
-    body: "Short-term and bridge rental help that closes the gap between a veteran's income and the cost of safe housing — preventing eviction and ending homelessness fast.",
+    title: "Housing Stability Support",
+    body: "A direct connection to our housing vouchers and down payment assistance — the help that closes the gap between a veteran's income and the cost of safe, lasting housing they can call their own.",
   },
   {
     title: "Benefits navigation",
@@ -43,7 +43,7 @@ const CASE_STEPS = [
   {
     number: "02",
     title: "Stabilize",
-    body: "We move quickly to secure or protect safe housing, applying rental assistance where it closes the gap fastest.",
+    body: "We move quickly to secure or protect safe housing, applying down payment assistance and housing vouchers where they close the gap fastest.",
   },
   {
     number: "03",

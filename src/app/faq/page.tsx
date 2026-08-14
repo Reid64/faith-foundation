@@ -25,7 +25,7 @@ const FAQS = [
   {
     question: "Who does FAITH Foundation serve?",
     answer:
-      "We serve families and individuals across Texas who are working toward homeownership or facing housing instability. Our programs reach veterans, single parents, people in recovery, individuals reentering the community after incarceration, and families facing a housing emergency.",
+      "We serve families and individuals across Texas who are working toward homeownership or facing housing instability. Our programs reach veterans, single parents, people in recovery, individuals reentering the community after incarceration, and working families who cannot bridge the gap to a down payment on their own.",
   },
   {
     question: "How is FAITH Foundation funded?",
@@ -35,12 +35,12 @@ const FAQS = [
   {
     question: "What is a housing voucher and how do I qualify?",
     answer:
-      "Our vouchers provide down payment assistance — direct financial help that closes the gap between a family and the keys to their own home. Vouchers can also help families secure or maintain stable housing during a transition. Eligibility generally requires that you live in Texas, demonstrate a need, and partner with our case-management process. Specific criteria vary by program; apply or contact us to review your situation.",
+      "Our vouchers provide down payment assistance — direct financial help that closes the gap between a family and the keys to their own home. Eligibility generally requires that you live in Texas, demonstrate a need, and partner with our case-management process. Specific criteria vary by program; apply or contact us to review your situation.",
   },
   {
     question: "How do I apply for housing assistance?",
     answer:
-      "You can apply directly through our Apply for Housing Assistance page, which walks you through a short multi-step application covering your information, household, and current housing situation. If you are facing an urgent housing crisis, contact us right away and a real person will help you understand your options.",
+      "You can apply directly through our Apply for Housing Assistance page, which walks you through a short multi-step application covering your information, household, and current housing situation. If you would rather talk it through first, contact us and a real person will help you understand your options.",
   },
   {
     question: "Is there a cost to receive help from FAITH Foundation?",
@@ -55,7 +55,7 @@ const FAQS = [
   {
     question: "What educational or instruction programs do you offer?",
     answer:
-      "While down payment assistance toward homeownership is our primary mission, we offer supporting instruction to help families succeed as owners — including homeownership counseling and a financial-literacy program covering budgeting, credit repair, and debt management. These programs prepare families to buy and to keep the home they work so hard to reach.",
+      "While down payment assistance toward homeownership is our primary mission, we also help families prepare to succeed as owners. We connect applicants with HUD-approved homeownership counseling partners across Texas, whose certified coaches cover mortgage readiness, budgeting, credit, and debt as part of preparing for a home purchase. Together these prepare families to buy and to keep the home they work so hard to reach.",
   },
   {
     question: "Are donations to FAITH Foundation tax-deductible?",
@@ -65,7 +65,7 @@ const FAQS = [
   {
     question: "How is my donation used?",
     answer:
-      "Donations fund down payment assistance vouchers, emergency rental and deposit assistance, and our supporting instruction programs. We direct gifts toward measurable impact for families across Texas and report our outcomes openly, because transparent stewardship is a commitment we take seriously.",
+      "Donations fund down payment assistance vouchers, our housing voucher program, and the supporting instruction that helps families prepare for and sustain ownership. We direct gifts toward measurable impact for families across Texas and report our outcomes openly, because transparent stewardship is a commitment we take seriously.",
   },
   {
     question: "Can I donate by mail or do I have to give online?",
@@ -75,7 +75,7 @@ const FAQS = [
   {
     question: "How can I volunteer with FAITH Foundation?",
     answer:
-      "We welcome volunteers as financial-literacy tutors, tenancy coaches, event and fundraising helpers, office and administrative support, community ambassadors, and skilled professionals. Visit our Volunteer page to see opportunities and sign up; we will match you with a role that fits your time and gifts.",
+      "We welcome volunteers as tenancy and life-skills coaches, event and fundraising helpers, office and administrative support, community ambassadors, and skilled professionals. Visit our Volunteer page to see opportunities and sign up; we will match you with a role that fits your time and gifts.",
   },
   {
     question: "Where is FAITH Foundation located and what are your hours?",
@@ -95,7 +95,7 @@ const FAQS = [
   {
     question: "What is a housing voucher and how does it work?",
     answer:
-      "A housing voucher is direct financial assistance that helps a family cover a specific housing cost — for FAITH Foundation, that most often means the down payment needed to close on a home, or rental and deposit help during a transition. Rather than a loan, our vouchers are funded by individual and corporate donors and directed straight toward the gap standing between a family and stable housing. Each voucher is paired with case management and, where helpful, homebuyer instruction so families are set up to succeed. You can learn more on our Housing Voucher Program page.",
+      "A housing voucher is direct financial assistance that helps a family cover a specific housing cost — for FAITH Foundation, that means the down payment needed to close on a home of their own. Rather than a loan, our vouchers are funded by individual and corporate donors and directed straight toward the gap standing between a family and ownership. Each voucher is paired with case management and, where helpful, homebuyer instruction so families are set up to succeed. You can learn more on our Housing Voucher Program page.",
   },
   {
     question: "Can felons get housing assistance in Texas?",
@@ -105,7 +105,7 @@ const FAQS = [
   {
     question: "How do single mothers get help buying a home?",
     answer:
-      "Single mothers can get help buying a home through FAITH Foundation's down payment assistance vouchers combined with our Single Parent Stability program. Together they provide the cash-to-close support that is often the biggest barrier to ownership, along with childcare navigation, resource connections, and financial coaching. We also offer homeownership counseling so single-parent families can buy with confidence and keep their home for the long term. Apply online or call 888-497-6620 to talk through your situation.",
+      "Single parents are welcome to apply for down payment assistance through our Housing Voucher Program. Our vouchers provide the cash-to-close support that is often the biggest barrier to ownership for a single-income household. We also connect single-parent families with HUD-approved homeownership counseling partners so they can buy with confidence and keep their home for the long term. Apply online or call 888-497-6620 to talk through your situation.",
   },
   {
     question: "What is the difference between a housing voucher and Section 8?",
@@ -115,17 +115,17 @@ const FAQS = [
   {
     question: "How do I apply for first-time homebuyer programs in Texas?",
     answer:
-      "To apply for first-time homebuyer help through FAITH Foundation, start with our Apply for Housing Assistance page, which walks you through a short, confidential multi-step application. From there, our team pairs you with homeownership counseling and, if eligible, a down payment assistance voucher to help you close on your first home. We personally review every application — typically within three business days — and guide you on next steps. There is no cost to apply, and you can call 888-497-6620 with any questions.",
+      "To apply for first-time homebuyer help through FAITH Foundation, start with our Apply for Housing Assistance page, which walks you through a short, confidential multi-step application. From there, our team refers you to a HUD-approved homeownership counseling partner and, if eligible, provides a down payment assistance voucher to help you close on your first home. We personally review every application — typically within three business days — and guide you on next steps. There is no cost to apply, and you can call 888-497-6620 with any questions.",
   },
   {
     question: "Are there housing programs for veterans in Texas?",
     answer:
-      "Yes. FAITH Foundation's Veterans Path Home program helps Texas veterans secure stable, affordable housing through rental assistance, case management, and connection to the benefits they have earned. For veterans working toward ownership, we also offer down payment assistance vouchers and homeownership counseling. Our goal is to move veterans from housing instability to a home of their own, honoring their service with practical support. Visit our Veterans Path Home page or apply online to get started.",
+      "Yes. FAITH Foundation's Veterans Path Home program helps Texas veterans secure stable, affordable housing through housing assistance, case management, and connection to the benefits they have earned. For veterans working toward ownership, we also offer down payment assistance vouchers and homeownership counseling referrals. Our goal is to move veterans from housing instability to a home of their own, honoring their service with practical support. Visit our Veterans Path Home page or apply online to get started.",
   },
   {
     question: "What does a homeownership counselor do?",
     answer:
-      "A homeownership counselor guides you through every step of buying and keeping a home — reviewing your budget and credit, explaining mortgages and closing costs, and helping you build a realistic plan to become a homeowner. At FAITH Foundation, our homeownership counseling is paired with down payment assistance so families are both prepared and financially supported. Counselors also help you avoid common pitfalls so you can hold onto your home for the long term. It is a free service designed to make ownership attainable and lasting.",
+      "A homeownership counselor guides you through every step of buying and keeping a home — reviewing your budget and credit, explaining mortgages and closing costs, and helping you build a realistic plan to become a homeowner. FAITH Foundation does not provide counseling ourselves; we refer applicants to HUD-approved counseling agencies whose certified coaches do, and we pair that referral with down payment assistance so families are both prepared and financially supported. Counselors also help you avoid common pitfalls so you can hold onto your home for the long term.",
   },
 ];
 

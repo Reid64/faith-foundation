@@ -4,16 +4,11 @@ import VolunteerForm from "./VolunteerForm";
 export const metadata: Metadata = {
   title: "Volunteer — FAITH Foundation",
   description:
-    "Volunteer with FAITH Foundation in Burnet, Texas — tutor financial literacy, coach tenancy skills, support events, or serve as a community ambassador.",
+    "Volunteer with FAITH Foundation in Burnet, Texas — coach tenancy and life skills, support events, lend office help, or serve as a community ambassador.",
   alternates: { canonical: "/volunteer" },
 };
 
 const OPPORTUNITIES = [
-  {
-    title: "Financial-Literacy Tutor",
-    commitment: "2–4 hours / month",
-    body: "Share practical money skills — budgeting, saving, credit, and planning — with families working toward stability. No finance degree required, just patience and a willingness to teach what you know.",
-  },
   {
     title: "Tenancy & Life-Skills Coach",
     commitment: "Flexible",
@@ -84,7 +79,7 @@ export default function VolunteerPage() {
             </p>
             <p>
               You do not need special qualifications to make a difference. Our
-              opportunities range from teaching practical budgeting skills to
+              opportunities range from coaching a family through a lease to
               greeting guests at a fundraiser, from lending administrative
               support to offering professional expertise. Whatever your gifts,
               there is a place for you here. We provide orientation and ongoing

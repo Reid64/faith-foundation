@@ -16,7 +16,7 @@ const TIERS = [
   {
     amount: "$25",
     name: "Friend",
-    body: "Provides learning materials for a financial-literacy workshop, helping one family build the budgeting skills that prevent the next housing crisis.",
+    body: "Helps cover the cost of connecting a family with a HUD-approved homeownership counseling partner, the first step on the path to a home of their own.",
   },
   {
     amount: "$50",
@@ -122,10 +122,11 @@ export default function DonatePage() {
                 <p>
                   Your generosity does double duty. It funds the down payment
                   assistance vouchers that turn renters into homeowners, and it
-                  is reinforced by supporting financial-literacy and tenancy
-                  coaching that help those same families hold onto and build on
-                  what they own. We believe that when ownership and durable skills
-                  go hand in hand, generational change becomes possible. A gift to
+                  is reinforced by referrals to HUD-approved homeownership
+                  counseling partners who help those same families hold onto and
+                  build on what they own. We believe that when ownership and
+                  durable skills go hand in hand, generational change becomes
+                  possible. A gift to
                   FAITH Foundation is not charity that ends at the check; it is an
                   investment in a family&apos;s long-term ability to thrive.
                 </p>

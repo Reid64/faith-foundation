@@ -8,46 +8,39 @@ import BackgroundSwirls from "@/components/BackgroundSwirls";
 export const metadata: Metadata = {
   title: "Programs — FAITH Foundation",
   description:
-    "Explore FAITH Foundation's programs — homeownership, down payment vouchers, emergency and transitional housing, and supporting services across Texas.",
+    "Explore FAITH Foundation's programs — homeownership, down payment vouchers, housing assistance, and supporting services across Texas.",
   alternates: { canonical: "/programs" },
 };
 
 const PROGRAMS = [
   {
     href: "/programs/homeownership",
-    eyebrow: "Flagship",
+    eyebrow: "HUD Referral Partner",
     title: "Homeownership Counseling",
-    body: "Our flagship mission: helping families achieve homeownership. Pre-purchase counseling prepares first-time and returning buyers to navigate mortgages, down payments, and the path to lasting, affordable homeownership.",
+    body: "We connect applicants with HUD-approved homeownership counseling resources across Texas — certified coaches who prepare families for mortgage readiness, credit repair, and the path to closing on a home of their own.",
     cta: "Explore Homeownership",
-    // Featured large card with image
-    span: "lg:col-span-4",
-    featured: true,
-    image: img("newKeys", 1200, 700),
-    alt: "A hand receiving the keys to a new home",
+    span: "lg:col-span-2",
+    featured: false,
   },
   {
     href: "/programs/housing-voucher",
-    eyebrow: "Flagship",
+    eyebrow: "Flagship Program",
     title: "Down Payment & Housing Vouchers",
-    body: "Direct down payment and rental assistance funded by corporate and individual donations — becoming vouchers that help neighboring families across Texas into stable housing.",
+    body: "Direct down payment assistance funded by corporate and individual donations — becoming vouchers that help neighboring families across Texas into stable housing of their own.",
     cta: "Explore Housing Vouchers",
-    span: "lg:col-span-2",
-  },
-  {
-    href: "/programs/emergency",
-    eyebrow: "Emergency",
-    title: "Emergency Bridge Housing",
-    body: "Fast, short-term rental and deposit assistance that carries families across Texas through a sudden crisis — stopping an eviction before it becomes homelessness.",
-    cta: "Explore Emergency Bridge Housing",
-    span: "lg:col-span-3",
+    // Featured large card with image
+    span: "lg:col-span-4",
+    featured: true,
+    image: img("familyTogether", 1200, 700),
+    alt: "A family together outside their home",
   },
   {
     href: "/programs/veterans",
     eyebrow: "Veterans",
     title: "Veterans Path Home",
-    body: "Rental assistance, benefits navigation, and case management that help veterans across Texas move from housing instability to a stable home of their own.",
+    body: "Housing stability support, benefits navigation, and case management that help veterans across Texas move from housing instability to a stable home of their own.",
     cta: "Explore Veterans Path Home",
-    span: "lg:col-span-3",
+    span: "lg:col-span-2",
   },
   {
     href: "/programs/recovery",
@@ -66,27 +59,11 @@ const PROGRAMS = [
     span: "lg:col-span-2",
   },
   {
-    href: "/programs/single-parents",
-    eyebrow: "Families",
-    title: "Single Parent Stability",
-    body: "Affordable housing assistance, childcare and resource navigation, and financial coaching that help single-parent families across Texas build a secure future.",
-    cta: "Explore Single Parent Stability",
-    span: "lg:col-span-2",
-  },
-  {
     href: "/programs/cornerstone-communities",
     eyebrow: "Initiative",
     title: "Cornerstone Communities",
     body: "Purpose-built residential communities on donated land with on-site recovery programs, resource centers, and wraparound services \u2014 creating the affordable housing inventory our voucher recipients need.",
     cta: "Explore Cornerstone Communities",
-    span: "lg:col-span-2",
-  },
-  {
-    href: "/programs/financial-literacy",
-    eyebrow: "Supporting",
-    title: "Financial Literacy",
-    body: "A supporting service that helps families prepare for and sustain homeownership — light, hands-on guidance in budgeting, credit, and debt that complements our housing mission.",
-    cta: "Explore Financial Literacy",
     span: "lg:col-span-2",
   },
 ];
@@ -120,7 +97,7 @@ export default function ProgramsPage() {
               FAITH Foundation&apos;s mission is helping families across Texas
               achieve homeownership through down payment assistance vouchers and
               housing support. Every program below is built to move our neighbors
-              from crisis to a home of their own — supported by services that keep
+              from renting to a home of their own — supported by services that keep
               them stable along the way.
             </p>
           </Reveal>
@@ -141,11 +118,10 @@ export default function ProgramsPage() {
               One mission: a home of your own
             </h3>
             <p className="text-lg leading-relaxed text-charcoal/80">
-              Whether you are preparing to buy a home, seeking down payment or
-              rental assistance today, or finding stable housing as a veteran, a
-              person in recovery, a returning citizen, or a single parent, there
-              is a place for you here. Select a program to learn how it works and
-              how to apply.
+              Whether you are preparing to buy a home, seeking down payment
+              assistance today, or finding stable housing as a veteran, a person
+              in recovery, or a returning citizen, there is a place for you here.
+              Select a program to learn how it works and how to apply.
             </p>
           </Reveal>
 
@@ -240,20 +216,21 @@ export default function ProgramsPage() {
                 <p>
                   FAITH Foundation&apos;s mission is helping families across Texas
                   reach homeownership through down payment assistance vouchers and
-                  housing support. Every program orbits that goal — keeping families
-                  housed today, steadying them through a crisis, and carrying them
-                  toward a home they can own and keep tomorrow.
+                  housing support. Every program orbits that goal — strengthening a
+                  family&apos;s housing stability today and carrying them toward a
+                  home they can own and keep tomorrow.
                 </p>
                 <p>
                   A family might enter through our Housing Voucher Program, find
-                  steady footing with down payment and rental assistance, and one day
-                  complete Homeownership Counseling to buy a home of their own.
-                  Supporting services like financial literacy help them prepare for
-                  and sustain that home. Each step builds on the last, and because
-                  our programs are sustained by the generosity of individual and
-                  corporate donors, the very vouchers that keep the cycle turning
-                  are funded — a model of community uplift, rooted in faith and
-                  powered by the generosity of neighbors.
+                  steady footing with down payment assistance, and one day be
+                  connected with a HUD-approved homeownership counseling partner who
+                  helps them buy a home of their own. That referral partner also
+                  helps them prepare for and sustain that home.
+                  Each step builds on the last, and because our programs are
+                  sustained by the generosity of individual and corporate donors,
+                  the very vouchers that keep the cycle turning are funded — a model
+                  of community uplift, rooted in faith and powered by the generosity
+                  of neighbors.
                 </p>
               </div>
             </Reveal>

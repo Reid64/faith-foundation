@@ -1,0 +1,133 @@
+Getting links from: https://www.faithfoundationsf.org/
+├───OK─── https://www.faithfoundationsf.org/Images/faith-foundation-logo.webp
+├───OK─── https://www.faithfoundationsf.org/team/
+├───OK─── https://www.faithfoundationsf.org/programs/
+├───OK─── https://www.faithfoundationsf.org/impact/
+├───OK─── https://www.faithfoundationsf.org/events/
+├───OK─── https://www.faithfoundationsf.org/contact/
+├───OK─── https://www.faithfoundationsf.org/donate/
+├───OK─── https://www.faithfoundationsf.org/about/
+├───OK─── https://www.faithfoundationsf.org/financial-transparency/
+├───OK─── https://www.faithfoundationsf.org/governance/
+├───OK─── https://www.faithfoundationsf.org/photos/home-modern.jpg
+├───OK─── https://www.faithfoundationsf.org/apply/
+├───OK─── https://www.faithfoundationsf.org/photos/home-evening.jpg
+├───OK─── https://www.faithfoundationsf.org/photos/home-cabin.jpg
+├───OK─── https://www.faithfoundationsf.org/programs/homeownership/
+├───OK─── https://www.faithfoundationsf.org/photos/home-yellow.jpg
+├───OK─── https://www.faithfoundationsf.org/programs/housing-voucher/
+├───OK─── https://www.faithfoundationsf.org/volunteer/
+├───OK─── https://www.faithfoundationsf.org/Images/faith-foundation-logo.png
+├───OK─── https://www.faithfoundationsf.org/programs/emergency/
+├───OK─── https://www.faithfoundationsf.org/programs/veterans/
+├───OK─── https://www.faithfoundationsf.org/programs/recovery/
+├───OK─── https://www.faithfoundationsf.org/programs/reentry/
+├───OK─── https://www.faithfoundationsf.org/programs/single-parents/
+├───OK─── https://www.faithfoundationsf.org/programs/cornerstone-communities/
+├───OK─── https://www.faithfoundationsf.org/programs/financial-literacy/
+├───OK─── https://www.faithfoundationsf.org/news/
+├───OK─── https://www.faithfoundationsf.org/blog/
+├───OK─── https://www.faithfoundationsf.org/faq/
+├───OK─── https://www.faithfoundationsf.org/privacy-policy/
+├───OK─── https://www.faithfoundationsf.org/governance/donor-privacy/
+Finished! 88 links found. 57 excluded. 0 broken.
+
+Getting links from: https://www.faithfoundationsf.org/team/
+├───OK─── https://www.faithfoundationsf.org/Images/team/ron-landers.jpg
+├───OK─── https://www.faithfoundationsf.org/Images/team/pastor-juan-valdez.jpg
+├───OK─── https://www.faithfoundationsf.org/Images/team/scott-ellis.jpg
+├───OK─── https://www.faithfoundationsf.org/Images/team/reid-whitesides.jpg
+Finished! 81 links found. 77 excluded. 0 broken.
+
+Getting links from: https://www.faithfoundationsf.org/programs/
+Finished! 88 links found. 88 excluded. 0 broken.
+
+Getting links from: https://www.faithfoundationsf.org/impact/
+Finished! 81 links found. 81 excluded. 0 broken.
+
+Getting links from: https://www.faithfoundationsf.org/events/
+Finished! 75 links found. 75 excluded. 0 broken.
+
+Getting links from: https://www.faithfoundationsf.org/contact/
+Finished! 77 links found. 77 excluded. 0 broken.
+
+Getting links from: https://www.faithfoundationsf.org/donate/
+├───OK─── https://www.faithfoundationsf.org/Images/donate-hero.jpg
+├───OK─── https://www.faithfoundationsf.org/Images/donate-finance.jpg
+Finished! 84 links found. 82 excluded. 0 broken.
+
+Getting links from: https://www.faithfoundationsf.org/about/
+Finished! 84 links found. 84 excluded. 0 broken.
+
+Getting links from: https://www.faithfoundationsf.org/financial-transparency/
+├───OK─── https://www.faithfoundationsf.org/documents/irs-determination-letter.pdf
+Finished! 79 links found. 78 excluded. 0 broken.
+
+Getting links from: https://www.faithfoundationsf.org/governance/
+Finished! 77 links found. 77 excluded. 0 broken.
+
+Getting links from: https://www.faithfoundationsf.org/apply/
+Finished! 77 links found. 77 excluded. 0 broken.
+
+Getting links from: https://www.faithfoundationsf.org/programs/homeownership/
+├─BROKEN─ https://www.faithfoundationsf.org/videos/8293116-hd_1080_1920_25fps.mp4 (HTTP_404)
+Finished! 80 links found. 79 excluded. 1 broken.
+
+Getting links from: https://www.faithfoundationsf.org/programs/housing-voucher/
+├───OK─── https://www.faithfoundationsf.org/videos/housing-720p.mp4
+Finished! 80 links found. 79 excluded. 0 broken.
+
+Getting links from: https://www.faithfoundationsf.org/volunteer/
+Finished! 74 links found. 74 excluded. 0 broken.
+
+Getting links from: https://www.faithfoundationsf.org/programs/emergency/
+Finished! 78 links found. 78 excluded. 0 broken.
+
+Getting links from: https://www.faithfoundationsf.org/programs/veterans/
+Finished! 81 links found. 81 excluded. 0 broken.
+
+Getting links from: https://www.faithfoundationsf.org/programs/recovery/
+├───OK─── https://www.faithfoundationsf.org/Images/micro-apartments/micro-apartment-1.jpg
+├───OK─── https://www.faithfoundationsf.org/Images/micro-apartments/micro-apartment-2.jpg
+├───OK─── https://www.faithfoundationsf.org/Images/micro-apartments/micro-apartment-3.jpg
+Finished! 81 links found. 78 excluded. 0 broken.
+
+Getting links from: https://www.faithfoundationsf.org/programs/reentry/
+Finished! 83 links found. 83 excluded. 0 broken.
+
+Getting links from: https://www.faithfoundationsf.org/programs/single-parents/
+Finished! 79 links found. 79 excluded. 0 broken.
+
+Getting links from: https://www.faithfoundationsf.org/programs/cornerstone-communities/
+├───OK─── https://www.faithfoundationsf.org/Images/cornerstone-campus.jpg
+├───OK─── https://www.faithfoundationsf.org/Images/new-beginnings.jpg
+├───OK─── https://www.faithfoundationsf.org/Images/micro-houses/micro-house-1.jpg
+├───OK─── https://www.faithfoundationsf.org/Images/micro-houses/micro-house-2.jpg
+├───OK─── https://www.faithfoundationsf.org/Images/micro-houses/micro-house-3.jpg
+├───OK─── https://www.faithfoundationsf.org/Images/micro-houses/micro-house-4.jpg
+├───OK─── https://www.faithfoundationsf.org/Images/micro-apartments/micro-apartment-4.jpg
+Finished! 86 links found. 79 excluded. 0 broken.
+
+Getting links from: https://www.faithfoundationsf.org/programs/financial-literacy/
+Finished! 79 links found. 79 excluded. 0 broken.
+
+Getting links from: https://www.faithfoundationsf.org/news/
+Finished! 79 links found. 79 excluded. 0 broken.
+
+Getting links from: https://www.faithfoundationsf.org/blog/
+Finished! 79 links found. 79 excluded. 0 broken.
+
+Getting links from: https://www.faithfoundationsf.org/faq/
+Finished! 77 links found. 77 excluded. 0 broken.
+
+Getting links from: https://www.faithfoundationsf.org/privacy-policy/
+Finished! 84 links found. 84 excluded. 0 broken.
+
+Getting links from: https://www.faithfoundationsf.org/governance/donor-privacy/
+Finished! 75 links found. 75 excluded. 0 broken.
+
+Getting links from: https://www.faithfoundationsf.org/documents/irs-determination-letter.pdf
+Error: Expected type "text/html" but got "application/pdf"
+
+Finished! 2086 links found. 2036 excluded. 1 broken.
+Elapsed time: 29 seconds

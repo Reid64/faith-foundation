@@ -15,22 +15,16 @@ export const metadata: Metadata = {
 const METRICS = [
   { value: "100%", label: "Of every designated housing gift directly supports the program you choose" },
   { value: "100%", label: "Of every designated voucher gift supports down payment assistance" },
-  { value: "8", label: "Distinct programs serving families across Texas" },
+  { value: "6", label: "Distinct programs serving families across Texas" },
   { value: "501(c)(3)", label: "Tax-exempt nonprofit, accountable and transparent" },
 ];
 
 const STORIES = [
   {
-    name: "A single mother in Burnet",
-    quote:
-      "I was three days from losing our apartment when FAITH Foundation stepped in. The deposit assistance and a coach who actually listened gave me room to breathe — and a plan I could follow.",
-    body: "After a sudden job loss, Maria (name changed for privacy) fell behind on rent with two children at home. A down payment assistance voucher put homeownership within reach while our coach helped her rebuild a budget and an emergency cushion. Today she is on a clear path toward owning a home of her own for the first time.",
-  },
-  {
     name: "A veteran finding stability",
     quote:
       "Somebody finally treated my situation like it mattered. The case manager walked me through my VA benefits and helped me get into a place I could afford.",
-    body: "James (name changed) served his country but struggled to navigate the benefits and housing systems after discharge. Through our Veterans Path Home program, he received rental assistance and wraparound case management. Today he has stable housing and is mentoring other veterans facing the same uphill climb.",
+    body: "James (name changed) served his country but struggled to navigate the benefits and housing systems after discharge. Through our Veterans Path Home program, he received housing assistance and support navigating his VA benefits. Today he has stable housing and is mentoring other veterans facing the same uphill climb.",
   },
   {
     name: "A family putting down roots",
@@ -45,25 +39,11 @@ const STORIES = [
 const STAT_COUNTERS = [
   { prefix: "", value: 100, suffix: "%", label: METRICS[0].label },
   { prefix: "", value: 100, suffix: "%", label: METRICS[1].label },
-  { prefix: "", value: 8, suffix: "", label: METRICS[2].label },
+  { prefix: "", value: 6, suffix: "", label: METRICS[2].label },
   { text: "501(c)(3)", label: METRICS[3].label },
 ];
 
 const NARRATIVE = [
-  {
-    eyebrow: "Families kept housed",
-    title: "We step in before crisis takes hold",
-    body: "Through emergency rental and deposit assistance, we step in before a missed paycheck becomes an eviction — keeping families in their homes and out of crisis.",
-    image: "familyTogether" as const,
-    alt: "A family together inside the home they were able to keep",
-  },
-  {
-    eyebrow: "Neighbors equipped",
-    title: "Skills that outlast any single gift",
-    body: "Our financial-literacy and homeownership instruction gives families durable skills — budgeting, credit repair, tenancy know-how — that outlast any single gift.",
-    image: "classroom" as const,
-    alt: "Neighbors learning financial-literacy skills in a classroom",
-  },
   {
     eyebrow: "Community-powered funding",
     title: "Generosity that grows the mission",
@@ -157,9 +137,9 @@ export default function ImpactPage() {
           <Reveal delay={200}>
             <p className="mx-auto mt-14 max-w-3xl text-center text-base leading-relaxed text-white/75">
               As a young and growing 501(c)(3), our most important metric is trust.
-              Every dollar we raise is stewarded with care and directed toward
-              measurable, local outcomes — keeping families housed today while
-              equipping them with the skills to thrive tomorrow.
+              Every dollar we raise is stewarded with care and directed toward down
+              payment assistance vouchers that help Texas families achieve
+              homeownership.
             </p>
           </Reveal>
         </div>
@@ -175,13 +155,12 @@ export default function ImpactPage() {
               How Impact Happens
             </h2>
             <p className="heading-underline-center mt-4 text-3xl font-extrabold text-navy sm:text-4xl">
-              Three ways your support changes lives
+              How your support changes lives
             </p>
             <p className="mt-6 text-lg leading-relaxed text-charcoal/80">
-              Our model is simple and sustainable: keep families housed, equip
-              them with instruction that lasts, and support the mission through
-              the generosity of donors and community partners, so our capacity to
-              help keeps growing.
+              Our model is simple and sustainable: fund down payment assistance
+              vouchers through the generosity of donors and community partners, so
+              our capacity to move families into homes of their own keeps growing.
             </p>
           </Reveal>
 
@@ -244,7 +223,7 @@ export default function ImpactPage() {
             </p>
           </Reveal>
 
-          <div className="mt-16 grid gap-8 lg:grid-cols-3">
+          <div className="mx-auto mt-16 grid max-w-5xl gap-8 lg:grid-cols-2">
             {STORIES.map((story, i) => (
               <Reveal
                 key={story.name}

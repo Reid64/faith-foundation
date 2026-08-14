@@ -3,7 +3,6 @@
 import { useState } from "react";
 
 const INTERESTS = [
-  "Financial-literacy tutoring",
   "Tenancy & life-skills coaching",
   "Event & fundraising support",
   "Administrative & office help",

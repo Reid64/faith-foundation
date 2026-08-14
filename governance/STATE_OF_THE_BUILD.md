@@ -1,7 +1,194 @@
 # faith-foundation — STATE OF THE BUILD
 
-> Updated from a LIVE codebase audit on 2026-06-12 (BLUEPRINT Canonical Rule 9).
-> Last action: **SEO / Google Ad Grants readiness pass** — built a **Privacy Policy**
+> Updated from a LIVE codebase audit on 2026-08-14 (BLUEPRINT Canonical Rule 9).
+> Last action: **Comprehensive cleanup pass (8 tasks)** — retired **Financial Literacy** and
+> **Single Parent Stability** as programs, removed **rental assistance** language from
+> Veterans/Recovery/Reentry, added an **applicant vetting transparency** section to Recovery
+> and Reentry, added a **development roadmap** to Cornerstone Communities, and verified the
+> About faith paragraph, StatCounter SSR fix, and Contact geographic copy.
+> RESULT: All 8 tasks complete. `pnpm run build` PASSED (0 TypeScript errors, 31/31 static
+> pages, next-sitemap regenerated). Deployed `vercel --prod` → READY, aliased to
+> https://www.faithfoundationsf.org. All three retired routes verified live at **308 →
+> `/programs/`**.
+
+## What changed this session — 2026-08-14 (comprehensive cleanup, 8 tasks)
+
+### Task 1 — Financial Literacy retired as a program
+
+Removed from the Programs grid, the footer, `public/sitemap.xml`, the FAQ, the Donate tiers and
+copy, the Apply page and its assistance dropdown, the Volunteer roles and interest dropdown, and
+the News feed (the "Fall Financial Literacy Cohort" item was deleted outright). The Blog post
+"Five Budgeting Habits That Protect Your Housing" was recategorised **Financial Literacy →
+Homeownership**. The `FUND_DIRECTION` note on Financial Transparency now reads "Homeownership
+counseling referrals and program administration."
+
+Beyond the brief, four further pages asserted FAITH Foundation *operates* a financial-literacy
+program and were corrected to point at the HUD-approved counseling partners instead: `/events`,
+`/programs/homeownership` (two places), `/programs/housing-voucher`, and the Cornerstone
+Communities feature list. Generic references to financial preparation for homeownership were
+kept, per the brief.
+
+The route survives only as a redirect.
+
+### Task 2 — Single Parent Stability retired as a program
+
+Removed from the Programs grid, the footer, and `public/sitemap.xml`. The "single parent" body
+reference on the Programs hub was dropped. The FAQ answer "How do single mothers get help buying
+a home?" was rewritten to say single parents are welcome to apply for down payment assistance
+through the Housing Voucher Program. The route survives only as a redirect.
+
+### Redirect mechanism — the specified approach was retested and again does not work
+
+The brief specified a server-side `redirect('/programs')` page plus `next.config.mjs` redirects.
+Both were implemented first, then the build output was inspected: `out/programs/
+financial-literacy/index.html` exported as `<html id="__next_error__">` with an unhandled
+`NEXT_REDIRECT;replace;/programs;307;` digest and **no** meta-refresh, i.e. a blank error shell
+for crawlers and no-JS visitors. This is the same defect documented on 2026-08-07 for
+`/programs/emergency`.
+
+Corrected using the pattern already proven in this repo:
+
+- **`vercel.json`** — 308 redirects for `/programs/financial-literacy`, `/programs/single-parents`
+  (with and without trailing slash). This is the authoritative production mechanism.
+- **`src/components/RedirectToPrograms.tsx`** — **NEW, shared.** Client-side `router.replace`
+  fallback with visible copy and a manual link, for direct hits on a non-Vercel host. The
+  per-route duplicate at `src/app/programs/emergency/RedirectToPrograms.tsx` was deleted and all
+  three retired routes now import the shared component.
+- **`next.config.mjs`** — entries added as specified; still inert under `output: "export"`, kept
+  as documentation of intent.
+- **`next-sitemap.config.js`** — `exclude` extended to both new routes, since the `postbuild`
+  crawl of `out/` would otherwise re-add them.
+
+Verified in production: all three retired routes return **308 → `https://www.faithfoundationsf.org/programs`**,
+resolving to `/programs/` with a 200.
+
+### Task 3 — Rental assistance removed from Veterans / Recovery / Reentry
+
+| File | Change |
+|------|--------|
+| `/programs/veterans` | `metadata.description` "rental assistance" → "housing assistance"; the **"Rapid rental assistance"** card replaced with **"Housing Stability Support"** describing the connection to housing vouchers and down payment assistance; case-management step 02 now applies "down payment assistance and housing vouchers". |
+| `/programs/recovery` | Stage 4 no longer offers "deposits, references, and the rental assistance that makes a lasting address possible" — reframed as connecting residents to housing vouchers and down payment assistance, opening the path to a home they own. |
+| `/programs/reentry` | **No rental-assistance language existed** on this page; the existing copy already frames support as housing assistance toward homeownership. Nothing to remove. |
+| `/faq` | The Veterans answer mirrored the Veterans page and was corrected in step ("rental assistance" → "housing assistance", counseling → counseling referrals). The Section 8 answer's use of "federal rental-assistance program" describes Section 8, not FAITH Foundation, and was intentionally left. |
+
+This clears the residual flagged on 2026-08-07.
+
+### Task 4 — Applicant vetting transparency (Recovery + Reentry)
+
+**NEW:** `src/components/VettingStandards.tsx` — navy section, eyebrow "Our Standards", heading
+"Accountability that protects the people we serve", intro on the structured vetting process, four
+numbered requirement cards (Pastoral or Chaplain Recommendation, Documented Rehabilitation Steps,
+Letters of Support, Personal Statement), and a gold-bordered closing note stating that meeting the
+requirements does not guarantee assistance. Built as one shared component rather than duplicated
+copy, and rendered directly above the CTA on both `/programs/recovery` and `/programs/reentry`.
+
+### Task 5 — Cornerstone Communities development roadmap
+
+New cream-background section above the CTA on `/programs/cornerstone-communities`: eyebrow
+"Transparency in Action", heading "How We're Building This — Phase by Phase", an honest intro
+stating FAITH Foundation is **not yet operating a Cornerstone Community**, and four phase cards
+each carrying a status badge — Land Acquisition (*Active — Seeking Partners*), Site Development
+(*Seeking In-Kind Partners*), First Home Placement (*Our Near-Term Goal*), Replication and Growth
+(*The Vision*). Phases 1 and 2 carry CTAs to `/contact`. A gold-bordered callout below the phases
+states that Cornerstone-designated dollars go to land, site development, or home placement — not
+administration.
+
+### Tasks 6–8 — verified already applied
+
+| Task | State found |
+|------|-------------|
+| 6 — About faith paragraph | Already present verbatim in the Statement of Faith section of `src/app/about/page.tsx` (applied 2026-08-07). |
+| 7 — StatCounter SSR fix | Already fixed: `useState(value)` initial display so SSR renders the final number, a `mounted` flag, then `setDisplay(0)` and animate on intersection after mount. Reduced-motion path short-circuits to `value`. |
+| 8 — Contact geographic language | Already applied: statewide copy with Burnet as headquarters, the housing-crisis CTA replaced with the down-payment-assistance enquiry, and the map heading reading "Our Office". |
+
+### Consequential corrections beyond the brief
+
+- **Program count 8 → 6.** Two programs were deleted, so the "8 programs" stat on the homepage
+  (`src/app/page.tsx`) and on `/impact` (both `METRICS` and `STAT_COUNTERS`) was factually wrong
+  and was updated to 6. The live grid is: Homeownership Counseling, Down Payment & Housing
+  Vouchers, Veterans Path Home, Recovery Housing, Second Chance Reentry, Cornerstone Communities.
+- **Sitemap gap closed.** `public/sitemap.xml` was missing `/programs/cornerstone-communities/`
+  entirely — a pre-existing omission, added while removing the two retired URLs.
+
+### Known residual (flagged, not fixed)
+
+`src/app/programs/financial-literacy/` and `src/app/programs/single-parents/` still hold their
+route directories (redirect stubs only). The full former page content is recoverable from git
+history if either program is ever revived.
+
+## What changed in the prior session — 2026-08-07 (superseded header)
+
+> Updated from a LIVE codebase audit on 2026-08-07 (BLUEPRINT Canonical Rule 9).
+> Last action: **Program-accuracy cleanup pass** — removed **Emergency Bridge Housing**
+> sitewide (a program that was never requested and does not exist), stripped **rental and
+> deposit assistance** claims, reframed **Homeownership Counseling** as a **HUD referral
+> partner** model, promoted the **Housing Voucher Program** to flagship, replaced Hill Country
+> geographic limits with **statewide** language, rewrote the **Statement of Faith** paragraph,
+> and fixed the **About dropdown hover gap**.
+> RESULT: All 11 tasks complete. `pnpm tsc --noEmit` PASSED. `pnpm run build` PASSED (exit 0,
+> 31/31 static pages, next-sitemap regenerated). Verified against the built `out/` HTML: zero
+> occurrences of every removed phrase and zero surviving `/programs/emergency` links.
+> Three defects in the specified approach were found and corrected — see the section below.
+
+## What changed this session — 2026-08-07 (program-accuracy cleanup)
+
+### Emergency Bridge Housing — fully retired
+
+The program is gone from the Programs grid, the footer, the sitemap, the homepage pillars, the
+FAQ, the Impact narrative, and the Financial Transparency fund directions. The route survives
+only as a redirect.
+
+**Three defects in the originally specified redirect approach were found by running the build
+and inspecting the exported output, and were corrected:**
+
+1. **`redirects()` in `next.config.mjs` is inert.** This project uses `output: "export"`, and
+   Next.js warns explicitly: *"rewrites, redirects, and headers are not applied when exporting
+   your application, detected (redirects)"*. The config entry was kept (it documents intent and
+   costs nothing) but a **`vercel.json` with 308 redirects** was added as the mechanism that
+   actually fires in production.
+2. **The specified server-side `redirect('/programs')` page exported a broken 404.** Under
+   static export a server component cannot emit an HTTP redirect, so `out/programs/emergency/
+   index.html` was generated as `<html id="__next_error__">` carrying the site's 404 content and
+   an unhandled `NEXT_REDIRECT` digest. Replaced with a `noindex` server page that renders a
+   **client-side `router.replace`** fallback, so a direct hit degrades to a real redirect
+   instead of a 404.
+3. **`next-sitemap` overwrites the hand-edited sitemap.** The `postbuild` step regenerates
+   `out/sitemap.xml` by crawling `out/`, which re-added `/programs/emergency/` even after
+   `public/sitemap.xml` was corrected. Fixed with `exclude` in `next-sitemap.config.js`.
+   Confirmed absent from `out/sitemap.xml` after rebuild.
+
+### Content accuracy
+
+| Area | Change |
+|------|--------|
+| Programs hub | Emergency entry deleted; metadata description corrected; Veterans card respanned to keep the bento grid tiling evenly at 8 programs. |
+| Homeownership Counseling | Confirmed reframed as **HUD Referral Partner** — FAITH Foundation makes the referral; HUD-approved agencies deliver the counseling. Eyebrow, `featured: false`, and body copy all consistent. |
+| Housing Voucher Program | Confirmed **`featured: true`**, eyebrow **"Flagship Program"**. |
+| Single Parent Stability | Confirmed the childcare card and the Resource Navigation section are gone and no rental-assistance language remains. |
+| Impact | `NARRATIVE` reduced from three blocks to one; the fabricated "single mother in Burnet" deposit-assistance story deleted; the veteran story corrected to housing assistance + VA benefits navigation; stewardship paragraph rewritten. Section heading and story grid adjusted to the reduced counts. |
+| Contact | Hill Country service limit replaced with statewide service, Burnet as headquarters. |
+| FAQ | Emergency/deposit/rental service claims removed from five answers; counseling reframed as a referral in three; the single-mother answer no longer claims childcare navigation or resource connections, both of which were removed as services. |
+| Financial Transparency | "Emergency rental & deposit assistance" fund direction deleted; commitment copy rewritten to name only down payment vouchers, the voucher program, and instruction. |
+| About | Statement of Faith paragraph replaced with the approved Jesus/neighbor text. |
+| Homepage | Pillar Two no longer cites emergency bridge housing. |
+| Header | About dropdown hover gap fixed with a 120 ms close delay, an 8 px wrapper pad, `-mt-2` on the panel, and click-to-close on each link. |
+| robots.txt / sitemap.xml | `www.` canonical; emergency URL removed; dates → 2026-07-28. |
+
+### Known residual (out of scope, flagged not fixed) — CLEARED 2026-08-14
+
+"Rental assistance" language still appears on `/programs/veterans`, `/programs/recovery`, and
+`/programs/financial-literacy`, and in the Veterans FAQ answer that mirrors the Veterans page.
+The cleanup brief scoped rental-assistance removal to the Programs hub, Single Parents, Impact,
+and the homepage only, so those pages were deliberately left consistent with each other. If
+rental assistance is also a service FAITH Foundation does not provide, those four locations
+need a follow-up pass.
+
+> **Resolved 2026-08-14** by Task 3 of the comprehensive cleanup pass. Veterans, Recovery, and
+> the Veterans FAQ answer were corrected; `/programs/financial-literacy` was retired entirely.
+
+## What changed in the prior session — 2026-06-12 (superseded header)
+
+> Previously: **SEO / Google Ad Grants readiness pass** — built a **Privacy Policy**
 > (`/privacy-policy`, GDPR + CCPA/CPRA), an **Events** page (`/events`), and a **News** page
 > (`/news`); added an **Organization (`NGO`) JSON-LD** block to `layout.tsx`; configured
 > **`next-sitemap`** (sitemap.xml + robots.txt) with a committed static `public/sitemap.xml` +
@@ -518,3 +705,32 @@ build commands are approved.
 > code error, and non-fatal by design (`|| exit 0`); it ran normally on the Vercel build. Deployed
 > via `vercel --prod` — deployment `dpl_EyYKsLpAhJVyBNNTfECFJxi2hdpv` READY, aliased to
 > https://www.faithfoundationsf.org.
+
+> 2026-08-04 [INTEGRITY — events page scrubbed of fabricated events]: The events page shipped with
+> FIVE invented events that were never scheduled and had no basis in fact — "Financial Literacy
+> Workshop: Building a Budget That Sticks" (July 12), "Community Volunteer Day" (July 26),
+> "Tenancy Hope Benefit Dinner" (Aug 15), "Homeownership Readiness Information Night" (Sept 9),
+> and "Back-to-School Family Resource Fair" (Sept 27) — several with fabricated venues (Burnet
+> Community Center, Hill Country Event Hall) and invented times. ALL FIVE REMOVED ENTIRELY.
+> The `EVENTS` array in `src/app/events/page.tsx` now contains EXACTLY TWO confirmed real events:
+> (1) **October 11, 2026 — "Volunteer Orientation — Zoom"** (category Volunteer, time TBD,
+> Online/Zoom), and (2) **November 24, 2026 — "Annual Impact Summary Published"** (category
+> Transparency, faithfoundationsf.org). SCHEMA CHANGE: the event objects use `category` where the
+> old array used `type`; the render and the style map were renamed accordingly
+> (`TYPE_STYLES` → `CATEGORY_STYLES`, keyed to `Volunteer` / `Transparency`) so the badge styling
+> still resolves — this was required for the page to compile, not a cosmetic choice.
+> COPY CORRECTED — every line implying a full, busy calendar was rewritten to honest language for a
+> young organization: (a) page `metadata.description` no longer advertises "financial-literacy
+> workshops, volunteer days, donor gatherings, and community fundraisers"; (b) the hero paragraph
+> now states plainly that the foundation is young, its calendar "is just beginning," and that more
+> events will be announced as programs grow; (c) the "Why come to an event" section no longer
+> describes recurring workshops / service days / benefit gatherings as if they were an established
+> program — it now says we would rather host a small number of gatherings we can do well than fill
+> a calendar for the sake of appearances, and that every event listed is confirmed; (d) the section
+> heading "Mark your calendar" → "Confirmed events"; (e) the CTA no longer says "reserve your spot."
+> Verified no other file referenced any removed event (grep across `src/` for all five titles: 0 hits).
+> Build: `pnpm run build` PASSED — compiled successfully, 0 TypeScript errors, static export
+> generated (27 page `index.html` files); `postbuild` (`next-sitemap`) completed normally this run.
+> Deployed via `vercel --prod` — deployment `dpl_83Cjab4RL7WtwnZtb3fXYcRj2QYd` READY, target
+> production. Verified LIVE at https://www.faithfoundationsf.org/events/: both confirmed events
+> present, ZERO occurrences of any of the five fabricated events.

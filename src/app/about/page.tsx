@@ -304,12 +304,15 @@ export default function AboutPage() {
           </Reveal>
           <div className="space-y-6 text-lg leading-relaxed text-white/85">
             <Reveal delay={80} as="p">
-              FAITH Foundation is a faith-based organization. We believe that
-              every person is created with inherent dignity and worth, and that
-              we are called to love our neighbors through tangible acts of
-              service, feeding the hungry, sheltering the vulnerable, and lifting
-              up those in need. Our faith in Jesus Christ is the wellspring of
-              our compassion and the reason we persevere when the work is hard.
+              FAITH Foundation is a faith-based organization whose doors and
+              programs are open to everyone, without condition or preference. We
+              believe every person is created with inherent dignity and worth.
+              Jesus taught us that we are all called to love our neighbors through
+              tangible acts of service — feeding the hungry, sheltering the
+              vulnerable, and lifting up those in need. Our faith in Jesus Christ
+              is the wellspring of our compassion and the reason we persevere in
+              our part of that call: finding affordable housing solutions for
+              families across Texas.
             </Reveal>
             <Reveal delay={160} as="p">
               While our work is grounded in Christian conviction, our doors and

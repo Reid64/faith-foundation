@@ -7,7 +7,7 @@ import { VIDEOS, PHOTOS } from "@/lib/media";
 export const metadata: Metadata = {
   title: "Homeownership Counseling — FAITH Foundation",
   description:
-    "FAITH Foundation's homeownership counseling prepares Texas families to buy with confidence — covering mortgages, budgets, credit, and down payment help.",
+    "FAITH Foundation connects Texas families with HUD-approved homeownership counseling partners — certified coaches covering mortgages, budgets, credit, and down payment readiness.",
   alternates: { canonical: "/programs/homeownership" },
 };
 
@@ -15,22 +15,22 @@ const STEPS = [
   {
     number: "1",
     title: "Readiness Assessment",
-    body: "We begin with an honest look at where you stand: income, savings, credit, and debt. Together we identify what is already working and what needs attention before you apply for a mortgage, so there are no surprises down the road.",
+    body: "Your HUD-approved counselor begins with an honest look at where you stand: income, savings, credit, and debt. Together you identify what is already working and what needs attention before you apply for a mortgage, so there are no surprises down the road.",
   },
   {
     number: "2",
     title: "Budget & Credit Preparation",
-    body: "We help you build a homebuyer budget, understand your credit profile, and create a plan to strengthen it. Our supporting financial literacy guidance is available to help with credit and debt along the way, keeping the focus squarely on getting you home-ready.",
+    body: "Your counselor helps you build a homebuyer budget, understand your credit profile, and create a plan to strengthen it. Their coaching covers credit and debt along the way, keeping the focus squarely on getting you home-ready.",
   },
   {
     number: "3",
     title: "Understanding the Mortgage",
-    body: "Mortgages, interest rates, escrow, down payments, and closing costs can feel like a foreign language. We translate it — explaining loan options, what lenders look for, and how to compare offers so you can borrow wisely and avoid predatory products.",
+    body: "Mortgages, interest rates, escrow, down payments, and closing costs can feel like a foreign language. Your counselor translates it — explaining loan options, what lenders look for, and how to compare offers so you can borrow wisely and avoid predatory products.",
   },
   {
     number: "4",
     title: "Path to Closing",
-    body: "From pre-approval through inspection, appraisal, and the closing table, we prepare you for each milestone so you walk in informed and confident. We also help you plan for the responsibilities of ownership that begin the day you get the keys.",
+    body: "From pre-approval through inspection, appraisal, and the closing table, your counselor prepares you for each milestone so you walk in informed and confident. They also help you plan for the responsibilities of ownership that begin the day you get the keys.",
   },
 ];
 
@@ -52,7 +52,7 @@ export default function HomeownershipPage() {
           <div className="max-w-2xl">
             <Reveal>
               <span className="inline-flex items-center rounded-full border border-green/50 bg-green/15 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-green-light backdrop-blur">
-                Flagship Program / Homeownership
+                HUD Referral Partner / Homeownership
               </span>
             </Reveal>
             <Reveal delay={120}>
@@ -62,9 +62,9 @@ export default function HomeownershipPage() {
             </Reveal>
             <Reveal delay={240}>
               <p className="mt-6 max-w-xl text-lg leading-relaxed text-white/80">
-                Pre-purchase counseling that prepares first-time and returning buyers
-                to navigate the path to affordable, lasting homeownership — with
-                confidence and clear eyes.
+                We connect first-time and returning buyers with HUD-approved
+                counseling partners who prepare them for the path to affordable,
+                lasting homeownership — with confidence and clear eyes.
               </p>
             </Reveal>
           </div>
@@ -94,21 +94,25 @@ export default function HomeownershipPage() {
                 table is full of decisions that can make or break that dream. Too
                 many hopeful buyers stretch beyond their means, accept a loan they
                 do not fully understand, or are turned away because no one ever
-                showed them how to prepare. FAITH Foundation&apos;s pre-purchase
-                counseling exists to change that. We give families the knowledge
-                and the plan to buy a home they can not only afford to purchase, but
-                afford to keep.
+                showed them how to prepare. FAITH Foundation exists to change that
+                — not by counseling families ourselves, but by connecting them with
+                HUD-approved counseling agencies whose certified coaches do. We
+                make the referral and stay alongside you; your counselor provides
+                the knowledge and the plan to buy a home you can not only afford to
+                purchase, but afford to keep.
               </p>
             </Reveal>
             <Reveal delay={260}>
               <p className="mt-4 text-lg leading-relaxed text-charcoal/80">
-                Our counseling is personal, practical, and free of pressure. We are
-                not here to sell you a house or a loan — we are here to make sure
-                that when you do buy, you do it on solid ground. Whether you are
-                years away from being ready or just need a final push across the
-                finish line, we meet you where you are and build a realistic plan
-                from there. Homeownership should be a source of security, not
-                stress, and good counseling is how we help ensure it is.
+                HUD-approved counseling is personal, practical, and free of
+                pressure. Neither we nor the agencies we refer you to are here to
+                sell you a house or a loan — the point is simply that when you do
+                buy, you do it on solid ground. Whether you are years away from
+                being ready or just need a final push across the finish line, we
+                will point you to a partner who meets you where you are and builds
+                a realistic plan from there. Homeownership should be a source of
+                security, not stress, and good counseling is how we help ensure it
+                is.
               </p>
             </Reveal>
           </div>
@@ -143,8 +147,9 @@ export default function HomeownershipPage() {
               Your roadmap to the closing table
             </h2>
             <p className="mt-4 text-lg leading-relaxed text-charcoal/75">
-              We guide you through four stages, at your own pace, until you are
-              genuinely ready to buy.
+              We connect you with a HUD-approved counseling agency, and your
+              counselor guides you through four stages, at your own pace, until
+              you are genuinely ready to buy.
             </p>
           </Reveal>
         </div>
@@ -224,18 +229,18 @@ export default function HomeownershipPage() {
                   made possible by charitable gifts and corporate donations
                 </strong>{" "}
                 from individuals, businesses, and community partners who believe
-                every family deserves a stable home. Those gifts become
-                housing vouchers that keep struggling families in their homes —
-                sustaining charitable housing programs for families in need.
+                every family deserves a stable home. Those gifts become down
+                payment assistance vouchers that help struggling families into
+                homes of their own — sustaining charitable housing programs for
+                families in need.
               </p>
             </Reveal>
             <Reveal delay={260}>
               <p className="mt-4 text-lg leading-relaxed text-charcoal/80">
                 It is a fitting reflection of how our programs work together. The
-                counseling that prepares you to buy and the voucher program that
-                provides down payment and rental assistance — supported by financial
-                literacy guidance along the way — are all part of one renewable cycle
-                of community uplift —
+                HUD-approved counseling we connect you with and the voucher program
+                that provides down payment assistance are all part of one renewable
+                cycle of community uplift —
                 rooted in faith and powered by neighbors helping neighbors. Your
                 homeownership journey can be the spark that keeps it turning.
               </p>
@@ -254,15 +259,15 @@ export default function HomeownershipPage() {
               Start your path to homeownership
             </h2>
             <p className="mx-auto mb-8 max-w-2xl text-lg leading-relaxed text-white/85">
-              Schedule pre-purchase counseling, or support the flagship program that
-              helps families across Texas buy with confidence.
+              Request a referral to a HUD-approved counseling partner, or support
+              the programs that help families across Texas buy with confidence.
             </p>
             <div className="flex flex-col justify-center gap-4 sm:flex-row">
               <Link
                 href="/contact"
                 className="rounded-full bg-green px-8 py-4 text-base font-bold text-white shadow-green transition-all duration-300 hover:bg-green-light hover:shadow-card-lg"
               >
-                Request Counseling
+                Request a Referral
               </Link>
               <Link
                 href="/programs"

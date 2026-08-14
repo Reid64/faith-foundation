@@ -48,12 +48,13 @@ export default function ContactPage() {
               Here to help, every step of the way
             </h3>
             <p className="mb-8 text-lg leading-relaxed text-foreground/80">
-              FAITH Foundation is a 501(c)(3) nonprofit serving Burnet and the
-              surrounding Central Texas Hill Country. Our office is open to
-              neighbors, donors, and partners alike. If you are facing a housing
-              crisis, do not wait — contact us today and we will walk with you
-              through your options. For all other questions, use the form and we
-              will reply as quickly as we can.
+              FAITH Foundation is a 501(c)(3) nonprofit helping families across
+              Texas achieve homeownership through down payment assistance
+              vouchers. Our office is headquartered in Burnet, but we serve
+              families statewide. If you are interested in our programs or want to
+              learn how to apply for down payment assistance, reach out today and a
+              real person will respond. For all other questions, use the form and
+              we will reply as quickly as we can.
             </p>
 
             <dl className="space-y-6">
@@ -130,12 +131,12 @@ export default function ContactPage() {
               Find Us
             </h2>
             <h3 className="heading-underline-center mb-4 text-3xl font-extrabold text-navy">
-              Visit our Burnet office
+              Our Office
             </h3>
             <p className="text-lg leading-relaxed text-foreground/80">
-              We are conveniently located in Burnet, Texas, at the heart of the
-              communities we serve. Stop by during office hours, or call ahead to
-              schedule a time to meet with a member of our team.
+              Our headquarters is in Burnet, Texas, and we serve families across
+              the state. Stop by during office hours, or call ahead to schedule a
+              time to meet with a member of our team.
             </p>
           </div>
           <div className="overflow-hidden rounded-lg border-4 border-gold shadow-lg">

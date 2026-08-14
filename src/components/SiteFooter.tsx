@@ -6,13 +6,10 @@ import { useState } from "react";
 const PROGRAM_LINKS = [
   { href: "/programs/homeownership", label: "Homeownership" },
   { href: "/programs/housing-voucher", label: "Down Payment Vouchers" },
-  { href: "/programs/emergency", label: "Emergency Bridge Housing" },
   { href: "/programs/veterans", label: "Veterans Path Home" },
   { href: "/programs/recovery", label: "Recovery Housing" },
   { href: "/programs/reentry", label: "Second Chance Reentry" },
-  { href: "/programs/single-parents", label: "Single Parent Stability" },
   { href: "/programs/cornerstone-communities", label: "Cornerstone Communities" },
-  { href: "/programs/financial-literacy", label: "Financial Literacy" },
 ];
 
 const GET_INVOLVED_LINKS = [

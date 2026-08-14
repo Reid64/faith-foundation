@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Reveal from "@/components/Reveal";
+import VettingStandards from "@/components/VettingStandards";
 
 export const metadata: Metadata = {
   title: "Recovery Housing — FAITH Foundation",
@@ -25,7 +26,7 @@ const STAGES = [
   {
     number: "2",
     title: "Stabilization & growth",
-    body: "With housing secured, residents focus on employment, counseling, financial literacy, and rebuilding relationships — supported by house leadership and case management.",
+    body: "With housing secured, residents focus on employment, counseling, financial preparation, and rebuilding relationships — supported by house leadership and case management.",
   },
   {
     number: "3",
@@ -35,7 +36,7 @@ const STAGES = [
   {
     number: "4",
     title: "Permanent housing",
-    body: "The goal of the journey: a stable home of your own. We help with deposits, references, and the rental assistance that makes a lasting address possible.",
+    body: "The goal of the journey: a stable home of your own. We connect residents to our housing vouchers and down payment assistance, opening the path from a stable address to a home they own.",
   },
 ];
 
@@ -298,6 +299,11 @@ export default function RecoveryHousingPage() {
           </Reveal>
         </div>
       </section>
+
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
+
+      {/* ===== APPLICANT VETTING STANDARDS ===== */}
+      <VettingStandards />
 
       <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
 

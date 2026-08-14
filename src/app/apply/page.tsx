@@ -99,9 +99,9 @@ export default function ApplyPage() {
               will personally review your information and reach out — typically
               within three business days — to learn more about your situation and
               walk you through the options available to you. Depending on your
-              circumstances, assistance may include rent or housing vouchers,
-              help avoiding an eviction, deposit and move-in support, or
-              enrollment in our financial-literacy and tenancy coaching programs.
+              circumstances, assistance may include down payment or housing
+              vouchers, help avoiding an eviction, deposit and move-in support,
+              or a referral to a HUD-approved homeownership counseling partner.
             </Reveal>
             <Reveal delay={200} as="p">
               FAITH Foundation serves families of every background, belief, and

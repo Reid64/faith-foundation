@@ -4,64 +4,34 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Events — FAITH Foundation",
   description:
-    "Join FAITH Foundation at upcoming Central Texas events — financial-literacy workshops, volunteer days, donor gatherings, and community fundraisers.",
+    "Confirmed upcoming events from FAITH Foundation — a volunteer orientation on Zoom and the publication of our first annual impact summary.",
   alternates: { canonical: "/events" },
 };
 
 const EVENTS = [
   {
-    title: "Financial Literacy Workshop: Building a Budget That Sticks",
-    date: "July 12, 2026",
-    time: "10:00 AM – 12:00 PM",
-    location: "FAITH Foundation Office, 209 Surecast Drive, Burnet, TX",
-    type: "Workshop",
+    date: "October 11, 2026",
+    time: "Time TBD",
+    category: "Volunteer",
+    title: "Volunteer Orientation — Zoom",
+    location: "Online (Zoom)",
     description:
-      "A free, hands-on workshop led by our financial-literacy coaches. Families will learn how to build a realistic monthly budget, prioritize housing costs, and start an emergency cushion. Open to everyone in the community — no registration fee required.",
+      "Join us for our first volunteer orientation on Zoom. This session covers our mission, the families we serve, and the many ways to get involved — from coaching tenancy and life skills to helping families navigate the path to homeownership. No special experience required, only a willingness to serve. Sign up through our volunteer page and we will send you the Zoom link and details ahead of the event.",
   },
   {
-    title: "Community Volunteer Day",
-    date: "July 26, 2026",
-    time: "9:00 AM – 1:00 PM",
-    location: "Burnet Community Center, Burnet, TX",
-    type: "Volunteer",
+    date: "November 24, 2026",
+    time: "Online",
+    category: "Transparency",
+    title: "Annual Impact Summary Published",
+    location: "faithfoundationsf.org",
     description:
-      "Spend a morning serving alongside our team. Volunteers will help assemble welcome kits for families moving into stable housing, organize donated supplies, and prepare materials for our tutoring programs. Lunch is provided for all who serve.",
-  },
-  {
-    title: "Tenancy Hope Benefit Dinner",
-    date: "August 15, 2026",
-    time: "6:00 PM – 9:00 PM",
-    location: "Hill Country Event Hall, Burnet, TX",
-    type: "Fundraiser",
-    description:
-      "Our annual benefit dinner celebrates the families we serve and raises funds for housing vouchers. The evening includes dinner, stories from the families we serve, and a chance to learn how the generosity of donors and community partners funds down payment assistance for neighbors across Texas.",
-  },
-  {
-    title: "Homeownership Readiness Information Night",
-    date: "September 9, 2026",
-    time: "6:30 PM – 8:00 PM",
-    location: "Virtual (online) and FAITH Foundation Office",
-    type: "Information Session",
-    description:
-      "An informal evening for anyone curious about the path to homeownership. Our counselors will walk through credit preparation, saving for a down payment, and how donations and community partnerships fund the assistance vouchers behind our charitable housing programs. Bring your questions — no commitment required.",
-  },
-  {
-    title: "Back-to-School Family Resource Fair",
-    date: "September 27, 2026",
-    time: "11:00 AM – 3:00 PM",
-    location: "Burnet, TX (location to be announced)",
-    type: "Community",
-    description:
-      "A free family event connecting neighbors with housing assistance, financial coaching, and local partner organizations. Families can meet our team, learn about our programs, and find out how to apply for support in a welcoming, no-pressure setting.",
+      "FAITH Foundation publishes its first annual impact summary — a plain-language account of families served, down payment assistance vouchers distributed, and how every category of giving was put to work. Available on our impact and financial-transparency pages the moment it is published.",
   },
 ];
 
-const TYPE_STYLES: Record<string, string> = {
-  Workshop: "bg-gold/20 text-gold-dark",
+const CATEGORY_STYLES: Record<string, string> = {
   Volunteer: "bg-navy/10 text-navy",
-  Fundraiser: "bg-gold/20 text-gold-dark",
-  "Information Session": "bg-navy/10 text-navy",
-  Community: "bg-gold/20 text-gold-dark",
+  Transparency: "bg-gold/20 text-gold-dark",
 };
 
 export default function EventsPage() {
@@ -77,11 +47,11 @@ export default function EventsPage() {
             Upcoming <span className="text-gold">events</span>
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-white/85">
-            Throughout the year, FAITH Foundation gathers neighbors, volunteers,
-            and supporters across Central Texas for workshops, service days, and
-            celebrations. Our events are where instruction and tenancy hope become
-            tangible — a place to learn a new skill, lend a hand, or simply meet
-            the families your generosity helps. Everyone is welcome, regardless of
+            FAITH Foundation is a young organization, and our calendar is just
+            beginning. Below are the gatherings we have confirmed so far — an
+            open invitation to learn about the mission, lend a hand, or see
+            exactly how your generosity is put to work. More will be announced
+            here as our programs grow. Everyone is welcome, regardless of
             background or belief.
           </p>
         </div>
@@ -100,26 +70,24 @@ export default function EventsPage() {
           </h3>
           <div className="space-y-5 text-lg leading-relaxed text-foreground/80">
             <p>
-              We believe stability is built in community, not in isolation. Our
-              events bring together the people who make our work possible — the
-              families learning to budget, the volunteers assembling welcome kits,
-              the donors who turn a single home purchase into housing for a
-              neighbor in need. When we gather, the mission stops being an
-              abstraction and becomes a room full of real people pulling in the
-              same direction.
+              We believe stability is built in community, not in isolation. When
+              we gather, the mission stops being an abstraction and becomes a
+              room full of real people pulling in the same direction — the
+              families working toward stable housing, the volunteers who serve
+              alongside them, and the donors whose generosity makes the work
+              possible.
             </p>
             <p>
-              Whether you are facing a housing challenge of your own, looking for a
-              meaningful way to serve, or considering a gift, there is an event
-              for you. Workshops equip families with practical skills, service days
-              channel generosity into hands-on help, and our benefit gatherings
-              fund the vouchers that keep families housed. Each one is an open door.
+              We are early in our story. Rather than fill a calendar for the sake
+              of appearances, we would rather host a small number of gatherings
+              we can do well and stand behind. Every event listed on this page is
+              confirmed, and as our programs grow we will announce new ones here
+              first.
             </p>
             <p>
-              All of our events are free to attend unless otherwise noted, and our
-              fundraisers exist to support the families we serve. If you have a
-              question about an event, need accommodations, or want to volunteer to
-              help run one, please reach out — a real person on our team will be
+              Our events are free to attend unless otherwise noted. If you have a
+              question, need accommodations, or want to help us run a future
+              gathering, please reach out — a real person on our team will be
               glad to help you take the next step.
             </p>
           </div>
@@ -132,7 +100,7 @@ export default function EventsPage() {
       <section className="bg-gold/10">
         <div className="mx-auto max-w-4xl px-6 py-16">
           <h2 className="heading-underline-center mb-10 text-center text-3xl font-extrabold text-navy">
-            Mark your calendar
+            Confirmed events
           </h2>
           <ul className="space-y-6">
             {EVENTS.map((event) => (
@@ -143,10 +111,10 @@ export default function EventsPage() {
                 <div className="flex flex-wrap items-center gap-3">
                   <span
                     className={`rounded-full px-3 py-1 text-xs font-bold uppercase tracking-widest ${
-                      TYPE_STYLES[event.type] ?? "bg-navy/10 text-navy"
+                      CATEGORY_STYLES[event.category] ?? "bg-navy/10 text-navy"
                     }`}
                   >
-                    {event.type}
+                    {event.category}
                   </span>
                   <span className="text-sm font-semibold text-foreground/70">
                     {event.date} • {event.time}
@@ -176,8 +144,8 @@ export default function EventsPage() {
             Want to be part of it?
           </h2>
           <p className="mx-auto mb-8 max-w-2xl text-lg leading-relaxed text-white/85">
-            Sign up to volunteer at an upcoming event, or reach out to confirm
-            details and reserve your spot. We would love to see you there.
+            Sign up to volunteer, or reach out with a question about an upcoming
+            event. We would love to see you there.
           </p>
           <div className="flex flex-col justify-center gap-4 sm:flex-row">
             <Link

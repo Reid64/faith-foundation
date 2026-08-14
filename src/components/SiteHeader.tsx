@@ -1,9 +1,9 @@
-"use client";
+﻿"use client";
 
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const ABOUT_LINKS = [
   { href: "/about", label: "About Us" },
@@ -23,6 +23,7 @@ export default function SiteHeader() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [aboutOpen, setAboutOpen] = useState(false);
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const pathname = usePathname();
 
   useEffect(() => {
@@ -32,7 +33,6 @@ export default function SiteHeader() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Close the mobile menu whenever the route changes.
   useEffect(() => {
     setOpen(false);
   }, [pathname]);
@@ -47,7 +47,7 @@ export default function SiteHeader() {
 
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-50 border-b border-black/10 bg-[#F5F5F5] transition-shadow duration-300 ${
+      className={`fixed inset-x-0 top-0 z-50 border-b border-black/10 bg-white transition-shadow duration-300 ${
         solid ? "shadow-[0_6px_24px_-14px_rgba(0,0,0,0.45)]" : ""
       }`}
     >
@@ -64,11 +64,16 @@ export default function SiteHeader() {
         </Link>
 
         <nav aria-label="Primary" className="hidden items-center gap-8 lg:flex">
-          {/* About dropdown */}
           <div
             className="relative"
-            onMouseEnter={() => setAboutOpen(true)}
-            onMouseLeave={() => setAboutOpen(false)}
+            style={{ paddingBottom: "8px" }}
+            onMouseEnter={() => {
+              if (closeTimer.current) clearTimeout(closeTimer.current);
+              setAboutOpen(true);
+            }}
+            onMouseLeave={() => {
+              closeTimer.current = setTimeout(() => setAboutOpen(false), 120);
+            }}
           >
             <button
               type="button"
@@ -95,13 +100,14 @@ export default function SiteHeader() {
             </button>
 
             {aboutOpen && (
-              <div className="absolute left-0 top-full z-50 mt-2 min-w-[200px] rounded-xl border border-black/10 bg-[#F5F5F5] py-2 shadow-lg">
+              <div className="absolute left-0 top-full z-50 -mt-2 min-w-[200px] rounded-xl border border-black/10 bg-white py-2 shadow-lg">
                 {ABOUT_LINKS.map((link) => {
                   const active = pathname === link.href;
                   return (
                     <Link
                       key={link.href}
                       href={link.href}
+                      onClick={() => setAboutOpen(false)}
                       className={`block px-5 py-2.5 text-sm font-semibold transition-colors hover:bg-black/5 hover:text-green ${
                         active ? "text-green" : "text-charcoal"
                       }`}
@@ -114,7 +120,6 @@ export default function SiteHeader() {
             )}
           </div>
 
-          {/* Team — retained as a standalone top-level nav item */}
           <Link
             href="/team"
             className={`relative text-sm font-semibold tracking-wide transition-colors after:absolute after:-bottom-1.5 after:left-0 after:h-0.5 after:bg-green after:transition-all after:duration-300 hover:text-green ${
@@ -178,9 +183,8 @@ export default function SiteHeader() {
         </button>
       </div>
 
-      {/* Mobile menu */}
       <div
-        className={`overflow-hidden border-t border-black/10 bg-[#F5F5F5] transition-[max-height] duration-300 lg:hidden ${
+        className={`overflow-hidden border-t border-black/10 bg-white transition-[max-height] duration-300 lg:hidden ${
           open ? "max-h-[36rem]" : "max-h-0"
         }`}
       >

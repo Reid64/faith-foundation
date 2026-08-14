@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 const COMMITMENTS = [
   {
     title: "Every dollar is stewarded with care",
-    body: "We treat each gift as a sacred trust. Donations are directed toward measurable impact — down payment assistance vouchers, emergency rental and deposit assistance, and supporting instruction programs — never toward waste or excess. Stewardship is not a slogan for us; it is a commitment that shapes every financial decision we make.",
+    body: "We treat each gift as a sacred trust. Donations are directed toward measurable impact — down payment assistance vouchers, our housing voucher program, and supporting instruction programs — never toward waste or excess. Stewardship is not a slogan for us; it is a commitment that shapes every financial decision we make.",
   },
   {
     title: "We report our outcomes openly",
@@ -67,12 +67,8 @@ const FUND_DIRECTION = [
     note: "Direct assistance that helps families buy a home.",
   },
   {
-    label: "Emergency rental & deposit assistance",
-    note: "Help at the moment a housing crisis hits.",
-  },
-  {
     label: "Supporting instruction programs",
-    note: "Homeownership counseling and financial literacy.",
+    note: "Homeownership counseling referrals and program administration.",
   },
 ];
 
@@ -222,8 +218,8 @@ export default function FinancialTransparencyPage() {
             </Reveal>
             <Reveal delay={200}>
               <p className="text-lg leading-relaxed text-white/80">
-                Donations are directed toward the work that keeps families housed
-                and equipped. Every gift moves through these three program areas.
+                Donations are directed toward the work that moves families into
+                homes of their own. Every gift moves through these program areas.
               </p>
             </Reveal>
           </div>

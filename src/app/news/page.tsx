@@ -21,22 +21,13 @@ const NEWS = [
     body: "Our housing fund is made possible by the generosity of donors and community partners, and designated housing donations directly support our charitable housing mission. This funding model is designed to grow the pool of down payment assistance available to families working toward a home of their own, helping neighbors cover the down payment that puts homeownership within reach. As a brand-new organization, we are building this engine with care, and we remain committed to reporting openly to the donors who make it possible.",
   },
   {
-    slug: "fall-financial-literacy-cohort-open",
-    title: "Registration Opens for the Fall Financial Literacy Cohort",
-    date: "May 22, 2026",
-    category: "Programs",
-    summary:
-      "Our free financial-literacy program returns this fall with new evening sessions designed to fit around work and family schedules.",
-    body: "Buying a home starts with mortgage-ready finances, and our financial-literacy coaches are opening registration for the fall cohort. This supporting program complements our down payment assistance: over several weeks, participating families work one-on-one and in small groups on budgeting, credit repair, debt management, and saving toward a down payment. The program is completely free and open to anyone in Texas. New evening sessions make it easier for working parents to attend, and childcare considerations are part of how we plan each gathering. Contact us or visit our programs page to learn how to enroll.",
-  },
-  {
     slug: "new-volunteer-orientation-schedule",
     title: "New Monthly Volunteer Orientations Announced",
     date: "May 3, 2026",
     category: "Volunteers",
     summary:
       "Responding to growing community interest, FAITH Foundation is launching monthly orientation sessions for new volunteers.",
-    body: "The response from neighbors wanting to serve has been humbling, and we are making it easier to get started. Beginning this spring, we are hosting a monthly orientation for new volunteers covering our mission, the families we serve, and the many ways to help — from tutoring in our financial-literacy program to assembling welcome kits and supporting events. No special experience is required, only a willingness to serve. If you have been considering volunteering, this is the perfect on-ramp; sign up through our volunteer page and we will follow up with the next available date.",
+    body: "The response from neighbors wanting to serve has been humbling, and we are making it easier to get started. Beginning this spring, we are hosting a monthly orientation for new volunteers covering our mission, the families we serve, and the many ways to help — from coaching a family through the responsibilities of tenancy to assembling welcome kits and supporting events. No special experience is required, only a willingness to serve. If you have been considering volunteering, this is the perfect on-ramp; sign up through our volunteer page and we will follow up with the next available date.",
   },
   {
     slug: "annual-impact-report-published",

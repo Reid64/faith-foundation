@@ -270,8 +270,8 @@ export default function HousingVoucherPage() {
               <p>
                 Vouchers are most powerful as a path to homeownership. A family
                 stabilized by down payment assistance today can complete
-                Homeownership Counseling to buy a home of their own — with supporting
-                financial literacy guidance to help them prepare and sustain it.
+                Homeownership Counseling to buy a home of their own — with their
+                counselor&apos;s guidance to help them prepare and sustain it.
                 Because our programs are sustained by the ongoing generosity of
                 donors and community partners, the very vouchers that once kept
                 them housed are sustained. This is the cycle of uplift at the

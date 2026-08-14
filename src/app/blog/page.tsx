@@ -29,7 +29,7 @@ const POSTS = [
   {
     slug: "five-budgeting-habits-that-protect-your-housing",
     title: "Five Budgeting Habits That Protect Your Housing",
-    category: "Financial Literacy",
+    category: "Homeownership",
     date: "May 18, 2026",
     author: "FAITH Foundation Team",
     readTime: "6 min read",

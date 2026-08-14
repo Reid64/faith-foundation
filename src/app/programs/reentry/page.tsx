@@ -3,6 +3,7 @@ import Link from "next/link";
 import Reveal from "@/components/Reveal";
 import { img } from "@/lib/images";
 import { Cite } from "@/components/Citations";
+import VettingStandards from "@/components/VettingStandards";
 
 export const metadata: Metadata = {
   title: "Second Chance Reentry — FAITH Foundation",
@@ -350,6 +351,11 @@ export default function SecondChanceReentryPage() {
           </div>
         </div>
       </section>
+
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
+
+      {/* ===== APPLICANT VETTING STANDARDS ===== */}
+      <VettingStandards />
 
       <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
 

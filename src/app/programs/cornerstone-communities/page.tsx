@@ -87,7 +87,7 @@ const communities: Community[] = [
       {
         name: 'Community Support Programming',
         description:
-          'Regularly scheduled support groups, financial literacy workshops, budgeting classes, and life skills training led by qualified counselors and community volunteers.',
+          'Regularly scheduled support groups, budgeting classes, and life skills training led by qualified counselors and community volunteers.',
       },
       {
         name: 'Children and Family Services',
@@ -150,6 +150,43 @@ const landDonors = [
   {
     title: 'Developers',
     text: 'Undevelopable remainder parcels, community benefit contributions, or donated lots from new subdivisions.',
+  },
+];
+
+type RoadmapPhase = {
+  phase: string;
+  title: string;
+  status: string;
+  text: string;
+  cta?: { label: string; href: string };
+};
+
+const roadmap: RoadmapPhase[] = [
+  {
+    phase: 'Phase 1',
+    title: 'Land Acquisition',
+    status: 'Active — Seeking Partners',
+    text: 'Our first priority is securing land through donation, land bank transfer, or partnership with a willing landowner. We are actively pursuing donated parcels, municipal land bank opportunities, and private land gifts from donors who want their land to serve a lasting purpose. If you own land in Texas and want to put it to work for families, we want to hear from you.',
+    cta: { label: 'Contact us about land donation', href: '/contact' },
+  },
+  {
+    phase: 'Phase 2',
+    title: 'Site Development',
+    status: 'Seeking In-Kind Partners',
+    text: 'Once land is secured, we need civil engineers, septic contractors, water utility providers, and electrical contractors to develop the infrastructure that makes a home livable. We are actively seeking licensed professionals and construction companies willing to donate or discount their services as part of our mission. Every site development contribution is tax-deductible and publicly acknowledged.',
+    cta: { label: 'Contact us about service donations', href: '/contact' },
+  },
+  {
+    phase: 'Phase 3',
+    title: 'First Home Placement',
+    status: 'Our Near-Term Goal',
+    text: 'Our initial target is the placement of one modular home on donated or acquired land — fully permitted, properly connected, and documented transparently from groundbreaking to move-in. This first home will serve as proof of concept for the Cornerstone Communities model and the foundation for everything that follows. Bright Box Homes, our corporate partner, is positioned to provide the first home through their modular construction program.',
+  },
+  {
+    phase: 'Phase 4',
+    title: 'Replication and Growth',
+    status: 'The Vision',
+    text: 'With one home proven, the model becomes repeatable. Additional land donations, service partnerships, and construction sponsors expand the community one home at a time — each placement documented, each family vetted, each donor acknowledged. This is how FAITH Foundation builds Cornerstone Communities: slowly, honestly, and with full accountability to the people whose generosity makes it possible.',
   },
 ];
 
@@ -452,6 +489,70 @@ export default function CornerstoneCommunitiesPage() {
           </div>
 
           <LandInquiryForm />
+        </div>
+      </section>
+
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
+      {/* Development Roadmap */}
+      <section className="py-20 px-4 bg-[#FAFAF5]" id="roadmap">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-12">
+            <p className="text-[#C8A951] font-semibold tracking-widest uppercase text-sm mb-2">
+              Transparency in Action
+            </p>
+            <h2 className="heading-underline-center text-3xl md:text-4xl font-bold text-[#1B2A4A]">
+              How We&apos;re Building This — Phase by Phase
+            </h2>
+            <p className="text-gray-700 text-lg max-w-3xl mx-auto mt-6 leading-relaxed">
+              FAITH Foundation is a young organization with an honest vision. We
+              are not yet operating a Cornerstone Community — but we are building
+              toward one with intention, transparency, and the support of donors
+              and land partners who believe in what this model can become. Here is
+              exactly where we are and where we are going.
+            </p>
+          </div>
+
+          <ol className="grid gap-6 md:grid-cols-2">
+            {roadmap.map((item, i) => (
+              <li
+                key={item.phase}
+                className={`${i % 2 === 0 ? 'card-feature-cream' : 'card-feature-white'} flex flex-col rounded-2xl p-8`}
+              >
+                <div className="flex flex-wrap items-center gap-3">
+                  <span className="inline-flex items-center rounded-full bg-[#1B2A4A] px-3 py-1 text-xs font-bold uppercase tracking-widest text-[#C8A951]">
+                    {item.phase}
+                  </span>
+                  <span className="inline-flex items-center rounded-full border border-[#C8A951] px-3 py-1 text-xs font-bold uppercase tracking-widest text-[#8a7226]">
+                    {item.status}
+                  </span>
+                </div>
+                <h3 className="mt-4 text-2xl font-bold text-[#1B2A4A]">
+                  {item.title}
+                </h3>
+                <p className="mt-3 flex-1 leading-relaxed text-gray-700">
+                  {item.text}
+                </p>
+                {item.cta && (
+                  <Link
+                    href={item.cta.href}
+                    className="mt-6 inline-flex w-fit items-center gap-2 rounded-lg bg-[#1B2A4A] px-6 py-3 text-sm font-bold text-white transition-colors hover:bg-[#243558]"
+                  >
+                    {item.cta.label}
+                    <span aria-hidden>→</span>
+                  </Link>
+                )}
+              </li>
+            ))}
+          </ol>
+
+          <div className="mt-12 rounded-2xl border-l-[5px] border-[#C8A951] bg-white px-7 py-6 shadow-lg">
+            <p className="leading-relaxed text-[#1B2A4A]">
+              Every dollar designated to Cornerstone Communities goes directly
+              toward land acquisition, site development, or home placement — not
+              administration. If you want to give toward a specific phase, contact
+              us and we will designate your gift accordingly.
+            </p>
+          </div>
         </div>
       </section>
 

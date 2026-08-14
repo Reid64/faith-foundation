@@ -200,7 +200,6 @@ export default function ApplicationForm() {
                 <option>Rent / housing voucher</option>
                 <option>Help avoiding eviction</option>
                 <option>Deposit or move-in assistance</option>
-                <option>Financial-literacy / budgeting support</option>
                 <option>Not sure — please advise</option>
               </select>
             </div>
