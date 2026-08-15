@@ -27,7 +27,7 @@ const COMMITMENTS = [
   },
   {
     title: "Our funding sources are disclosed",
-    body: "Our housing programs are funded by individual and corporate donors, grants, and community fundraising. Among our corporate donors is Bright Box Homes, a separate, independently operated company. Bright Box Homes honors FAITH Foundation down payment assistance vouchers — applying a $2,500 voucher as a direct discount to qualifying buyers — and contributes an additional $2,500 charitable donation to FAITH Foundation for every home sold, creating a combined $5,000 benefit for families we serve. Because our funding sources are disclosed, donors can trace how gifts sustain our work over time.",
+    body: "Our housing programs are funded by individual and corporate donors, grants, and community fundraising. Our corporate partners include homebuilders who honor FAITH Foundation down payment assistance vouchers as direct discounts to qualifying buyers and make additional charitable contributions to FAITH Foundation per home sold. Because our funding sources are disclosed, donors can trace how gifts sustain our work over time.",
   },
   {
     title: "Donor privacy is protected",

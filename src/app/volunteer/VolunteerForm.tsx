@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { openMailto } from "@/lib/mailto";
 
 const INTERESTS = [
   "Tenancy & life-skills coaching",
@@ -15,6 +16,21 @@ export default function VolunteerForm() {
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    const get = (k: string) => String(data.get(k) ?? "");
+
+    openMailto(
+      "Volunteer signup",
+      [
+        ["Name", get("name")],
+        ["Email", get("email")],
+        ["Phone", get("phone")],
+        ["Area of interest", get("interest")],
+        ["Availability and skills", get("availability")],
+      ],
+      "Sent from the FAITH Foundation website volunteer form."
+    );
+
     setSubmitted(true);
   }
 
@@ -41,11 +57,20 @@ export default function VolunteerForm() {
           Welcome to the team!
         </h3>
         <p className="mt-3 text-lg leading-relaxed text-charcoal/80">
-          Thank you for offering your time and talents to FAITH Foundation. A
-          member of our volunteer coordination team will reach out soon with next
-          steps. Questions in the meantime? Call us at{" "}
+          Thank you for offering your time and talents to FAITH Foundation. Your
+          email app should now be open with your signup ready to go —{" "}
+          <strong className="text-navy">press send to deliver it</strong>. Once
+          it arrives, a member of our volunteer coordination team will reach out
+          with next steps. If your email app did not open, call us at{" "}
           <a href="tel:+18884976620" className="font-semibold text-gold-dark">
             888-497-6620
+          </a>{" "}
+          or write to{" "}
+          <a
+            href="mailto:info@faithfoundationsf.org"
+            className="font-semibold text-gold-dark"
+          >
+            info@faithfoundationsf.org
           </a>
           .
         </p>

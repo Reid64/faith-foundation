@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { openMailto } from "@/lib/mailto";
 
 const STEPS = [
   { id: 1, label: "Your Information" },
@@ -16,17 +17,65 @@ const labelClass = "mb-2 block text-sm font-semibold text-navy";
 export default function ApplicationForm() {
   const [step, setStep] = useState(1);
   const [submitted, setSubmitted] = useState(false);
+  const formRef = useRef<HTMLFormElement>(null);
+
+  // Each step unmounts when you move off it, so its inputs leave the DOM. The
+  // answers are captured into state on every step change; without this, a
+  // submission would only ever contain step 4's fields, and pressing Back would
+  // wipe everything already typed.
+  const [answers, setAnswers] = useState<Record<string, string>>({});
+
+  function capture() {
+    const el = formRef.current;
+    if (!el) return;
+    const fd = new FormData(el);
+    const found: Record<string, string> = {};
+    fd.forEach((value, key) => {
+      found[key] = String(value);
+    });
+    setAnswers((prev) => ({ ...prev, ...found }));
+  }
 
   function next() {
+    capture();
     setStep((s) => Math.min(s + 1, STEPS.length));
   }
 
   function back() {
+    capture();
     setStep((s) => Math.max(s - 1, 1));
   }
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+
+    const fd = new FormData(event.currentTarget);
+    const finalStep: Record<string, string> = {};
+    fd.forEach((value, key) => {
+      finalStep[key] = String(value);
+    });
+    const all = { ...answers, ...finalStep };
+    const get = (k: string) => all[k] ?? "";
+
+    openMailto(
+      `Housing assistance application — ${get("firstName")} ${get("lastName")}`.trim(),
+      [
+        ["First name", get("firstName")],
+        ["Last name", get("lastName")],
+        ["Email", get("email")],
+        ["Phone", get("phone")],
+        ["Household size", get("householdSize")],
+        ["Number of children", get("children")],
+        ["Approximate monthly household income", get("income")],
+        ["Employment status", get("employment")],
+        ["Current housing status", get("housingStatus")],
+        ["Assistance needed", get("assistanceType")],
+        ["Description of situation", get("description")],
+        ["Certified accurate and consented to contact", get("consent") ? "Yes" : "No"],
+      ],
+      "Sent from the FAITH Foundation website housing assistance application."
+    );
+
     setSubmitted(true);
   }
 
@@ -50,17 +99,23 @@ export default function ApplicationForm() {
           </svg>
         </span>
         <h3 className="text-2xl font-extrabold text-navy">
-          Application received
+          One last step to send your application
         </h3>
         <p className="mt-3 text-lg leading-relaxed text-charcoal/80">
-          Thank you for trusting FAITH Foundation with your story. Your housing
-          assistance application has been submitted. A caseworker will review
-          your information and contact you within three business days. If you are
-          facing an immediate emergency, please call us right away at{" "}
+          Thank you for trusting FAITH Foundation with your story. Your email app
+          should now be open with your application filled in —{" "}
+          <strong className="text-navy">press send to submit it</strong>. As soon
+          as it reaches us, a caseworker will review your information and contact
+          you within three business days.
+        </p>
+        <p className="mt-4 text-lg leading-relaxed text-charcoal/80">
+          If your email app did not open, or you would rather not apply by email,
+          please call us at{" "}
           <a href="tel:+18884976620" className="font-semibold text-gold-dark">
             888-497-6620
-          </a>
-          .
+          </a>{" "}
+          and we will take your application over the phone. If you are facing an
+          immediate emergency, call us right away.
         </p>
       </div>
     );
@@ -97,7 +152,7 @@ export default function ApplicationForm() {
         ))}
       </ol>
 
-      <form onSubmit={handleSubmit}>
+      <form ref={formRef} onSubmit={handleSubmit}>
         {/* Step 1 */}
         {step === 1 && (
           <fieldset className="space-y-6">
@@ -109,25 +164,25 @@ export default function ApplicationForm() {
                 <label htmlFor="a-first" className={labelClass}>
                   First name
                 </label>
-                <input id="a-first" name="firstName" type="text" required className={inputClass} />
+                <input id="a-first" name="firstName" type="text" required defaultValue={answers.firstName ?? ""} className={inputClass} />
               </div>
               <div>
                 <label htmlFor="a-last" className={labelClass}>
                   Last name
                 </label>
-                <input id="a-last" name="lastName" type="text" required className={inputClass} />
+                <input id="a-last" name="lastName" type="text" required defaultValue={answers.lastName ?? ""} className={inputClass} />
               </div>
               <div>
                 <label htmlFor="a-email" className={labelClass}>
                   Email address
                 </label>
-                <input id="a-email" name="email" type="email" required className={inputClass} />
+                <input id="a-email" name="email" type="email" required defaultValue={answers.email ?? ""} className={inputClass} />
               </div>
               <div>
                 <label htmlFor="a-phone" className={labelClass}>
                   Phone number
                 </label>
-                <input id="a-phone" name="phone" type="tel" required className={inputClass} />
+                <input id="a-phone" name="phone" type="tel" required defaultValue={answers.phone ?? ""} className={inputClass} />
               </div>
             </div>
           </fieldset>
@@ -144,25 +199,25 @@ export default function ApplicationForm() {
                 <label htmlFor="a-size" className={labelClass}>
                   Household size
                 </label>
-                <input id="a-size" name="householdSize" type="number" min={1} className={inputClass} />
+                <input id="a-size" name="householdSize" type="number" min={1} defaultValue={answers.householdSize ?? ""} className={inputClass} />
               </div>
               <div>
                 <label htmlFor="a-children" className={labelClass}>
                   Number of children
                 </label>
-                <input id="a-children" name="children" type="number" min={0} className={inputClass} />
+                <input id="a-children" name="children" type="number" min={0} defaultValue={answers.children ?? ""} className={inputClass} />
               </div>
               <div>
                 <label htmlFor="a-income" className={labelClass}>
                   Approximate monthly household income
                 </label>
-                <input id="a-income" name="income" type="text" className={inputClass} />
+                <input id="a-income" name="income" type="text" defaultValue={answers.income ?? ""} className={inputClass} />
               </div>
               <div>
                 <label htmlFor="a-employment" className={labelClass}>
                   Employment status
                 </label>
-                <select id="a-employment" name="employment" className={inputClass}>
+                <select id="a-employment" name="employment" defaultValue={answers.employment} className={inputClass}>
                   <option>Employed full-time</option>
                   <option>Employed part-time</option>
                   <option>Unemployed</option>
@@ -184,7 +239,7 @@ export default function ApplicationForm() {
               <label htmlFor="a-status" className={labelClass}>
                 Current housing status
               </label>
-              <select id="a-status" name="housingStatus" className={inputClass}>
+              <select id="a-status" name="housingStatus" defaultValue={answers.housingStatus} className={inputClass}>
                 <option>Renting, behind on payments</option>
                 <option>Facing eviction</option>
                 <option>Temporarily staying with others</option>
@@ -196,7 +251,7 @@ export default function ApplicationForm() {
               <label htmlFor="a-need" className={labelClass}>
                 What type of assistance do you need?
               </label>
-              <select id="a-need" name="assistanceType" className={inputClass}>
+              <select id="a-need" name="assistanceType" defaultValue={answers.assistanceType} className={inputClass}>
                 <option>Rent / housing voucher</option>
                 <option>Help avoiding eviction</option>
                 <option>Deposit or move-in assistance</option>
@@ -207,7 +262,7 @@ export default function ApplicationForm() {
               <label htmlFor="a-describe" className={labelClass}>
                 Briefly describe your situation
               </label>
-              <textarea id="a-describe" name="description" rows={5} className={inputClass} />
+              <textarea id="a-describe" name="description" rows={5} defaultValue={answers.description ?? ""} className={inputClass} />
             </div>
           </fieldset>
         )}

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { openMailto } from "@/lib/mailto";
 
 const PROGRAM_LINKS = [
   { href: "/programs/homeownership", label: "Homeownership" },
@@ -88,7 +89,14 @@ export default function SiteFooter() {
             <form
               onSubmit={(e) => {
                 e.preventDefault();
-                if (email.trim()) setSubmitted(true);
+                const address = email.trim();
+                if (!address) return;
+                openMailto(
+                  "Newsletter Signup",
+                  [["Email", address]],
+                  "Please add this email address to the FAITH Foundation newsletter list."
+                );
+                setSubmitted(true);
               }}
               className="flex w-full max-w-md flex-col gap-3 sm:flex-row"
             >

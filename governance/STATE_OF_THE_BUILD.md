@@ -1,7 +1,60 @@
 # faith-foundation — STATE OF THE BUILD
 
 > Updated from a LIVE codebase audit on 2026-08-14 (BLUEPRINT Canonical Rule 9).
-> Last action: **`next-sitemap` made the single source of truth for sitemap.xml + robots.txt.**
+> Last action: **Full Playwright site audit — 128 tests, all passing; 3 site defects found and
+> fixed.** A 128-test suite (`scripts/site-audit.spec.ts`) was built and run against live
+> production covering all 23 routes, 3 redirects, all 4 forms, navigation (desktop + mobile +
+> About dropdown), every internal link sitewide, the Zeffy embed, and 7 content/SEO checks.
+> **Headline finding: the Contact, Volunteer, and Apply forms were all silently destroying every
+> submission** — the same `preventDefault(); setSubmitted(true)` defect already fixed on the
+> newsletter. The Apply form was the worst case: it collected income, household size, children,
+> and housing status (including "Facing eviction" / "Currently unhoused") from families in crisis,
+> told them "Application received … a caseworker will contact you within three business days", and
+> discarded all of it. All three now route through a shared mailto helper; the Apply form also had
+> a second defect (its wizard unmounts each step, so steps 1–3 would have been lost even after the
+> mailto fix) and a third (Back wiped everything typed) — both fixed. Also fixed: a **dead
+> hotlinked Unsplash hero on `/programs/veterans/`** that had been 404ing upstream, leaving that
+> page's main visual blank. Full report: `governance/SITE_AUDIT_2026-08-14.md`. **Site is
+> technically clear for the Google for Nonprofits submission; the mailto intake is a disclosed
+> stopgap, not intake infrastructure — see the readiness section of the report.**
+>
+> Prior action: **Footer newsletter signup routed to `info@faithfoundationsf.org` via mailto.**
+> This closes the open item raised by the previous pass: the sitewide footer form showed a
+> "Subscribed ✓" success state while discarding the email entirely — no endpoint, no storage, on
+> every page. The `onSubmit` handler now builds a `mailto:info@faithfoundationsf.org` link with
+> subject "Newsletter Signup" and the submitted address in the body, opens it, and then sets the
+> success state. All styling and markup unchanged. Build PASSED (0 TypeScript errors, 31/31 static
+> pages), deployed `vercel --prod` → READY, verified live in the shipped JS bundle. **Read the
+> "honest limits" note in the log entry — mailto is a real improvement over data loss but is not
+> list capture.** See the 2026-08-14 newsletter log entry at the end of this file.
+>
+> Prior action: **Cornerstone Communities — broken land inquiry form replaced, gallery copy
+> corrected.** The `LandInquiryForm` component posted to a placeholder Formspree endpoint
+> (`https://formspree.io/f/YOUR_FORMSPREE_LAND_ID`) — every submission was silently lost. The
+> whole form was deleted and the section replaced with a single gold CTA button to `/contact`,
+> keeping the 48-hour response promise, the 501(c)(3) tax-benefit language, and the preliminary
+> assessment note in the intro paragraph. Separately, all eight gallery captions (four container
+> homes, four micro-apartments) were rewritten from vague cost-efficiency lines to accurate
+> descriptions of what the housing actually is, and a full explanatory paragraph was added under
+> each of the two gallery headings covering expandable shipping container / modular assembly
+> construction, factory build and on-site placement, and the full kitchen / full bath / air
+> conditioning / customizable colors, flooring, and layouts that ship with every unit. The
+> homepage mission image alt text was updated to match. Build PASSED (0 TypeScript errors, 31/31
+> static pages), deployed `vercel --prod` → READY. See the 2026-08-14 Cornerstone housing-copy log
+> entry at the end of this file.
+>
+> Prior action: **Bright Box Homes anonymized sitewide.** The named for-profit homebuilder was
+> removed from all four remaining public locations — the homepage mission block, the FAQ
+> "How is FAITH Foundation funded?" answer, the Financial Transparency "Our funding sources are
+> disclosed" commitment, and Cornerstone Communities Phase 3 — and replaced with generic
+> "corporate partner / corporate donor / homebuilders" language. The funding *mechanism* is still
+> disclosed on the Financial Transparency page; the company name and the $2,500/$5,000 figures
+> are not. Purpose: reduce **private-benefit / self-dealing** exposure ahead of the Google for
+> Nonprofits application and under IRS scrutiny. Build PASSED (0 TypeScript errors, 31/31 static
+> pages), deployed `vercel --prod` → READY, verified LIVE at **0 occurrences of "Bright Box"** on
+> all four pages. See the 2026-08-14 Bright Box log entry at the end of this file.
+>
+> Prior action: **`next-sitemap` made the single source of truth for sitemap.xml + robots.txt.**
 > Two passes: (1) config fixed — `/icon.png` and the three retired program URLs excluded,
 > per-page priorities set (`/` 1.0, `/donate` 0.9, the five key section pages 0.8, everything
 > else 0.7) and `changefreq: weekly` applied to every entry via a `transform` function;
@@ -835,3 +888,221 @@ build commands are approved.
 > policy with the correct `www` `Host:` and `Sitemap:` pointer.
 > ✅ FOLLOW-UP ITEM CLEARED — the dual-source sitemap/robots conflict opened in the entry above is
 > resolved; `next-sitemap.config.js` is now the ONLY place either file is defined.
+
+> 2026-08-14 [Compliance — Bright Box Homes named references REMOVED sitewide]: The company is no
+> longer named anywhere in the public site. Four files changed, each replacement supplied verbatim
+> in the brief:
+> (1) **`src/app/page.tsx`** — the mission-block funding paragraph named Bright Box Homes and
+> spelled out the "$2,500 voucher honored as a direct discount + an additional $2,500 donated per
+> home sold" mechanics; it now reads "funded by the generosity of individual and corporate donors
+> whose gifts are directed entirely toward down payment assistance for Texas families working
+> toward homeownership."
+> (2) **`src/app/faq/page.tsx`** — the entire "How is FAITH Foundation funded?" answer was
+> replaced. Gone: the company name, the dollar figures, and the "two completely separate entities
+> — FAITH Foundation does not own or operate any homebuilding company" disclaimer. The new answer
+> credits "homebuilders and construction partners" generically and refers readers to the Financial
+> Transparency page.
+> (3) **`src/app/financial-transparency/page.tsx`** — the "Our funding sources are disclosed"
+> commitment body was replaced. This is the one place the mechanism is deliberately RETAINED, in
+> generic form: corporate partners "include homebuilders who honor FAITH Foundation down payment
+> assistance vouchers as direct discounts to qualifying buyers and make additional charitable
+> contributions to FAITH Foundation per home sold." Name and figures removed.
+> (4) **`src/app/programs/cornerstone-communities/page.tsx`** — Phase 3 of `ROADMAP` now reads
+> "A corporate construction partner is positioned to provide the first home through a modular
+> construction program, with full documentation from groundbreaking to move-in."
+> WHY: a 501(c)(3) naming a specific for-profit homebuilder as its funding partner reads as the
+> charity advertising and steering buyers to one private business — the classic **private benefit
+> / self-dealing** pattern. The prior copy had gone the other direction (2026-07-27 entry below
+> made the arrangement MORE explicit, adding the two-benefit breakdown and the "separate entities"
+> disclaimer); that disclaimer itself signalled the risk it was trying to defuse. The correct fix
+> is to disclose the funding *structure* without promoting the *company*, which is what this pass
+> does. Immediate driver: the pending **Google for Nonprofits** application, plus general IRS
+> scrutiny of related-party arrangements.
+> NOTE — this SUPERSEDES the 2026-07-27 "Bright Box Homes description corrected sitewide" entry
+> below and the older entries describing `/partnership`, the `/news` Bright Box voucher milestone,
+> and Bright Box give-back copy on `/programs/homeownership` and `/programs/housing-voucher`. Those
+> entries are accurate history and were left intact, but the copy they describe no longer exists:
+> `/partnership` is absent from the route manifest, and a repo-wide case-insensitive grep for
+> `bright ?box` after this pass returns **0 hits under `src/`**. The only remaining hits in the
+> repo are internal — these governance logs, `PRD.md`, and an untracked scratch file
+> `brightbox-mentions.txt`.
+> Build: `pnpm run build` PASSED — 0 TypeScript errors, 31/31 static pages, `next-sitemap`
+> postbuild completed normally; only the pre-existing `@next/next/no-img-element` warnings, none
+> new.
+> Deployed via `vercel --prod` — deployment `dpl_J3BazDCruE6LnzupbLRq8PVaxHFF` READY, target
+> production, aliased to https://www.faithfoundationsf.org.
+> VERIFIED LIVE with `curl`: `/`, `/faq/`, `/financial-transparency/`, and
+> `/programs/cornerstone-communities/` each return **0 occurrences of "Bright Box"**
+> (case-insensitive), and all four replacement strings are present in the served HTML.
+> OPEN ITEM (not in scope, flagged for a decision): `PRD.md` still names Bright Box Homes as the
+> partner. It is an internal planning document, not published, so it carries no private-benefit
+> risk — but if the PRD is ever shared with Google or the IRS as supporting material it should be
+> reconciled with the live copy first.
+
+## 2026-08-14 — Cornerstone Communities: broken land inquiry form removed, housing copy corrected
+
+> WHY (form). The "Inquire About a Land Donation" section rendered a full nine-field
+> `LandInquiryForm` posting to `https://formspree.io/f/YOUR_FORMSPREE_LAND_ID` — a literal
+> placeholder that was never replaced with a real form ID. Every submission failed. This is the
+> worst failure mode available to a land-acquisition page: Phase 1 of the Cornerstone roadmap is
+> "Active — Seeking Partners", so this form was the primary conversion path for the single thing
+> the program most needs, and a landowner who filled it out saw a form that looked live, submitted,
+> and was never contacted. Silent loss of donor intent, not a cosmetic bug.
+> FIX. The entire `LandInquiryForm` function (152 lines, the last declaration in the file) was
+> deleted and the section rewritten as a centered heading, one paragraph, and a single gold CTA
+> `Link` to `/contact`. Nothing was lost in the swap: the 48-hour response promise, the 501(c)(3)
+> tax-benefit language, and the "preliminary assessment" note all moved from the form's inline
+> disclaimer into the intro paragraph. `/contact` is a working page, so the path now actually
+> reaches the team. The `id="land-inquiry"` anchor was preserved — Phase 1 and Phase 2 of the
+> roadmap already link to `/contact` and were unaffected.
+>
+> WHY (gallery copy). The eight gallery captions all described *cost efficiency* ("keeps costs
+> low, so donor dollars serve more families", four near-identical variations of it) and said
+> nothing about what the housing actually is. A visitor could not tell from the page that these
+> are factory-built expandable shipping container homes that arrive with a full kitchen, full
+> bath, and air conditioning already installed, or that exteriors, flooring, and layouts are
+> customizable — the facts that make the model credible rather than a euphemism for substandard
+> housing. One caption ("Affordable manufactured housing") was also inaccurate: manufactured
+> housing is a specific HUD-regulated category and is not what this is.
+> FIX. All eight captions rewritten — four for container homes (factory build and on-site
+> placement, customizable interiors, expandable modules that grow with the family, exterior color
+> and configuration options) and four for micro-apartments (furnished with kitchenette/bath/AC,
+> private and secure, modular cost control, community-centered siting of support services). Two
+> new explanatory paragraphs were added, one under each `h3` and above its gallery grid, carrying
+> the full construction and equipment description. Captions double as `alt` text on this page
+> (`alt={image.caption}`), so all eight images gained accurate alt text as a side effect.
+>
+> `src/app/page.tsx` — the mission-block `ParallaxImage` alt text was updated to match the
+> corrected framing. NOTE: the brief quoted the existing alt as ending "with soft interior light";
+> the actual string in the file ended "with string lights and a firepit". Same image, one
+> occurrence sitewide, replaced as specified.
+>
+> Build: `pnpm run build` PASSED — 0 TypeScript errors, 31/31 static pages, `next-sitemap`
+> postbuild completed normally. Only the pre-existing `@next/next/no-img-element` warnings.
+> Deployed via `vercel --prod` — deployment `dpl_GMWK8gojPzLpmsHaDNtK42oSwHbN` READY, target
+> production, aliased to https://www.faithfoundationsf.org.
+> VERIFIED LIVE with `Invoke-WebRequest` on `/programs/cornerstone-communities/`: **0 occurrences
+> of "formspree"** and **0 of "YOUR_FORMSPREE"**, the "Contact Us About Land Donation" CTA present,
+> both new explanatory paragraphs present, and the new captions present. On `/`: the new alt text
+> present, the old alt text at **0 occurrences**.
+>
+> OPEN ITEM (found during live verification, NOT in scope, not fixed). The cornerstone page still
+> serves one `<form>` — the **sitewide newsletter signup in `src/components/SiteFooter.tsx`**
+> (line ~89). It has the same class of defect as the form just removed: `onSubmit` calls
+> `preventDefault()` and then `setSubmitted(true)`, so the visitor is shown a success state while
+> the email address is discarded entirely. There is no endpoint and no storage. It appears on
+> **every page of the site**. This should be either wired to a real list provider or removed —
+> flagged for a decision, not changed without one.
+
+## 2026-08-14 — Footer newsletter signup routed to info@faithfoundationsf.org (mailto)
+
+> WHY. `src/components/SiteFooter.tsx` rendered a newsletter form whose entire submit handler was
+> `e.preventDefault(); if (email.trim()) setSubmitted(true);` — it called `preventDefault()` to
+> stop the browser's native submission, then did nothing with the address except flip the button
+> to "Subscribed ✓". There was no endpoint, no storage, and no network call of any kind. The
+> visitor was shown an affirmative success state for an action that never happened. Because
+> `SiteFooter` renders in the root layout, this was on **every page of the site**. Raised as an
+> open item during verification of the Cornerstone land-form pass and closed here.
+>
+> FIX. Only the `onSubmit` handler changed. It now trims the address, returns early if empty,
+> `encodeURIComponent`s both the subject ("Newsletter Signup") and a body containing the submitted
+> address, assigns `window.location.href = "mailto:info@faithfoundationsf.org?subject=…&body=…"`,
+> and then sets `submitted`. `info@faithfoundationsf.org` is the same address already published in
+> the footer's own Contact column, so no new contact surface was introduced. The `<form>`,
+> `<label>`, `<input>`, `<button>`, and every `className` are byte-for-byte unchanged — no visual
+> or layout change, and the success state still renders as before.
+>
+> HONEST LIMITS — this is a mitigation, not a subscription system. Recorded so no future session
+> reads "newsletter fixed" as "newsletter working":
+> 1. **It depends on the visitor's device having a mail client configured.** On a desktop browser
+>    with no default mail handler, `window.location.href = "mailto:…"` may do nothing visible. The
+>    "Subscribed ✓" state still appears, so in that case the UI is still optimistic. This is
+>    strictly better than the old behaviour (the address is at least in the user's hands and the
+>    intent is recoverable) but it is not silent-failure-free.
+> 2. **It requires the visitor to actually press send** in the mail client that opens. A signup
+>    that opens a draft is not a captured signup.
+> 3. **Nothing is stored.** There is no list, no double opt-in, and no unsubscribe mechanism —
+>    which also means the "newsletter" is not yet a newsletter in any operational sense.
+> The durable fix is a real list provider (Mailchimp / Buttondown / Beehiiv embed, or a serverless
+> POST endpoint), which the site cannot do natively today under `output: "export"`. Flagged for a
+> decision; not undertaken without one.
+>
+> Build: `pnpm run build` PASSED — ✓ Compiled successfully, 0 TypeScript errors, 31/31 static
+> pages, `next-sitemap` postbuild completed normally. Only the pre-existing
+> `@next/next/no-img-element` warnings, none new.
+> Deployed via `vercel --prod` — deployment `dpl_E3m15QGfA8B1wJJmxAZcpzHQoHJM` READY, target
+> production, aliased to https://www.faithfoundationsf.org.
+> VERIFIED LIVE: the footer is a client component, so the handler ships inside the JS bundle
+> rather than the HTML. Enumerated the chunk URLs referenced by `/`, fetched each, and found the
+> compiled handler in `/_next/static/chunks/app/layout-c7cc20e1d8c2af50.js` — confirmed
+> `encodeURIComponent("Newsletter Signup")` and
+> `window.location.href="mailto:info@faithfoundationsf.org?subject="` present in the served
+> production bundle. Checking the page HTML alone would have proved nothing here.
+
+## 2026-08-14 — Full Playwright site audit (128 tests) + 3 defects fixed
+
+> SCOPE. Playwright 1.62.1 / Chromium 151 installed as a devDependency; suite authored at
+> `scripts/site-audit.spec.ts` with `playwright.config.ts` targeting live production by default
+> (`AUDIT_BASE_URL` overrides). 128 tests: 69 page checks (23 routes × status / console-errors /
+> broken-images / canonical / logo), 6 redirect checks, 27 form checks, 14 navigation checks,
+> 5 button/CTA checks, 7 content-and-SEO checks. Final run: **128 passed, 0 failed, 0 skipped.**
+> Nothing was skipped or loosened to pass. Full report: `governance/SITE_AUDIT_2026-08-14.md`.
+>
+> TEST-DESIGN DECISION WORTH KEEPING. The brief specified the form tests as "fill all fields,
+> submit, verify success state." Written literally, **all four would have passed on forms that
+> destroy submissions** — which is precisely the state three of them were in. Each form test
+> therefore asserts both that the success state renders AND that an outbound `mailto:` was
+> dispatched carrying the submitted data (Playwright surfaces mailto navigations via
+> `page.on("request")`). Any future edit to these tests must preserve the second assertion; the
+> first alone certifies appearance, not function.
+>
+> DEFECT 1 (critical) — Contact, Volunteer, and Apply forms discarded every submission. Identical
+> `event.preventDefault(); setSubmitted(true);` handlers with no endpoint, no storage, no network
+> call. The Apply form collected household size, children, monthly income, employment status and
+> housing status — including "Facing eviction" and "Currently unhoused" — from families in active
+> housing crisis, displayed "Application received … A caseworker will review your information and
+> contact you within three business days", and threw it away. Fixed via a new shared helper
+> `src/lib/mailto.ts`; the footer newsletter was migrated onto it too so there is now one
+> implementation rather than four.
+>
+> DEFECT 1b — the Apply wizard unmounts each step, so its inputs leave the DOM. Reading the form
+> at submit time would have captured only step 4 (the consent checkbox); steps 1–3 would have been
+> lost *even after* the mailto fix. Answers are now captured into state on every step change and
+> merged at submit. Same change fixed a pre-existing usability bug: Back used to wipe everything
+> typed, because remounted uncontrolled inputs came back empty.
+>
+> DEFECT 1c — success copy was still false under mailto (a draft is not a sent message). All three
+> forms now tell the visitor the mail app has opened and to press send, and offer the phone number
+> as a fallback. Apply's heading changed from "Application received" to "One last step to send
+> your application" and offers to take the application by phone.
+>
+> DEFECT 2 — `/programs/veterans/` hero image was a hotlinked Unsplash photo
+> (`photo-1541252260730-0412e8e2108e`) **removed upstream and returning 404**, leaving the page's
+> full-bleed hero blank. All 25 ids in `src/lib/images.ts` were checked; this was the only dead
+> one. Replaced with a verified-live photo, visually inspected before use to confirm it is
+> appropriate and weapons-free, and annotated in the catalog. ROOT CAUSE NOT CLOSED: the site
+> hotlinks a third-party CDN for hero imagery and every remaining Unsplash reference carries the
+> same risk. Self-hosting is recommended in the report.
+>
+> NOT A DEFECT — the brief asked to verify "Apply for Assistance" routes to `/contact`. It routes
+> to `/apply`, a real working page with the application form; routing it to `/contact` would be a
+> regression, so this was deliberately NOT "fixed". The test records every apply/contact CTA target
+> and asserts each resolves 200. Documented in the report so the discrepancy is not re-raised.
+>
+> HONEST SCOPE LIMIT ON THE "no console errors" RESULT. Uncaught exceptions always count, but
+> console errors count only when they originate from our own origin. Third-party embeds (Zeffy →
+> Stripe/hCaptcha/PayPal, Google Maps on /contact) log from their own origins and are not ours to
+> fix. PASS means our code is clean, not that every embed is silent.
+>
+> Build: `pnpm run build` PASSED — compiled successfully, 0 TypeScript errors, 31/31 static pages,
+> exit 0; only the pre-existing `@next/next/no-img-element` warnings, none new. `tsconfig.json` now
+> excludes `scripts` and `playwright.config.ts` from the Next typecheck.
+> Deployed via `vercel --prod` — `dpl_9jkWenHBzMkLVXDnke6Cv4PJw8gB` READY, target production,
+> aliased to https://www.faithfoundationsf.org. Suite re-run against production after deploy:
+> 128/128 green.
+>
+> GOOGLE FOR NONPROFITS. Every technical item in the brief passes and no defect was found that
+> should block submission. The remaining item is organizational, not technical: all four forms now
+> depend on the visitor's mail client and on them pressing send, and nothing is stored. A real
+> intake endpoint is the highest-value remaining work for a nonprofit whose Apply form is the
+> front door for families in crisis.

@@ -41,3 +41,10 @@ next-env.d.ts
 temp_990/
 *.csv
 deploy-log.txt
+
+# Playwright
+test-results/
+playwright-report/
+
+# Local scratch dumps (not for a public repo)
+brightbox-mentions.txt

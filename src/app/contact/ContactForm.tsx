@@ -1,12 +1,28 @@
 "use client";
 
 import { useState } from "react";
+import { openMailto } from "@/lib/mailto";
 
 export default function ContactForm() {
   const [submitted, setSubmitted] = useState(false);
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    const get = (k: string) => String(data.get(k) ?? "");
+
+    openMailto(
+      `Website enquiry — ${get("subject") || "General inquiry"}`,
+      [
+        ["Name", get("name")],
+        ["Email", get("email")],
+        ["Phone", get("phone")],
+        ["Subject", get("subject")],
+        ["Message", get("message")],
+      ],
+      "Sent from the FAITH Foundation website contact form."
+    );
+
     setSubmitted(true);
   }
 
@@ -29,13 +45,22 @@ export default function ContactForm() {
             <path d="M20 6 9 17l-5-5" />
           </svg>
         </span>
-        <h3 className="text-2xl font-extrabold text-navy">Thank you!</h3>
+        <h3 className="text-2xl font-extrabold text-navy">Almost there!</h3>
         <p className="mt-3 text-lg leading-relaxed text-charcoal/80">
-          Your message has been received. A member of the FAITH Foundation team
-          will be in touch with you shortly. If your matter is urgent, please
-          call us at{" "}
+          Your email app should now be open with your message ready to go —{" "}
+          <strong className="text-navy">press send to deliver it</strong>. Once
+          it arrives, a member of the FAITH Foundation team will be in touch
+          shortly. If your email app did not open, or you would rather not use
+          email, call us at{" "}
           <a href="tel:+18884976620" className="font-semibold text-gold-dark">
             888-497-6620
+          </a>{" "}
+          or write to{" "}
+          <a
+            href="mailto:info@faithfoundationsf.org"
+            className="font-semibold text-gold-dark"
+          >
+            info@faithfoundationsf.org
           </a>
           .
         </p>

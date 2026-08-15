@@ -180,7 +180,7 @@ const roadmap: RoadmapPhase[] = [
     phase: 'Phase 3',
     title: 'First Home Placement',
     status: 'Our Near-Term Goal',
-    text: 'Our initial target is the placement of one modular home on donated or acquired land — fully permitted, properly connected, and documented transparently from groundbreaking to move-in. This first home will serve as proof of concept for the Cornerstone Communities model and the foundation for everything that follows. Bright Box Homes, our corporate partner, is positioned to provide the first home through their modular construction program.',
+    text: 'Our initial target is the placement of one modular home on donated or acquired land — fully permitted, properly connected, and documented transparently from groundbreaking to move-in. This first home will serve as proof of concept for the Cornerstone Communities model and the foundation for everything that follows. A corporate construction partner is positioned to provide the first home through a modular construction program, with full documentation from groundbreaking to move-in.',
   },
   {
     phase: 'Phase 4',
@@ -199,22 +199,22 @@ const microHouseGallery: GalleryImage[] = [
   {
     src: '/Images/micro-houses/micro-house-1.jpg',
     caption:
-      'Affordable manufactured housing keeps costs low, so donor dollars serve more families.',
+      'Factory-built and placed on site — these expandable container homes arrive move-in ready with a full kitchen, full bath, and climate control already installed.',
   },
   {
     src: '/Images/micro-houses/micro-house-2.jpg',
     caption:
-      'Lower-cost homes mean every gift stretches further toward getting a family housed.',
+      'Fully customizable interiors — residents choose flooring, finishes, and layout options that make the space genuinely their own.',
   },
   {
     src: '/Images/micro-houses/micro-house-3.jpg',
     caption:
-      'Efficient, dignified homes help neighbors move from crisis to a place of their own.',
+      'Expandable shipping container construction means the home can grow with the family — additional modules attach as needs change.',
   },
   {
     src: '/Images/micro-houses/micro-house-4.jpg',
     caption:
-      'Keeping construction costs down lets us reach more families working toward stability.',
+      'Multiple exterior color options and modular configurations so every home reflects the family living in it, not a one-size-fits-all solution.',
   },
 ];
 
@@ -222,22 +222,22 @@ const microApartmentGallery: GalleryImage[] = [
   {
     src: '/Images/micro-apartments/micro-apartment-1.jpg',
     caption:
-      'Transitional micro-apartments give residents a private, stable place to rebuild.',
+      'Compact and fully furnished — each micro-apartment includes a private kitchenette, full bath, sleeping area, and air conditioning from day one.',
   },
   {
     src: '/Images/micro-apartments/micro-apartment-2.jpg',
     caption:
-      'On-site support connects residents with employment, recovery, and family services.',
+      'Purpose-built for dignity — residents have a private, secure space that is theirs alone while they build toward permanent homeownership.',
   },
   {
     src: '/Images/micro-apartments/micro-apartment-3.jpg',
     caption:
-      'Affordable transitional housing bridges the gap between crisis and a permanent home.',
+      'Modular assembly construction keeps build costs low without sacrificing quality — so donor dollars reach more families faster.',
   },
   {
     src: '/Images/micro-apartments/micro-apartment-4.jpg',
     caption:
-      'Community-centered design keeps costs low, so support reaches more neighbors in need.',
+      'Community-centered design places support services, employment resources, and case management steps from every front door.',
   },
 ];
 
@@ -394,6 +394,17 @@ export default function CornerstoneCommunitiesPage() {
             <h3 className="text-2xl font-bold text-[#1B2A4A] mb-6">
               Container Homes
             </h3>
+            <p className="text-gray-700 text-lg max-w-4xl mb-8 leading-relaxed">
+              These are expandable shipping container homes and modular assembly
+              units built off-site in a factory and placed on donated land ready to
+              occupy. Every home comes fully equipped — full kitchen, full
+              bathroom, and air conditioning included — and is fully customizable
+              with multiple exterior colors, interior flooring options, and layout
+              configurations. Factory construction and efficient design make these
+              homes dramatically more affordable than traditional stick-built
+              construction, putting permanent homeownership within reach for
+              families who thought it was impossible.
+            </p>
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {microHouseGallery.map((image) => (
                 <figure
@@ -421,6 +432,15 @@ export default function CornerstoneCommunitiesPage() {
             <h3 className="text-2xl font-bold text-[#1B2A4A] mb-6">
               Transitional Micro-Apartments
             </h3>
+            <p className="text-gray-700 text-lg max-w-4xl mb-8 leading-relaxed">
+              These purpose-built micro-apartments provide fully furnished private
+              units — complete with kitchenette, full bathroom, and air
+              conditioning — designed for short to medium-term stays while
+              residents stabilize, save, and prepare for permanent homeownership.
+              Modular construction keeps costs low so more neighbors can be served
+              without compromising on the dignity and privacy every person
+              deserves.
+            </p>
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {microApartmentGallery.map((image) => (
                 <figure
@@ -474,21 +494,21 @@ export default function CornerstoneCommunitiesPage() {
       </section>
 
       <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
-      {/* Land Inquiry Form */}
+      {/* Land Inquiry */}
       <section className="py-20 px-4 bg-gradient-to-b from-white to-[#f0ede4]" id="land-inquiry">
-        <div className="max-w-3xl mx-auto">
-          <div className="text-center mb-10">
-            <h2 className="heading-underline-center text-3xl font-bold text-[#1B2A4A] mb-4">
-              Inquire About a Land Donation
-            </h2>
-            <p className="text-gray-600 text-lg">
-              Have land you would like to donate or discuss? Fill out the form
-              below and our team will contact you within 48 hours to talk through
-              the opportunity.
-            </p>
-          </div>
-
-          <LandInquiryForm />
+        <div className="max-w-3xl mx-auto text-center">
+          <h2 className="heading-underline-center text-3xl font-bold text-[#1B2A4A] mb-4">
+            Inquire About a Land Donation
+          </h2>
+          <p className="text-gray-600 text-lg mb-8">
+            Have land you would like to donate or discuss? Contact our team directly and we will respond within 48 hours to talk through the opportunity, answer questions about the tax benefits of land donations to a 501(c)(3), and conduct a preliminary assessment.
+          </p>
+          <Link
+            href="/contact"
+            className="inline-block bg-[#C8A951] text-[#1B2A4A] font-bold px-10 py-4 rounded-lg hover:bg-[#b8993f] transition-colors text-lg shadow-lg hover:shadow-xl ring-2 ring-[#C8A951]/30"
+          >
+            Contact Us About Land Donation
+          </Link>
         </div>
       </section>
 
@@ -580,158 +600,5 @@ export default function CornerstoneCommunitiesPage() {
         </div>
       </section>
     </main>
-  );
-}
-
-function LandInquiryForm() {
-  const inputClass =
-    'w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-[#C8A951] focus:ring-2 focus:ring-[#C8A951]/20 outline-none transition-colors';
-  const labelClass = 'block text-sm font-semibold text-[#1B2A4A] mb-1';
-
-  return (
-    <div className="bg-[#FAFAF5] rounded-2xl shadow-lg p-8 border-l-4 border-[#1B2A4A]">
-      <form action="https://formspree.io/f/YOUR_FORMSPREE_LAND_ID" method="POST">
-        <input type="hidden" name="_subject" value="New Land Donation Inquiry" />
-
-        <div className="grid md:grid-cols-2 gap-4 mb-4">
-          <div>
-            <label htmlFor="land-name" className={labelClass}>
-              Your Name *
-            </label>
-            <input
-              type="text"
-              id="land-name"
-              name="name"
-              required
-              className={inputClass}
-            />
-          </div>
-          <div>
-            <label htmlFor="land-org" className={labelClass}>
-              Organization (if applicable)
-            </label>
-            <input
-              type="text"
-              id="land-org"
-              name="organization"
-              className={inputClass}
-            />
-          </div>
-        </div>
-
-        <div className="grid md:grid-cols-2 gap-4 mb-4">
-          <div>
-            <label htmlFor="land-email" className={labelClass}>
-              Email *
-            </label>
-            <input
-              type="email"
-              id="land-email"
-              name="email"
-              required
-              className={inputClass}
-            />
-          </div>
-          <div>
-            <label htmlFor="land-phone" className={labelClass}>
-              Phone
-            </label>
-            <input
-              type="tel"
-              id="land-phone"
-              name="phone"
-              className={inputClass}
-            />
-          </div>
-        </div>
-
-        <div className="mb-4">
-          <label htmlFor="land-type" className={labelClass}>
-            I am a... *
-          </label>
-          <select
-            id="land-type"
-            name="donor_type"
-            required
-            className={inputClass}
-          >
-            <option value="">Select one...</option>
-            <option value="landowner">Landowner</option>
-            <option value="church">Church or Faith Organization</option>
-            <option value="municipality">Municipality or County Government</option>
-            <option value="developer">Developer or Builder</option>
-            <option value="other">Other</option>
-          </select>
-        </div>
-
-        <div className="grid md:grid-cols-2 gap-4 mb-4">
-          <div>
-            <label htmlFor="land-location" className={labelClass}>
-              Property Location (City, State) *
-            </label>
-            <input
-              type="text"
-              id="land-location"
-              name="property_location"
-              required
-              className={inputClass}
-            />
-          </div>
-          <div>
-            <label htmlFor="land-acreage" className={labelClass}>
-              Approximate Acreage
-            </label>
-            <input
-              type="text"
-              id="land-acreage"
-              name="acreage"
-              placeholder="e.g., 2.5 acres"
-              className={inputClass}
-            />
-          </div>
-        </div>
-
-        <div className="mb-4">
-          <label htmlFor="land-zoning" className={labelClass}>
-            Current Zoning (if known)
-          </label>
-          <input
-            type="text"
-            id="land-zoning"
-            name="zoning"
-            placeholder="e.g., Residential, Agricultural, Mixed-Use"
-            className={inputClass}
-          />
-        </div>
-
-        <div className="mb-6">
-          <label htmlFor="land-details" className={labelClass}>
-            Tell us about the property and your interest in donating *
-          </label>
-          <textarea
-            id="land-details"
-            name="details"
-            rows={5}
-            required
-            className={inputClass}
-            placeholder="Describe the property, its current condition, access to utilities, and what motivated you to consider donating."
-          />
-        </div>
-
-        <div className="bg-white p-4 rounded-lg mb-6 text-sm text-gray-600 border-l-4 border-[#1B2A4A] shadow-sm">
-          Submitting this form does not constitute a binding commitment to donate.
-          Our team will contact you to discuss the opportunity, conduct a
-          preliminary assessment, and answer any questions about the tax benefits
-          of land donations to a 501(c)(3) organization.
-        </div>
-
-        <button
-          type="submit"
-          className="w-full bg-[#C8A951] text-[#1B2A4A] font-bold text-lg py-4 rounded-lg hover:bg-[#b8993f] transition-colors shadow-lg hover:shadow-xl ring-2 ring-[#C8A951]/30"
-        >
-          Submit Land Inquiry
-        </button>
-      </form>
-    </div>
   );
 }

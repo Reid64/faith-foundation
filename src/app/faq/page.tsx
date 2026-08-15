@@ -30,7 +30,7 @@ const FAQS = [
   {
     question: "How is FAITH Foundation funded?",
     answer:
-      "FAITH Foundation is funded by the generosity of individual and corporate donors, grants, and community fundraising. One of our corporate donors is Bright Box Homes, a separate, independently operated company. Bright Box Homes honors FAITH Foundation down payment assistance vouchers — applying a $2,500 voucher as a direct discount to qualifying buyers — and makes an additional $2,500 charitable donation to FAITH Foundation for every home it sells, effectively reducing the purchase price by $5,000 for families we serve. The two organizations are completely separate entities — FAITH Foundation does not own or operate any homebuilding company. Every gift, from every source, is directed into down payment assistance vouchers and our charitable housing programs.",
+      "FAITH Foundation is funded by the generosity of individual and corporate donors, grants, and community fundraising. Our corporate donors include homebuilders and construction partners who support our mission by honoring our down payment assistance vouchers and making charitable contributions to FAITH Foundation. Every gift, from every source, is directed into down payment assistance vouchers and our charitable housing programs. Our funding sources are disclosed in full on our Financial Transparency page.",
   },
   {
     question: "What is a housing voucher and how do I qualify?",

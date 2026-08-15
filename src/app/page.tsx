@@ -118,7 +118,7 @@ export default function Home() {
           <Reveal className="relative lg:col-span-5">
             <ParallaxImage
               src={PHOTOS.evening}
-              alt="A warm modular home glowing at dusk with string lights and a firepit"
+              alt="An expandable modular container home — fully equipped with kitchen, bath, and AC — the type of affordable home FAITH Foundation aims to place through Cornerstone Communities"
               className="aspect-[4/5]"
               strength={48}
               framed
@@ -158,11 +158,10 @@ export default function Home() {
             </Reveal>
             <Reveal delay={300}>
               <p className="mt-4 border-l-4 border-green/40 pl-5 text-base leading-relaxed text-charcoal/70">
-                Our housing vouchers are funded in part by corporate donors
-                including Bright Box Homes, which honors our $2,500 down payment
-                assistance vouchers as a direct discount to qualifying buyers
-                and donates an additional $2,500 to FAITH Foundation for every
-                home sold.
+                Our housing vouchers are funded by the generosity of individual
+                and corporate donors whose gifts are directed entirely toward
+                down payment assistance for Texas families working toward
+                homeownership.
               </p>
             </Reveal>
             <Reveal delay={340}>

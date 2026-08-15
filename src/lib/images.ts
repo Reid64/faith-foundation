@@ -44,7 +44,10 @@ export const IMAGES = {
   handshake: "1521791136064-7986c2920216",
 
   // Veterans & service
-  veteran: "1541252260730-0412e8e2108e",
+  // NOTE: the previous `veteran` id (1541252260730-0412e8e2108e) was removed
+  // upstream and began returning 404, leaving the /programs/veterans hero
+  // blank. Replaced 2026-08-14 after verifying the new id serves 200.
+  veteran: "1529787730-bdcabd22a644",
   flag: "1551731409-43eb3e517a1a",
 
   // Texture / landscape
