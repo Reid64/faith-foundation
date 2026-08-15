@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { isInternalRoute } from "@/lib/chrome";
 
 const ABOUT_LINKS = [
   { href: "/about", label: "About Us" },
@@ -59,6 +60,11 @@ export default function SiteHeader() {
     pathname === "/team" ||
     pathname === "/financial-transparency" ||
     pathname === "/governance";
+
+  // The FaithProof admin area is an internal tool with its own shell — it must
+  // not carry the public marketing navigation. Placed after every hook so the
+  // hook order stays identical on all routes.
+  if (isInternalRoute(pathname)) return null;
 
   return (
     <header

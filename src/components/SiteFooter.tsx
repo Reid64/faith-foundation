@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
+import { isInternalRoute } from "@/lib/chrome";
 import { openMailto } from "@/lib/mailto";
 import { submitForm } from "@/lib/web3forms";
 
@@ -60,6 +62,11 @@ export default function SiteFooter() {
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const pathname = usePathname();
+
+  // See SiteHeader — the internal FaithProof shell renders without public
+  // chrome. Declared after every hook so hook order is stable across routes.
+  if (isInternalRoute(pathname)) return null;
 
   return (
     <footer className="relative overflow-hidden bg-navy text-white">

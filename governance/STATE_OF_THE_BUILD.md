@@ -1,7 +1,58 @@
 # faith-foundation — STATE OF THE BUILD
 
 > Updated from a LIVE codebase audit on 2026-08-15 (BLUEPRINT Canonical Rule 9).
-> Last action: **EMERGENCY FIX — homepage stat counter band was clipping its own figures.** The
+> Last action: **FAITHPROOF PHASE 1 — FOUNDATION. Status: COMPLETE.** The site was converted from
+> a static export to a server-rendered Next.js app and the full FaithProof data layer was
+> installed. `output: "export"` removed from `next.config.mjs`; `@supabase/supabase-js` +
+> `@supabase/ssr` installed; three Supabase client utilities created
+> (`client.ts` browser / `server.ts` cookie-bound / `service.ts` service-role);
+> the complete schema migrated (`profiles`, `transactions`, `vouchers`, `promises`,
+> `proof_documents`, `audit_log` — 7 enums, 16 RLS policies, 6 triggers); `src/middleware.ts`
+> installed as a full replacement gating `/admin`; `/login` page + server actions scaffolded; the
+> `/admin` Command Center shell scaffolded with the two-panel layout; Vercel env vars pushed.
+>
+> **TWO BLOCKING DEFECTS IN THE SPECIFIED SQL WERE FOUND BY EXECUTION AND FIXED.** The schema as
+> written was structurally complete and functionally dead, and neither failure was visible from
+> reading it:
+>
+> 1. **Infinite RLS recursion (migration 002).** `profiles`' admin policies select FROM `profiles`,
+>    so evaluating the policy required evaluating the policy. Postgres aborted with
+>    `infinite recursion detected in policy for relation "profiles"`. Because every other table's
+>    policies also read `profiles` to resolve the caller's role, **all six tables failed every
+>    query, for both `anon` and `authenticated`.** Fixed with a `SECURITY DEFINER`
+>    `current_user_role()` helper; policy intent is unchanged.
+> 2. **`handle_new_user()` had no `SET search_path` (migration 003).** `SECURITY DEFINER` changes
+>    privileges, not the search path. Supabase's auth service connects as `supabase_auth_admin`,
+>    whose `search_path=auth`, so the unqualified `profiles` in the trigger body was never found and
+>    the trigger aborted the `INSERT INTO auth.users` with it. **Every account creation failed**
+>    ("Database error creating new user"), so /login could never authenticate anyone and /admin was
+>    permanently unreachable. This did NOT reproduce under direct SQL as `postgres` (whose
+>    search_path includes `public`) — only via the real signup path. Fixed by pinning
+>    `search_path = ''` and schema-qualifying every reference.
+>
+> A third regression was caused by Step 1 itself and fixed: `next-sitemap` wrote to `outDir: "out"`,
+> which no longer exists without static export, and `postbuild` is guarded with `|| exit 0` — so the
+> build would have gone green while shipping **no sitemap.xml and no robots.txt**. `outDir` is now
+> `public/` (both files gitignored as build artifacts). `/login`, `/admin` and `/faithproof` are
+> excluded from the sitemap, `Disallow`ed in robots.txt, and carry `robots: noindex`.
+>
+> **Verified, not assumed.** Build PASSED (0 TypeScript errors, 33/33 pages); `vercel --prod` →
+> READY (`dpl_AtMTvPTTKZQsUXDxwWi9UFRNbLdK`). Against **live production**: the existing
+> `ad-grants-readiness` suite passed **59/59** and `site-audit` passed **128/128** — the public site
+> is 100% intact. A 20-check end-to-end auth test was run against production with a throwaway user
+> (created, driven through the real login form in Chromium, then deleted): **20/20**, covering
+> wrong-password rejection, sign-in → /admin, all six sidebar links, both Command Center panels,
+> absence of the public header/footer, sign-out, and re-protection of /admin afterwards. Database
+> left at **0 rows in all six tables and 0 auth users**.
+>
+> **Known blockers / follow-ups:** (a) no real admin account exists yet — one must be created before
+> anyone can use the tool; (b) `audit_log`'s "System can insert" policy is `WITH CHECK (TRUE)`,
+> which lets *any* caller including `anon` write arbitrary audit rows — a tamper surface that should
+> be closed in Phase 2; (c) Vercel **Preview** env vars could not be set (CLI interactivity loop) —
+> Production and Development are set. Next phase: FaithProof Phase 2 — Command Center live data
+> wiring. See the 2026-08-15 FaithProof Phase 1 entry at the end of this file.
+>
+> Prior action: **EMERGENCY FIX — homepage stat counter band was clipping its own figures.** The
 > four-card stat band under the hero sat in a `relative overflow-hidden` section while its inner
 > container carried `-mt-16`, deliberately pulling the grid up into the hero for the "overlapping
 > cards" effect. Those two are mutually exclusive: the negative margin put the top 4rem of the grid
@@ -1487,3 +1538,151 @@ build commands are approved.
 > When a section needs both a bleeding decorative background and content that escapes its box, the
 > clip belongs on a wrapper around the decoration — never on the element whose content is meant to
 > escape.
+
+## 2026-08-15 — FaithProof Phase 1: Foundation (static export → server-rendered + data layer)
+
+**Objective.** Convert the static Next.js export to a server-rendered app and install the complete
+FaithProof data layer — schema, RLS, auth, environment wiring. No public-facing UI in this phase.
+The existing site had to remain 100% functional throughout, and did.
+
+### Files changed
+
+| File | Change |
+| --- | --- |
+| `next.config.mjs` | **`output: "export"` REMOVED.** Nothing else touched. Side effect worth knowing: the `redirects()` block, inert since 2026-08-07, is now live — it duplicates `vercel.json`, harmlessly and to the same destinations. |
+| `package.json` | `@supabase/supabase-js` 2.112.3 + `@supabase/ssr` 0.12.4 added as runtime dependencies. |
+| `.env.local` | **gitignored** (`git check-ignore` confirmed). Three Supabase vars appended; the existing `NEXT_PUBLIC_WEB3FORMS_KEY=PENDING_KEY` was preserved untouched. |
+| `src/lib/supabase/client.ts` | **NEW.** `createClient()` — browser client via `createBrowserClient`, anon key, RLS applies. |
+| `src/lib/supabase/server.ts` | **NEW.** `createServerClient()` — async, cookie-bound via `next/headers`. `setAll` is try/caught because Server Components have a read-only cookie jar; middleware refreshes the session, so swallowing is safe. |
+| `src/lib/supabase/service.ts` | **NEW.** `supabaseAdmin` — service-role client. **Bypasses RLS entirely**; server-only, documented in-file. |
+| `src/middleware.ts` | **NEW, full replacement** per the canonical rule. Gates `/admin` and `/faithproof/admin`; redirects to `/login` with no session. |
+| `src/app/login/page.tsx` | **NEW.** Server component, no client JS. Errors arrive via `searchParams` and render inline. `robots: noindex`. |
+| `src/app/login/actions.ts` | **NEW.** `signIn` / `signOut` server actions. Failure messages are deliberately generic — distinguishing "no such user" from "wrong password" would enumerate accounts. |
+| `src/app/admin/layout.tsx` | **NEW.** Server component; re-checks auth against Supabase (never trusting middleware alone) and redirects to `/login`. Dark `#1a1a2e` sidebar with the six section links, signed-in identity + role, sign-out, white content area. |
+| `src/app/admin/page.tsx` | **NEW.** Command Center. Two-panel layout — LEFT "Requires Attention" (green check, "No items require attention"), RIGHT "Recent Accountability Activity" ("No activity recorded yet — add your first transaction to begin"). Honest empty states, not mock rows. |
+| `src/lib/chrome.ts` | **NEW.** `isInternalRoute()` — single source of truth for which routes are internal tooling. |
+| `src/components/SiteHeader.tsx` | Early `return null` on internal routes, placed **after every hook** so hook order is identical on all routes. |
+| `src/components/SiteFooter.tsx` | Same treatment; `usePathname` imported. |
+| `next-sitemap.config.js` | `outDir` `out` → `public`; `/login`, `/admin*`, `/faithproof*` excluded; `Disallow` added to robots policies. |
+| `.gitignore` | `/public/sitemap.xml` + `/public/robots.txt` (now generated build artifacts) and `notepad supabase password.txt` (contains the live DB password, was untracked and exposed). |
+| `supabase/migrations/001_faithproof_foundation.sql` | **NEW.** The specified schema, **verbatim**. |
+| `supabase/migrations/002_fix_rls_recursion.sql` | **NEW.** Fixes the infinite-recursion defect. |
+| `supabase/migrations/003_fix_handle_new_user_search_path.sql` | **NEW.** Fixes the signup-breaking search_path defect. |
+
+### Why the admin shell escapes the public chrome the way it does
+
+The requirement was that `/admin` not use `SiteHeader`/`SiteFooter`. The App Router has a single
+root layout that renders both around every route. The textbook escape is a second root layout via
+route groups — which requires moving **all ~25 public routes** into `src/app/(site)/`. That is a
+large restructure of a live, audited site for a cosmetic gain, so it was not done. Instead the two
+chrome components consult `isInternalRoute()` and render nothing on `/admin` and `/faithproof`.
+Verified by element count on production, not by string matching: **`<footer>` count 0, `<nav>`
+count 1** (the sidebar), **`<main>` count 1**.
+
+> Verification trap worth remembering: the first version of that check tested
+> `!html.includes("faith-foundation-logo")` and `!html.includes("209 Surecast")` and **false-failed**.
+> Both strings are in the root layout's `<head>` on every route — the logo `<link rel="preload">`
+> and the Organization JSON-LD, which carries the street address. Assert on rendered elements, not
+> on substrings, when the thing you are testing for absence of also appears in metadata.
+
+### The two SQL defects, and why reading the SQL would not have caught them
+
+Both were found by executing the migration and then exercising it, not by inspection.
+
+**1 — Infinite RLS recursion.** Every `profiles` admin policy in 001 reads `profiles`:
+
+    USING (EXISTS (SELECT 1 FROM profiles p WHERE p.id = auth.uid() AND p.role = 'admin'))
+
+RLS applies to that inner SELECT too, so the policy is its own precondition. Postgres aborts with
+`infinite recursion detected in policy for relation "profiles"`. Every other table resolves the
+caller's role the same way, so the failure was total — measured after 001, `SELECT count(*)` failed
+on **all six tables** as both `anon` and `authenticated`. Migration 002 introduces a
+`SECURITY DEFINER` helper, `public.current_user_role()`, declared `STABLE` with
+`SET search_path = public`, whose body is simply
+`SELECT role FROM public.profiles WHERE id = auth.uid()`.
+
+The function's owner (`postgres`) owns `profiles` and so bypasses RLS on it, breaking the cycle.
+Policy **intent is unchanged** — same roles, same public/internal split.
+
+**2 — `handle_new_user()` search_path.** `SECURITY DEFINER` changes *privileges*, not *search_path*,
+which is inherited from the caller. `pg_roles.rolconfig` for `supabase_auth_admin` is
+`search_path=auth`, and `pg_proc.proconfig` for `handle_new_user` was `null`. So the unqualified
+`profiles` in the trigger body resolved against `auth` only, was not found, and the trigger aborted
+the `INSERT INTO auth.users` that fired it. GoTrue surfaces this as the opaque **"Database error
+creating new user"**. No account could ever be created; `/login` could never authenticate anyone
+and `/admin` was permanently unreachable.
+
+> **This did not reproduce under direct SQL.** An earlier test inserted into `auth.users` as
+> `postgres`, whose `search_path` is `"$user", public, extensions` — `public` is on it, so the same
+> trigger succeeded. The bug only appears through the real signup path. Test the path the product
+> actually uses, not a convenient proxy for it.
+
+Migration 003 pins `SET search_path = ''` and schema-qualifies every reference; `update_updated_at`
+was pinned too, clearing Supabase's `function_search_path_mutable` advisory. **0 functions in
+`public` now have a mutable search_path.**
+
+### The sitemap regression that Step 1 caused
+
+`next-sitemap` was configured with `outDir: "out"` because the project used static export. Removing
+`output: "export"` removes `out/`. `postbuild` is `pnpm dlx next-sitemap || exit 0` — **non-fatal by
+design** — so the build would have reported success while shipping **no sitemap.xml and no
+robots.txt**, silently, on a site whose Google Ad Grants standing depends on both. `outDir` is now
+`public/`, which is where a server-rendered Next app serves static files from. Both generated files
+are gitignored: committing them would recreate the stale dual-source problem that deleting the
+hand-maintained copies solved on 2026-08-14.
+
+Verified live: `/sitemap.xml` → **200, 23 `<loc>` entries**, all on the `www` host, **0** hits for
+admin/login/faithproof/icon.png — the same 23-URL shape as before this phase. `/robots.txt` → 200
+with `Disallow: /admin`, `/login`, `/faithproof`.
+
+### Gates and verification
+
+| Gate | Result |
+| --- | --- |
+| `pnpm tsc --noEmit` | ✅ PASS — 0 errors |
+| `pnpm run build` | ✅ PASS — compiled successfully, 33/33 pages, `postbuild` completed |
+| `vercel --prod` | ✅ READY — `dpl_AtMTvPTTKZQsUXDxwWi9UFRNbLdK`, aliased to https://www.faithfoundationsf.org |
+| `ad-grants-readiness.spec.ts` vs **production** | ✅ **59/59** |
+| `site-audit.spec.ts` vs **production** | ✅ **128/128** |
+| End-to-end auth, vs **production** | ✅ **20/20** |
+| RLS semantics (rolled-back transaction) | ✅ anon sees only `is_public`+`confirmed`; staff sees all internal but **INSERT denied**; admin sees all and INSERT allowed; staff sees own profile only, admin sees all |
+| Database left clean | ✅ 6 tables, 0 rows each, 0 `auth.users` |
+
+The 20-check auth test created a throwaway Supabase user, drove the **real login form** in Chromium
+on the live domain, and deleted the user afterwards (profile row confirmed cascade-deleted). It
+covers: `handle_new_user` firing on real signup, wrong-password rejection with an inline error,
+sign-in → `/admin`, all six sidebar links, both Command Center panels and their empty-state copy,
+absence of public header/footer, single `<main>`, signed-in identity, sign-out, and `/admin`
+re-protected afterwards.
+
+### Six Laws — this phase
+
+| Law | Dimension | Verdict | Evidence |
+|-----|-----------|---------|----------|
+| 1 | SCHEMA | ✅ **PASS** (first time non-vacuous) | 6 tables, 7 enums, 16 RLS policies, 6 triggers, all migrated and verified against the live database. Governance previously designed 0 tables. |
+| 2 | API | N/A | 0 `route.ts` files. Phase 1 exposes no endpoints by design; auth runs through server actions. |
+| 3 | UI | ✅ **PASS** | `/login` and `/admin` render real content. The Command Center's empty states are the genuine state of an unpopulated database, not placeholder text. |
+| 4 | DATA | ✅ **PASS** | No mock data anywhere. Both panels state plainly that nothing is recorded yet. Database left at 0 rows. |
+| 5 | WIRING | ✅ **PASS** | `/admin` gated by middleware **and** re-checked in the layout; all six sidebar links present; sign-out returns to `/login` and re-protects `/admin`. The six sidebar targets are Phase 2 routes and do not exist yet — they are the phase's own roadmap, not dead public links, and are `noindex` + robots-disallowed. |
+| 6 | HUMAN GATE | ✅ **PASS** | 59/59 + 128/128 + 20/20 against live production in a real browser. |
+
+### Open items — carried into Phase 2
+
+1. **No admin account exists.** Nobody can use the tool until one is created. The `handle_new_user`
+   trigger assigns every new user `role = 'staff'`; the first account must be promoted to `admin`
+   manually. Deliberately not created here — a real credential is the organization's to own.
+2. **`audit_log` is writable by anyone.** 001's `"System can insert audit log entries"` is
+   `WITH CHECK (TRUE)`, so `anon` can insert arbitrary rows. For an accountability product that is a
+   tamper surface. Left as specified rather than silently redefined, because Phase 2's write path is
+   not designed yet; route audit writes through the service-role client and restrict the policy to
+   `service_role`.
+3. **Vercel Preview env vars are not set.** Production and Development are. The CLI returned an
+   `action_required / git_branch_required` loop that re-suggested the exact command already being
+   run. Preview deployments will 500 on every route until these are added, because middleware needs
+   them. Add via the Vercel dashboard.
+4. **Middleware now runs on nearly every request.** Cost is near zero for anonymous visitors —
+   `getUser()` returns without a network call when no session cookie is present — but every
+   logged-in request revalidates against Supabase.
+5. **`notepad supabase password.txt` was untracked and contained the live database password.** It is
+   now gitignored. It was never committed (verified), but it should be moved to a password manager
+   and deleted from the working tree.

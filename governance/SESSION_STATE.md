@@ -1,6 +1,23 @@
 # faith-foundation — SESSION STATE
 
-> Tracks the live execution session. LATEST: **Web3Forms delivery for all four forms + all
+> Tracks the live execution session. LATEST: **FaithProof Phase 1 — Foundation. COMPLETE**
+> (2026-08-15). The site converted from static export to server-rendered Next.js and the full
+> FaithProof data layer was installed: `output: "export"` removed, `@supabase/supabase-js` +
+> `@supabase/ssr` added, three Supabase client utilities created, the complete schema migrated
+> (`profiles`, `transactions`, `vouchers`, `promises`, `proof_documents`, `audit_log` — 7 enums,
+> 16 RLS policies, 6 triggers), `src/middleware.ts` installed as a full replacement gating `/admin`,
+> `/login` + server actions scaffolded, the `/admin` Command Center shell scaffolded, Vercel env
+> vars pushed. **Two blocking defects in the specified SQL were found by execution and fixed
+> (migrations 002 and 003): infinite RLS recursion that made all six tables unqueryable, and a
+> missing `search_path` on `handle_new_user()` that made every account creation fail — which would
+> have left `/admin` permanently unreachable.** A third regression caused by removing static export
+> was also fixed: `next-sitemap` would have silently shipped no sitemap and no robots.txt. Build
+> PASSED (0 TS errors, 33/33 pages); `vercel --prod` READY
+> (`dpl_AtMTvPTTKZQsUXDxwWi9UFRNbLdK`). Against **live production**: readiness **59/59**, site audit
+> **128/128**, and a 20-check end-to-end auth test **20/20**. Database left at 0 rows / 0 auth users.
+> See "## 2026-08-15 — FaithProof Phase 1: Foundation" at the end of this file.
+>
+> PRIOR: **Web3Forms delivery for all four forms + all
 > photography self-hosted** (2026-08-14) — closes both open recommendations from the site audit.
 > Contact, Volunteer, Apply and Newsletter now POST to `api.web3forms.com` routed to
 > info@faithfoundationsf.org; success is shown only on a confirmed 200 **and** `success: true`.
@@ -62,8 +79,31 @@
 > Reentry, a development roadmap added to Cornerstone Communities, and Tasks 6–8 (About faith
 > paragraph, StatCounter SSR fix, Contact geographic copy) verified already applied.
 
-- **Current phase:** Phase 3 (Build Executor) — real form intake + asset independence
-- **Current prompt:** two tasks — (1) replace the broken/stopgap submission handlers on Apply,
+- **Current phase:** FaithProof Phase 1 — Foundation (server-rendered conversion + data layer)
+- **Current prompt:** ten steps — remove `output: "export"`; install `@supabase/supabase-js` +
+  `@supabase/ssr`; write `.env.local`; create the three Supabase client utilities; write and execute
+  `supabase/migrations/001_faithproof_foundation.sql`; install `src/middleware.ts` as a full
+  replacement; scaffold `/login` + server actions; scaffold the `/admin` Command Center shell; push
+  Vercel env vars; build and deploy.
+- **Prompt outcome:** COMPLETE, all ten steps. Every checklist item verified. Three defects found
+  and fixed beyond the brief — two in the specified SQL (RLS infinite recursion; `handle_new_user`
+  search_path), one caused by Step 1 (`next-sitemap` `outDir` pointing at the now-nonexistent
+  `out/`). Build PASSED (0 TypeScript errors, 33/33 pages); `vercel --prod` READY
+  (`dpl_AtMTvPTTKZQsUXDxwWi9UFRNbLdK`); production verified at 59/59 + 128/128 + 20/20.
+- **⚠️ BLOCKING FOLLOW-UP (organization action, not code):** **no admin account exists**, so nobody
+  can sign in yet. Create one in the Supabase dashboard (Authentication → Users → Add user, with
+  "Auto Confirm User" on), then promote it — the `handle_new_user` trigger assigns every new user
+  `role = 'staff'`. Deliberately not created here: a real credential belongs to the organization.
+- **⚠️ SECURITY FOLLOW-UP:** `audit_log`'s `"System can insert audit log entries"` policy is
+  `WITH CHECK (TRUE)` as specified, so any caller including `anon` can write arbitrary audit rows.
+  Close in Phase 2 by routing audit writes through the service-role client.
+- **⚠️ DEPLOY FOLLOW-UP:** Vercel **Preview** env vars are not set (CLI interactivity loop);
+  Production and Development are. Preview deploys will 500 on every route until added, because
+  middleware requires them.
+
+### Prior prompt this session (Web3Forms + self-hosted photography)
+
+- **Prompt:** two tasks — (1) replace the broken/stopgap submission handlers on Apply,
   Contact, Volunteer and the footer Newsletter with a real `fetch` POST to Web3Forms routed to
   info@faithfoundationsf.org, with `NEXT_PUBLIC_WEB3FORMS_KEY` as a swappable placeholder, success
   only on a confirmed 200, a visible error on failure, and the Apply multi-step capture preserved;
@@ -729,3 +769,101 @@ branch flips from fallback to delivery.
 - **Deploy:** `vercel --prod` ✅ READY, aliased to https://www.faithfoundationsf.org.
 - **Post-deploy audit:** `scripts/site-audit.spec.ts` **128/128 passed** against production.
 - **Last updated:** 2026-08-14
+
+## 2026-08-15 — FaithProof Phase 1: Foundation
+
+Converted the site from a static export to a server-rendered Next.js app and installed the complete
+FaithProof data layer. No public-facing UI was built. The existing site remained 100% functional
+throughout — proven, not assumed, by re-running both existing audit suites against live production
+after deploy.
+
+### What was built
+
+| Area | Detail |
+| --- | --- |
+| Static export removed | `output: "export"` deleted from `next.config.mjs`; nothing else in that file touched. |
+| Supabase libraries | `@supabase/supabase-js` 2.112.3, `@supabase/ssr` 0.12.4. |
+| Environment | `.env.local` (gitignored, confirmed via `git check-ignore`) carries all three Supabase values alongside the pre-existing `NEXT_PUBLIC_WEB3FORMS_KEY=PENDING_KEY`, which was preserved. |
+| Client utilities | `src/lib/supabase/client.ts` (browser), `server.ts` (cookie-bound, async), `service.ts` (`supabaseAdmin`, service-role, RLS-bypassing, server-only). |
+| Schema | 6 tables, 7 enums, 16 RLS policies, 6 triggers — migrated and verified against the live database. |
+| Middleware | `src/middleware.ts`, full replacement per the canonical rule. Gates `/admin` and `/faithproof/admin`. |
+| Login | `/login` server component (no client JS) + `signIn`/`signOut` server actions. Generic failure copy so the form cannot be used to enumerate accounts. |
+| Admin shell | `/admin` layout (dark `#1a1a2e` sidebar, six links, identity + role, sign-out, white content area) and the two-panel Command Center with honest empty states. |
+| Vercel | Three env vars set for Production and Development. |
+
+### Three defects found and fixed
+
+Two were in the SQL as specified; one was caused by Step 1. All three were found by **executing**
+the work and exercising it, not by reading it.
+
+**1 — RLS infinite recursion (migration `002_fix_rls_recursion.sql`).** `profiles`' admin policies
+select FROM `profiles`, so evaluating the policy required evaluating the policy. Postgres aborted
+with `infinite recursion detected in policy for relation "profiles"`. Because every other table
+resolved the caller's role by reading `profiles`, **all six tables failed every query for both
+`anon` and `authenticated`** — measured directly after 001. Fixed with a `SECURITY DEFINER`
+`public.current_user_role()` helper whose owner bypasses RLS on `profiles`, breaking the cycle.
+Policy intent unchanged.
+
+**2 — `handle_new_user()` had no `SET search_path` (migration `003_...`).** `SECURITY DEFINER`
+changes privileges, not search_path. Supabase's auth service connects as `supabase_auth_admin` with
+`search_path=auth`, so the unqualified `profiles` in the trigger body was never found and the
+trigger aborted the `INSERT INTO auth.users`. **Every account creation failed** with GoTrue's opaque
+"Database error creating new user" — meaning `/login` could never authenticate anyone and `/admin`
+was permanently unreachable. It did **not** reproduce under direct SQL as `postgres`, whose
+search_path includes `public`; only the real signup path exposed it. Fixed by pinning
+`search_path = ''` and schema-qualifying every reference.
+
+**3 — sitemap/robots would have silently disappeared.** `next-sitemap` wrote to `outDir: "out"`,
+which stops existing once static export is removed, and `postbuild` is guarded with `|| exit 0`. The
+build would have gone green while shipping neither file — on a site whose Google Ad Grants standing
+depends on both. `outDir` is now `public/`; both generated files are gitignored so they cannot
+become a stale committed second source.
+
+### Gates
+
+- `pnpm tsc --noEmit` ✅ PASS (0 errors)
+- `pnpm run build` ✅ PASS (compiled successfully, 33/33 pages, `postbuild` completed)
+- `vercel --prod` ✅ READY — `dpl_AtMTvPTTKZQsUXDxwWi9UFRNbLdK`, aliased to
+  https://www.faithfoundationsf.org
+- `scripts/ad-grants-readiness.spec.ts` vs production ✅ **59/59**
+- `scripts/site-audit.spec.ts` vs production ✅ **128/128**
+- End-to-end auth vs production ✅ **20/20**
+
+### End-to-end auth test
+
+A throwaway Supabase user was created via the service-role admin API, driven through the **real
+login form** in Chromium against the live domain, then deleted (profile row confirmed
+cascade-deleted). 20 checks: `handle_new_user` firing on real signup; wrong password rejected with
+an inline error and no session; sign-in redirecting to `/admin`; all six sidebar links; both
+Command Center panels and their empty-state copy; `<footer>` count 0 and `<nav>` count 1 proving the
+public chrome is suppressed; exactly one `<main>`; signed-in identity in the sidebar; sign-out
+returning to `/login`; `/admin` re-protected afterwards.
+
+RLS semantics were separately proven inside a rolled-back transaction: `anon` sees only
+`is_public = true AND status = 'confirmed'` transactions (1 of 2); `staff` sees both but is
+**denied INSERT**; `admin` sees both and may INSERT; `staff` sees only their own profile while
+`admin` sees all. The `updated_at` trigger was confirmed to rewrite the column on UPDATE.
+
+**Database left clean: 6 tables, 0 rows each, 0 `auth.users`.** No test data persisted.
+
+### Verification note worth keeping
+
+The first version of the "public chrome is absent from /admin" check asserted on substrings
+(`faith-foundation-logo`, `209 Surecast`) and **false-failed**. Both appear in the root layout's
+`<head>` on every route — the logo preload hint and the Organization JSON-LD, which contains the
+street address. The check now counts rendered elements instead. When testing for the *absence* of a
+component, assert on elements, not on text that metadata also contains.
+
+### Open items
+
+1. **No admin account exists** — nobody can sign in yet. Create one in Supabase (Authentication →
+   Users → Add user, "Auto Confirm User" on), then promote it to `admin`: the trigger assigns every
+   new user `role = 'staff'`. Not created here because a real credential belongs to the organization.
+2. **`audit_log` accepts inserts from anyone** (`WITH CHECK (TRUE)`, as specified) — a tamper
+   surface to close in Phase 2 by routing audit writes through the service-role client.
+3. **Vercel Preview env vars unset** — Production and Development are set; the CLI looped on
+   `git_branch_required`. Preview deploys will 500 until added via the dashboard.
+4. **`notepad supabase password.txt`** held the live database password in the working tree. Now
+   gitignored; never committed. Move it to a password manager and delete it.
+
+- **Last updated:** 2026-08-15

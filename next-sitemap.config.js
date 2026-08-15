@@ -18,8 +18,16 @@ module.exports = {
   siteUrl: "https://www.faithfoundationsf.org",
   generateRobotsTxt: true,
   generateIndexSitemap: false,
-  // This project uses `output: "export"`, so the build output lives in `out/`.
-  outDir: "out",
+  // Was "out" while the project used `output: "export"`. FaithProof Phase 1
+  // removed static export, so `out/` no longer exists and writing there would
+  // have produced NO sitemap and NO robots.txt — silently, because `postbuild`
+  // is guarded with `|| exit 0`. For a server-rendered Next app the generated
+  // files belong in `public/`, which is served from the site root.
+  //
+  // Both generated files are gitignored: they are build artifacts, and a
+  // committed copy would recreate the stale dual-source problem that deleting
+  // public/sitemap.xml solved on 2026-08-14.
+  outDir: "public",
   trailingSlash: true,
   changefreq: "weekly",
   priority: DEFAULT_PRIORITY,
@@ -27,7 +35,15 @@ module.exports = {
   // were retired; those routes only exist to redirect to /programs, so they
   // must stay out of the sitemap. `icon.png` is the app-router icon asset, not
   // a page.
+  // FaithProof is internal tooling — it must never appear in the sitemap or be
+  // crawled (both pages also send `robots: noindex` in their metadata).
   exclude: [
+    "/login",
+    "/login/",
+    "/admin",
+    "/admin/*",
+    "/faithproof",
+    "/faithproof/*",
     "/icon.png",
     "/icon.png/",
     "/programs/emergency",
@@ -48,6 +64,12 @@ module.exports = {
     };
   },
   robotsTxtOptions: {
-    policies: [{ userAgent: "*", allow: "/" }],
+    policies: [
+      {
+        userAgent: "*",
+        allow: "/",
+        disallow: ["/admin", "/login", "/faithproof"],
+      },
+    ],
   },
 };
