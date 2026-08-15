@@ -1,7 +1,43 @@
 # faith-foundation — STATE OF THE BUILD
 
 > Updated from a LIVE codebase audit on 2026-08-15 (BLUEPRINT Canonical Rule 9).
-> Last action: **FAITHPROOF PHASE 1 — FOUNDATION. Status: COMPLETE.** The site was converted from
+> Last action: **FAITHPROOF PHASE 2 — COMMAND CENTER + LIVE DATA. Status: COMPLETE.** The white
+> placeholder admin shell was replaced with a production-quality dark Command Center and all six
+> sidebar sections were wired to live Supabase data. **The public site was not touched** — verified,
+> not assumed: `ad-grants-readiness` **59/59** and `site-audit` **127 passed + 1 flaky** against live
+> production (the flake is the third-party Zeffy embed under parallel load; it passes in isolation
+> with retries disabled).
+>
+> Built: the admin-only dark design system (#0f1623 sidebar, #111827 main, #1e293b cards, #4A7C59
+> brand green) applied to the admin shell and the login page; the Command Center with a four-card
+> live stat row and two live-queried panels (Requires Attention / Recent Accountability Activity);
+> Transactions, Vouchers, Promises and Proof Vault each with a list view and a working create form;
+> a read-only Audit Log; and migration `004_fix_audit_log_rls.sql` closing the anonymous-write hole
+> flagged at the end of Phase 1.
+>
+> **The Phase 1 blocker is resolved: a real admin account now exists**
+> (`info@faithfoundationsf.org`, role `admin`), created outside this session. Migration 004 had also
+> already been applied by hand in the Supabase SQL editor, so the migration file initially failed on
+> "policy already exists"; it was rewritten to be idempotent, since this project applies migrations
+> manually with no tracking table. Anonymous INSERT into `audit_log` is now **DENIED** and
+> authenticated INSERT **ALLOWED**, both verified directly against the database.
+>
+> **Verified end to end.** A 50-check browser test ran against **live production** with a throwaway
+> admin user: every screen, every create form, data round-tripping into the lists, the dashboard
+> counters and the audit log, validation rejections, and re-protection after sign-out — **50/50**.
+> All test data was deleted afterwards; the database is back to **0 rows in all six tables** with
+> only the one real admin profile remaining. Build PASSED (0 TypeScript errors); `vercel --prod` →
+> READY (`dpl_CKakVCYYxj9hZE556AnsGaoJkAbF`).
+>
+> **THE MOST IMPORTANT REMAINING GAP:** Phase 2 delivers **create and read only**. There are no
+> status-transition controls, so the Command Center can tell you that a transaction is unconfirmed,
+> a voucher is pending, or a promise is overdue — but there is **no way in the UI to confirm,
+> approve, disburse, or fulfil any of them.** Every item that lands in "Requires Attention" stays
+> there permanently until someone edits the database directly. Confirm/approve actions are the first
+> thing Phase 3 needs. Next phase: FaithProof Phase 3 — Public transparency pages. See the
+> 2026-08-15 Phase 2 entry at the end of this file.
+>
+> Prior action: **FAITHPROOF PHASE 1 — FOUNDATION. Status: COMPLETE.** The site was converted from
 > a static export to a server-rendered Next.js app and the full FaithProof data layer was
 > installed. `output: "export"` removed from `next.config.mjs`; `@supabase/supabase-js` +
 > `@supabase/ssr` installed; three Supabase client utilities created
@@ -1686,3 +1722,144 @@ re-protected afterwards.
 5. **`notepad supabase password.txt` was untracked and contained the live database password.** It is
    now gitignored. It was never committed (verified), but it should be moved to a password manager
    and deleted from the working tree.
+
+## 2026-08-15 — FaithProof Phase 2: Command Center redesign + live data
+
+**Objective.** Replace the white placeholder admin shell with a production-quality dark Command
+Center and wire all six sidebar sections to live Supabase data, leaving the public site 100%
+untouched.
+
+### Files added
+
+| File | Purpose |
+| --- | --- |
+| `src/lib/faithproof/types.ts` | Enum unions, row types, and human labels. Hand-written, not generated — every union is the exact Postgres enum label list, so widening one requires a migration. |
+| `src/lib/faithproof/format.ts` | Currency, date, relative-time and enum formatting. `dollarsToCents` is the single place user money is parsed. |
+| `src/lib/faithproof/session.ts` | `getSession()`, `describeDbError()`, `writeAuditLog()`. |
+| `src/app/admin/_components/icons.tsx` | 15 inline stroke SVG icons, `currentColor`, 16×16 default. |
+| `src/app/admin/_components/ui.tsx` | Panel, PanelHeader, StatCard, EmptyState, Badge, CountBadge, table primitives, `QueryError`. |
+| `src/app/admin/_components/badges.tsx` | Enum → badge-tone maps, keyed by the full enum so a new label is a type error rather than a silent grey. |
+| `src/app/admin/_components/fields.tsx` | Field, TextInput, Select, Textarea, Checkbox. |
+| `src/app/admin/_components/AdminForm.tsx` | Client submit wrapper: inline errors, pending state, navigation on confirmed success. |
+| `src/app/admin/_components/AdminNav.tsx` | Sidebar nav (client, for `usePathname` active state). |
+| `src/app/admin/{transactions,vouchers,promises,proof-vault}/page.tsx` | List views. |
+| `src/app/admin/{transactions,vouchers,promises,proof-vault}/new/page.tsx` | Create forms. |
+| `src/app/admin/{transactions,vouchers,promises,proof-vault}/actions.ts` | Server actions: validate → insert → audit → revalidate. |
+| `src/app/admin/audit-log/page.tsx` | Read-only log, 100 most recent, actor joined from `profiles`. |
+| `supabase/migrations/004_fix_audit_log_rls.sql` | Replaces `WITH CHECK (TRUE)` with `auth.uid() IS NOT NULL`. |
+
+Rewritten: `src/app/admin/layout.tsx`, `src/app/admin/page.tsx`, `src/app/login/page.tsx`.
+Edited: `src/lib/chrome.ts` (added `/login`). `actions.ts` for login was left unchanged as specified.
+
+### Five deliberate deviations, and why
+
+1. **Server actions return `{ ok }` / `{ error }` instead of calling `redirect()`.** A plain
+   `<form action={...}>` navigates on every submit, discarding everything typed. These forms get
+   rejected for reasons the user can act on — RLS allows INSERT only for `role = 'admin'`, so a
+   `staff` account is refused after filling a dozen fields. The action is therefore called as a
+   promise from `AdminForm`, which re-renders without navigating; the uncontrolled inputs keep their
+   values and the error appears above the buttons. Navigation on success happens client-side to the
+   same destination the brief specified. **Proven:** the "rejected form keeps what was typed" check
+   passes against production.
+2. **`/login` was added to `isInternalRoute()`**, suppressing the public header and footer there.
+   The brief asked for a full-page `#0f1623` login; the cream public header and navy footer would
+   have bracketed it. The card keeps a "Return to faithfoundationsf.org" link so the way back is not
+   lost.
+3. **The admin palette is expressed as arbitrary Tailwind values (`bg-[#1e293b]`), not added to
+   `tailwind.config.ts`.** That config is shared with the public marketing site; putting an internal
+   tool's greys and slates into the same namespace invites a future `bg-card` or `text-slate`
+   leaking onto a donor-facing page. Admin colours stay in admin files.
+4. **`financial_literacy` is excluded from the fund dropdowns** but kept in the enum and in the
+   label map. Financial Literacy was retired as a program on 2026-08-14, so it must not be
+   selectable for new records; removing the enum label would break any historical row carrying it.
+5. **A public proof document with no URL is refused.** The public RLS policy exposes documents where
+   `is_public AND verified`, so a public document with no link would appear publicly with nothing to
+   open.
+
+### Honest-reporting decisions carried into the UI
+
+- **`QueryError` distinguishes "empty" from "forbidden".** Every list and panel renders a red
+  data-access notice when Supabase returns an error, instead of falling through to an empty state.
+  On an accountability product, "there are no unconfirmed transactions" and "you are not allowed to
+  see the unconfirmed transactions" must never look identical.
+- **The Audit Log page names the reason it is empty for a non-admin.** `SELECT` on `audit_log` is
+  granted to `admin` and `board` only; a `staff` user gets zero rows with no error, which would
+  otherwise read as "nothing has ever happened".
+- **The Promises page warns non-admins that their list is filtered.** There is no "internal users
+  can view all promises" policy, so `staff` sees only `is_public = true` rows.
+- **A signed-in user with no `profiles` row gets a red "no profile" pill.** Every RLS policy
+  resolves the caller's role from that row, so without it every table reads as empty and the tool
+  looks merely idle rather than broken.
+- **Anonymity discards rather than hides.** Ticking "anonymous" on a donor or voucher recipient
+  stores `NULL`, so the name is not in the database or in any export.
+- **`writeAuditLog` is non-fatal and always runs after the insert it describes.** If the audit write
+  fails, the record still exists and the user is told the create succeeded — reporting failure for a
+  write that happened would push them to submit real financial data twice.
+
+### Migration 004 — already applied by hand, then made idempotent
+
+The policy had already been created directly in the Supabase SQL editor, so the migration failed on
+`policy "Authenticated users can insert audit log entries" for table "audit_log" already exists`.
+This project applies migrations by hand and has **no migration-tracking table**, so a migration that
+cannot be re-run is a trap. 004 now drops both the old and the new policy name before creating.
+
+Verified against the database: anonymous `INSERT` into `audit_log` → **DENIED** (`new row violates
+row-level security policy`); authenticated `INSERT` → **ALLOWED**.
+
+The file records the remaining gap rather than silently widening it: an authenticated user can still
+insert an entry naming any `actor_id`, because the check does not compare `actor_id` to `auth.uid()`.
+Every application write path sets `actor_id` from the server session, so the app cannot forge a row,
+but the REST API would accept one.
+
+### Verification
+
+| Gate | Result |
+| --- | --- |
+| `pnpm tsc --noEmit` | ✅ PASS — 0 errors |
+| `pnpm run build` | ✅ PASS — compiled successfully, all admin routes dynamic (ƒ), all public routes still static (○) |
+| `vercel --prod` | ✅ READY — `dpl_CKakVCYYxj9hZE556AnsGaoJkAbF` |
+| Phase 2 e2e vs **production** | ✅ **50/50** |
+| `ad-grants-readiness` vs **production** | ✅ **59/59** |
+| `site-audit` vs **production** | ✅ **127 passed, 1 flaky** (Zeffy third-party embed; passes alone with `--retries=0`) |
+| Sitemap | ✅ 23 URLs, 0 admin/login/faithproof entries |
+| Database after testing | ✅ 0 rows in all six tables; only the real admin profile remains |
+
+The 50-check test created a throwaway **admin** user, drove every screen and every create form in
+Chromium against the live domain, and deleted everything afterwards. It asserts computed colours
+(`#0f1623` sidebar and login shell, `#4A7C59` brand green), all six nav links, the four stat cards,
+both panels, each list and form page rendering without a data-access error, a transaction
+round-tripping into the table at `$2,500.50`, an anonymous voucher, an overdue promise flagged
+`Overdue`, a verified document, the dashboard picking up all three attention categories, the audit
+log gaining exactly one row per create with the actor named, `aria-current` on the active nav item,
+and `/admin` re-protected after sign-out.
+
+> **Two test-authoring traps, both hit this session and both worth remembering.**
+>
+> 1. `page.click('button[type="submit"]')` is the **legacy non-strict** Playwright API and takes the
+>    FIRST match. Once signed in, the sidebar's **Sign Out** button precedes every form's submit
+>    button in DOM order — so that selector signed the user out instead of submitting the form. The
+>    symptoms were thoroughly convincing as an application bug: a `Next-Action` POST, a 303 with no
+>    `Location` header, the auth cookie cleared, and no row written. Always target by accessible
+>    name.
+> 2. `[role="alert"]` also matches Next's `__next-route-announcer__`, which is empty. Scope form
+>    error assertions to `p[role="alert"]`. This is the second session in a row this has produced a
+>    false failure — Phase 1 hit the same thing.
+
+### Open items — carried into Phase 3
+
+1. **Create and read only — nothing can be actioned.** There are no status-transition controls, so
+   an unconfirmed transaction, a pending voucher and an overdue promise can be *seen* but never
+   confirmed, approved, disbursed or fulfilled from the UI. Anything reaching "Requires Attention"
+   stays there until the database is edited directly. This is the single largest functional gap and
+   the first thing Phase 3 should close. No edit or delete exists either.
+2. **Non-admin roles can read but not write.** RLS grants INSERT only to `role = 'admin'`. A `staff`
+   user gets a clear message naming the cause, but the practical effect is that the tool is
+   single-role today.
+3. **`audit_log` actor spoofing via the REST API** — see above.
+4. **Total donations is summed in JavaScript**, because PostgREST cannot express `SUM()` without a
+   view or RPC. Correct at FAITH Foundation's volume; move to a Postgres view if the table ever
+   reaches tens of thousands of rows.
+5. **Vercel Preview environment variables are still unset** (Production and Development are set).
+   Preview deployments will 500 on every route until they are added via the dashboard.
+6. **`notepad supabase password.txt`** still holds the live database password in the working tree.
+   Gitignored, never committed — move it to a password manager and delete it.

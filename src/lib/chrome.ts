@@ -10,8 +10,13 @@
  * whole page.
  *
  * Keep this list in step with PROTECTED_PATHS in `src/middleware.ts`.
+ *
+ * `/login` is included even though it is not auth-gated: it is the door to the
+ * internal tool and is rendered as a full-viewport dark page, which the public
+ * cream header and navy footer would break. The login card carries its own
+ * "Return to faithfoundationsf.org" link so the route back is not lost.
  */
-const INTERNAL_PREFIXES = ["/admin", "/faithproof"];
+const INTERNAL_PREFIXES = ["/admin", "/faithproof", "/login"];
 
 export function isInternalRoute(pathname: string | null): boolean {
   if (!pathname) return false;

@@ -3,7 +3,7 @@ import Link from "next/link";
 import { signIn } from "./actions";
 
 export const metadata: Metadata = {
-  title: "FaithProof Admin Login | FAITH Foundation",
+  title: "FaithProof Admin | FAITH Foundation",
   description:
     "Sign in to the FAITH Foundation FaithProof accountability system. Internal staff and board access only.",
   // Internal tool: keep it out of the index and out of Google Ad Grants crawls.
@@ -15,6 +15,9 @@ const ERRORS: Record<string, string> = {
   invalid: "Those credentials were not accepted. Please try again.",
 };
 
+const CONTROL =
+  "w-full rounded-lg border border-[#2d3748] bg-[#111827] px-4 py-2.5 text-sm text-white placeholder-[#475569] outline-none transition focus:border-[#4A7C59] focus:ring-1 focus:ring-[#4A7C59]";
+
 export default function LoginPage({
   searchParams,
 }: {
@@ -23,34 +26,25 @@ export default function LoginPage({
   const message = searchParams?.error ? ERRORS[searchParams.error] : null;
 
   return (
-    <div className="bg-navy py-20 sm:py-28">
-      <div className="mx-auto w-full max-w-md px-6">
-        <div className="rounded-2xl border border-white/10 bg-navy-dark/60 p-8 shadow-card-lg sm:p-10">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-gold">
-            FaithProof
+    <div className="flex min-h-screen items-center justify-center bg-[#0f1623] px-6 py-16">
+      <div className="w-full max-w-md">
+        <div className="rounded-xl border border-[#2d3748] bg-[#1e293b] p-8 shadow-2xl">
+          <p className="text-[10px] font-semibold uppercase tracking-widest text-[#4A7C59]">
+            FAITH FOUNDATION
           </p>
-          <h1 className="mt-3 font-display text-3xl text-white">
-            FaithProof Admin Login
+          <h1 className="mt-1.5 text-2xl font-semibold text-white">
+            FaithProof Admin
           </h1>
-          <p className="mt-3 text-sm leading-relaxed text-white/70">
+          <p className="mt-2 text-sm leading-relaxed text-[#94a3b8]">
             Internal access for FAITH Foundation staff and board members. If you
             need an account, contact an administrator.
           </p>
 
-          {message ? (
-            <p
-              role="alert"
-              className="mt-6 rounded-lg border border-red-400/40 bg-red-500/10 px-4 py-3 text-sm text-red-100"
-            >
-              {message}
-            </p>
-          ) : null}
-
-          <form action={signIn} className="mt-8 space-y-5">
+          <form action={signIn} className="mt-7 space-y-5">
             <div>
               <label
                 htmlFor="email"
-                className="block text-sm font-medium text-white/90"
+                className="block text-sm font-medium text-[#f1f5f9]"
               >
                 Email address
               </label>
@@ -61,15 +55,15 @@ export default function LoginPage({
                 autoComplete="email"
                 required
                 defaultValue={searchParams?.email ?? ""}
-                className="mt-2 w-full rounded-lg border border-white/15 bg-navy-deep/70 px-4 py-3 text-white placeholder-white/40 outline-none transition focus:border-gold focus:ring-2 focus:ring-gold/40"
                 placeholder="you@faithfoundationsf.org"
+                className={`mt-1.5 ${CONTROL}`}
               />
             </div>
 
             <div>
               <label
                 htmlFor="password"
-                className="block text-sm font-medium text-white/90"
+                className="block text-sm font-medium text-[#f1f5f9]"
               >
                 Password
               </label>
@@ -79,22 +73,31 @@ export default function LoginPage({
                 type="password"
                 autoComplete="current-password"
                 required
-                className="mt-2 w-full rounded-lg border border-white/15 bg-navy-deep/70 px-4 py-3 text-white placeholder-white/40 outline-none transition focus:border-gold focus:ring-2 focus:ring-gold/40"
                 placeholder="••••••••"
+                className={`mt-1.5 ${CONTROL}`}
               />
             </div>
 
             <button
               type="submit"
-              className="w-full rounded-lg bg-gold px-6 py-3 font-semibold text-navy-dark transition hover:bg-gold-light focus:outline-none focus:ring-2 focus:ring-gold/60 focus:ring-offset-2 focus:ring-offset-navy-dark"
+              className="w-full rounded-lg bg-[#4A7C59] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#3d6b4a] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#4A7C59] focus-visible:ring-offset-2 focus-visible:ring-offset-[#1e293b]"
             >
-              Sign in
+              Sign In
             </button>
+
+            {message ? (
+              <p role="alert" className="text-sm text-[#f87171]">
+                {message}
+              </p>
+            ) : null}
           </form>
         </div>
 
-        <p className="mt-8 text-center text-sm text-white/50">
-          <Link href="/" className="underline underline-offset-4 hover:text-white">
+        <p className="mt-6 text-center text-xs text-[#475569]">
+          <Link
+            href="/"
+            className="underline underline-offset-4 transition hover:text-[#94a3b8]"
+          >
             Return to faithfoundationsf.org
           </Link>
         </p>
