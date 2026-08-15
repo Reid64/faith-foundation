@@ -62,7 +62,7 @@ const PROGRAMS = [
     href: "/programs/cornerstone-communities",
     eyebrow: "Initiative",
     title: "Cornerstone Communities",
-    body: "Purpose-built residential communities on donated land with on-site recovery programs, resource centers, and wraparound services \u2014 creating the affordable housing inventory our voucher recipients need.",
+    body: "A planned program, not yet operating: purpose-built residential communities on donated land with on-site recovery programs, resource centers, and wraparound services \u2014 intended to create the affordable housing inventory that voucher recipients need.",
     cta: "Explore Cornerstone Communities",
     span: "lg:col-span-2",
   },

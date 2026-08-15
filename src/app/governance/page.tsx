@@ -118,9 +118,10 @@ export default function GovernancePage() {
             <p className="mt-5 text-lg leading-relaxed text-charcoal/80">
               FAITH Foundation is governed by a lean board of directors that
               sets policy, oversees finances, and ensures every decision advances
-              our charitable mission. Our leadership keeps administrative costs
-              minimal so that donor generosity flows to the families we serve —
-              not to overhead.
+              our charitable mission. Gifts designated for a program are used for
+              that program, and administration is funded through separately
+              designated operational support — a separation the board maintains
+              deliberately so donors always know which they are giving to.
             </p>
           </Reveal>
           <ul className="mt-14 grid gap-8 sm:grid-cols-3">

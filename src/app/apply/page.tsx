@@ -45,6 +45,7 @@ export default function ApplyPage() {
           aria-hidden
           className="absolute inset-0 h-full w-full object-cover opacity-60"
           loading="eager"
+          fetchPriority="high"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-green-deep/40" />
         <div className="absolute -left-24 bottom-0 h-96 w-96 rounded-full bg-green/10 blur-3xl" />

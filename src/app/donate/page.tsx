@@ -71,10 +71,11 @@ export default function DonatePage() {
           </Reveal>
           <Reveal delay={200}>
             <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-white/85">
-              FAITH Foundation is a 501(c)(3) nonprofit based in Burnet, Texas.
-              Every donation is tax-deductible and goes directly toward down
-              payment assistance vouchers that help families across Texas buy a
-              home of their own.
+              FAITH Foundation is a 501(c)(3) nonprofit headquartered in Burnet,
+              Texas. Donations are tax-deductible, and 100% of every gift
+              designated for down payment assistance is used to support the
+              program for which it was designated — helping families across Texas
+              buy a home of their own.
             </p>
           </Reveal>
           <Reveal delay={300}>
@@ -132,11 +133,12 @@ export default function DonatePage() {
                 </p>
                 <p>
                   We hold ourselves to the highest standards of stewardship and
-                  accountability. We measure our impact honestly, report our
-                  outcomes openly, and direct every dollar toward measurable
-                  results. When you give to FAITH Foundation, you can be
-                  confident your generosity stays in Texas and reaches the
-                  neighbors who need it most.
+                  accountability. We measure our work honestly and report it
+                  openly, including the parts that fall short. Gifts you
+                  designate for a program are used for that program; gifts
+                  designated for operational support fund the administration that
+                  keeps the organization running. Either way, your generosity
+                  stays in Texas and serves the neighbors we exist to help.
                 </p>
               </div>
             </Reveal>
@@ -166,7 +168,8 @@ export default function DonatePage() {
                 <StatCounter value={100} suffix="%" />
               </p>
               <p className="mt-3 text-sm font-semibold uppercase tracking-widest text-white/80">
-                Of every designated housing gift directly supports the program you choose
+                Of every gift designated for down payment assistance is used for
+                that program
               </p>
             </Reveal>
             <Reveal delay={100} className="text-center">
@@ -174,7 +177,7 @@ export default function DonatePage() {
                 <StatCounter value={100} suffix="%" />
               </p>
               <p className="mt-3 text-sm font-semibold uppercase tracking-widest text-white/80">
-                Stays local across Texas
+                Of program-designated giving stays in Texas
               </p>
             </Reveal>
           </div>
@@ -195,8 +198,14 @@ export default function DonatePage() {
             </h3>
             <p className="mt-5 text-lg leading-relaxed text-charcoal/80">
               Pick the giving level that fits you. Whether you give once or
-              monthly, your support translates directly into down payment
-              assistance and homeownership for families across Texas.
+              monthly, your support goes toward down payment assistance and
+              homeownership for families across Texas.
+            </p>
+            <p className="mt-4 text-sm leading-relaxed text-charcoal/70">
+              The descriptions below illustrate the kinds of costs each giving
+              level helps cover. They are examples of how gifts are put to work,
+              not a per-donation accounting or a guarantee that an individual
+              gift is applied to one specific expense.
             </p>
           </Reveal>
 

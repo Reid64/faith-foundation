@@ -1,7 +1,85 @@
 # faith-foundation — STATE OF THE BUILD
 
-> Updated from a LIVE codebase audit on 2026-08-14 (BLUEPRINT Canonical Rule 9).
-> Last action: **Full Playwright site audit — 128 tests, all passing; 3 site defects found and
+> Updated from a LIVE codebase audit on 2026-08-15 (BLUEPRINT Canonical Rule 9).
+> Last action: **EMERGENCY FIX — homepage stat counter band was clipping its own figures.** The
+> four-card stat band under the hero sat in a `relative overflow-hidden` section while its inner
+> container carried `-mt-16`, deliberately pulling the grid up into the hero for the "overlapping
+> cards" effect. Those two are mutually exclusive: the negative margin put the top 4rem of the grid
+> **outside its own section's box**, and `overflow-hidden` clipped exactly that strip — which is
+> where the `card-stat-figure` numbers sit. The percentages were being cut off at the top on every
+> visit. The `overflow-hidden` is **load-bearing and was not removed**: `BackgroundSwirls` renders
+> an SVG with `overflow: visible` whose paths run from x=-200 to x=1640 with a 300px stroke, so
+> dropping it would spill green swirls across the page and introduce horizontal scroll. The fix
+> replaces `-mt-16` with `pt-16` on the container, so nothing extends past the section box and the
+> clip becomes a no-op. **Tradeoff, recorded deliberately: the stat cards no longer overlap the
+> hero.** That was the original design intent, and it is now gone — the band sits below the hero
+> with clear space above it. Restoring the overlap requires moving the swirl clipping into its own
+> wrapper so the section itself can be `overflow-visible`; a comment at the call site says so, to
+> stop the next person reintroducing the negative margin and the bug with it. No other styling
+> changed. Build PASSED (0 TypeScript errors, 31/31 static pages), deployed `vercel --prod` →
+> READY, aliased to https://www.faithfoundationsf.org. See the 2026-08-15 stat-band entry at the
+> end of this file.
+>
+> Prior action: **Full Google Ad Grants readiness remediation — 87/100 → 96/100.** A complete
+> credibility, policy, accessibility, SEO, schema, performance and security pass. The headline
+> finding was not the flagged homepage testimonial but a **three-way contradiction**: the News page
+> announced that the first annual impact summary *had been published* (18 Apr 2026) while /events
+> scheduled that publication for 24 Nov 2026 and /impact stated there were no completed outcomes.
+> All three now agree. The homepage "Maria & David — Down Payment Voucher recipients" testimonial
+> is now a labelled **Illustrative Family Story**; /impact is split into three numbered sections
+> (Verified Results / Targets / Illustrative Examples) that state plainly that no beneficiary
+> outcomes exist yet; every "100%" claim across nine pages now uses one designated-gift
+> formulation; the Donate page no longer contradicts Financial Transparency. Also fixed: **mojibake
+> live in every page title and the schema legalName**, four **placeholder social links** pointing at
+> platform home pages, a citation attributing a claim to Bankrate while linking elsewhere, a
+> **keyboard trap** in the collapsed mobile menu, a Privacy Policy describing analytics the site
+> does not use while omitting the form processor that receives applicant income data, and a 407 KB
+> PNG logo loading on every page. Added security headers, a skip link, upgraded schema
+> (ContactPoint/WebSite/logo/bare taxID), and a WebP photo pipeline (10.44 MB → 3.09 MB).
+> **Mobile Lighthouse: Accessibility 100, Best Practices 100, SEO 100 on all seven audited pages;
+> Performance 91–99 (avg 96), up from 81–97.** New 59-test `scripts/ad-grants-readiness.spec.ts`
+> encodes every invariant — **59/59 passing**. Full report:
+> `GOOGLE_AD_GRANTS_READINESS_AUDIT.md`. Remaining blockers are external, not code:
+> `governance/OPERATOR_ACTIONS.md` — **Formsubmit activation is still outstanding, so forms do not
+> deliver yet.**
+>
+> Prior action: **Production/source mismatch closed and verified live — site clean for the Google for
+> Nonprofits submission.** A live audit reported four defects on production (Bright Box Homes on the
+> homepage and on Financial Transparency, a retired "Emergency rental & deposit assistance" fund
+> direction, an Unsplash-hotlinked Financial Transparency hero, three deleted programs still in the
+> footer, and StatCounter rendering 0%). **All four were already correct in source.** The defect was
+> not in the code — production was serving a stale build that predated those fixes, so the audit was
+> reading a deployment, not the repository. The Formsubmit deploy earlier the same day shipped the
+> corrected source; this pass re-verified all four end to end (source → built output → live HTML)
+> and redeployed so every one of the 31 routes is current, not just the two audited pages.
+> **Live production now measures: 0 "Bright Box Homes", 0 Unsplash URLs, 0 retired-program links,
+> exactly 6 footer programs, StatCounter SSR emitting final values (100% / 501(c)(3) / 100% / 0).**
+> No source file needed to change. See the 2026-08-15 production/source mismatch entry at the end.
+>
+> Prior action: **Web3Forms replaced with Formsubmit.co — the forms now deliver.** All four forms
+> (Contact, Volunteer, Apply, Newsletter) POST to
+> `https://formsubmit.co/ajax/info@faithfoundationsf.org`. **No API key, no account, and no
+> environment variable** — the destination mailbox is part of the URL, which removes the blocker
+> that kept the previous Web3Forms wiring from ever delivering: `NEXT_PUBLIC_WEB3FORMS_KEY` was
+> never obtained, so `WEB3FORMS_CONFIGURED` stayed false and the minifier stripped the entire fetch
+> block out of the shipped bundle. That gate is gone. The endpoint is now **verified present in all
+> four shipped chunks** (layout, apply, contact, volunteer) with `access_key` at zero occurrences.
+> Every submission carries `_subject` (per-form), `_template: "table"` and `_captcha: "false"`.
+> **One remaining step, and it is not a code step:** Formsubmit emails a one-time activation link to
+> info@faithfoundationsf.org on the first submission — someone must open that mailbox and click it.
+> Until then Formsubmit answers `success: "false"` with the activation message, which the site
+> reports honestly as a failure alongside the one-click email fallback. Build PASSED (0 TypeScript
+> errors, 31/31 static pages). See the 2026-08-15 Formsubmit log entry at the end of this file.
+>
+> Prior action: **Real form delivery via Web3Forms + all photography self-hosted.** This closed the
+> two open recommendations from the site audit. All four forms were moved off the mailto stopgap
+> onto `https://api.web3forms.com/submit` — but the access key was never obtained, so the forms
+> never delivered; superseded by the Formsubmit change above. Separately, all 25 Unsplash
+> photos were downloaded and are now served from `/public/photos` — **zero `images.unsplash.com`
+> references remain anywhere in the built output** — closing the root cause of the dead veterans
+> hero. Build PASSED, deployed, and the 128-test audit re-run against production: **128/128 green.**
+>
+> Prior action: **Full Playwright site audit — 128 tests, all passing; 3 site defects found and
 > fixed.** A 128-test suite (`scripts/site-audit.spec.ts`) was built and run against live
 > production covering all 23 routes, 3 redirects, all 4 forms, navigation (desktop + mobile +
 > About dropdown), every internal link sitewide, the Zeffy embed, and 7 content/SEO checks.
@@ -1106,3 +1184,306 @@ build commands are approved.
 > depend on the visitor's mail client and on them pressing send, and nothing is stored. A real
 > intake endpoint is the highest-value remaining work for a nonprofit whose Apply form is the
 > front door for families in crisis.
+
+## 2026-08-14 — Web3Forms delivery for all four forms + all photography self-hosted
+
+> This closes both open recommendations from `governance/SITE_AUDIT_2026-08-14.md`: replace the
+> mailto stopgap with a real intake endpoint, and stop hotlinking a third-party CDN for imagery.
+>
+> ══ PART 1 — FORMS NOW POST TO WEB3FORMS ══
+>
+> `src/lib/web3forms.ts` (NEW) posts to `https://api.web3forms.com/submit` with the access key,
+> a per-form subject, and the submitted fields. Web3Forms forwards to info@faithfoundationsf.org,
+> which is what makes real delivery possible from a static export with no server. Applied to
+> Contact, Volunteer, Apply, and the footer Newsletter. `src/lib/mailto.ts` is retained — it is now
+> the FALLBACK rather than the primary path.
+>
+> **⚠️ NOT LIVE YET — ACTION REQUIRED.** `NEXT_PUBLIC_WEB3FORMS_KEY` is the literal string
+> `PENDING_KEY`. The key must be requested at https://web3forms.com for info@faithfoundationsf.org
+> (it is emailed to that address), added in Vercel → Settings → Environment Variables for
+> Production + Preview + Development, **and the site redeployed** — `NEXT_PUBLIC_*` values are
+> inlined by Next at BUILD time, so setting the variable without a rebuild changes nothing. Until
+> then `WEB3FORMS_CONFIGURED` is false, every form states plainly that it is not connected, and
+> every form offers a one-click email fallback carrying the same data to the same inbox. No
+> submission is silently lost in the interim, but none is auto-delivered either.
+>
+> DELIVERY IS ONLY CLAIMED ON PROOF. `submitForm()` requires BOTH a 200 AND `success: true` in the
+> response body before the UI shows a success state. Web3Forms answers 200 with `success: false`
+> for a rejected access key, so trusting the status code alone would have reproduced the exact
+> false-success defect this site shipped three times. Success copy was reverted from the mailto
+> wording ("press send") back to plain confirmations ("Message sent", "Application received"),
+> which are now true statements because they only render after confirmed delivery.
+>
+> APPLY FORM — the multi-step capture from the audit is PRESERVED and now covered by an explicit
+> assertion. `collectAll()` merges the `answers` state (captured on every step change) with the
+> live step-4 FormData, so the POST carries all four steps. Reading only `event.currentTarget`
+> would send an application containing nothing but the consent checkbox.
+>
+> Also added: a `botcheck` honeypot on each form (Web3Forms rejects filled ones), `submitting`
+> state that disables the button and blocks double submits, and `FormErrorNotice`
+> (`src/components/FormErrorNotice.tsx`) — a shared failure panel that never implies success and
+> always offers the email fallback plus the phone number.
+>
+> VERIFIED, NOT ASSUMED. Because the placeholder key makes `WEB3FORMS_CONFIGURED` a compile-time
+> `false`, the minifier dead-code-eliminates the entire fetch block — `api.web3forms.com` does not
+> appear in the shipped bundle at all right now. That would have left the delivery path shipped but
+> never executed. So the build was repeated with a dummy key and a separate suite
+> (`scripts/web3forms-wiring.spec.ts`, 4 tests) was run against that build served locally. It
+> proves: a real POST is sent with the correct fields; a rejected key is treated as a FAILURE not a
+> success; the error notice renders with a working email fallback; the Apply POST contains all four
+> steps field-by-field; and Back preserves earlier answers. **4/4 passed.** Keep this suite — it is
+> the only thing that exercises the delivery branch while the key is pending, and it is how to
+> confirm activation later.
+>
+> ══ PART 2 — ALL PHOTOGRAPHY SELF-HOSTED ══
+>
+> All 25 photos in `src/lib/images.ts` were downloaded at 2000px (the largest width any call site
+> requested) into `/public/photos` and every reference switched to a local path. Each download was
+> verified before any reference was edited: HTTP 200, an `image/*` content-type, JPEG magic bytes
+> on disk, and a non-trivial byte count. **25/25 OK, 0 failures, 9.59 MB total.** The
+> `unsplash()` URL builder and `BASE` constant were deleted, so a hotlink cannot be reintroduced by
+> accident. `img(key, w?, h?)` keeps its signature — the size arguments are accepted and ignored,
+> which avoided editing ~19 call sites and keeps passing a size harmless; every call site already
+> constrains the visible box with CSS `object-cover`.
+>
+> `src/lib/media.ts` needed no changes — it was already entirely local.
+> The `preconnect`/`dns-prefetch` hints for `images.unsplash.com` were removed from `layout.tsx`:
+> with nothing loading from that host they only cost a handshake.
+> Confirmed on the built output and on production: **0 occurrences of `images.unsplash.com`.**
+>
+> NOTE — 13 of the 25 photos (modernHome, suburbanHome, cozyHome, houseInterior, parentChild,
+> friendsGroup, diversePeople, olderCouple, volunteersHands, volunteersBoxes, classroom, planning,
+> sunrise) have **zero references outside images.ts**. They were downloaded anyway so the catalog
+> stays complete and no future use can reintroduce a hotlink, at a cost of roughly 5 MB. Pruning
+> them is a reasonable follow-up but was not done unasked.
+>
+> ══ GATES ══
+>
+> `.eslintrc.json` gained an `@typescript-eslint/no-unused-vars` rule with `argsIgnorePattern: "^_"`
+> — required because `img()` now deliberately ignores its size arguments, and the default config
+> fails the build on that.
+> Build: `pnpm run build` PASSED — compiled successfully, 0 TypeScript errors, 31/31 static pages,
+> exit 0. Deployed `vercel --prod` → READY, aliased to https://www.faithfoundationsf.org.
+> Post-deploy: full audit re-run against production, **128/128 passed**.
+>
+> AUDIT SUITE UPDATED, NOT WEAKENED. The 26 form tests were written against the mailto contract and
+> failed once the forms switched to Web3Forms. They were rewritten to assert the invariant that
+> holds in BOTH states: *a success state may appear ONLY if a POST was actually made; otherwise an
+> error must be shown AND the email fallback must still carry the data to the same inbox.* The
+> Apply test additionally asserts every step's values survive whichever route the submission takes.
+> These tests stay valid after activation — the branch simply flips from the fallback path to the
+> delivery path.
+
+---
+
+## 2026-08-15 — WEB3FORMS REPLACED WITH FORMSUBMIT.CO
+
+> ══ WHY ══
+>
+> The Web3Forms wiring shipped on 2026-08-14 was correct code that could never deliver. It required
+> `NEXT_PUBLIC_WEB3FORMS_KEY`, an access key that had to be requested by email, pasted into Vercel,
+> and followed by a rebuild. That never happened. Because the placeholder made
+> `WEB3FORMS_CONFIGURED` a compile-time `false`, the minifier dead-code-eliminated the whole fetch
+> block — `api.web3forms.com` was not even present in the shipped bundle. Four forms, zero delivery,
+> gated on a manual step nobody had completed.
+>
+> Formsubmit.co removes the gate entirely: the destination mailbox is part of the endpoint URL, so
+> there is no key, no account, and no environment variable to inline at build time.
+>
+> ══ WHAT CHANGED ══
+>
+> | File | Change |
+> | --- | --- |
+> | `src/lib/web3forms.ts` | POST target is now `https://formsubmit.co/ajax/info@faithfoundationsf.org`. `access_key`, `WEB3FORMS_KEY` and the `WEB3FORMS_CONFIGURED` short-circuit are **deleted** — that gate was the reason nothing shipped. Body now sends `_subject`, `_template: "table"`, `_captcha: "false"`, `from_name`, then the form fields. Success/error handling is unchanged in shape, with one necessary correction: Formsubmit returns `success` as the **string** `"true"`, not a boolean, so both are accepted. Delivery is still reported only on 200 AND a truthy `success`. |
+> | `src/app/contact/ContactForm.tsx` | Subject → `FAITH Foundation — Contact Form Submission` (the `(subject choice)` suffix dropped; the choice still travels as the `subject_choice` field, so nothing is lost from the email body). |
+> | `src/app/volunteer/VolunteerForm.tsx` | Subject → `FAITH Foundation — Volunteer Application`. |
+> | `src/app/apply/ApplicationForm.tsx` | Subject → `FAITH Foundation — Housing Assistance Application` (the `(first last)` suffix dropped; the name still travels as `first_name` / `last_name`). |
+> | `src/components/SiteFooter.tsx` | Subject → `FAITH Foundation — Newsletter Signup`. |
+> | `.env.example` | `NEXT_PUBLIC_WEB3FORMS_KEY` removed. The file now states plainly that nothing is required for the forms. |
+> | `scripts/site-audit.spec.ts` | Submission tracker matches `formsubmit.co` instead of `api.web3forms.com`. Without this the audit's form tests would have seen zero POSTs and failed. |
+> | `scripts/web3forms-wiring.spec.ts` | Rewritten for Formsubmit: 5 tests asserting the POST goes to the ajax endpoint, carries the correct per-form `_subject` plus `_template`/`_captcha`, carries **no** `access_key`, and that the Apply POST contains all four steps. Volunteer coverage added. |
+> | Honeypot comments (3 forms) + `FormErrorNotice.tsx` | Comment-only. They claimed Web3Forms rejects the `botcheck` field; it is never forwarded, since each form builds its body from named fields. Corrected rather than left as a false claim. |
+>
+> ══ FILENAME NOTE ══
+>
+> `src/lib/web3forms.ts` keeps its path deliberately — renaming it would churn four import sites for
+> no behavioural gain. Its contents and doc comment are entirely Formsubmit. Rename is a clean
+> follow-up if the name bothers anyone.
+>
+> ══ GATES ══
+>
+> Build: `pnpm run build` PASSED — compiled successfully, **0 TypeScript errors**, 31/31 static
+> pages, exit 0.
+>
+> VERIFIED IN THE BUILT OUTPUT, NOT ASSUMED. Searched all 44 emitted JS files:
+> - `formsubmit.co` present in **4** chunks — `app/layout` (footer newsletter, i.e. every page),
+>   `app/apply`, `app/contact`, `app/volunteer`. This is the material difference from the previous
+>   state, where the endpoint was absent from the bundle entirely.
+> - `api.web3forms.com` / `access_key`: **0 occurrences.**
+> - `_template` and `_captcha`: **4 each.** All four subject strings present exactly once each.
+>
+> ══ THE ONE REMAINING STEP — NOT A CODE STEP ══
+>
+> Formsubmit sends a one-time activation email to info@faithfoundationsf.org on the first
+> submission to a new address. Someone with access to that mailbox must click the link in it.
+> Before that, Formsubmit answers `success: "false"` with an activation message, and the site
+> shows that message plus the one-click email fallback — it does not fake a success. The forms
+> deliver automatically from the moment the link is clicked; no redeploy is needed, because
+> nothing about the endpoint is build-time inlined.
+
+---
+
+## 2026-08-15 — PRODUCTION/SOURCE MISMATCH: FOUR AUDIT FINDINGS, ALL RESOLVED
+
+> ══ THE HEADLINE, STATED PLAINLY ══
+>
+> A live audit of production reported four defects and flagged them as "applied to source but not
+> live." The second half of that was right and the first half was inverted: **all four were already
+> correct in the repository.** Nothing in `src/` needed to change. Production was serving a build
+> that predated the fixes, so the audit was measuring a stale deployment rather than the codebase.
+>
+> This is a deployment-freshness failure, not a code failure, and it is the more dangerous of the
+> two — the source review says "fixed", the live site says otherwise, and the two never get
+> compared. Recording it here so the next audit checks the deployment, not just the diff.
+>
+> ══ FINDING BY FINDING — WHAT SOURCE ACTUALLY CONTAINED ══
+>
+> | # | Reported defect | Actual state in source | Action |
+> | --- | --- | --- | --- |
+> | 1 | "Bright Box Homes" still on the homepage | `src/app/page.tsx:160-165` already carried the exact replacement paragraph ("Our housing vouchers are funded by the generosity of individual and corporate donors…"). Zero occurrences of "Bright Box" anywhere in `src/`. | None needed |
+> | 2a | "Bright Box Homes" in the "Our funding sources are disclosed" commitment | `financial-transparency/page.tsx:30` already used the generic corporate-donor language ("homebuilders who honor FAITH Foundation down payment assistance vouchers as direct discounts…"). | None needed |
+> | 2b | `FUND_DIRECTION` still listing "Emergency rental & deposit assistance" | Array already held exactly two entries — "Down payment assistance vouchers" and "Supporting instruction programs" — with the second note already reading "Homeownership counseling referrals and program administration." | None needed |
+> | 2c | Financial Transparency hero hotlinked from Unsplash | Hero is `img("finance", 1900, 1100)` → `/photos/finance.jpg`, self-hosted. `src/lib/images.ts` has no URL builder left to hotlink with. The only two `images.unsplash.com` strings in `src/` are **comments** documenting the removal. | None needed |
+> | 3 | Footer listing Emergency Bridge Housing / Single Parent Stability / Financial Literacy | `SiteFooter.tsx` `PROGRAM_LINKS` already held exactly the six correct entries. | None needed |
+> | 4 | StatCounter rendering 0% | `StatCounter.tsx` already had the SSR fix intact and correct: `useState(value)` as the initial state, a `mounted` flag set in an effect, and `setDisplay(0)` only after mount to start the animation. Server HTML therefore emits final values. | None needed |
+>
+> ══ WHAT WAS ACTUALLY DONE ══
+>
+> Re-verified every finding at three levels rather than trusting any one of them, then redeployed
+> so all 31 routes are current — the audit had only covered two pages, and a stale deployment could
+> have left others behind.
+>
+> Build: `pnpm run build` PASSED — 0 TypeScript errors, 31/31 static pages. The only warnings are
+> the pre-existing `@next/next/no-img-element` advisories, which are inherent to `output: "export"`
+> with `images.unoptimized` and are not defects.
+> Deployed `vercel --prod` → READY, aliased to https://www.faithfoundationsf.org.
+>
+> ══ VERIFIED LIVE, NOT ASSUMED ══
+>
+> Fetched with `Cache-Control: no-cache` after deploy. On **both** `/` and
+> `/financial-transparency/`:
+>
+> - "Bright Box Homes" — **0 occurrences.**
+> - `images.unsplash.com` — **0 occurrences.** Financial Transparency hero resolves to
+>   `/photos/finance.jpg` (3 references in the page source).
+> - Retired program links (`/programs/emergency`, `/programs/single-parents`,
+>   `/programs/financial-literacy`) — **0 occurrences.**
+> - Footer Programs — **exactly 6**, and the right six: homeownership, housing-voucher, veterans,
+>   recovery, reentry, cornerstone-communities.
+> - "Emergency rental" — **0 occurrences.**
+> - StatCounter in the **server-rendered HTML**: `100%`, `501(c)(3)`, `100%`, `0`. Zero spurious
+>   `0%` figures. The trailing `0` is correct and intentional — it is `<StatCounter value={0} />`
+>   for "Donor records sold, rented, or traded — ever."
+>
+> ══ ADJACENT CHECK — THE RETIRED PROGRAM PAGES ══
+>
+> Confirmed while verifying, since orphaned pages describing discontinued programs would matter to
+> a Google for Nonprofits reviewer: `/programs/emergency/`, `/programs/single-parents/` and
+> `/programs/financial-literacy/` **308-redirect** rather than serving retired content, and they
+> appear in **none** of the sitemap's 23 `<loc>` entries. Nothing to clean up.
+>
+> ══ READINESS ══
+>
+> Site is confirmed clean for the Google for Nonprofits application submission on all four audited
+> points, measured against live production rather than source.
+>
+> ══ STANDING LESSON ══
+>
+> "Fixed in source" is not "fixed on the site." Every future audit finding should be checked against
+> the live URL before it is written up as a code defect, and every governance entry claiming a fix
+> should name the deployment that carries it.
+
+---
+
+## 2026-08-15 — EMERGENCY FIX: HOMEPAGE STAT BAND WAS CLIPPING ITS OWN FIGURES
+
+> ══ THE DEFECT ══
+>
+> The four-card stat band directly under the homepage hero was rendering its percentage figures
+> cut off at the top. Reported as an overlap problem with the hero; it was not. It was a
+> self-inflicted clip, and both halves of the cause were in the same six lines of
+> `src/app/page.tsx`:
+>
+> ```
+> <section className="relative overflow-hidden ...">   <- clips to the section box
+>   <BackgroundSwirls variant="top-left" />
+>   <div className="mx-auto -mt-16 max-w-7xl px-6 sm:px-8">   <- puts content outside that box
+> ```
+>
+> The `-mt-16` was intentional — the section comment read `OVERLAPPING STAT CARDS`, and the design
+> called for the band to ride up into the hero. But a negative top margin places the first 4rem of
+> the grid **above its own section's top edge**, and `overflow-hidden` on that section clips
+> precisely that strip. The `card-stat-figure` numbers sit at the top of each card, inside
+> `px-7 py-9`, so the clipped strip was exactly the figures. The two rules cannot both be present.
+>
+> ══ WHY `overflow-hidden` WAS KEPT ══
+>
+> The obvious fix — drop `overflow-hidden`, keep the overlap — was rejected after checking what it
+> is there for. `BackgroundSwirls` (`src/components/BackgroundSwirls.tsx`) emits an SVG with an
+> inline `overflow: visible`, a `0 0 1440 900` viewBox, and `top-left` paths running from x=-200 to
+> x=1200 drawn with `strokeWidth={300}` and `preserveAspectRatio="slice"`. That geometry extends
+> well past the section on every side. Without the clip the green swirls bleed across neighbouring
+> sections and push horizontal page scroll. Every other section on the page pairs
+> `relative overflow-hidden` with this component for the same reason. It is load-bearing.
+>
+> ══ THE FIX ══
+>
+> One class changed, in `src/app/page.tsx`:
+>
+> | Before | After |
+> | --- | --- |
+> | `<div className="mx-auto -mt-16 max-w-7xl px-6 sm:px-8">` | `<div className="mx-auto max-w-7xl px-6 pt-16 sm:px-8">` |
+>
+> With the negative margin gone nothing extends past the section box, so `overflow-hidden` becomes
+> a no-op for the cards while still containing the swirls. `pt-16` restores the vertical rhythm the
+> `-mt-16` had been absorbing. Nothing else changed: the section gradient, `BackgroundSwirls`, the
+> grid, `card-stat`, the `Reveal` stagger, `StatCounter` and all four labels are untouched. The
+> section comment was rewritten — it said `OVERLAPPING STAT CARDS`, which is no longer true and
+> would have invited someone to "restore" the negative margin and the bug with it.
+>
+> ══ THE TRADEOFF, RECORDED DELIBERATELY ══
+>
+> **The stat cards no longer overlap the hero.** That was the original design intent and it is gone;
+> the band now sits below the hero with clear space above it. This is a real visual change, not a
+> pure bug fix, and it is the direct consequence of the instructed remedy (remove the negative
+> margin, add padding). The overlap is recoverable without the clipping bug, but not for free: the
+> swirl clipping has to move into its own absolutely-positioned `overflow-hidden` wrapper so the
+> section itself can be `overflow-visible`. That refactor was out of scope for an emergency fix and
+> is the correct follow-up if the overlap is wanted back.
+>
+> ══ GATES ══
+>
+> Build: `pnpm run build` PASSED — compiled successfully, **0 TypeScript errors**, 31/31 static
+> pages, `next-sitemap` completed. The only warnings are the pre-existing
+> `@next/next/no-img-element` advisories inherent to `output: "export"` with `images.unoptimized`.
+> Deployed `vercel --prod` → `dpl_7GzFcNfK81mdG8KLguodsxvTTcdr`, READY, target production, aliased
+> to https://www.faithfoundationsf.org.
+>
+> ══ VERIFIED LIVE, NOT ASSUMED ══
+>
+> Per the standing lesson in the entry above, checked against production HTML fetched with
+> `Cache-Control: no-cache` after the deploy, not against the diff:
+>
+> - `-mt-16` — **0 occurrences** anywhere in the served homepage.
+> - `mx-auto max-w-7xl px-6 pt-16 sm:px-8` — **present** on the stat band container.
+> - Server-rendered figure markup intact:
+>   `<p class="card-stat-figure text-4xl font-extrabold"><span class="">100%</span></p>`, i.e.
+>   `StatCounter` is still emitting final values in SSR (the 2026-08-15 SSR fix is unaffected).
+> - The `BackgroundSwirls` SVG still renders inside the section, so the clip did its remaining job.
+>
+> ══ STANDING LESSON ══
+>
+> `overflow-hidden` and a negative margin on a child are a contradiction, not a layout technique.
+> When a section needs both a bleeding decorative background and content that escapes its box, the
+> clip belongs on a wrapper around the decoration — never on the element whose content is meant to
+> escape.

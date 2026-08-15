@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { openMailto } from "@/lib/mailto";
+import { submitForm } from "@/lib/web3forms";
+import FormErrorNotice from "@/components/FormErrorNotice";
 
 const INTERESTS = [
   "Tenancy & life-skills coaching",
@@ -14,24 +16,52 @@ const INTERESTS = [
 export default function VolunteerForm() {
   const [submitted, setSubmitted] = useState(false);
 
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState<Record<string, string>>({});
+
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (submitting) return;
+
     const data = new FormData(event.currentTarget);
     const get = (k: string) => String(data.get(k) ?? "");
 
+    const fields = {
+      name: get("name"),
+      email: get("email"),
+      phone: get("phone"),
+      interest: get("interest"),
+      availability: get("availability"),
+    };
+
+    setAttempt(fields);
+    setError(null);
+    setSubmitting(true);
+
+    const result = await submitForm(
+      "FAITH Foundation — Volunteer Application",
+      fields
+    );
+
+    setSubmitting(false);
+
+    if (result.ok) setSubmitted(true);
+    else setError(result.error);
+  }
+
+  function emailFallback() {
     openMailto(
       "Volunteer signup",
       [
-        ["Name", get("name")],
-        ["Email", get("email")],
-        ["Phone", get("phone")],
-        ["Area of interest", get("interest")],
-        ["Availability and skills", get("availability")],
+        ["Name", attempt.name ?? ""],
+        ["Email", attempt.email ?? ""],
+        ["Phone", attempt.phone ?? ""],
+        ["Area of interest", attempt.interest ?? ""],
+        ["Availability and skills", attempt.availability ?? ""],
       ],
       "Sent from the FAITH Foundation website volunteer form."
     );
-
-    setSubmitted(true);
   }
 
   if (submitted) {
@@ -58,19 +88,11 @@ export default function VolunteerForm() {
         </h3>
         <p className="mt-3 text-lg leading-relaxed text-charcoal/80">
           Thank you for offering your time and talents to FAITH Foundation. Your
-          email app should now be open with your signup ready to go —{" "}
-          <strong className="text-navy">press send to deliver it</strong>. Once
-          it arrives, a member of our volunteer coordination team will reach out
-          with next steps. If your email app did not open, call us at{" "}
+          signup has been delivered, and a member of our volunteer coordination
+          team will reach out soon with next steps. Questions in the meantime?
+          Call us at{" "}
           <a href="tel:+18884976620" className="font-semibold text-gold-dark">
             888-497-6620
-          </a>{" "}
-          or write to{" "}
-          <a
-            href="mailto:info@faithfoundationsf.org"
-            className="font-semibold text-gold-dark"
-          >
-            info@faithfoundationsf.org
           </a>
           .
         </p>
@@ -160,12 +182,26 @@ export default function VolunteerForm() {
           className="w-full rounded-xl border border-navy/15 bg-white px-4 py-3 text-charcoal placeholder:text-charcoal/40 focus:border-green focus:outline-none focus:ring-2 focus:ring-green/40"
         />
       </div>
+      {/* Spam honeypot — hidden from people. Its value is not forwarded; the
+          submission body is built from the named fields above. */}
+      <input
+        type="checkbox"
+        name="botcheck"
+        tabIndex={-1}
+        autoComplete="off"
+        aria-hidden
+        style={{ display: "none" }}
+      />
       <button
         type="submit"
-        className="mt-8 w-full rounded-full bg-green px-8 py-4 text-base font-bold text-white shadow-green transition-all duration-300 hover:bg-green-dark hover:shadow-card-lg"
+        disabled={submitting}
+        className="mt-8 w-full rounded-full bg-green px-8 py-4 text-base font-bold text-white shadow-green transition-all duration-300 hover:bg-green-dark hover:shadow-card-lg disabled:cursor-not-allowed disabled:opacity-60"
       >
-        Sign Up to Volunteer
+        {submitting ? "Sending…" : "Sign Up to Volunteer"}
       </button>
+      {error && (
+        <FormErrorNotice message={error} onEmailFallback={emailFallback} />
+      )}
     </form>
   );
 }

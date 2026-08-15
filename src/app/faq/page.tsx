@@ -30,7 +30,7 @@ const FAQS = [
   {
     question: "How is FAITH Foundation funded?",
     answer:
-      "FAITH Foundation is funded by the generosity of individual and corporate donors, grants, and community fundraising. Our corporate donors include homebuilders and construction partners who support our mission by honoring our down payment assistance vouchers and making charitable contributions to FAITH Foundation. Every gift, from every source, is directed into down payment assistance vouchers and our charitable housing programs. Our funding sources are disclosed in full on our Financial Transparency page.",
+      "FAITH Foundation is funded by charitable giving from individuals and businesses, and by community fundraising. Our corporate partnership model invites homebuilders and construction companies to honor our down payment assistance vouchers as a direct discount to qualifying buyers and to make charitable contributions to FAITH Foundation. As a newly established organization we are actively building this donor and partner base, and we also intend to pursue grant funding. 100% of every gift designated for down payment assistance is used to support that program, while gifts designated for operational support fund administration. Our funding approach is set out in full on our Financial Transparency page.",
   },
   {
     question: "What is a housing voucher and how do I qualify?",
@@ -45,7 +45,7 @@ const FAQS = [
   {
     question: "Is there a cost to receive help from FAITH Foundation?",
     answer:
-      "No. Our programs and assistance are provided free of charge to the families we serve. We are funded by individual and corporate donations, grants, and the generosity of our community.",
+      "No. Our programs and assistance are provided free of charge to the families we serve. There is never a fee to apply or to receive help. We are funded by charitable giving from individuals and businesses and by the generosity of our community.",
   },
   {
     question: "Do I have to share your faith to receive help?",
@@ -65,7 +65,7 @@ const FAQS = [
   {
     question: "How is my donation used?",
     answer:
-      "Donations fund down payment assistance vouchers, our housing voucher program, and the supporting instruction that helps families prepare for and sustain ownership. We direct gifts toward measurable impact for families across Texas and report our outcomes openly, because transparent stewardship is a commitment we take seriously.",
+      "It depends on how you designate it, and we keep that distinction clear. 100% of every gift designated for down payment assistance is used to support the program for which it was designated. Gifts designated for operational support fund legitimate administrative and organizational expenses — the staffing, systems, and compliance work that make the programs possible. Both are necessary, and we would rather name the difference than blur it. Details are on our Financial Transparency page.",
   },
   {
     question: "Can I donate by mail or do I have to give online?",
@@ -213,6 +213,7 @@ export default function FAQPage() {
           alt="Two people in conversation"
           className="absolute inset-0 h-full w-full object-cover animate-slow-zoom"
           loading="eager"
+          fetchPriority="high"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
         <div className="absolute -right-24 top-1/4 h-96 w-96 rounded-full bg-green/10 blur-3xl" />

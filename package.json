@@ -7,7 +7,12 @@
     "build": "next build",
     "postbuild": "pnpm dlx next-sitemap || exit 0",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "optimize:photos": "node scripts/optimize-photos.js",
+    "audit:readiness": "playwright test scripts/ad-grants-readiness.spec.ts",
+    "audit:site": "playwright test scripts/site-audit.spec.ts --workers=1",
+    "audit:forms": "playwright test scripts/web3forms-wiring.spec.ts --workers=1",
+    "audit:all": "pnpm run audit:readiness && pnpm run audit:site"
   },
   "dependencies": {
     "next": "14.2.35",

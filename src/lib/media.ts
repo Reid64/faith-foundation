@@ -32,16 +32,26 @@ export const HERO_VIDEOS = [
   "/videos/hero-720p.mp4",
 ] as const;
 
-/** Real photography of affordable / modular homes. */
+/**
+ * Real photography of affordable / modular homes.
+ *
+ * WebP at a 1200px cap, except `evening` — every WebP encoding of that file
+ * came out LARGER than the existing 1200px JPEG, so it stays JPEG. The mixed
+ * extensions below are deliberate, not an oversight; see the BRAND_ constants
+ * in scripts/optimize-photos.js. Regenerate with `node scripts/optimize-photos.js`.
+ *
+ * `modern` is the homepage hero poster and therefore the LCP candidate on the
+ * busiest page — keep its quality conservative.
+ */
 export const PHOTOS = {
   /** Slate-grey modern home, lakeside, full wrap porch. */
-  modern: "/photos/home-modern.jpg",
+  modern: "/photos/home-modern.webp",
   /** Warm timber cabin in an open Texas field. */
-  cabin: "/photos/home-cabin.jpg",
+  cabin: "/photos/home-cabin.webp",
   /** Black home glowing at dusk with string lights + firepit. */
   evening: "/photos/home-evening.jpg",
   /** Bright yellow family home under a clear blue sky. */
-  yellow: "/photos/home-yellow.jpg",
+  yellow: "/photos/home-yellow.webp",
 } as const;
 
 export type PhotoKey = keyof typeof PHOTOS;

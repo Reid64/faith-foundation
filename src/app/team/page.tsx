@@ -99,6 +99,7 @@ export default function TeamPage() {
           alt="The FAITH Foundation leadership team meeting together"
           className="absolute inset-0 h-full w-full animate-slow-zoom object-cover"
           loading="eager"
+          fetchPriority="high"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
         <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-green-deep/40" />

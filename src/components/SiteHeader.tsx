@@ -35,7 +35,22 @@ export default function SiteHeader() {
 
   useEffect(() => {
     setOpen(false);
+    setAboutOpen(false);
   }, [pathname]);
+
+  // Escape closes whichever menu is open and is the expected way out of a
+  // dropdown for keyboard and screen-reader users. Without it the About menu
+  // could only be dismissed by clicking its trigger again.
+  useEffect(() => {
+    if (!open && !aboutOpen) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      setAboutOpen(false);
+      setOpen(false);
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [open, aboutOpen]);
 
   const solid = scrolled || open;
 
@@ -78,6 +93,8 @@ export default function SiteHeader() {
             <button
               type="button"
               aria-expanded={aboutOpen}
+              aria-haspopup="true"
+              aria-controls="about-menu"
               onClick={() => setAboutOpen((v) => !v)}
               className={`relative inline-flex items-center gap-1 text-sm font-semibold tracking-wide transition-colors after:absolute after:-bottom-1.5 after:left-0 after:h-0.5 after:bg-green after:transition-all after:duration-300 hover:text-green ${
                 aboutActive
@@ -100,7 +117,10 @@ export default function SiteHeader() {
             </button>
 
             {aboutOpen && (
-              <div className="absolute left-0 top-full z-50 -mt-2 min-w-[200px] rounded-xl border border-black/10 bg-white py-2 shadow-lg">
+              <div
+                id="about-menu"
+                className="absolute left-0 top-full z-50 -mt-2 min-w-[200px] rounded-xl border border-black/10 bg-white py-2 shadow-lg"
+              >
                 {ABOUT_LINKS.map((link) => {
                   const active = pathname === link.href;
                   return (
@@ -162,6 +182,7 @@ export default function SiteHeader() {
           className="inline-flex h-11 w-11 items-center justify-center rounded-md text-charcoal lg:hidden"
           aria-label={open ? "Close menu" : "Open menu"}
           aria-expanded={open}
+          aria-controls="mobile-menu"
         >
           <span className="relative block h-5 w-6">
             <span
@@ -183,9 +204,15 @@ export default function SiteHeader() {
         </button>
       </div>
 
+      {/* `invisible` when collapsed, not just `max-h-0`: height alone still
+          leaves every link in the tab order, so a keyboard user tabbing from
+          the menu button fell into ten links they could not see. visibility
+          removes them from the tab order while keeping the height transition. */}
       <div
+        id="mobile-menu"
+        aria-hidden={!open}
         className={`overflow-hidden border-t border-black/10 bg-white transition-[max-height] duration-300 lg:hidden ${
-          open ? "max-h-[36rem]" : "max-h-0"
+          open ? "max-h-[36rem] visible" : "max-h-0 invisible"
         }`}
       >
         <nav aria-label="Mobile" className="flex flex-col px-6 py-4">

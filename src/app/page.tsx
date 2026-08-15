@@ -24,6 +24,8 @@ const PILLARS = [
     cta: "Explore homeownership assistance",
     image: PHOTOS.cabin,
     alt: "A warm timber home in an open Texas field — ownership made tangible",
+    caption:
+      "Pictured: An expandable modular container home — factory-built and placed on site, fully equipped with kitchen, full bath, and air conditioning. These affordable, customizable homes represent the type of permanent housing our down payment vouchers are designed to help Texas families achieve.",
     accent: "green" as const,
   },
   {
@@ -34,6 +36,8 @@ const PILLARS = [
     cta: "Explore housing assistance",
     image: PHOTOS.yellow,
     alt: "A bright, freshly built family home under a clear Texas sky",
+    caption:
+      "Pictured: A modular assembly home — purpose-built for affordability and dignity. Expandable shipping container construction and modular design make these homes dramatically more affordable than traditional stick-built construction, putting permanent homeownership within real reach.",
     accent: "gold" as const,
   },
 ];
@@ -78,10 +82,15 @@ export default function Home() {
         </div>
       </HeroVideo>
 
-      {/* ===== OVERLAPPING STAT CARDS ===== */}
+      {/* ===== STAT CARDS =====
+          These used to pull up into the hero with `-mt-16`, but the section is
+          `overflow-hidden` (required — BackgroundSwirls draws well outside its
+          box), so the top 4rem of the grid was clipped and the stat figures were
+          cut off. Do not reintroduce a negative top margin here without first
+          moving the swirl clipping to its own wrapper. */}
       <section className="relative overflow-hidden bg-gradient-to-b from-[#FAFAF5] to-[#e8e4d8]">
         <BackgroundSwirls variant="top-left" />
-        <div className="mx-auto -mt-16 max-w-7xl px-6 sm:px-8">
+        <div className="mx-auto max-w-7xl px-6 pt-16 sm:px-8">
           <div className="grid gap-px overflow-hidden rounded-3xl bg-navy/10 shadow-card-lg sm:grid-cols-2 lg:grid-cols-4">
             {[
               { value: 100, prefix: "", suffix: "%", label: "Of donations directed to our charitable housing mission" },
@@ -209,17 +218,18 @@ export default function Home() {
               key={pillar.title}
               className="grid items-center gap-12 lg:grid-cols-2"
             >
-              <Reveal
-                className={`overflow-hidden rounded-[2rem] shadow-card-lg ${
-                  i % 2 === 1 ? "lg:order-2" : ""
-                }`}
-              >
-                <img
-                  src={pillar.image}
-                  alt={pillar.alt}
-                  className="aspect-[4/3] w-full object-cover transition-transform duration-700 hover:scale-105"
-                  loading="lazy"
-                />
+              <Reveal className={i % 2 === 1 ? "lg:order-2" : ""}>
+                <div className="overflow-hidden rounded-[2rem] shadow-card-lg">
+                  <img
+                    src={pillar.image}
+                    alt={pillar.alt}
+                    className="aspect-[4/3] w-full object-cover transition-transform duration-700 hover:scale-105"
+                    loading="lazy"
+                  />
+                </div>
+                <p className="mt-3 border-l-2 border-green/30 pl-3 text-xs italic leading-relaxed text-charcoal/60">
+                  {pillar.caption}
+                </p>
               </Reveal>
               <Reveal delay={120} className={i % 2 === 1 ? "lg:order-1" : ""}>
                 <p
@@ -237,7 +247,7 @@ export default function Home() {
                   {i === 0 && (
                     <Cite
                       label="NAR"
-                      href="https://www.nar.realtor/blogs/economists-outlook/top-10-takeaways-from-nars-2025-profile-of-home-buyers-and-sellers"
+                      href="https://www.nar.realtor/news/economists-outlook/top-10-takeaways-from-nars-2025-profile-of-home-buyers-and-sellers"
                     />
                   )}
                 </p>
@@ -258,7 +268,13 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ===== TESTIMONIAL ===== */}
+      {/* ===== ILLUSTRATIVE SCENARIO =====
+          NOT a testimonial. FAITH Foundation is newly established and has no
+          completed beneficiary outcomes to quote yet, so this section describes
+          the outcome the programs are designed to produce and is labelled as an
+          illustrative scenario in the eyebrow, the body, and the caption. Do not
+          reintroduce a named "recipient" here unless a real, verified,
+          consent-given beneficiary story is available to replace it. */}
       <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
       <section className="relative overflow-hidden bg-gradient-to-b from-[#FAFAF5] to-[#e8e4d8] py-24 sm:py-28">
         <BackgroundSwirls variant="top-left" />
@@ -270,25 +286,29 @@ export default function Home() {
             >
               &ldquo;
             </span>
-            <blockquote className="relative">
-              <p className="text-balance text-2xl font-semibold leading-relaxed text-navy sm:text-3xl">
-                We never thought we&apos;d afford a down payment. FAITH
-                Foundation&apos;s voucher covered the gap to closing — and today
-                we own the home we used to rent. Our kids have a yard, and
-                we&apos;re building something that&apos;s ours.
+            <div className="relative">
+              <p className="text-sm font-bold uppercase tracking-[0.2em] text-green-dark">
+                Illustrative Family Story
               </p>
-              <footer className="mt-8 flex items-center gap-4">
-                <span className="flex h-12 w-12 items-center justify-center rounded-full bg-green font-bold text-white">
-                  M
-                </span>
-                <div>
-                  <p className="font-bold text-navy">Maria &amp; David</p>
-                  <p className="text-sm text-charcoal/60">
-                    Down Payment Voucher recipients
-                  </p>
-                </div>
-              </footer>
-            </blockquote>
+              <p className="mt-5 text-balance text-2xl font-semibold leading-relaxed text-navy sm:text-3xl">
+                A family who could afford the monthly payment but never the cash
+                to close, crossing the threshold into a home they own — with the
+                down payment gap covered and a yard for their kids.
+              </p>
+              <p className="mt-8 border-t border-navy/10 pt-6 text-base leading-relaxed text-charcoal/70">
+                This is an example of the families FAITH Foundation is designed
+                to serve, not an account of a past recipient. We are a newly
+                established 501(c)(3) building our programs, and we will publish
+                verified family outcomes here as they occur.{" "}
+                <Link
+                  href="/impact"
+                  className="font-semibold text-gold-dark underline underline-offset-2 hover:text-navy"
+                >
+                  See how we report results
+                </Link>
+                .
+              </p>
+            </div>
           </Reveal>
         </div>
       </section>

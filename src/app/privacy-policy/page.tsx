@@ -14,7 +14,8 @@ const SECTIONS = [
     id: "information-we-collect",
     heading: "1. Information We Collect",
     body: [
-      "FAITH Foundation (“we,” “us,” or “our”) collects only the information needed to serve families, process donations, and respond to inquiries. When you contact us, apply for housing assistance, sign up to volunteer, or make a donation, you may provide personal information such as your name, email address, phone number, mailing address, household details relevant to an assistance application, and any message you choose to send. When you simply browse our website, we may automatically collect limited technical information such as your IP address, browser type, and the pages you visit, through standard server logs and analytics.",
+      "FAITH Foundation (“we,” “us,” or “our”) collects only the information needed to serve families, process donations, and respond to inquiries. When you contact us, apply for housing assistance, sign up to volunteer, or subscribe to our newsletter, you provide personal information such as your name, email address, phone number, and any message you choose to send. Our housing assistance application additionally asks for household details you choose to share — household size, number of children, approximate monthly household income, employment status, and your current housing situation — because we cannot assess an application without them.",
+      "When you browse this website, our hosting provider records standard server log information such as your IP address, browser type, and the pages requested. We do not run any first-party analytics, advertising, or tracking service on this site, and this site sets no cookies of its own.",
       "We do not knowingly collect personal information from children under the age of 13. If you believe a child has provided us with personal information, please contact us so we can remove it.",
     ],
   },
@@ -23,7 +24,7 @@ const SECTIONS = [
     heading: "2. How We Use Your Information",
     body: [
       "We use the information you provide to deliver our programs and to operate as a transparent, accountable nonprofit. Specifically, we use it to review and respond to housing-assistance applications, coordinate volunteer opportunities, process and acknowledge donations, send tax receipts, answer questions you send us, and keep you informed about our work when you have asked to hear from us.",
-      "We use limited technical and analytics data to understand how visitors use our site so we can improve its content and accessibility. We do not sell your personal information, and we do not share it for the purpose of targeted advertising.",
+      "We use server log data only to keep the site running securely and reliably. We do not sell your personal information, we do not share it for the purpose of targeted advertising, and we do not use it to build advertising profiles.",
     ],
   },
   {
@@ -51,14 +52,17 @@ const SECTIONS = [
     id: "cookies",
     heading: "6. Cookies and Analytics",
     body: [
-      "Our website may use cookies and similar technologies to remember your preferences and to gather aggregate, anonymous statistics about how the site is used. You can set your browser to refuse cookies or to alert you when cookies are being sent; some parts of the site may not function as intended if you disable them. Any analytics we use is configured to respect your privacy and is not used to build advertising profiles.",
+      "This website sets no cookies of its own and runs no first-party analytics or advertising technology. We deliberately kept it that way.",
+      "Two pages embed content from other companies, and those embeds may set their own cookies once they load. Our Contact page embeds a Google Maps frame showing our office location, and our Donate page embeds a Zeffy donation form, which in turn loads its own payment and anti-fraud providers. Those embeds are governed by the privacy policies of Google and Zeffy respectively, not by this one. The Zeffy form is not loaded until you scroll to it or choose to open it, so simply visiting the Donate page does not hand your information to a payment provider. You can also set your browser to refuse cookies.",
     ],
   },
   {
     id: "sharing",
-    heading: "7. How We Share Information",
+    heading: "7. How We Share Information and Who Processes It",
     body: [
-      "We share personal information only as necessary to operate our programs and only with service providers bound to protect it — for example, a payment processor that handles a donation or an email provider that delivers a receipt. We may also disclose information when required by law or to protect the rights, safety, and property of FAITH Foundation, the families we serve, or the public. We never sell your personal information.",
+      "We share personal information only as necessary to operate our programs, and only with service providers that need it to perform a function for us. We never sell your personal information.",
+      "The specific providers involved in running this website are: Vercel, which hosts the site and records standard server logs; Formsubmit, which receives the contents of our contact, volunteer, housing-assistance, and newsletter forms and relays them by email to info@faithfoundationsf.org; Zeffy, which processes online donations and works with its own payment providers to do so; and Google, which serves the map embedded on our Contact page. Anything you type into a form on this site therefore passes through Formsubmit before it reaches us — including the household and income details on a housing-assistance application. If you would prefer not to use the online form for a sensitive application, call us at 888-497-6620 or write to us at the address below and we will take your information directly.",
+      "We may also disclose information when required by law or to protect the rights, safety, and property of FAITH Foundation, the families we serve, or the public.",
     ],
   },
   {

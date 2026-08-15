@@ -8,29 +8,47 @@ import { img } from "@/lib/images";
 export const metadata: Metadata = {
   title: "Our Impact — FAITH Foundation",
   description:
-    "See FAITH Foundation's measurable impact across Texas — down payment vouchers funded, families served, dollars stewarded, and neighbors who became owners.",
+    "How FAITH Foundation reports impact: our verified results to date, our Year One targets, and clearly labelled illustrative examples. A newly established Texas 501(c)(3) reporting honestly.",
   alternates: { canonical: "/impact" },
 };
 
+/**
+ * IMPACT REPORTING RULE — read before editing this file.
+ *
+ * This page is deliberately split into three sections that must never blur:
+ *   1. VERIFIED RESULTS TO DATE  — only outcomes that have actually occurred.
+ *   2. YEAR ONE TARGETS & STANDARDS — goals and operating commitments.
+ *   3. ILLUSTRATIVE EXAMPLES — scenarios the programs are designed to produce.
+ *
+ * FAITH Foundation is newly established and currently has NO completed
+ * beneficiary outcomes. Do not move a figure into the results section, and do
+ * not add a named beneficiary or a quotation attributed to a real person,
+ * unless the outcome actually occurred and the person consented. The first
+ * annual impact summary is committed for November 24, 2026 (see /events).
+ */
+
+/** Operating standards and Year One goals. NOT results. */
 const METRICS = [
-  { value: "100%", label: "Of every designated housing gift directly supports the program you choose" },
-  { value: "100%", label: "Of every designated voucher gift supports down payment assistance" },
-  { value: "6", label: "Distinct programs serving families across Texas" },
+  { value: "100%", label: "Of every gift designated for down payment assistance is used for that program" },
+  { value: "100%", label: "Of program-designated giving stays in Texas" },
+  { value: "6", label: "Programs built and open to applicants" },
   { value: "501(c)(3)", label: "Tax-exempt nonprofit, accountable and transparent" },
 ];
 
+/**
+ * Illustrative scenarios ONLY — no named beneficiaries, no attributed quotes.
+ * Each one describes what a program is designed to accomplish.
+ */
 const STORIES = [
   {
-    name: "A veteran finding stability",
-    quote:
-      "Somebody finally treated my situation like it mattered. The case manager walked me through my VA benefits and helped me get into a place I could afford.",
-    body: "James (name changed) served his country but struggled to navigate the benefits and housing systems after discharge. Through our Veterans Path Home program, he received housing assistance and support navigating his VA benefits. Today he has stable housing and is mentoring other veterans facing the same uphill climb.",
+    name: "Illustrative — Veterans Path Home",
+    lead: "What this program is designed to do",
+    body: "A veteran leaving service struggles to navigate the benefits and housing systems at the same time. Veterans Path Home is designed to pair housing assistance with hands-on help understanding VA benefits, so that stable housing and the paperwork behind it are solved together rather than one at a time. This describes the intended outcome of the program, not a past case.",
   },
   {
-    name: "A family putting down roots",
-    quote:
-      "Knowing that a neighbor's generosity helped fund the assistance that got us into our home makes ownership mean even more.",
-    body: "Our housing fund is made possible by the generosity of donors and community partners, and every designated housing gift directly supports the program the donor chooses — while administrative and operational costs are funded separately through gifts designated for operational support. This illustrates the model we are building: pooled community giving that helps fund down payment assistance for neighbors working toward a home of their own.",
+    name: "Illustrative — Down payment assistance",
+    lead: "How pooled community giving is meant to work",
+    body: "A household can comfortably carry a monthly mortgage but has never been able to save the lump sum required to close. Pooled gifts designated for down payment assistance are meant to close exactly that gap, while gifts designated for operational support separately fund administration. This describes the funding model we are building, not assistance already delivered.",
   },
 ];
 
@@ -63,6 +81,7 @@ export default function ImpactPage() {
           alt="A community gathering of Texas neighbors supporting one another"
           className="absolute inset-0 h-full w-full animate-slow-zoom object-cover"
           loading="eager"
+          fetchPriority="high"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
         <div className="absolute inset-0 bg-gradient-to-r from-black/40 to-transparent" />
@@ -80,33 +99,80 @@ export default function ImpactPage() {
             </Reveal>
             <Reveal delay={240}>
               <p className="mt-6 max-w-2xl text-lg leading-relaxed text-white/85">
-                Impact is more than a number — it is a family that crossed the
-                threshold into homeownership, a veteran handed the keys to a home
-                of their own, a down payment finally within reach. We measure our
-                work honestly and report it openly,
-                because the families and donors who make this mission possible deserve
-                to see exactly what their trust accomplishes.
+                We are a newly established 501(c)(3), and this page is organised
+                so you can tell at a glance what is a completed result, what is a
+                goal, and what is an illustration. Nothing here is blurred
+                together. The families and donors who make this mission possible
+                deserve to know exactly which is which.
               </p>
             </Reveal>
           </div>
         </div>
       </section>
 
-      {/* ===== BY THE NUMBERS — animated stat counters ===== */}
+      {/* ===== SECTION 1 — VERIFIED RESULTS TO DATE =====
+          This section exists so a reader never has to infer whether a figure is
+          a result or a goal. When real outcomes exist, they belong HERE and
+          nowhere else on the site. */}
+      <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
+      <section className="relative overflow-hidden bg-gradient-to-b from-[#FAFAF5] to-[#e8e4d8] py-24 sm:py-28">
+        <BackgroundSwirls variant="diagonal" />
+        <div className="mx-auto max-w-4xl px-6 sm:px-8">
+          <Reveal className="text-center">
+            <span className="inline-flex items-center rounded-full border border-navy/20 bg-navy/5 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.2em] text-navy">
+              Section 1 of 3 — Verified Results To Date
+            </span>
+            <h2 className="heading-underline-center mt-6 text-3xl font-extrabold text-navy sm:text-4xl">
+              What we have completed so far
+            </h2>
+          </Reveal>
+          <Reveal delay={120}>
+            <div className="card-surface mt-10 rounded-3xl border-l-[5px] border-navy p-8 sm:p-10">
+              <p className="text-lg leading-relaxed text-charcoal/85">
+                <strong className="text-navy">
+                  FAITH Foundation is in its initial program implementation
+                  stage and has no completed beneficiary outcomes to report yet.
+                </strong>{" "}
+                We are a 501(c)(3) recognized by the IRS under EIN 33-2640449,
+                our programs are built and open to applicants, and our governing
+                board is seated. What we have not yet done is complete a cycle of
+                assistance with a family — so there are no families-served
+                figures, no dollars-distributed figures, and no beneficiary
+                testimonials on this website.
+              </p>
+              <p className="mt-5 text-lg leading-relaxed text-charcoal/85">
+                We could fill this space with projections. We would rather leave
+                it accurate. Verified results will be published here and in our
+                first annual impact summary, committed for{" "}
+                <Link
+                  href="/events"
+                  className="font-semibold text-gold-dark underline underline-offset-2 hover:text-navy"
+                >
+                  November 24, 2026
+                </Link>
+                , including any target we miss.
+              </p>
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* ===== SECTION 2 — YEAR ONE TARGETS & STANDARDS (not results) ===== */}
       <div className="h-1 bg-gradient-to-r from-transparent via-[#C8A951] to-transparent" aria-hidden />
       <section className="bg-navy-dark py-24 text-white sm:py-32">
         <div className="mx-auto max-w-7xl px-6 sm:px-8">
           <Reveal className="mx-auto max-w-3xl text-center">
-            <h2 className="text-sm font-bold uppercase tracking-[0.2em] text-[#4A7C59]">
-              Our Year 1 Targets &amp; Standards
-            </h2>
-            <p className="mt-4 text-3xl font-extrabold sm:text-4xl">
-              The goals we intend to achieve
+            <span className="inline-flex items-center rounded-full border border-white/25 bg-white/10 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.2em] text-white">
+              Section 2 of 3 — Targets &amp; Standards
+            </span>
+            <p className="mt-6 text-3xl font-extrabold sm:text-4xl">
+              The goals and standards we hold ourselves to
             </p>
             <p className="mt-4 text-base leading-relaxed text-white/75">
-              FAITH Foundation is a newly established 501(c)(3). The figures below
-              represent our operating standards and our Year 1 targets — the goals
-              we intend to achieve — not a claim of results already delivered.
+              The figures below are our operating standards and our Year One
+              targets — commitments about how we will handle money and run
+              programs. They are <strong className="text-white">not</strong> a
+              claim of results already delivered.
             </p>
           </Reveal>
           <dl className="mt-16 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -136,10 +202,11 @@ export default function ImpactPage() {
           </dl>
           <Reveal delay={200}>
             <p className="mx-auto mt-14 max-w-3xl text-center text-base leading-relaxed text-white/75">
-              As a young and growing 501(c)(3), our most important metric is trust.
-              Every dollar we raise is stewarded with care and directed toward down
-              payment assistance vouchers that help Texas families achieve
-              homeownership.
+              As a young and growing 501(c)(3), our most important metric is
+              trust. 100% of every gift designated for down payment assistance is
+              used to support the program for which it was designated; gifts
+              designated for operational support fund the administration that
+              keeps the organization running.
             </p>
           </Reveal>
         </div>
@@ -209,17 +276,18 @@ export default function ImpactPage() {
         <BackgroundSwirls variant="bottom-right" />
         <div className="mx-auto max-w-7xl px-6 sm:px-8">
           <Reveal className="mx-auto max-w-3xl text-center">
-            <h2 className="text-sm font-bold uppercase tracking-[0.2em] text-[#4A7C59]">
-              Stories of Hope
-            </h2>
-            <p className="mt-4 text-3xl font-extrabold text-navy sm:text-4xl">
-              The neighbors behind the numbers
+            <span className="inline-flex items-center rounded-full border border-navy/20 bg-navy/5 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.2em] text-navy">
+              Section 3 of 3 — Illustrative Examples
+            </span>
+            <p className="mt-6 text-3xl font-extrabold text-navy sm:text-4xl">
+              What our programs are designed to do
             </p>
             <p className="mt-6 text-lg leading-relaxed text-charcoal/80">
-              As a newly established organization, the following are illustrative
-              examples of the kind of help our programs are designed to provide.
-              They show the outcomes we intend to achieve for families across
-              Texas with the support of donors like you.
+              The scenarios below are illustrative. They are not testimonials,
+              they are not based on named individuals, and they do not describe
+              assistance already delivered. They exist so you can see precisely
+              what each program is built to accomplish before we have completed
+              outcomes to report.
             </p>
           </Reveal>
 
@@ -228,24 +296,21 @@ export default function ImpactPage() {
               <Reveal
                 key={story.name}
                 delay={i * 100}
-                as="figure"
+                as="article"
                 className="card-surface flex h-full flex-col rounded-3xl p-8"
               >
-                <span
-                  aria-hidden
-                  className="text-5xl font-extrabold leading-none text-gold"
-                >
-                  &ldquo;
+                <span className="self-start rounded-full bg-navy/5 px-3 py-1 text-xs font-bold uppercase tracking-widest text-navy/70">
+                  Illustrative scenario
                 </span>
-                <blockquote className="mt-2 text-lg font-semibold leading-relaxed text-navy">
-                  {story.quote}
-                </blockquote>
-                <p className="mt-5 flex-1 text-base leading-relaxed text-charcoal/80">
+                <h3 className="mt-4 text-xl font-extrabold text-navy">
+                  {story.lead}
+                </h3>
+                <p className="mt-4 flex-1 text-base leading-relaxed text-charcoal/80">
                   {story.body}
                 </p>
-                <figcaption className="mt-6 border-t border-navy/10 pt-4 text-sm font-bold uppercase tracking-widest text-gold-dark">
+                <p className="mt-6 border-t border-navy/10 pt-4 text-sm font-bold uppercase tracking-widest text-gold-dark">
                   {story.name}
-                </figcaption>
+                </p>
               </Reveal>
             ))}
           </div>

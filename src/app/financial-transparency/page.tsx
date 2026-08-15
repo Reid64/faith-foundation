@@ -19,7 +19,7 @@ const COMMITMENTS = [
   },
   {
     title: "We report our outcomes openly",
-    body: "Transparency means showing our work. We measure our impact honestly and communicate it plainly to the families and donors who make our mission possible — including how many neighbors we serve and where assistance is directed. When we fall short, we say so.",
+    body: "Transparency means showing our work on a schedule we commit to in advance. Our first annual impact summary is committed for November 24, 2026 and will report how many families were served and where assistance was directed. Until then our Impact page separates verified results from Year One targets rather than blending them, and when we fall short of a target we will say so.",
   },
   {
     title: "Donations are tax-deductible",
@@ -27,7 +27,7 @@ const COMMITMENTS = [
   },
   {
     title: "Our funding sources are disclosed",
-    body: "Our housing programs are funded by individual and corporate donors, grants, and community fundraising. Our corporate partners include homebuilders who honor FAITH Foundation down payment assistance vouchers as direct discounts to qualifying buyers and make additional charitable contributions to FAITH Foundation per home sold. Because our funding sources are disclosed, donors can trace how gifts sustain our work over time.",
+    body: "Our housing programs are funded by charitable giving from individuals and businesses and by community fundraising, and we intend to pursue grant funding as we grow. Our corporate partnership model invites homebuilders to honor FAITH Foundation down payment assistance vouchers as a direct discount to qualifying buyers and to make charitable contributions per home sold. As a newly established organization we are actively building that donor and partner base rather than reporting an established one, and we will name our funding sources as they are established so donors can trace how gifts sustain the work over time.",
   },
   {
     title: "Donor privacy is protected",
@@ -82,6 +82,7 @@ export default function FinancialTransparencyPage() {
           alt="Reviewing financial documents"
           className="absolute inset-0 h-full w-full object-cover animate-slow-zoom"
           loading="eager"
+          fetchPriority="high"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
         <div className="absolute -right-24 top-1/4 h-96 w-96 rounded-full bg-green/10 blur-3xl" />
@@ -118,7 +119,8 @@ export default function FinancialTransparencyPage() {
             {[
               {
                 node: <StatCounter value={100} suffix="%" />,
-                label: "Of every designated housing gift directly supports the program you choose",
+                label:
+                  "Of every gift designated for down payment assistance is used for that program",
               },
               {
                 node: <>501(c)(3)</>,
@@ -404,11 +406,51 @@ export default function FinancialTransparencyPage() {
         <BackgroundSwirls variant="bottom-right" />
         <div className="mx-auto max-w-4xl px-6 sm:px-8">
           <div className="rounded-2xl border-l-[5px] border-gold bg-cream px-7 py-6 shadow-card">
-            <p className="text-sm leading-relaxed text-navy">
-              Donations designated for our Housing Mission are used exclusively
-              to advance that mission. Executive leadership and administrative
-              operations are funded through separately designated operational
-              support.
+            <h2 className="text-base font-extrabold text-navy">
+              Our status, in plain terms
+            </h2>
+            <dl className="mt-4 grid gap-x-8 gap-y-3 text-sm leading-relaxed text-navy sm:grid-cols-2">
+              <div>
+                <dt className="font-bold">Legal name</dt>
+                <dd className="text-navy/80">
+                  FAITH Foundation — Foundation for Affordable Instruction and
+                  Tenancy Hope
+                </dd>
+              </div>
+              <div>
+                <dt className="font-bold">Tax status</dt>
+                <dd className="text-navy/80">
+                  501(c)(3) tax-exempt nonprofit organization
+                </dd>
+              </div>
+              <div>
+                <dt className="font-bold">EIN</dt>
+                <dd className="text-navy/80">33-2640449</dd>
+              </div>
+              <div>
+                <dt className="font-bold">Current headquarters</dt>
+                <dd className="text-navy/80">
+                  209 Surecast Drive, Suite 105, Burnet, Texas 78611
+                </dd>
+              </div>
+            </dl>
+            <p className="mt-5 border-t border-navy/10 pt-4 text-sm leading-relaxed text-navy">
+              <strong>How gifts are designated.</strong> Donations designated for
+              our Housing Mission are used exclusively to advance that mission.
+              Executive leadership and administrative operations are funded
+              through separately designated operational support. Both are
+              legitimate and both are necessary; we name the difference rather
+              than blur it.
+            </p>
+            <p className="mt-4 text-sm leading-relaxed text-navy">
+              <strong>What being new means for these disclosures.</strong> FAITH
+              Foundation is a recently established organization. We have not yet
+              completed a full reporting year, so there is no audited financial
+              statement or published Form 990 to link here yet. What we can offer
+              today is our IRS determination letter above, this account of how
+              gifts are designated and used, and a committed publication date for
+              our first annual impact summary. We would rather tell you that
+              plainly than imply a reporting history we do not have.
             </p>
           </div>
         </div>

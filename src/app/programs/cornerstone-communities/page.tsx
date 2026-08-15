@@ -256,10 +256,18 @@ export default function CornerstoneCommunitiesPage() {
           </h1>
           <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
             Housing vouchers help families buy homes, but what happens when there
-            are no affordable homes to buy? FAITH Foundation solves both sides of
-            the equation by developing purpose-built Cornerstone Communities on
-            donated land, creating the housing inventory our voucher recipients
-            need.
+            are no affordable homes to buy? Cornerstone Communities is our plan to
+            address both sides of that equation — purpose-built communities on
+            donated land, creating the affordable housing inventory that voucher
+            recipients need.
+          </p>
+          {/* The roadmap section further down states plainly that no Cornerstone
+              Community is operating yet. That disclosure belongs at the top of
+              the page too, not only after a reader has scrolled past several
+              screens of present-tense description. */}
+          <p className="mt-6 inline-flex items-center rounded-full border border-[#C8A951]/50 bg-[#C8A951]/10 px-5 py-2 text-sm font-semibold text-[#E2C45C]">
+            Planned program — no Cornerstone Community is operating yet. See the
+            development roadmap below.
           </p>
         </div>
       </section>

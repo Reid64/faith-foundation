@@ -1,5 +1,13 @@
 # FAITH Foundation — Full Site Audit
 
+> **ADDENDUM (same day, after this report was written).** Recommendations 1 and 2 below have since
+> been actioned: all four forms now POST to Web3Forms (`src/lib/web3forms.ts`) instead of mailto,
+> and all 25 photos are self-hosted under `/public/photos` with zero `images.unsplash.com`
+> references remaining. **The forms still do not deliver** — `NEXT_PUBLIC_WEB3FORMS_KEY` is the
+> placeholder `PENDING_KEY` until the key is obtained, added in Vercel, and the site redeployed.
+> The suite was re-run against production afterwards: still 128/128. The body of this report is
+> left exactly as written, as an accurate record of what the audit found.
+
 **Date:** 2026-08-14
 **Target:** https://www.faithfoundationsf.org (live production)
 **Tool:** Playwright 1.62.1 / Chromium 151, `scripts/site-audit.spec.ts`

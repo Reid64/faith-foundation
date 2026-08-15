@@ -6,37 +6,49 @@ import { img } from "@/lib/images";
 export const metadata: Metadata = {
   title: "News & Announcements — FAITH Foundation",
   description:
-    "The latest from FAITH Foundation — program milestones, donor and grant announcements, and stories of Texas families reaching homeownership.",
+    "Organizational announcements from FAITH Foundation, a newly established Texas 501(c)(3) — how our down payment assistance model works, volunteer orientation, and our transparency reporting commitments.",
   alternates: { canonical: "/news" },
 };
 
+/**
+ * Organizational announcements written by FAITH Foundation.
+ *
+ * CREDIBILITY RULE — read before editing:
+ * FAITH Foundation is newly established and has no completed program outcomes
+ * yet. Nothing on this page may claim a result that has not happened. Every
+ * forward-looking item here must stay consistent with the confirmed dates on
+ * /events (volunteer orientation: October 11, 2026; first annual impact
+ * summary: November 24, 2026) and with /impact, which reports targets rather
+ * than results. This page is our own newsroom — it is not press coverage, and
+ * it must never be presented as such.
+ */
 const NEWS = [
   {
-    slug: "community-donations-grow-housing-fund",
-    title: "Community Donations Grow FAITH Foundation's Housing Fund",
+    slug: "how-community-giving-funds-down-payment-assistance",
+    title: "How Community Giving Funds Our Down Payment Assistance",
     date: "June 5, 2026",
-    category: "Impact",
+    category: "Our Model",
     summary:
-      "A sustainable engine for our mission: gifts from individual donors and corporate partners fund down payment assistance vouchers for families across Texas.",
-    body: "Our housing fund is made possible by the generosity of donors and community partners, and designated housing donations directly support our charitable housing mission. This funding model is designed to grow the pool of down payment assistance available to families working toward a home of their own, helping neighbors cover the down payment that puts homeownership within reach. As a brand-new organization, we are building this engine with care, and we remain committed to reporting openly to the donors who make it possible.",
+      "An explanation of the funding model we are building: gifts designated for down payment assistance are pooled to help Texas families cover the cash needed to close.",
+    body: "Down payment assistance is the core of our charitable purpose, and this announcement explains how we intend to fund it. Gifts designated for down payment assistance are pooled so that families who can afford a monthly mortgage but cannot save a lump sum have a path to closing. Gifts designated for operational support separately fund administration and organizational expenses, which is how we can say that 100% of every gift designated for down payment assistance is used for the program it was designated for. As a newly established organization we are building this model deliberately rather than promising results we have not yet produced, and we will report what it accomplishes as families are served.",
   },
   {
-    slug: "new-volunteer-orientation-schedule",
-    title: "New Monthly Volunteer Orientations Announced",
+    slug: "first-volunteer-orientation-scheduled",
+    title: "Our First Volunteer Orientation Is Scheduled for October 11, 2026",
     date: "May 3, 2026",
     category: "Volunteers",
     summary:
-      "Responding to growing community interest, FAITH Foundation is launching monthly orientation sessions for new volunteers.",
-    body: "The response from neighbors wanting to serve has been humbling, and we are making it easier to get started. Beginning this spring, we are hosting a monthly orientation for new volunteers covering our mission, the families we serve, and the many ways to help — from coaching a family through the responsibilities of tenancy to assembling welcome kits and supporting events. No special experience is required, only a willingness to serve. If you have been considering volunteering, this is the perfect on-ramp; sign up through our volunteer page and we will follow up with the next available date.",
+      "FAITH Foundation has scheduled its first volunteer orientation session, to be held online via Zoom.",
+    body: "We are opening the door to neighbors who want to serve. Our first volunteer orientation is confirmed for October 11, 2026, held online via Zoom, and it will cover our mission, the families our programs are designed to serve, and the ways to get involved — from coaching tenancy and life skills to supporting events and helping families navigate the path to homeownership. No special experience is required, only a willingness to serve. Sign up through our volunteer page and we will send the Zoom link and details ahead of the session. Additional sessions will be announced here and on our events page as our volunteer program grows.",
   },
   {
-    slug: "annual-impact-report-published",
-    title: "FAITH Foundation Publishes Its Annual Impact Summary",
+    slug: "first-annual-impact-summary-commitment",
+    title: "We Will Publish Our First Annual Impact Summary in November 2026",
     date: "April 18, 2026",
     category: "Transparency",
     summary:
-      "In keeping with our commitment to transparency, we have published a plain-language summary of the past year's outcomes and how donations were stewarded.",
-    body: "Transparent stewardship is a commitment we take seriously. Our annual impact summary lays out, in plain language, how many families we served, how down payment assistance vouchers were distributed, and how every category of giving was put to work. We believe donors and the families we serve deserve to see the results of their trust, not just hear about our intentions. The summary is available on request, and the highlights are reflected on our impact and financial-transparency pages. Thank you to everyone whose generosity made this year's work possible.",
+      "FAITH Foundation has committed to publishing its first annual impact summary on November 24, 2026 — reporting actual results, not intentions.",
+    body: "Transparent stewardship means publishing what actually happened, on a date we commit to in advance. FAITH Foundation will publish its first annual impact summary on November 24, 2026. It will lay out in plain language how many families were served, how down payment assistance was distributed, and how each category of giving was put to work. Because we are a newly established 501(c)(3), that first summary will report our earliest results honestly — including where we fell short of our Year One targets. Until it is published, the figures on our impact page are clearly labelled as targets and standards rather than outcomes, and our financial transparency page explains how gifts are designated and used.",
   },
 ];
 
@@ -69,11 +81,15 @@ export default function NewsPage() {
           </Reveal>
           <Reveal delay={240}>
             <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-white/85">
-              Milestones from our programs, updates on how community donations
-              fund our work, and announcements about how FAITH Foundation is helping
-              families across Texas reach homeownership. We share our news openly because
-              transparency is part of how we steward your trust — when the work
-              moves forward, we want you to see it.
+              Announcements written by FAITH Foundation about how our programs
+              are being built, how community giving funds down payment
+              assistance, and what we have committed to publish. We are a newly
+              established 501(c)(3), so this page reports what we are doing and
+              what we have scheduled — not outcomes we have not yet produced.
+            </p>
+            <p className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-white/60">
+              These are our own organizational announcements. They are not press
+              coverage and are not published by any third-party outlet.
             </p>
           </Reveal>
         </div>
@@ -189,9 +205,9 @@ export default function NewsPage() {
           </Reveal>
           <Reveal delay={120}>
             <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-charcoal/80">
-              Our blog goes deeper on the families we serve and the lessons from our
-              programs, and our impact page shares the measurable results behind
-              these announcements.
+              Our blog goes deeper on how down payment assistance works and what
+              our programs are designed to do, and our impact page sets out our
+              Year One targets and how we will report results against them.
             </p>
           </Reveal>
           <Reveal delay={240}>
@@ -224,9 +240,9 @@ export default function NewsPage() {
           </Reveal>
           <Reveal delay={120}>
             <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-white/85">
-              Every milestone on this page started with someone who gave, served, or
-              partnered with us. Your support helps more families across Texas reach
-              the milestone of homeownership.
+              Everything announced on this page depends on people who give, serve,
+              or partner with us. Your support is what turns these commitments
+              into families across Texas reaching homeownership.
             </p>
           </Reveal>
           <Reveal delay={240}>

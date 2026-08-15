@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { img } from "@/lib/images";
 
 export const metadata: Metadata = {
   title: "Events — FAITH Foundation",
@@ -38,8 +39,15 @@ export default function EventsPage() {
   return (
     <>
       {/* Page header */}
-      <section className="bg-gradient-to-b from-navy to-navy-light text-white">
-        <div className="mx-auto max-w-4xl px-6 py-20 text-center">
+      <section className="relative overflow-hidden bg-navy text-white">
+        <img
+          src={img("communityGathering", 2000)}
+          alt="Community members gathering together at a FAITH Foundation event"
+          className="absolute inset-0 h-full w-full animate-slow-zoom object-cover opacity-30"
+          loading="eager"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-navy/80 via-navy/60 to-navy-light/80" />
+        <div className="relative mx-auto max-w-4xl px-6 py-20 text-center">
           <span className="rounded-full border border-gold/60 px-4 py-1 text-xs font-semibold uppercase tracking-widest text-gold">
             Get Involved
           </span>

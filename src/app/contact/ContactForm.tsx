@@ -2,28 +2,58 @@
 
 import { useState } from "react";
 import { openMailto } from "@/lib/mailto";
+import { submitForm } from "@/lib/web3forms";
+import FormErrorNotice from "@/components/FormErrorNotice";
 
 export default function ContactForm() {
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState<Record<string, string>>({});
 
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (submitting) return;
+
     const data = new FormData(event.currentTarget);
     const get = (k: string) => String(data.get(k) ?? "");
 
+    const fields = {
+      name: get("name"),
+      email: get("email"),
+      phone: get("phone"),
+      subject_choice: get("subject"),
+      message: get("message"),
+    };
+
+    setAttempt(fields);
+    setError(null);
+    setSubmitting(true);
+
+    const result = await submitForm(
+      "FAITH Foundation — Contact Form Submission",
+      fields
+    );
+
+    setSubmitting(false);
+
+    // Success is shown only on a confirmed delivery, never optimistically.
+    if (result.ok) setSubmitted(true);
+    else setError(result.error);
+  }
+
+  function emailFallback() {
     openMailto(
-      `Website enquiry — ${get("subject") || "General inquiry"}`,
+      `Website enquiry — ${attempt.subject_choice || "General inquiry"}`,
       [
-        ["Name", get("name")],
-        ["Email", get("email")],
-        ["Phone", get("phone")],
-        ["Subject", get("subject")],
-        ["Message", get("message")],
+        ["Name", attempt.name ?? ""],
+        ["Email", attempt.email ?? ""],
+        ["Phone", attempt.phone ?? ""],
+        ["Subject", attempt.subject_choice ?? ""],
+        ["Message", attempt.message ?? ""],
       ],
       "Sent from the FAITH Foundation website contact form."
     );
-
-    setSubmitted(true);
   }
 
   if (submitted) {
@@ -45,22 +75,12 @@ export default function ContactForm() {
             <path d="M20 6 9 17l-5-5" />
           </svg>
         </span>
-        <h3 className="text-2xl font-extrabold text-navy">Almost there!</h3>
+        <h3 className="text-2xl font-extrabold text-navy">Message sent!</h3>
         <p className="mt-3 text-lg leading-relaxed text-charcoal/80">
-          Your email app should now be open with your message ready to go —{" "}
-          <strong className="text-navy">press send to deliver it</strong>. Once
-          it arrives, a member of the FAITH Foundation team will be in touch
-          shortly. If your email app did not open, or you would rather not use
-          email, call us at{" "}
+          Your message has been delivered to the FAITH Foundation team and a
+          real person will respond shortly. If your matter is urgent, call us at{" "}
           <a href="tel:+18884976620" className="font-semibold text-gold-dark">
             888-497-6620
-          </a>{" "}
-          or write to{" "}
-          <a
-            href="mailto:info@faithfoundationsf.org"
-            className="font-semibold text-gold-dark"
-          >
-            info@faithfoundationsf.org
           </a>
           .
         </p>
@@ -153,12 +173,26 @@ export default function ContactForm() {
           className="w-full rounded-xl border border-navy/15 bg-white px-4 py-3 text-charcoal placeholder:text-charcoal/40 focus:border-green focus:outline-none focus:ring-2 focus:ring-green/40"
         />
       </div>
+      {/* Spam honeypot — hidden from people. Its value is not forwarded; the
+          submission body is built from the named fields above. */}
+      <input
+        type="checkbox"
+        name="botcheck"
+        tabIndex={-1}
+        autoComplete="off"
+        aria-hidden
+        style={{ display: "none" }}
+      />
       <button
         type="submit"
-        className="mt-8 w-full rounded-full bg-green px-8 py-4 text-base font-bold text-white shadow-green transition-all duration-300 hover:bg-green-dark hover:shadow-card-lg"
+        disabled={submitting}
+        className="mt-8 w-full rounded-full bg-green px-8 py-4 text-base font-bold text-white shadow-green transition-all duration-300 hover:bg-green-dark hover:shadow-card-lg disabled:cursor-not-allowed disabled:opacity-60"
       >
-        Send Message
+        {submitting ? "Sending…" : "Send Message"}
       </button>
+      {error && (
+        <FormErrorNotice message={error} onEmailFallback={emailFallback} />
+      )}
     </form>
   );
 }

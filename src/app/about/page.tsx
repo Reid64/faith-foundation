@@ -117,6 +117,7 @@ export default function AboutPage() {
                 alt="A family standing close together, smiling"
                 className="h-full w-full object-cover"
                 loading="eager"
+                fetchPriority="high"
               />
             </div>
           </Reveal>
@@ -138,9 +139,15 @@ export default function AboutPage() {
                   To help families across Texas achieve homeownership by closing
                   the down payment gap — the single biggest barrier standing
                   between hardworking neighbors and a home of their own.
+                  {/* Citation corrected 2026-08-15: this pill previously read
+                      "Bankrate" but linked to apfreg.com, a third-party blog.
+                      Attributing a claim to a source that is not the one linked
+                      is misleading regardless of intent. It now points to the
+                      National Association of REALTORS® research already cited
+                      for this same claim on the homepage. */}
                   <Cite
-                    label="Bankrate"
-                    href="https://apfreg.com/blog/the-biggest-barrier-to-homeownership-in-2025-down-payments-and-closing-costs"
+                    label="NAR"
+                    href="https://www.nar.realtor/news/economists-outlook/top-10-takeaways-from-nars-2025-profile-of-home-buyers-and-sellers"
                   />
                 </p>
                 <p className="mt-5 text-lg leading-relaxed text-charcoal/80">

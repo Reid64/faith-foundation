@@ -1,6 +1,19 @@
 # faith-foundation — SESSION STATE
 
-> Tracks the live execution session. LATEST: **Full Playwright site audit — 128 tests, all
+> Tracks the live execution session. LATEST: **Web3Forms delivery for all four forms + all
+> photography self-hosted** (2026-08-14) — closes both open recommendations from the site audit.
+> Contact, Volunteer, Apply and Newsletter now POST to `api.web3forms.com` routed to
+> info@faithfoundationsf.org; success is shown only on a confirmed 200 **and** `success: true`.
+> **⚠️ NOT DELIVERING YET: `NEXT_PUBLIC_WEB3FORMS_KEY` is still `PENDING_KEY`** — the key must be
+> requested at web3forms.com, added in Vercel, and the site REDEPLOYED (NEXT_PUBLIC_* is inlined at
+> build time). Until then each form states it is not connected and offers a one-click email
+> fallback, so nothing is lost. All 25 Unsplash photos downloaded to `/public/photos` and the
+> hotlink builder deleted — **0 `images.unsplash.com` references remain**. Build PASSED, deployed,
+> audit re-run against production **128/128**. Plus a new 4-test wiring suite
+> (`scripts/web3forms-wiring.spec.ts`) proving the delivery path actually fires. See
+> "## 2026-08-14 — Web3Forms delivery + self-hosted photography" at the end of this file.
+>
+> PRIOR: **Full Playwright site audit — 128 tests, all
 > passing, 3 site defects found and fixed** (2026-08-14). A 128-test suite was built
 > (`scripts/site-audit.spec.ts`) and run against live production: 23 routes, 3 redirects, 4 forms,
 > desktop + mobile + dropdown navigation, every internal link sitewide, the Zeffy embed, and 7
@@ -49,8 +62,38 @@
 > Reentry, a development roadmap added to Cornerstone Communities, and Tasks 6–8 (About faith
 > paragraph, StatCounter SSR fix, Contact geographic copy) verified already applied.
 
-- **Current phase:** Phase 3 (Build Executor) — pre-Google-for-Nonprofits verification pass
-- **Current prompt:** install Playwright, author a comprehensive site audit
+- **Current phase:** Phase 3 (Build Executor) — real form intake + asset independence
+- **Current prompt:** two tasks — (1) replace the broken/stopgap submission handlers on Apply,
+  Contact, Volunteer and the footer Newsletter with a real `fetch` POST to Web3Forms routed to
+  info@faithfoundationsf.org, with `NEXT_PUBLIC_WEB3FORMS_KEY` as a swappable placeholder, success
+  only on a confirmed 200, a visible error on failure, and the Apply multi-step capture preserved;
+  (2) download every Unsplash image and self-host it under `public/photos/`, verifying each
+  download before updating references. Then build and deploy.
+- **Prompt outcome:** COMPLETE, both tasks. All four forms POST to Web3Forms; delivery is claimed
+  only on 200 **and** `success: true` (Web3Forms returns 200 with `success:false` for a bad key, so
+  the status alone would have re-created the false-success bug). Apply merges all four steps into
+  the payload. 25/25 images downloaded and verified (200 + image content-type + JPEG magic bytes +
+  size), references switched to `/photos/`, the `unsplash()` builder deleted, Unsplash preconnect
+  hints removed — **0 `images.unsplash.com` in the built output or on production**. Build PASSED
+  (0 TypeScript errors, 31/31 static pages, exit 0); `vercel --prod` READY; full audit re-run
+  against production **128/128**.
+- **⚠️ BLOCKING FOLLOW-UP (organization action, not code):** the forms do **not** deliver yet.
+  `NEXT_PUBLIC_WEB3FORMS_KEY` is the literal placeholder `PENDING_KEY`. Get the key at
+  https://web3forms.com for info@faithfoundationsf.org, add it in Vercel (Production + Preview +
+  Development), and **redeploy** — `NEXT_PUBLIC_*` is inlined at build time. Until then every form
+  shows a plain "not connected" error with a one-click email fallback; nothing is lost, nothing is
+  auto-delivered. Verify activation with `npx playwright test scripts/site-audit.spec.ts`.
+- **Verification note worth keeping:** with the placeholder key the minifier dead-code-eliminates
+  the entire fetch block, so `api.web3forms.com` is absent from the shipped bundle. The delivery
+  path was therefore proven separately by rebuilding with a dummy key and running
+  `scripts/web3forms-wiring.spec.ts` (4 tests) against that build served locally — **4/4 passed**,
+  confirming a real POST with correct fields, a rejected key treated as failure, and all four Apply
+  steps present. Keep that suite; it is the only coverage of the delivery branch until the key
+  lands.
+
+### Prior prompt this session (full Playwright site audit)
+
+- **Prompt:** install Playwright, author a comprehensive site audit
   (`scripts/site-audit.spec.ts`) covering forms / navigation / buttons / pages / redirects /
   content / images, run it against live production, fix every failure at the source, rebuild and
   redeploy, re-run to green, and produce `governance/SITE_AUDIT_2026-08-14.md`.
@@ -630,4 +673,59 @@ is clean, not that every embed is silent.
 - **Google for Nonprofits:** every technical item passes; no blocking defect found. Remaining item
   is organizational — all four forms depend on the visitor having a mail client and pressing send,
   and nothing is stored. A real intake endpoint is the highest-value remaining work.
+- **Last updated:** 2026-08-14
+
+## 2026-08-14 — Web3Forms delivery + self-hosted photography
+
+Closes both open recommendations from `governance/SITE_AUDIT_2026-08-14.md`.
+
+### Task 1 — all four forms POST to Web3Forms
+
+| File | Change |
+| --- | --- |
+| `src/lib/web3forms.ts` | **NEW.** `submitForm(subject, fields)` POSTs to `https://api.web3forms.com/submit`. Reports delivery only on **200 AND `success: true`** — Web3Forms answers 200 with `success:false` for a rejected key, so a status-only check would have re-created the false-success defect. Short-circuits with a clear message while the key is the placeholder. Activation steps documented in-file. |
+| `src/components/FormErrorNotice.tsx` | **NEW.** Shared failure panel. Never implies success; always offers a one-click email fallback carrying the same data to the same inbox, plus the phone number. |
+| `src/app/contact/ContactForm.tsx` | mailto → Web3Forms POST; `submitting` state; error path; honeypot; success copy back to "Message sent!" (now a true statement). |
+| `src/app/volunteer/VolunteerForm.tsx` | Same treatment; success copy back to a plain confirmation. |
+| `src/app/apply/ApplicationForm.tsx` | Same treatment. **Multi-step capture preserved** — `collectAll()` merges the `answers` state with live step-4 FormData so the POST carries all four steps; reading `event.currentTarget` alone would send only the consent checkbox. Success copy back to "Application received". |
+| `src/components/SiteFooter.tsx` | Newsletter → Web3Forms POST; inline error styled for the navy footer with a "Sign up by email instead" fallback. |
+| `.env.local` | **NEW (gitignored).** `NEXT_PUBLIC_WEB3FORMS_KEY=PENDING_KEY` with activation instructions. |
+| `.env.example` | **NEW (committed).** Same instructions, carried in the repo since `.env*.local` is ignored. |
+| `.eslintrc.json` | `@typescript-eslint/no-unused-vars` given `argsIgnorePattern: "^_"` — required because `img()` now deliberately ignores its size args, and the default config failed the build on it. |
+
+**Not live yet.** `PENDING_KEY` is still in place — see the blocking follow-up in the prompt
+outcome above. Forms currently show a "not connected" error plus an email fallback.
+
+**Proven, not assumed.** The placeholder makes `WEB3FORMS_CONFIGURED` a compile-time `false`, so
+the minifier strips the whole fetch block — `api.web3forms.com` is absent from the shipped bundle
+right now. The delivery path was therefore verified by rebuilding with a dummy key and running
+`scripts/web3forms-wiring.spec.ts` against that build served locally: **4/4 passed** (real POST
+with correct fields; rejected key → failure not success; error notice with working fallback; all
+four Apply steps present field-by-field; Back preserves earlier answers).
+
+### Task 2 — every Unsplash photo self-hosted
+
+25/25 downloaded at 2000px into `/public/photos`, **verified before any reference was edited**
+(HTTP 200 + `image/*` content-type + JPEG magic bytes on disk + non-trivial size). **0 failures,
+9.59 MB.** `src/lib/images.ts` rewritten to local paths; the `unsplash()` builder and `BASE`
+constant **deleted** so a hotlink cannot be reintroduced. `img(key, w?, h?)` keeps its signature
+with the size args accepted and ignored, avoiding edits to ~19 call sites. `src/lib/media.ts`
+needed no changes (already local). Unsplash `preconnect`/`dns-prefetch` removed from `layout.tsx`.
+Confirmed **0 `images.unsplash.com`** in `out/` and on production.
+
+13 of the 25 have zero references outside `images.ts` (~5 MB). Downloaded anyway to keep the
+catalog complete and hotlink-free; pruning them is a reasonable follow-up, not done unasked.
+
+### Audit suite updated, not weakened
+
+The 26 form tests were written against the mailto contract and failed once the forms switched.
+They were rewritten to assert the invariant that holds in **both** states: *a success state may
+appear ONLY if a POST was actually made; otherwise an error must be shown AND the email fallback
+must still carry the data to the same inbox.* The Apply test additionally asserts every step's
+values survive whichever route the submission takes. These stay valid after activation — the
+branch flips from fallback to delivery.
+
+- **Gates:** `pnpm run build` ✅ PASS — 0 TypeScript errors, 31/31 static pages, exit 0.
+- **Deploy:** `vercel --prod` ✅ READY, aliased to https://www.faithfoundationsf.org.
+- **Post-deploy audit:** `scripts/site-audit.spec.ts` **128/128 passed** against production.
 - **Last updated:** 2026-08-14

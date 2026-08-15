@@ -21,9 +21,9 @@ const POSTS = [
     excerpt:
       "A down payment is the single biggest barrier standing between a hardworking family and a home of their own. Here is how our assistance vouchers, made possible by the generosity of donors and community partners, help families cross that threshold across Texas.",
     body: [
-      "Many families can comfortably afford a monthly mortgage yet can never save the lump sum needed to close. A down payment assistance voucher closes that gap directly, turning a qualified renter into a homeowner. Every voucher is funded by corporate and individual donations and paired with homebuyer instruction so families buy with confidence.",
-      "As a brand-new organization, we are building this model with care. Our aim is for community generosity to help a family in Texas cover the down payment that makes homeownership possible. That is the quiet power of pooled giving — it grows as our community grows.",
-      "We believe transparency is part of stewardship, so we report where every voucher dollar lands. As our base of donors and partners grows, the pool of down payment assistance expands with it, creating a steady, sustainable engine for homeownership that does not depend on any single grant or season of giving.",
+      "Many families can comfortably afford a monthly mortgage yet can never save the lump sum needed to close. A down payment assistance voucher is designed to close that gap directly, turning a qualified renter into a homeowner. Vouchers are funded by individual and corporate donations designated for down payment assistance, and paired with referrals to HUD-approved homeownership counseling so families buy with confidence.",
+      "As a newly established organization, we are building this model with care. Our aim is for community generosity to help families in Texas cover the down payment that makes homeownership possible. That is the quiet power of pooled giving — it grows as the community giving into it grows.",
+      "We believe transparency is part of stewardship, so we have committed to reporting where voucher dollars land in our first annual impact summary. As our base of donors and partners grows, the pool of down payment assistance is designed to expand with it — a sustainable engine for homeownership that does not depend on any single grant or season of giving.",
     ],
   },
   {
@@ -34,11 +34,11 @@ const POSTS = [
     author: "FAITH Foundation Team",
     readTime: "6 min read",
     excerpt:
-      "Stable housing starts with a stable budget. Our financial-literacy coaches share five practical habits that help families stay current on rent and build a cushion against the unexpected.",
+      "Stable housing starts with a stable budget. Five practical habits that help households stay current on housing costs and build a cushion against the unexpected — the groundwork that makes a family mortgage-ready.",
     body: [
-      "In our financial-literacy program, we meet families who work hard yet still feel one surprise expense away from crisis. The good news is that a few durable habits can change that trajectory. The first is simple: pay your housing cost first, before any other discretionary spending, treating rent or mortgage as the non-negotiable foundation of the month.",
-      "Second, build an emergency cushion — even $10 a week adds up to a buffer that can absorb a car repair without threatening the rent. Third, track every dollar for one month; nearly every family we coach discovers spending they did not realize was happening. Fourth, communicate early with a landlord if money is tight, because a proactive conversation almost always beats a missed payment.",
-      "Finally, separate wants from needs honestly and revisit that line every season. None of these habits require a high income — they require a plan. That is exactly what our coaches help families build, one appointment at a time, so that a roof overhead becomes something families can keep, not just something they reach for.",
+      "Plenty of households work hard and still feel one surprise expense away from crisis. The good news is that a few durable habits can change that trajectory, and none of them depend on earning more. The first is simple: pay your housing cost first, before any other discretionary spending, treating rent or mortgage as the non-negotiable foundation of the month.",
+      "Second, build an emergency cushion — even $10 a week adds up to a buffer that can absorb a car repair without threatening the rent. Third, track your spending for one full month; households that do this routinely find outflows they did not realize were happening. Fourth, communicate early with a landlord if money is tight, because a proactive conversation almost always beats a missed payment.",
+      "Finally, separate wants from needs honestly and revisit that line every season. None of these habits require a high income — they require a plan. FAITH Foundation refers families to HUD-approved homeownership counseling partners for individualized guidance; we do not provide financial counseling ourselves. This article is general educational information, not financial advice.",
     ],
   },
   {
@@ -52,8 +52,8 @@ const POSTS = [
       "FAITH stands for \"Foundation for Affordable Instruction and Tenancy Hope\" — five words that describe how we help families reach homeownership through down payment assistance across Texas.",
     body: [
       "The name FAITH is not decoration — it spells out our mission. FAITH stands for \"Foundation for Affordable Instruction and Tenancy Hope.\" F is the Foundation we lay beneath a family's future. A is the Affordable path to owning a home, made real through down payment assistance. I is the Instruction that prepares families to buy and to keep what they earn. T is the Tenancy and ownership we help families secure. And H is the Hope of a permanent place to call their own.",
-      "Those words become real in ordinary moments: a counselor reviewing a mortgage-ready budget at a kitchen table, a down payment voucher arriving in time to close on a first home, a volunteer walking a family through the keys-in-hand finish line. We are a faith-based organization, but our doors and programs are open to everyone, without condition or preference.",
-      "We share these stories not to celebrate ourselves but to invite you in. Every gift, every hour volunteered, and every prayer is part of a community that helps a neighbor become a homeowner. That is what FAITH stands for, and it is the reason we keep showing up.",
+      "Those words are meant to become real in ordinary moments: a counselor reviewing a mortgage-ready budget at a kitchen table, a down payment voucher arriving in time to close on a first home, a volunteer walking a family through the keys-in-hand finish line. That is the work we are built to do. We are a faith-based organization, but our doors and programs are open to everyone, without condition or preference.",
+      "We describe this not to celebrate ourselves — we are new, and our results are still ahead of us — but to invite you in. Every gift, every hour volunteered, and every prayer is part of a community that helps a neighbor become a homeowner. That is what FAITH stands for, and it is the reason we keep showing up.",
     ],
   },
 ];

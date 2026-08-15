@@ -81,8 +81,11 @@ export default function ZeffyEmbed({ src, title }: ZeffyEmbedProps) {
           <div>
             <p className="text-lg font-bold text-navy">Secure Donation Form</p>
             <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-charcoal/70">
-              Powered by Zeffy — 100% of your gift reaches FAITH Foundation. The
-              secure form loads on demand to keep this page fast.
+              Processed securely by Zeffy, which charges nonprofits no platform
+              or transaction fee, so your full gift reaches FAITH Foundation.
+              Zeffy may separately invite you to add an optional tip that
+              supports Zeffy — that tip is not part of your donation to us. The
+              form loads on demand to keep this page fast.
             </p>
           </div>
           <button
