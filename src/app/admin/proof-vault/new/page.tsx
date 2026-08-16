@@ -25,16 +25,16 @@ export default function NewProofDocumentPage() {
     <div className="mx-auto max-w-2xl">
       <Link
         href="/admin/proof-vault"
-        className="mb-6 inline-flex items-center gap-2 text-sm text-[rgba(255,239,179,0.7)] transition hover:text-[#ffefb3]"
+        className="mb-6 inline-flex items-center gap-2 text-sm text-[#6b7280] transition hover:text-[#013e37]"
       >
         <ArrowLeftIcon className="h-4 w-4" />
         Back to Proof Vault
       </Link>
 
-      <h1 className="text-2xl font-bold tracking-tight text-[#ffefb3]">
+      <h1 className="text-2xl font-bold tracking-tight text-[#013e37]">
         Add Document
       </h1>
-      <p className="mt-1 text-sm text-[rgba(255,239,179,0.7)]">
+      <p className="mt-1 text-sm text-[#6b7280]">
         Documents become publicly visible only when they are both public and
         verified.
       </p>

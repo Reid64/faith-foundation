@@ -1,6 +1,24 @@
 # faith-foundation — SESSION STATE
 
-> Tracks the live execution session. LATEST: **FaithProof Phase 3 — Color System Redesign.
+> Tracks the live execution session. LATEST: **FaithProof Phase 3 Correction — World-Class
+> Dashboard UI. COMPLETE** (2026-08-15). The all-green admin UI was replaced with a light-mode
+> dashboard: warm cream page `#f8f7f4`, white floating cards with real shadows, and deep green
+> `#013e37` demoted from a fill to an accent confined to the **sidebar (now the only dark
+> element)**, table header rows, primary buttons, stat-card top rails, headings and numerals.
+> Butter `#ffefb3` remains the sidebar accent and the table-header text. All badges are light
+> pastels. Verified on live production by **computed colour — 52/52**, including the brief's two
+> negative rules tested as real assertions: **zero large green fills** outside sidebar/`<th>`/
+> buttons and **zero dark badges** (every pill luminance-measured). Build PASSED (0 TS errors,
+> **42/42 pages**); `vercel --prod` READY (`dpl_Hu7cKpA18kdSW7tD1rCtBjkuP1kS`). Public regression:
+> `ad-grants-readiness` **59/59**, `site-audit` **127 passed + 1 flaky** (third-party Zeffy embed).
+> All 17 changed files are under `src/app/admin/` or `src/app/login/`.
+> **⚠️ A real defect was found and deliberately NOT fixed in a colour-only phase:** `AdminForm`
+> binds its submit handler on hydration, so a click in that sub-second window triggers a native GET
+> submit — the values land in the URL and **the record is silently not created**. Predates this
+> phase; fix first in Phase 4. See "## 2026-08-15 — FaithProof Phase 3 Correction" at the end of
+> this file.
+>
+> PRIOR: **FaithProof Phase 3 — Color System Redesign.
 > COMPLETE** (2026-08-15). The FaithProof admin colour system was rebuilt around the two brand
 > colours — **deep green `#013e37`** and **butter `#ffefb3`** — across the sidebar, Command Center,
 > all four list views, all four create forms, the audit log and the login page; page background
@@ -113,8 +131,35 @@
 > Reentry, a development roadmap added to Cornerstone Communities, and Tasks 6–8 (About faith
 > paragraph, StatCounter SSR fix, Contact geographic copy) verified already applied.
 
-- **Current phase:** FaithProof Phase 3 — Color System Redesign
-- **Current prompt:** four steps — read every file under `src/app/admin/` and `src/app/login/` and
+- **Current phase:** FaithProof Phase 3 Correction — World-Class Dashboard UI
+- **Current prompt:** four steps — read every admin/login file in full and map current colours;
+  apply the light dashboard system (cream `#f8f7f4` page, white floating cards, deep green only on
+  sidebar / table headers / primary buttons, pastel badges); touch nothing outside those two
+  directories; build (42 pages) and deploy.
+- **Prompt outcome:** COMPLETE, all four steps. Every end-of-run item confirmed. `pnpm tsc --noEmit`
+  PASSED; `pnpm run build` PASSED (**42/42 pages**); `vercel --prod` READY
+  (`dpl_Hu7cKpA18kdSW7tD1rCtBjkuP1kS`). Production verified at **52/52** computed-colour checks,
+  plus **59/59** ad-grants-readiness and **127 passed + 1 flaky** site-audit.
+- **Design applied:** page `#f8f7f4`; cards `#ffffff` with
+  `0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(1,62,55,0.08)`; sidebar `#013e37` (the only dark
+  surface) with white wordmark, butter eyebrow and a 3px butter active rail; stat cards white with
+  a 3px green top rail and 28px bold green numerals; panels white with amber/blue 3px left rails;
+  tables white with a deep green header row in butter text and white/cream zebra rows; forms white
+  with `#d1d5db` inputs and a green focus ring; primary buttons green-on-white-text; all badges
+  light pastels.
+- **Public site:** untouched — verified structurally by `git status`, not by inspection.
+- **⚠️ DEFECT FOUND, NOT FIXED (out of scope for a colour phase — fix first in Phase 4):**
+  `AdminForm` attaches `onSubmit` on hydration. A click before hydration performs the browser's
+  native **GET** submit — field values appear in the URL and **no record is created, with no error
+  shown**. Reproduced against production. Predates this phase (Phase 2 pattern). Fix by disabling
+  submit until hydration, or by giving the server action a no-JS `action=` path that redirects.
+- **Note for future restyles:** the verification suite encodes the two negative rules as
+  assertions — no element >4000px² may compute to `rgb(1,62,55)` outside the sidebar/`<th>`/buttons,
+  and no badge may have luminance < 0.5. Keep them.
+
+### Prior prompt this session (FaithProof Phase 3 — Color System Redesign)
+
+- **Prompt:** four steps — read every file under `src/app/admin/` and `src/app/login/` and
   map every colour in use; apply the deep green `#013e37` + butter `#ffefb3` system across sidebar,
   stat cards, panels, tables, promise/proof cards, forms, add buttons, page headings and login;
   touch nothing outside those two directories; build and deploy.
@@ -1140,5 +1185,85 @@ internal tool, so the public site's Lighthouse Accessibility 100 is unaffected.
 4. Total donations summed in JavaScript, not SQL.
 5. Vercel Preview env vars unset.
 6. `notepad supabase password.txt` still in the working tree.
+
+- **Last updated:** 2026-08-15
+
+## 2026-08-15 — FaithProof Phase 3 Correction: world-class dashboard UI
+
+Replaced the all-green admin UI with a light-mode dashboard. Green stops being a fill and becomes
+an accent; warm cream becomes the dominant tone; white cards float on it with real shadows.
+
+### The core inversion
+
+| | Before | After |
+| --- | --- | --- |
+| Page | `#1e293b` slate | **`#f8f7f4` warm cream** |
+| Cards, panels, tables, forms, login | `#013e37` green fills | **`#ffffff` white, floating** |
+| Green `#013e37` | everywhere | sidebar · table header rows · primary buttons · stat top rails · headings · numerals |
+| Butter `#ffefb3` | all text | sidebar accent · table header text · sidebar active rail |
+| Badges | translucent washes on dark | **light pastels**, 1px matching border |
+
+Sidebar keeps its green and is now the only dark surface: white wordmark, butter eyebrow at 70%,
+nav idle `rgba(255,255,255,0.6)` → hover `rgba(255,255,255,0.06)` → active white on butter@12%
+behind a 3px butter rail.
+
+### Files
+
+17 changed, every one under `src/app/admin/` or `src/app/login/`. Three needed no change and that
+was confirmed by reading them: `icons.tsx` (all `currentColor`), `badges.tsx` (tone names only, so
+six strings in `ui.tsx` recoloured every badge site-wide), and all five `actions.ts`.
+
+### Two things that would have silently not worked
+
+1. **`border-collapse` discards `border-radius` on cells.** The brief asks for rounded top corners
+   on the header row; under the table's previous `border-collapse: collapse` they would simply
+   never have rendered. `TableWrap` now uses `border-separate border-spacing-0` inside an
+   `overflow-hidden rounded-xl` wrapper, with an inner `overflow-x-auto` so the table still scrolls
+   without the page body scrolling.
+2. **`Panel`'s `soft` prop no longer exists** — the light theme needs "optional coloured left rail"
+   (`rail`) rather than "lighter shadow". The two call sites passing `soft` were updated; leaving
+   them would have been a TypeScript error, which is how it was caught.
+
+### Verification
+
+- `pnpm tsc --noEmit` ✅ 0 errors
+- `pnpm run build` ✅ **42/42 pages**
+- Tailwind emission ✅ all 26 palette hexes plus `rounded-tl-xl`, `rounded-tr-xl`,
+  `border-separate`, `border-spacing-0` present in the compiled CSS
+- `vercel --prod` ✅ READY — `dpl_Hu7cKpA18kdSW7tD1rCtBjkuP1kS`
+- Computed-colour test vs production ✅ **52/52**
+- `ad-grants-readiness` ✅ **59/59**
+- `site-audit` ✅ **127 passed + 1 flaky** (Zeffy third-party embed)
+- Files outside admin/login ✅ **zero**
+
+**The negative rules are assertions, not assumptions.** The suite sweeps the DOM and fails if any
+element over 4000px² computes to `rgb(1,62,55)` outside the sidebar / `<th>` / buttons / links
+(found none), and measures the relative luminance of every rounded bordered pill, failing on any
+below 0.5 (found none). Those two checks are what actually encode "green is an accent, not a fill"
+and "no dark badges anywhere" — keep them in any future restyle.
+
+### Defect found while verifying — recorded, not fixed
+
+`AdminForm` binds its submit handler on hydration. Clicking inside that window makes the browser
+run the form's **native GET** submit: the field values land in the query string
+(`/admin/promises/new/?title=…&status=active&…`) and **no record is created, with no error shown**.
+Reproduced against production.
+
+It predates this phase (the pattern dates from Phase 2) and the window is sub-second, but on a
+product built to keep an accurate financial record, a submission that silently evaporates is the
+same defect class as the 2026-08-14 forms that faked success. Fixing it is a behaviour change, and
+this brief was explicitly a colour pass with "no interpretation" — so it is recorded here instead
+of folded in. **Fix first in Phase 4:** disable the submit until hydration, or give the action a
+no-JS `action=` path that redirects.
+
+### Open items
+
+1. **AdminForm hydration race** — new, highest value.
+2. **Create and read only** — nothing in Requires Attention can be actioned.
+3. Writes are admin-only (RLS).
+4. `audit_log` actor spoofing via the REST API.
+5. Total donations summed in JavaScript, not SQL.
+6. Vercel Preview env vars unset.
+7. `notepad supabase password.txt` still in the working tree.
 
 - **Last updated:** 2026-08-15

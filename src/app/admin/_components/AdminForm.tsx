@@ -84,13 +84,13 @@ export function AdminForm({
       {error ? (
         <p
           role="alert"
-          className="rounded-lg border border-[rgba(248,113,113,0.4)] bg-[rgba(248,113,113,0.12)] px-4 py-3 text-sm text-[#f87171]"
+          className="rounded-lg border border-[#fecaca] bg-[#fef2f2] px-3 py-2 text-sm text-[#dc2626]"
         >
           {error}
         </p>
       ) : null}
 
-      <div className="flex items-center gap-3 border-t border-[rgba(255,239,179,0.15)] pt-6">
+      <div className="flex items-center gap-3 border-t border-[#f3f4f6] pt-6">
         <button type="submit" disabled={pending} className={BTN_SUBMIT}>
           {pending ? "Saving…" : submitLabel}
         </button>

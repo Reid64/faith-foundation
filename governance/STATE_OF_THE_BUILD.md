@@ -1,7 +1,40 @@
 # faith-foundation — STATE OF THE BUILD
 
 > Updated from a LIVE codebase audit on 2026-08-15 (BLUEPRINT Canonical Rule 9).
-> Last action: **FAITHPROOF PHASE 3 — COLOR SYSTEM REDESIGN. Status: COMPLETE.** The FaithProof
+> Last action: **FAITHPROOF PHASE 3 CORRECTION — WORLD-CLASS DASHBOARD UI. Status: COMPLETE.**
+> The all-green admin UI shipped earlier the same day was replaced with a professional light-mode
+> dashboard. **The sidebar is now the only dark element.** Page background is warm cream
+> `#f8f7f4`; cards are white and genuinely float on it; deep green `#013e37` is an accent confined
+> to the sidebar, table header rows, primary buttons, stat-card top rails, headings and numerals;
+> butter `#ffefb3` survives as the sidebar accent and table-header text; every badge is a light
+> pastel.
+>
+> **Verified by computed colour on live production — 52/52**, including the brief's two *negative*
+> rules, which were tested as assertions rather than assumed: a DOM sweep found **zero elements
+> over 4000px² filled `rgb(1,62,55)` outside the sidebar, `<th>`, buttons and links**, and **zero
+> dark badges** (every pill measured for luminance). Also confirmed: cream page and content area,
+> white login card at 16px radius with its two-layer shadow, the green logo block with butter
+> label, 3px green stat-card top border with 28px bold green numerals, amber and blue 3px panel
+> rails, the deep green table header with butter text and 12px rounded top corners, white/cream
+> zebra rows, `#374151` cell text, and white floating promise cards.
+>
+> **The public site is untouched as a structural fact:** all 17 modified files are under
+> `src/app/admin/` or `src/app/login/`; `tailwind.config.ts`, `globals.css`, `src/components/` and
+> every public page are byte-identical. Build PASSED (0 TypeScript errors, **42/42 pages**);
+> `vercel --prod` → READY (`dpl_Hu7cKpA18kdSW7tD1rCtBjkuP1kS`). Public regression:
+> `ad-grants-readiness` **59/59**; `site-audit` **127 passed + 1 flaky** (third-party Zeffy embed,
+> green on retry).
+>
+> **One real defect surfaced during verification and is NOT fixed here, deliberately:** `AdminForm`
+> attaches its submit handler on hydration, so a click inside that sub-second window makes the
+> browser perform a native **GET** submit — the URL fills with the field values as query parameters
+> and **the record is silently not created**. Reproduced against production. It predates this phase
+> (the pattern has been in place since Phase 2) and fixing it is a behaviour change, not a colour
+> change, so it was recorded rather than folded into a styling pass. It belongs at the top of Phase
+> 4 alongside the status transitions. Next phase: FaithProof Phase 4 — status transitions + public
+> transparency pages. See the 2026-08-15 Phase 3 Correction entry at the end of this file.
+>
+> Prior action: **FAITHPROOF PHASE 3 — COLOR SYSTEM REDESIGN. Status: COMPLETE.** The FaithProof
 > admin colour system was rebuilt around the two brand colours — **deep green `#013e37`** and
 > **butter `#ffefb3`** — across the sidebar, Command Center, all four list views, all four create
 > forms, the audit log and the login page. Page background stays `#1e293b` as the base.
@@ -2035,3 +2068,101 @@ Both were verified present in the computed styles.
 4. **Total donations is summed in JavaScript** rather than SQL.
 5. **Vercel Preview env vars still unset** — Preview deploys will 500 until added.
 6. **`notepad supabase password.txt`** still holds the live DB password in the working tree.
+
+## 2026-08-15 — FaithProof Phase 3 Correction: world-class dashboard UI (light mode)
+
+**Objective.** Replace the all-green admin UI with a professional light-mode dashboard: warm cream
+page, white floating cards, deep green confined to the sidebar, table headers and primary buttons.
+Public site untouched.
+
+### What changed, before → after
+
+The previous pass had made deep green a *fill* — sidebar, cards, panels, tables, forms and the
+login card were all `#013e37`, with a `#1e293b` page behind them. This correction demotes green to
+an **accent** and makes cream the dominant tone.
+
+| Surface | Before (all-green) | After (light) |
+| --- | --- | --- |
+| Page background | `#1e293b` slate | **`#f8f7f4` warm cream** |
+| Cards / panels | `#013e37` fill | `#ffffff` + `0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(1,62,55,0.08)` |
+| Stat cards | green gradient, butter numerals | white, **3px `#013e37` top rail**, 28px bold green numerals, `#6b7280` 11px label, icon green @25% |
+| Dashboard panels | green, butter headers | white, **3px left rail** — amber `#f59e0b` (Attention) / blue `#3b82f6` (Activity) — green headers, `#6b7280` subtext |
+| Tables | green surface, butter@60% headers | white wrapper; **deep green header row with `#ffefb3` text** and 12px rounded top corners; white / `#f8f7f4` zebra rows; `#f0fdf4` hover; `#374151` cells; `#f3f4f6` borders |
+| Badges | translucent washes on dark | **light pastels** — green `#f0fdf4/#16a34a/#bbf7d0`, amber `#fffbeb/#d97706/#fde68a`, red `#fef2f2/#dc2626/#fecaca`, blue `#eff6ff/#2563eb/#bfdbfe`, purple `#faf5ff/#7c3aed/#e9d5ff`, gray `#f9fafb/#6b7280/#e5e7eb` |
+| Forms | green card, butter inputs | white card p-8; inputs white with `#d1d5db` border, focus `#013e37` + `0 0 0 3px rgba(1,62,55,0.08)` ring |
+| Buttons | butter fill, green label | **primary green fill, white label**, hover `#025a50`; secondary white with `#d1d5db` border |
+| Sidebar | green, butter text throughout | green retained — now the ONLY dark surface. Wordmark **white**, eyebrow butter @70%, nav idle `rgba(255,255,255,0.6)`, hover `rgba(255,255,255,0.06)`, active white on butter@12% with a **3px** butter rail |
+| Login | green card on slate | cream page, **white card, 16px radius**, `0 4px 6px rgba(0,0,0,0.05), 0 20px 40px rgba(1,62,55,0.1)`, green logo block with butter label, heading "Sign in to your account", green button |
+
+### Files changed
+
+17 files, **all under `src/app/admin/` or `src/app/login/`**: `_components/theme.ts`,
+`_components/ui.tsx`, `_components/AdminNav.tsx`, `_components/AdminForm.tsx`,
+`_components/fields.tsx`, `layout.tsx`, `page.tsx`, the four list pages, the four `new` pages,
+`audit-log/page.tsx`, `login/page.tsx`.
+
+Three files again needed **no** change, confirmed by reading them rather than assuming:
+`icons.tsx` (every icon is `stroke="currentColor"`), `badges.tsx` (maps enums to tone *names*, so
+retuning the six tone strings in `ui.tsx` recoloured every badge on every page), and all five
+`actions.ts` files (no colour values at all).
+
+### Two implementation notes
+
+1. **`border-separate` was required, not stylistic.** The brief asks for `rounded-tl-xl` /
+   `rounded-tr-xl` on the header cells. Under `border-collapse: collapse` — what the table used
+   before — browsers discard `border-radius` on cells entirely, so the corners would simply not
+   have rendered. `TableWrap` now uses `border-separate border-spacing-0`, with an outer
+   `overflow-hidden rounded-xl` wrapper and an inner `overflow-x-auto` so the table still scrolls
+   horizontally without the page body ever doing so.
+2. **`Panel`'s `soft` prop became `rail`.** The dark theme used `soft` to mean "lighter shadow";
+   the light theme needs "optional coloured left rail" instead. The two call sites that passed
+   `soft` (promises, proof vault) now use the default card style.
+
+`cardHoverStyle` is defined in `theme.ts` and applied to **nothing**. No card in the admin UI is
+clickable yet, and a hover lift on a card that cannot be clicked promises an interaction that does
+not exist. Phase 4 introduces row and card actions — apply it there.
+
+### Verification
+
+| Gate | Result |
+| --- | --- |
+| `pnpm tsc --noEmit` | ✅ PASS — 0 errors |
+| `pnpm run build` | ✅ PASS — **42/42 pages** |
+| Tailwind emission | ✅ all 26 palette hexes + `rounded-tl-xl` / `rounded-tr-xl` / `border-separate` / `border-spacing-0` present in compiled CSS |
+| `vercel --prod` | ✅ READY — `dpl_Hu7cKpA18kdSW7tD1rCtBjkuP1kS` |
+| Computed-colour test vs **production** | ✅ **52/52** |
+| `ad-grants-readiness` vs production | ✅ **59/59** |
+| `site-audit` vs production | ✅ **127 passed + 1 flaky** (Zeffy third-party embed) |
+| Files outside admin/login | ✅ **zero** |
+
+**The two negative rules were tested, not assumed.** The suite sweeps every element in the DOM and
+fails if any element larger than 4000px² computes to `rgb(1,62,55)` outside the sidebar, a `<th>`,
+a button or a link — it found none. It also measures the relative luminance of every rounded,
+bordered pill and fails on any below 0.5 — it found none. Those two assertions are what actually
+encode "green is an accent, not a fill" and "no dark badges anywhere"; keep them in any future
+restyle.
+
+### Defect found during verification — recorded, deliberately not fixed here
+
+`AdminForm` binds its submit handler in React on hydration. A click inside that window makes the
+browser perform the form's **native GET** submission: the URL fills with the field values as query
+parameters (`/admin/promises/new/?title=…&status=active&…`) and **no record is created, with no
+error shown**. Reproduced against production while writing the test.
+
+This predates the phase — the pattern has been in place since Phase 2 — and the window is
+sub-second, but on a product whose whole point is an accurate financial record, a submission that
+silently evaporates is the same defect class as the 2026-08-14 forms that faked success. It is not
+a colour change, so folding it into a styling pass would have been scope creep on a brief that
+explicitly said "no interpretation". **Fix it first in Phase 4**, either by disabling the submit
+button until hydration or by giving the action a no-JS `action=` path that redirects.
+
+### Open items — carried into Phase 4
+
+1. **AdminForm hydration race** (above) — new, and the highest-value fix.
+2. **Create and read only — nothing can be actioned.** No status transitions, so items in Requires
+   Attention can be seen but never confirmed, approved, disbursed or fulfilled.
+3. **Writes are admin-only** (RLS grants INSERT to `role = 'admin'` alone).
+4. **`audit_log` actor spoofing via the REST API** remains possible for an authenticated user.
+5. **Total donations is summed in JavaScript** rather than SQL.
+6. **Vercel Preview env vars still unset** — Preview deploys will 500 until added.
+7. **`notepad supabase password.txt`** still holds the live DB password in the working tree.

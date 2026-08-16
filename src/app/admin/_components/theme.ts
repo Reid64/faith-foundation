@@ -1,111 +1,120 @@
 import type { CSSProperties } from "react";
 
 /**
- * FaithProof admin colour system — butter + deep green.
+ * FaithProof admin design system — light dashboard.
  *
- * SCOPE: these values are used ONLY under src/app/admin/ and src/app/login/.
- * They are deliberately NOT added to tailwind.config.ts, which is shared with
- * the public marketing site — putting an internal tool's palette into that
- * namespace is how a colour eventually leaks onto a donor-facing page.
+ * The page is warm cream, cards are white and float on it, and deep green is an
+ * ACCENT: it appears only on the sidebar, table header rows, primary buttons,
+ * stat-card top borders, headings and numerals. Nothing else is filled green.
  *
- * WHY BOTH TAILWIND STRINGS AND STYLE OBJECTS:
- * gradients, layered box-shadows and the card top-edge highlight are awkward or
- * ambiguous as Tailwind arbitrary values (comma-separated shadows in particular),
- * so those are inline `style` objects. Flat rgba colours stay as Tailwind
- * arbitrary values because `hover:` and `focus:` variants are impossible inline,
- * and the hover/focus states are part of the spec.
+ * SCOPE: used ONLY under src/app/admin/ and src/app/login/. Deliberately NOT
+ * added to tailwind.config.ts, which the public marketing site shares — an
+ * internal tool's tokens in that namespace is how a colour eventually leaks
+ * onto a donor-facing page.
  *
- * The literal class strings below are what Tailwind's JIT scanner sees. They
- * must stay literal — never build one by interpolation, or the class will not
- * be generated.
+ * Inline `style` objects carry shadows and composite borders (Tailwind cannot
+ * express a two-layer box-shadow cleanly). Flat colours stay as Tailwind
+ * arbitrary values, because `hover:` and `focus:` variants cannot be written
+ * inline and those states are part of the spec.
+ *
+ * The class strings below must stay literal — Tailwind's scanner reads the
+ * source text, so a class built by interpolation is never generated.
  */
 
-// ── Raw palette ─────────────────────────────────────────────────────────────
+// ── Palette ─────────────────────────────────────────────────────────────────
 
-export const BUTTER = "#ffefb3";
-export const BUTTER_HOVER = "#fff5cc";
+export const PAGE_BG = "#f8f7f4"; // warm cream — the dominant tone
+export const SURFACE = "#ffffff";
 export const DEEP_GREEN = "#013e37";
-export const DEEP_GREEN_DARK = "#012e28";
-export const PAGE_BG = "#1e293b";
-export const TEXT_PRIMARY = "#f1f5f9";
+export const DEEP_GREEN_HOVER = "#025a50";
+export const BUTTER = "#ffefb3";
 
-export const SUCCESS = "#4ade80";
-export const WARNING = "#fbbf24";
-export const DANGER = "#f87171";
-export const INFO = "#60a5fa";
+/** Neutral text ramp. */
+export const INK = "#111827"; // input text
+export const BODY = "#374151"; // table cells, labels, activity text
+export const SECONDARY = "#6b7280"; // subtext, secondary cells
+export const MUTED = "#9ca3af"; // timestamps, dates, empty-state text
+export const FAINT = "#d1d5db"; // empty-state icons, input borders
+
+/** Panel accent rails. */
+export const WARNING = "#f59e0b";
+export const INFO = "#3b82f6";
 
 // ── Surfaces (inline styles) ────────────────────────────────────────────────
 
-/** Card / panel: deep green with a butter top-edge highlight and depth shadow. */
+/** The floating white card. The shadow is what makes it read as elevated. */
 export const cardStyle: CSSProperties = {
-  backgroundColor: DEEP_GREEN,
-  borderTop: "1px solid rgba(255,239,179,0.2)",
-  boxShadow:
-    "0 4px 24px rgba(1,62,55,0.4), 0 1px 4px rgba(0,0,0,0.3)",
+  backgroundColor: SURFACE,
+  border: "1px solid rgba(0,0,0,0.06)",
+  boxShadow: "0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(1,62,55,0.08)",
 };
 
-/** Stat card: same, on a gradient and with a slightly deeper shadow. */
+/**
+ * Deeper shadow for cards that respond to the pointer.
+ *
+ * Defined but currently applied to nothing: no card in the admin UI is
+ * clickable yet. Adding a hover lift to a card that cannot be clicked would
+ * promise an interaction that does not exist. Phase 4 introduces row and card
+ * actions — apply it there.
+ */
+export const cardHoverStyle: CSSProperties = {
+  boxShadow: "0 4px 8px rgba(0,0,0,0.08), 0 8px 24px rgba(1,62,55,0.12)",
+};
+
+/** Stat card: white, with a deep green rail across the top. */
 export const statCardStyle: CSSProperties = {
-  backgroundImage: `linear-gradient(135deg, ${DEEP_GREEN} 0%, ${DEEP_GREEN_DARK} 100%)`,
-  borderTop: "1px solid rgba(255,239,179,0.2)",
-  boxShadow:
-    "0 4px 24px rgba(1,62,55,0.5), 0 1px 4px rgba(0,0,0,0.4)",
+  backgroundColor: SURFACE,
+  border: "1px solid rgba(0,0,0,0.06)",
+  borderTop: `3px solid ${DEEP_GREEN}`,
+  boxShadow: "0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(1,62,55,0.08)",
 };
 
-/** Promise / proof-vault cards: lighter shadow, same surface. */
-export const softCardStyle: CSSProperties = {
-  backgroundColor: DEEP_GREEN,
-  borderTop: "1px solid rgba(255,239,179,0.2)",
-  boxShadow: "0 4px 16px rgba(1,62,55,0.4)",
-};
-
-/** Tables share the card surface but sit flush, so no top highlight. */
+/** Table wrapper — flatter shadow, since the header row supplies the weight. */
 export const tableStyle: CSSProperties = {
-  backgroundColor: DEEP_GREEN,
-  boxShadow: "0 4px 24px rgba(1,62,55,0.4)",
+  backgroundColor: SURFACE,
+  border: "1px solid rgba(0,0,0,0.06)",
+  boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
 };
 
-// ── Text (Tailwind literals) ────────────────────────────────────────────────
+/** Panel with a coloured left rail (amber = attention, blue = activity). */
+export const panelStyle = (rail?: string): CSSProperties => ({
+  backgroundColor: SURFACE,
+  border: "1px solid rgba(0,0,0,0.06)",
+  ...(rail ? { borderLeft: `3px solid ${rail}` } : null),
+  boxShadow: "0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(1,62,55,0.08)",
+});
 
-export const TEXT_BUTTER = "text-[#ffefb3]";
-export const TEXT_BUTTER_80 = "text-[rgba(255,239,179,0.8)]";
-export const TEXT_BUTTER_70 = "text-[rgba(255,239,179,0.7)]";
-export const TEXT_BUTTER_60 = "text-[rgba(255,239,179,0.6)]";
-export const TEXT_BUTTER_55 = "text-[rgba(255,239,179,0.55)]";
-export const TEXT_BUTTER_50 = "text-[rgba(255,239,179,0.5)]";
-export const TEXT_BODY = "text-[#f1f5f9]";
-
-// ── Borders (Tailwind literals) ─────────────────────────────────────────────
-
-export const BORDER_BUTTER_20 = "border-[rgba(255,239,179,0.2)]";
-export const BORDER_BUTTER_15 = "border-[rgba(255,239,179,0.15)]";
-export const BORDER_BUTTER_10 = "border-[rgba(255,239,179,0.1)]";
-export const BORDER_BUTTER_08 = "border-[rgba(255,239,179,0.08)]";
-
-/** Row hover wash used by every table. */
-export const ROW_HOVER = "hover:bg-[rgba(255,239,179,0.05)]";
+/** Login card — larger radius and a deeper lift than a dashboard card. */
+export const loginCardStyle: CSSProperties = {
+  backgroundColor: SURFACE,
+  borderRadius: 16,
+  boxShadow: "0 4px 6px rgba(0,0,0,0.05), 0 20px 40px rgba(1,62,55,0.1)",
+};
 
 // ── Controls ────────────────────────────────────────────────────────────────
 
 /**
- * Shared input/select/textarea styling. Focus moves the border to solid butter
- * and drops the default outline, per the brief.
+ * Input / select / textarea.
+ *
+ * Focus swaps the border to deep green and adds the 3px soft ring. `ring-offset-0`
+ * keeps the ring hugging the control rather than punching a white gap through
+ * it on cream.
  */
 export const CONTROL =
-  "w-full rounded-lg border border-[rgba(255,239,179,0.2)] bg-[rgba(1,62,55,0.6)] px-3 py-2 text-sm text-[#f1f5f9] placeholder-[rgba(255,239,179,0.35)] outline-none transition focus:border-[#ffefb3] focus:ring-1 focus:ring-[#ffefb3] disabled:opacity-60";
+  "w-full rounded-lg border border-[#d1d5db] bg-white px-3 py-2 text-sm text-[#111827] placeholder-[#9ca3af] outline-none transition focus:border-[#013e37] focus:ring-[3px] focus:ring-[rgba(1,62,55,0.08)] focus:ring-offset-0 disabled:cursor-not-allowed disabled:bg-[#f9fafb] disabled:opacity-70";
 
-/** Primary action: butter fill, deep green label. */
+/** Primary action — the only filled green control. */
 export const BTN_PRIMARY =
-  "inline-flex items-center gap-2 rounded-lg bg-[#ffefb3] px-4 py-2 text-sm font-semibold text-[#013e37] transition hover:bg-[#fff5cc] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ffefb3] focus-visible:ring-offset-2 focus-visible:ring-offset-[#1e293b]";
+  "inline-flex items-center gap-2 rounded-lg bg-[#013e37] px-4 py-2 text-sm font-medium text-white shadow-[0_1px_2px_rgba(0,0,0,0.1)] transition hover:bg-[#025a50] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#013e37] focus-visible:ring-offset-2";
 
-/** Same, sized for form submits, and offset against the deep green card. */
+/** Same, sized for form submits. */
 export const BTN_SUBMIT =
-  "inline-flex items-center rounded-lg bg-[#ffefb3] px-5 py-2.5 text-sm font-semibold text-[#013e37] transition hover:bg-[#fff5cc] disabled:cursor-not-allowed disabled:opacity-60 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ffefb3] focus-visible:ring-offset-2 focus-visible:ring-offset-[#013e37]";
+  "inline-flex items-center rounded-lg bg-[#013e37] px-5 py-2.5 text-sm font-medium text-white shadow-[0_1px_2px_rgba(0,0,0,0.1)] transition hover:bg-[#025a50] disabled:cursor-not-allowed disabled:opacity-60 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#013e37] focus-visible:ring-offset-2";
 
-/** Secondary/cancel: outlined, never a filled competitor to the primary. */
+/** Secondary / cancel — white with a neutral border, never a green competitor. */
 export const BTN_SECONDARY =
-  "inline-flex items-center rounded-lg border border-[rgba(255,239,179,0.3)] px-4 py-2 text-sm text-[rgba(255,239,179,0.7)] transition hover:border-[#ffefb3] hover:text-[#ffefb3]";
+  "inline-flex items-center rounded-lg border border-[#d1d5db] bg-white px-4 py-2 text-sm text-[#374151] transition hover:bg-[#f9fafb] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#013e37] focus-visible:ring-offset-2";
 
 /** Back links above form headings. */
 export const BACK_LINK =
-  "mb-6 inline-flex items-center gap-2 text-sm text-[rgba(255,239,179,0.7)] transition hover:text-[#ffefb3]";
+  "mb-6 inline-flex items-center gap-2 text-sm text-[#6b7280] transition hover:text-[#013e37]";

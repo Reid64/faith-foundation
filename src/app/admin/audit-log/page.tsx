@@ -5,6 +5,7 @@ import {
   PageHeader,
   Panel,
   QueryError,
+  TABLE_ROW,
   TableWrap,
   Td,
   Th,
@@ -80,27 +81,27 @@ export default async function AuditLogPage() {
           </thead>
           <tbody>
             {rows.map((entry) => (
-              <tr key={entry.id} className="transition hover:bg-[rgba(255,239,179,0.05)]">
+              <tr key={entry.id} className={TABLE_ROW}>
                 <Td className="whitespace-nowrap">
-                  <span className="block text-[#f1f5f9]">
+                  <span className="block text-[#374151]">
                     {formatTimestamp(entry.created_at)}
                   </span>
-                  <span className="block text-xs text-[rgba(255,239,179,0.5)]">
+                  <span className="block text-xs text-[#9ca3af]">
                     {formatRelative(entry.created_at)}
                   </span>
                 </Td>
                 <Td>
                   {entry.actor?.full_name || entry.actor?.email || (
-                    <span className="text-[rgba(255,239,179,0.5)]">Unknown user</span>
+                    <span className="text-[#9ca3af]">Unknown user</span>
                   )}
                 </Td>
-                <Td className="text-[rgba(255,239,179,0.7)]">
+                <Td className="text-[#6b7280]">
                   {humanizeEnum(entry.action)}
                 </Td>
-                <Td className="text-[rgba(255,239,179,0.7)]">
+                <Td className="text-[#6b7280]">
                   {humanizeEnum(entry.entity_type)}
                 </Td>
-                <Td className="font-mono text-xs text-[rgba(255,239,179,0.5)]">
+                <Td className="font-mono text-xs text-[#9ca3af]">
                   {shortId(entry.entity_id)}
                 </Td>
               </tr>

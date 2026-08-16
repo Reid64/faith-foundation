@@ -6,6 +6,7 @@ import {
   Panel,
   PrimaryLinkButton,
   QueryError,
+  TABLE_ROW,
   TableWrap,
   Td,
   Th,
@@ -70,11 +71,11 @@ export default async function VouchersPage() {
           </thead>
           <tbody>
             {rows.map((v) => (
-              <tr key={v.id} className="transition hover:bg-[rgba(255,239,179,0.05)]">
+              <tr key={v.id} className={TABLE_ROW}>
                 <Td className="whitespace-nowrap font-medium">
                   {v.voucher_number}
                 </Td>
-                <Td className="text-[rgba(255,239,179,0.7)]">
+                <Td className="text-[#6b7280]">
                   {FUND_LABELS[v.fund] ?? v.fund}
                 </Td>
                 <Td align="right" className="whitespace-nowrap tabular-nums">
@@ -85,21 +86,21 @@ export default async function VouchersPage() {
                 </Td>
                 <Td>
                   {v.recipient_anonymous ? (
-                    <span className="text-[rgba(255,239,179,0.5)]">Anonymous</span>
+                    <span className="text-[#9ca3af]">Anonymous</span>
                   ) : (
                     v.recipient_name || (
-                      <span className="text-[rgba(255,239,179,0.5)]">—</span>
+                      <span className="text-[#9ca3af]">—</span>
                     )
                   )}
                 </Td>
-                <Td className="text-[rgba(255,239,179,0.7)]">
-                  {v.program || <span className="text-[rgba(255,239,179,0.5)]">—</span>}
+                <Td className="text-[#6b7280]">
+                  {v.program || <span className="text-[#9ca3af]">—</span>}
                 </Td>
-                <Td className="whitespace-nowrap text-[rgba(255,239,179,0.7)]">
+                <Td className="whitespace-nowrap text-[#6b7280]">
                   {v.disbursed_at ? (
                     formatTimestamp(v.disbursed_at)
                   ) : (
-                    <span className="text-[rgba(255,239,179,0.5)]">—</span>
+                    <span className="text-[#9ca3af]">—</span>
                   )}
                 </Td>
               </tr>

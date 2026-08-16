@@ -26,22 +26,22 @@ export function Field({
     <div>
       <label
         htmlFor={htmlFor}
-        className="block text-sm font-medium text-[rgba(255,239,179,0.8)]"
+        className="block text-sm font-medium text-[#374151]"
       >
         {label}
         {required ? (
-          <span className="ml-1 text-[#f87171]" aria-hidden="true">
+          <span className="ml-1 text-[#dc2626]" aria-hidden="true">
             *
           </span>
         ) : (
-          <span className="ml-2 text-xs font-normal text-[rgba(255,239,179,0.5)]">
+          <span className="ml-2 text-xs font-normal text-[#9ca3af]">
             optional
           </span>
         )}
       </label>
       <div className="mt-1.5">{children}</div>
       {hint ? (
-        <p className="mt-1.5 text-xs text-[rgba(255,239,179,0.6)]">{hint}</p>
+        <p className="mt-1.5 text-xs text-[#6b7280]">{hint}</p>
       ) : null}
     </div>
   );
@@ -105,11 +105,8 @@ export function Select({
       required={required}
       className={CONTROL}
     >
-      {/* Native option lists are painted by the OS, so each option gets an
-          opaque deep-green background — the translucent control colour would
-          render as unreadable dark-on-dark in the open dropdown. */}
       {options.map((o) => (
-        <option key={o.value} value={o.value} className="bg-[#013e37]">
+        <option key={o.value} value={o.value}>
           {o.label}
         </option>
       ))}
@@ -162,15 +159,15 @@ export function Checkbox({
         name={name}
         type="checkbox"
         defaultChecked={defaultChecked}
-        className="mt-0.5 h-4 w-4 shrink-0 cursor-pointer rounded border-[rgba(255,239,179,0.2)] bg-[rgba(1,62,55,0.6)] accent-[#ffefb3]"
+        className="mt-0.5 h-4 w-4 shrink-0 cursor-pointer rounded border-[#d1d5db] accent-[#013e37]"
       />
       <label
         htmlFor={id}
-        className="cursor-pointer text-sm text-[rgba(255,239,179,0.8)]"
+        className="cursor-pointer text-sm text-[#374151]"
       >
         {label}
         {hint ? (
-          <span className="mt-0.5 block text-xs font-normal text-[rgba(255,239,179,0.6)]">
+          <span className="mt-0.5 block text-xs font-normal text-[#6b7280]">
             {hint}
           </span>
         ) : null}

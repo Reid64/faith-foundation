@@ -60,14 +60,14 @@ export default async function ProofVaultPage() {
       ) : (
         <div className="grid gap-4 lg:grid-cols-2">
           {rows.map((doc) => (
-            <Panel key={doc.id} soft className="flex flex-col p-5">
+            <Panel key={doc.id} className="flex flex-col p-5">
               <div className="flex items-start justify-between gap-3">
-                <h2 className="text-base font-semibold leading-snug text-[#ffefb3]">
+                <h2 className="text-base font-semibold leading-snug text-[#013e37]">
                   {doc.title}
                 </h2>
                 {doc.verified ? (
                   <span
-                    className="inline-flex shrink-0 items-center gap-1 rounded-full bg-[rgba(74,222,128,0.15)] px-2 py-0.5 text-[0.7rem] font-medium text-[#4ade80] ring-1 ring-inset ring-[rgba(74,222,128,0.3)]"
+                    className="inline-flex shrink-0 items-center gap-1 rounded-full border border-[#bbf7d0] bg-[#f0fdf4] px-2 py-0.5 text-[11px] font-medium text-[#16a34a]"
                     title={
                       doc.verified_at
                         ? `Verified ${formatTimestamp(doc.verified_at)}`
@@ -90,15 +90,15 @@ export default async function ProofVaultPage() {
               </div>
 
               {doc.description ? (
-                <p className="mt-3 flex-1 text-sm leading-relaxed text-[rgba(255,239,179,0.7)]">
+                <p className="mt-3 flex-1 text-sm leading-relaxed text-[#6b7280]">
                   {truncate(doc.description, 200)}
                 </p>
               ) : (
                 <div className="flex-1" />
               )}
 
-              <div className="mt-4 flex items-center justify-between gap-3 border-t border-[rgba(255,239,179,0.15)] pt-3">
-                <span className="text-xs text-[rgba(255,239,179,0.5)]">
+              <div className="mt-4 flex items-center justify-between gap-3 border-t border-[#f3f4f6] pt-3">
+                <span className="text-xs text-[#9ca3af]">
                   Added {formatTimestamp(doc.created_at)}
                 </span>
                 {doc.external_url ? (
@@ -106,7 +106,7 @@ export default async function ProofVaultPage() {
                     href={doc.external_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 text-xs font-medium text-[#60a5fa] transition hover:text-[#93c5fd]"
+                    className="inline-flex items-center gap-1.5 text-xs font-medium text-[#2563eb] transition hover:text-[#1d4ed8]"
                   >
                     <ExternalLinkIcon className="h-3.5 w-3.5" />
                     Open document

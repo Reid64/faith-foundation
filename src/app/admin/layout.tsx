@@ -15,20 +15,16 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 /**
- * Role pill tones.
- *
- * `admin` uses the butter accent specified for the admin badge. The other roles
- * borrow the indicator set rather than the old slate greys, which read as a
- * foreign object against the deep green sidebar.
+ * Role pill tones — these sit on the dark sidebar, so they are the one place in
+ * the UI that is not part of the light pastel badge system.
  */
 const ROLE_TONES: Record<string, string> = {
-  admin:
-    "bg-[rgba(255,239,179,0.15)] text-[#ffefb3] ring-[rgba(255,239,179,0.3)]",
-  board: "bg-[rgba(96,165,250,0.15)] text-[#60a5fa] ring-[rgba(96,165,250,0.3)]",
+  admin: "bg-[rgba(255,239,179,0.15)] text-[#ffefb3] border-[rgba(255,239,179,0.25)]",
+  board: "bg-[rgba(147,197,253,0.15)] text-[#bfdbfe] border-[rgba(147,197,253,0.25)]",
   staff:
-    "bg-[rgba(255,239,179,0.1)] text-[rgba(255,239,179,0.7)] ring-[rgba(255,239,179,0.2)]",
+    "bg-[rgba(255,255,255,0.1)] text-[rgba(255,255,255,0.7)] border-[rgba(255,255,255,0.2)]",
   public:
-    "bg-[rgba(255,239,179,0.1)] text-[rgba(255,239,179,0.7)] ring-[rgba(255,239,179,0.2)]",
+    "bg-[rgba(255,255,255,0.1)] text-[rgba(255,255,255,0.7)] border-[rgba(255,255,255,0.2)]",
 };
 
 export default async function AdminLayout({
@@ -47,20 +43,30 @@ export default async function AdminLayout({
   const role = profile?.role ?? null;
 
   return (
-    <div className="min-h-screen bg-[#1e293b]">
-      <aside className="fixed inset-y-0 left-0 z-40 flex w-60 flex-col border-r border-[rgba(255,239,179,0.15)] bg-[#013e37]">
+    <div className="min-h-screen bg-[#f8f7f4]">
+      {/* The sidebar is the ONLY dark surface in the admin UI. */}
+      <aside
+        style={{ borderRight: "1px solid rgba(255,239,179,0.15)" }}
+        className="fixed inset-y-0 left-0 z-40 flex w-60 flex-col bg-[#013e37]"
+      >
         <div className="px-5 py-5">
-          <p className="text-[10px] font-semibold uppercase tracking-widest text-[rgba(255,239,179,0.6)]">
+          <p
+            className="text-[10px] font-semibold uppercase tracking-widest text-[#ffefb3]"
+            style={{ opacity: 0.7 }}
+          >
             FAITH FOUNDATION
           </p>
-          <p className="mt-1 text-xl font-semibold text-[#ffefb3]">FaithProof</p>
+          <p className="mt-1 text-xl font-semibold text-white">FaithProof</p>
         </div>
 
         <AdminNav />
 
-        <div className="border-t border-[rgba(255,239,179,0.15)] px-5 py-4">
+        <div
+          style={{ borderTop: "1px solid rgba(255,255,255,0.1)" }}
+          className="px-5 py-4"
+        >
           <p
-            className="truncate text-xs text-[rgba(255,239,179,0.5)]"
+            className="truncate text-xs text-[rgba(255,255,255,0.45)]"
             title={email}
           >
             {email}
@@ -69,7 +75,7 @@ export default async function AdminLayout({
           <div className="mt-2">
             {role ? (
               <span
-                className={`inline-flex items-center rounded-full px-2 py-0.5 text-[0.65rem] font-bold uppercase tracking-wider ring-1 ring-inset ${
+                className={`inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-semibold uppercase tracking-wider ${
                   ROLE_TONES[role] ?? ROLE_TONES.staff
                 }`}
               >
@@ -81,7 +87,7 @@ export default async function AdminLayout({
               // policy resolves the caller's role from this row, so without it
               // every query returns empty and the tool looks merely idle.
               <span
-                className="inline-flex items-center rounded-full bg-[rgba(248,113,113,0.15)] px-2 py-0.5 text-[0.65rem] font-bold uppercase tracking-wider text-[#f87171] ring-1 ring-inset ring-[rgba(248,113,113,0.3)]"
+                className="inline-flex items-center rounded-full border border-[rgba(252,165,165,0.3)] bg-[rgba(252,165,165,0.15)] px-2 py-0.5 text-xs font-semibold uppercase tracking-wider text-[#fca5a5]"
                 title="No row in profiles for this user — every table will read as empty until one exists."
               >
                 no profile
@@ -92,7 +98,7 @@ export default async function AdminLayout({
           <form action={signOut} className="mt-4">
             <button
               type="submit"
-              className="text-xs font-semibold uppercase tracking-wider text-[rgba(255,239,179,0.5)] transition hover:text-[#ffefb3] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ffefb3]"
+              className="text-xs font-semibold uppercase tracking-wider text-[rgba(255,255,255,0.45)] transition hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ffefb3]"
             >
               Sign Out
             </button>
@@ -100,7 +106,7 @@ export default async function AdminLayout({
 
           <Link
             href="/"
-            className="mt-3 block text-xs text-[rgba(255,239,179,0.5)] transition hover:text-[#ffefb3]"
+            className="mt-3 block text-xs text-[rgba(255,255,255,0.35)] transition hover:text-[rgba(255,255,255,0.7)]"
           >
             View public site
           </Link>
@@ -109,7 +115,7 @@ export default async function AdminLayout({
 
       {/* A <div>, not <main>: the root layout already wraps every route in
           <main id="main-content">, and a document may only have one <main>. */}
-      <div className="ml-60 min-h-screen bg-[#1e293b] p-8">{children}</div>
+      <div className="ml-60 min-h-screen bg-[#f8f7f4] p-8">{children}</div>
     </div>
   );
 }

@@ -6,6 +6,7 @@ import {
   Panel,
   PrimaryLinkButton,
   QueryError,
+  TABLE_ROW,
   TableWrap,
   Td,
   Th,
@@ -73,14 +74,14 @@ export default async function TransactionsPage() {
           </thead>
           <tbody>
             {rows.map((tx) => (
-              <tr key={tx.id} className="transition hover:bg-[rgba(255,239,179,0.05)]">
-                <Td className="whitespace-nowrap text-[rgba(255,239,179,0.7)]">
+              <tr key={tx.id} className={TABLE_ROW}>
+                <Td className="whitespace-nowrap text-[#6b7280]">
                   {formatDateOnly(tx.transaction_date)}
                 </Td>
                 <Td>
                   <TransactionTypeBadge type={tx.type} />
                 </Td>
-                <Td className="text-[rgba(255,239,179,0.7)]">
+                <Td className="text-[#6b7280]">
                   {FUND_LABELS[tx.fund] ?? tx.fund}
                 </Td>
                 <Td align="right" className="whitespace-nowrap tabular-nums">
@@ -88,17 +89,17 @@ export default async function TransactionsPage() {
                 </Td>
                 <Td>
                   {tx.donor_anonymous ? (
-                    <span className="text-[rgba(255,239,179,0.5)]">Anonymous</span>
+                    <span className="text-[#9ca3af]">Anonymous</span>
                   ) : (
-                    tx.donor_name || <span className="text-[rgba(255,239,179,0.5)]">—</span>
+                    tx.donor_name || <span className="text-[#9ca3af]">—</span>
                   )}
                 </Td>
                 <Td>
                   <TransactionStatusBadge status={tx.status} />
                 </Td>
-                <Td className="text-[rgba(255,239,179,0.7)]">
+                <Td className="text-[#6b7280]">
                   {tx.reference_number || (
-                    <span className="text-[rgba(255,239,179,0.5)]">—</span>
+                    <span className="text-[#9ca3af]">—</span>
                   )}
                 </Td>
               </tr>

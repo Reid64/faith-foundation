@@ -49,10 +49,10 @@ export function AdminNav() {
               <Link
                 href={href}
                 aria-current={active ? "page" : undefined}
-                className={`flex items-center gap-3 rounded-md border-l-2 px-3 py-2 text-sm transition ${
+                className={`flex items-center gap-3 rounded-md border-l-[3px] px-3 py-2 text-sm transition ${
                   active
-                    ? "border-[#ffefb3] bg-[rgba(255,239,179,0.12)] font-medium text-[#ffefb3]"
-                    : "border-transparent text-[rgba(255,239,179,0.7)] hover:bg-[rgba(255,239,179,0.08)] hover:text-[#ffefb3]"
+                    ? "border-[#ffefb3] bg-[rgba(255,239,179,0.12)] font-medium text-white"
+                    : "border-transparent text-[rgba(255,255,255,0.6)] hover:bg-[rgba(255,255,255,0.06)] hover:text-white"
                 }`}
               >
                 <Icon className="h-4 w-4 shrink-0" />

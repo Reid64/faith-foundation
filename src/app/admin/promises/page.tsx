@@ -54,7 +54,7 @@ export default async function PromisesPage() {
           only is_public = true rows. Saying so prevents a staff user reading a
           filtered list as the complete one. */}
       {!error && session.profile && session.profile.role !== "admin" ? (
-        <p className="mb-4 rounded-lg border border-[rgba(96,165,250,0.3)] bg-[rgba(96,165,250,0.12)] px-4 py-2.5 text-xs text-[#93c5fd]">
+        <p className="mb-4 rounded-lg border border-[#bfdbfe] bg-[#eff6ff] px-4 py-2.5 text-xs text-[#2563eb]">
           You are signed in as <strong>{session.profile.role}</strong>. Row level
           security limits this list to public promises — private ones are
           visible to administrators only.
@@ -80,9 +80,9 @@ export default async function PromisesPage() {
               p.target_date < today;
 
             return (
-              <Panel key={p.id} soft className="flex flex-col p-5">
+              <Panel key={p.id} className="flex flex-col p-5">
                 <div className="flex items-start justify-between gap-3">
-                  <h2 className="text-base font-semibold leading-snug text-[#ffefb3]">
+                  <h2 className="text-base font-semibold leading-snug text-[#013e37]">
                     {p.title}
                   </h2>
                   <div className="flex shrink-0 flex-col items-end gap-1.5">
@@ -93,10 +93,10 @@ export default async function PromisesPage() {
 
                 <dl className="mt-3 flex flex-wrap gap-x-6 gap-y-1 text-xs">
                   <div className="flex gap-1.5">
-                    <dt className="text-[rgba(255,239,179,0.5)]">Target:</dt>
+                    <dt className="text-[#9ca3af]">Target:</dt>
                     <dd
                       className={
-                        overdue ? "text-[#f87171]" : "text-[rgba(255,239,179,0.7)]"
+                        overdue ? "text-[#dc2626]" : "text-[#6b7280]"
                       }
                     >
                       {formatDateOnly(p.target_date)}
@@ -104,22 +104,22 @@ export default async function PromisesPage() {
                   </div>
                   {p.fulfilled_date ? (
                     <div className="flex gap-1.5">
-                      <dt className="text-[rgba(255,239,179,0.5)]">Fulfilled:</dt>
-                      <dd className="text-[#4ade80]">
+                      <dt className="text-[#9ca3af]">Fulfilled:</dt>
+                      <dd className="text-[#16a34a]">
                         {formatDateOnly(p.fulfilled_date)}
                       </dd>
                     </div>
                   ) : null}
                   <div className="flex gap-1.5">
-                    <dt className="text-[rgba(255,239,179,0.5)]">Visibility:</dt>
-                    <dd className="text-[rgba(255,239,179,0.7)]">
+                    <dt className="text-[#9ca3af]">Visibility:</dt>
+                    <dd className="text-[#6b7280]">
                       {p.is_public ? "Public" : "Internal"}
                     </dd>
                   </div>
                 </dl>
 
                 {p.description ? (
-                  <p className="mt-3 flex-1 text-sm leading-relaxed text-[rgba(255,239,179,0.7)]">
+                  <p className="mt-3 flex-1 text-sm leading-relaxed text-[#6b7280]">
                     {truncate(p.description, 200)}
                   </p>
                 ) : (
@@ -131,7 +131,7 @@ export default async function PromisesPage() {
                     href={p.proof_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="mt-4 inline-flex items-center gap-1.5 self-start text-xs font-medium text-[#60a5fa] transition hover:text-[#93c5fd]"
+                    className="mt-4 inline-flex items-center gap-1.5 self-start text-xs font-medium text-[#2563eb] transition hover:text-[#1d4ed8]"
                   >
                     <ExternalLinkIcon className="h-3.5 w-3.5" />
                     View proof

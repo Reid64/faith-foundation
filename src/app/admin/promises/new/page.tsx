@@ -28,16 +28,16 @@ export default function NewPromisePage() {
     <div className="mx-auto max-w-2xl">
       <Link
         href="/admin/promises"
-        className="mb-6 inline-flex items-center gap-2 text-sm text-[rgba(255,239,179,0.7)] transition hover:text-[#ffefb3]"
+        className="mb-6 inline-flex items-center gap-2 text-sm text-[#6b7280] transition hover:text-[#013e37]"
       >
         <ArrowLeftIcon className="h-4 w-4" />
         Back to Promises
       </Link>
 
-      <h1 className="text-2xl font-bold tracking-tight text-[#ffefb3]">
+      <h1 className="text-2xl font-bold tracking-tight text-[#013e37]">
         Add Promise
       </h1>
-      <p className="mt-1 text-sm text-[rgba(255,239,179,0.7)]">
+      <p className="mt-1 text-sm text-[#6b7280]">
         A promise is a commitment the Foundation intends to be held to. Public
         promises are visible to anyone, kept or missed.
       </p>
