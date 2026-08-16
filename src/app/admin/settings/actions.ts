@@ -6,6 +6,7 @@ import {
   getSession,
   writeAuditLog,
 } from "@/lib/faithproof/session";
+import { toCsv, type ExportResult } from "@/lib/faithproof/csv";
 import { PUBLIC_SECTION_KEYS, type SettingKey } from "./keys";
 
 
@@ -51,33 +52,10 @@ export async function updateSetting(
 
 // ── CSV export ──────────────────────────────────────────────────────────────
 
-/**
- * Escape one CSV field.
- *
- * Quoting is not cosmetic here: descriptions and notes routinely contain
- * commas, and an unescaped one silently shifts every later column in the row.
- * The leading-character guard blocks CSV injection — a value starting = + - @
- * is executed as a formula when the file is opened in Excel or Sheets.
- */
-function csvField(value: unknown): string {
-  if (value === null || value === undefined) return "";
-  let s =
-    typeof value === "object" ? JSON.stringify(value) : String(value);
-  if (/^[=+\-@\t\r]/.test(s)) s = `'${s}`;
-  return `"${s.replace(/"/g, '""')}"`;
-}
-
-function toCsv(rows: Record<string, unknown>[], columns: string[]): string {
-  const head = columns.map(csvField).join(",");
-  const body = rows
-    .map((row) => columns.map((c) => csvField(row[c])).join(","))
-    .join("\r\n");
-  return rows.length ? `${head}\r\n${body}` : head;
-}
-
-export type ExportResult =
-  | { error: string }
-  | { filename: string; csv: string; rows: number };
+// The escaper and its CSV-injection guard now live in @/lib/faithproof/csv so
+// the volunteer exports share exactly this behaviour instead of reimplementing
+// it. Re-exported here so existing importers keep working.
+export type { ExportResult };
 
 async function exportTable(
   table: string,

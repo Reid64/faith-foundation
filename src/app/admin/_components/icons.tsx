@@ -233,3 +233,14 @@ export function TrophyIcon(props: IconProps) {
     </Svg>
   );
 }
+
+/** Volunteers — open hand offering. */
+export function HandIcon(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <path d="M10 11V5.5a1.5 1.5 0 0 1 3 0V11" />
+      <path d="M13 11V4.5a1.5 1.5 0 0 1 3 0V11" />
+      <path d="M16 11V6.5a1.5 1.5 0 0 1 3 0V14a6 6 0 0 1-6 6h-1.5a5 5 0 0 1-3.9-1.9L4 13.5a1.6 1.6 0 0 1 2.4-2.1L10 14" />
+    </Svg>
+  );
+}
