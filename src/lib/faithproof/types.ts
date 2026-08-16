@@ -38,12 +38,24 @@ export const FUND_DESIGNATIONS = [
   // FUND_LABELS below. Removing the label from the enum itself would break
   // those rows, so the enum is left alone.
   "financial_literacy",
+  // Added in Phase 9 so historical Zeffy campaigns map without data loss.
+  // single_parent_stability and emergency_bridge name RETIRED programs and are
+  // excluded from SELECTABLE_FUNDS below, like financial_literacy.
+  "single_parent_stability",
+  "emergency_bridge",
+  "cornerstone_communities",
 ] as const;
 export type FundDesignation = (typeof FUND_DESIGNATIONS)[number];
 
 /** Funds offered when creating a new record — excludes the retired program. */
+const RETIRED_FUNDS: FundDesignation[] = [
+  "financial_literacy",
+  "single_parent_stability",
+  "emergency_bridge",
+];
+
 export const SELECTABLE_FUNDS: FundDesignation[] = FUND_DESIGNATIONS.filter(
-  (f) => f !== "financial_literacy"
+  (f) => !RETIRED_FUNDS.includes(f)
 );
 
 export const VOUCHER_STATUSES = [
@@ -90,6 +102,9 @@ export const FUND_LABELS: Record<FundDesignation, string> = {
   operational: "Operational",
   unrestricted: "Unrestricted",
   financial_literacy: "Financial Literacy (retired)",
+  single_parent_stability: "Single Parent Stability (retired)",
+  emergency_bridge: "Emergency Bridge (retired)",
+  cornerstone_communities: "Cornerstone Communities",
 };
 
 export const TRANSACTION_TYPE_LABELS: Record<TransactionType, string> = {
