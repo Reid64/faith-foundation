@@ -6,6 +6,7 @@ import {
   getSession,
   writeAuditLog,
 } from "@/lib/faithproof/session";
+import { localWallTimeToISO, roomNameFor } from "@/lib/faithproof/board";
 
 type Result = { error?: string; ok?: boolean; id?: string };
 
@@ -42,14 +43,46 @@ export async function createMeeting(formData: FormData): Promise<Result> {
     ? attendeesRaw.split(",").map((s) => s.trim()).filter(Boolean)
     : [];
 
+  const scheduledStart = String(formData.get("scheduled_start") ?? "").trim();
+  const scheduledEnd = String(formData.get("scheduled_end") ?? "").trim();
+
+  if (scheduledStart && scheduledEnd && scheduledEnd <= scheduledStart) {
+    return { error: "The meeting end time has to be after the start time." };
+  }
+
+  // The form submits wall-clock text with no zone. It means Texas time — see
+  // localWallTimeToISO. Parsing it with `new Date()` would resolve it in the
+  // SERVER's zone (UTC on Vercel) and store the meeting hours off.
+  const startISO = scheduledStart ? localWallTimeToISO(scheduledStart) : null;
+  const endISO = scheduledEnd ? localWallTimeToISO(scheduledEnd) : null;
+
+  if (scheduledStart && !startISO) {
+    return { error: "That start time could not be read. Pick it again." };
+  }
+  if (scheduledEnd && !endISO) {
+    return { error: "That end time could not be read. Pick it again." };
+  }
+
+  /**
+   * The id is generated here rather than by the database so the Jitsi room name
+   * can be derived from it in the SAME insert. Letting Postgres assign it would
+   * mean a second UPDATE to fill in the room name, and a meeting that failed
+   * between the two would have no room at all.
+   */
+  const id = crypto.randomUUID();
+
   const { data, error } = await session.supabase
     .from("board_meetings")
     .insert({
+      id,
       meeting_date,
       type,
       agenda: agenda || null,
       minutes: minutes || null,
       attendees,
+      scheduled_start: startISO,
+      scheduled_end: endISO,
+      jitsi_room_name: roomNameFor(id),
       created_by: session.userId,
     })
     .select("id")
@@ -62,7 +95,12 @@ export async function createMeeting(formData: FormData): Promise<Result> {
     action: "board_meeting.created",
     entityType: "board_meetings",
     entityId: data.id,
-    newValue: { meeting_date, type, attendees: attendees.length },
+    newValue: {
+      meeting_date,
+      type,
+      attendees: attendees.length,
+      scheduled_start: scheduledStart || null,
+    },
   });
 
   revalidatePath("/admin/board");

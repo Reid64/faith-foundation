@@ -1,6 +1,52 @@
 # faith-foundation — SESSION STATE
 
-> Tracks the live execution session. LATEST: **FAITHPROOF MEGA-BUILD — PHASES 9 THROUGH 18, ALL
+> Tracks the live execution session. LATEST: **PHASE 19 — BOARD MEETING ROOM** (2026-08-16).
+> Video meetings, AI-drafted minutes and digitally signed board approval, built inside the Command
+> Center. Migration 014 applied directly to the live database; the `board-minutes` storage bucket
+> created by calling `/api/setup/storage` once. Build clean (0 TS errors), `vercel --prod` READY.
+>
+> **Live verification: 47/47.** A throwaway admin created a meeting through the real form and the
+> walk confirmed the whole path: scheduled times persist, `jitsi_room_name` derives from the meeting
+> UUID, the Join button and the Command Center alert appear for an imminent meeting, the pre-join
+> screen renders with a camera preview and the participant sidebar, the minutes page offers
+> transcript upload and manual entry, `/api/board/generate-minutes` returns **400** without a
+> transcript and **503** (not 500) without `ANTHROPIC_API_KEY`, the signature canvas captures a real
+> **7,306-character PNG** stored with IP address and user agent, the Approve button stays disabled
+> until there is ink, a **second approval from the same person is refused by the database (23505)**,
+> certification is **not** offered while approvals are outstanding, and a certified record withdraws
+> the Edit button and explains why. Both new API routes return **401** unauthenticated.
+>
+> **A real defect found by that verification and fixed.** `datetime-local` submits wall-clock text
+> with no timezone; the server was parsing it with `new Date()`, which resolves in the server's zone
+> — UTC on Vercel. A 6pm Texas meeting was stored as 6pm UTC, five hours early, so the Join button
+> and the meeting alert never appeared. Meeting times now convert from and display in
+> `America/Chicago`, checked on both sides of the DST boundary (August -5, January -6).
+>
+> **A test-harness bug, not a product bug, recorded so it is not re-diagnosed:** the first run's
+> failure to submit the meeting form was my selector clicking `button[type="submit"]`, which matched
+> the admin shell's **Sign Out** button first. Selecting by name fixed it.
+>
+> **The throwaway test account could not be deleted, and that is correct.** It had written
+> `audit_log` rows, and `audit_log.actor_id` references `profiles(id)` with no cascade — deleting the
+> actor would orphan or falsify an append-only trail. It was neutralised instead: role set to
+> `public` (out of the approval quorum and every RLS grant) and its password rotated to a random
+> value. The audit history stays true. Future runs use a unique address per run.
+>
+> **Two documented deviations from the spec:** (1) the Jitsi iFrame API exposes participant events
+> but not individual media streams, so a per-participant tile grid outside the iframe is not
+> possible — a hidden iframe would show no video at all; Jitsi owns the video surface and all
+> chrome, branding, participant list, active-speaker highlight and controls are ours. (2) the model
+> id is read from `ANTHROPIC_MODEL` with a current default rather than hard-coding
+> `claude-sonnet-4-6`, matching Phase 18.
+>
+> **Deliberately NOT verified: the certified-PDF render against production data.** Reaching the
+> certified state requires every admin and board profile to have approved, and the only way to force
+> that on the live database would be to write fabricated signatures attributed to four real, named
+> directors into a legal-record table. Not done. The gate that refuses premature certification IS
+> verified, and the PDF renderer was proven in isolation to embed a base64 signature and emit a
+> valid `%PDF-` document in this runtime.
+>
+> PRIOR: **FAITHPROOF MEGA-BUILD — PHASES 9 THROUGH 18, ALL
 > COMPLETE** (2026-08-16). Ten phases built end to end in one autonomous run: Zeffy webhook, CRM,
 > mail merge + inbound parsing, board portal, grant tracking, volunteer management, fund
 > accounting, Cornerstone tracker + public page, public API, AI intake assistant. Ten deploys, ten

@@ -12,6 +12,7 @@ import {
 } from "./_components/icons";
 import {
   CountBadge,
+  type CountTone,
   DarkPanel,
   EmptyState,
   Panel,
@@ -71,6 +72,7 @@ export default async function CommandCenterPage({
     publicDonations,
     grantsReporting,
     grantDeadlines,
+    meetingsSoon,
   ] = await Promise.all([
     supabase
       .from("transactions")
@@ -131,6 +133,14 @@ export default async function CommandCenterPage({
       .select("*", { count: "exact", head: true })
       .in("status", ["researching", "applied"])
       .lte("application_deadline", addDays(today, 7)),
+    // Board meetings starting within two hours that nobody has joined yet.
+    // Count only — the row links to the meetings list.
+    supabase
+      .from("board_meetings")
+      .select("*", { count: "exact", head: true })
+      .gte("scheduled_start", new Date().toISOString())
+      .lte("scheduled_start", new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString())
+      .is("actual_start", null),
   ]);
 
   const totalDonatedCents = (donations.data ?? []).reduce(
@@ -156,12 +166,16 @@ export default async function CommandCenterPage({
   // not blank out the transaction and voucher queues, which matter more.
   const grantsReportingCount = grantsReporting.error ? 0 : (grantsReporting.count ?? 0);
   const grantDeadlineCount = grantDeadlines.error ? 0 : (grantDeadlines.count ?? 0);
+  // Board meetings are restricted to admin and board by RLS, so a staff
+  // account simply sees zero here rather than an error.
+  const meetingsSoonCount = meetingsSoon.error ? 0 : (meetingsSoon.count ?? 0);
   const nothingPending =
     pendingTxCount === 0 &&
     pendingVoucherCount === 0 &&
     overduePromiseCount === 0 &&
     grantsReportingCount === 0 &&
-    grantDeadlineCount === 0;
+    grantDeadlineCount === 0 &&
+    meetingsSoonCount === 0;
 
   const entries = (activity.data ?? []) as AuditLogEntry[];
 
@@ -275,6 +289,15 @@ export default async function CommandCenterPage({
                   count={overduePromiseCount}
                   label="Overdue promises"
                   detail="Still active past their target date"
+                />
+              ) : null}
+              {meetingsSoonCount > 0 ? (
+                <AttentionRow
+                  href="/admin/board/meetings"
+                  tone="blue"
+                  count={meetingsSoonCount}
+                  label="Board meeting starting soon"
+                  detail="Scheduled within the next two hours"
                 />
               ) : null}
               {grantDeadlineCount > 0 ? (
@@ -403,7 +426,7 @@ function AttentionRow({
   detail,
 }: {
   href: string;
-  tone: "red" | "amber";
+  tone: CountTone;
   count: number;
   label: string;
   detail: string;

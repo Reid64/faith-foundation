@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { BackLink, DetailCard, DetailHeading, DetailList, Row } from "../../../_components/detail";
 import { InfoIcon } from "../../../_components/icons";
@@ -8,8 +9,13 @@ import { formatDateOnly, formatTimestamp } from "@/lib/faithproof/format";
 import {
   MEETING_TYPE_LABELS,
   MEETING_TYPE_TONES,
+  MINUTES_STATUS_LABELS,
+  MINUTES_STATUS_TONES,
   VOTE_RESULT_LABELS,
   VOTE_TONES,
+  formatMeetingTime,
+  isJoinable,
+  meetingDuration,
   type BoardMeeting,
   type BoardVote,
 } from "@/lib/faithproof/board";
@@ -57,6 +63,9 @@ export default async function MeetingDetailPage({
 
   const m = meeting as BoardMeeting;
   const votes = (voteRows ?? []) as BoardVote[];
+  const joinable = isJoinable(m);
+  const finished = Boolean(m.actual_end);
+  const duration = meetingDuration(m.actual_start, m.actual_end);
 
   return (
     <div className="mx-auto max-w-4xl">
@@ -65,6 +74,63 @@ export default async function MeetingDetailPage({
         title={`${MEETING_TYPE_LABELS[m.type] ?? m.type} Meeting — ${formatDateOnly(m.meeting_date)}`}
         subtitle={`Recorded ${formatTimestamp(m.created_at)}.`}
       />
+
+      {/* The meeting room, and the minutes it produces. Shown above everything
+          else because during a meeting this is the only thing anyone wants. */}
+      {joinable ? (
+        <div
+          className="mb-6 flex flex-wrap items-center justify-between gap-4 rounded-xl px-5 py-4"
+          style={{ backgroundColor: "#013e37" }}
+        >
+          <div>
+            <p style={{ color: "#ffefb3", fontSize: 15, fontWeight: 600 }}>
+              {m.actual_start ? "This meeting is in progress" : "The meeting room is open"}
+            </p>
+            <p className="mt-0.5 text-sm" style={{ color: "rgba(255,239,179,0.6)" }}>
+              {m.scheduled_start
+                ? `Scheduled for ${formatMeetingTime(m.scheduled_start)}`
+                : "No scheduled time recorded"}
+            </p>
+          </div>
+          <Link
+            href={`/admin/board/meetings/${m.id}/room`}
+            className="rounded-lg px-6 py-3 text-sm font-bold"
+            style={{ backgroundColor: "#16a34a", color: "#ffffff" }}
+          >
+            Join Meeting
+          </Link>
+        </div>
+      ) : null}
+
+      {finished ? (
+        <div
+          className="mb-6 flex flex-wrap items-center justify-between gap-4 rounded-xl px-5 py-4"
+          style={{
+            backgroundColor: "#ffffff",
+            border: "1px solid rgba(0,0,0,0.08)",
+            boxShadow: "0 2px 6px rgba(0,0,0,0.08), 0 8px 24px rgba(1,62,55,0.1)",
+          }}
+        >
+          <div className="flex flex-wrap items-center gap-3">
+            <Badge tone="green">Meeting complete</Badge>
+            <span className="text-sm" style={{ color: "#6b7280" }}>
+              {duration ? `Ran ${duration}.` : "Ended."}
+            </span>
+            {m.minutes_status !== "draft" ? (
+              <Badge tone={MINUTES_STATUS_TONES[m.minutes_status] ?? "gray"}>
+                Minutes {MINUTES_STATUS_LABELS[m.minutes_status] ?? m.minutes_status}
+              </Badge>
+            ) : null}
+          </div>
+          <Link
+            href={`/admin/board/meetings/${m.id}/minutes`}
+            className="rounded-lg px-5 py-2.5 text-sm font-semibold"
+            style={{ backgroundColor: "#013e37", color: "#ffefb3" }}
+          >
+            View Minutes
+          </Link>
+        </div>
+      ) : null}
 
       <DetailCard>
         <DetailList>

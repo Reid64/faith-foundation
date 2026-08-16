@@ -57,6 +57,26 @@ prompt also states explicitly that it cannot decide eligibility.
 
 ---
 
+## Jitsi recording and transcription (Phase 19 — Board Meeting Room)
+
+Board meetings run on the **public meet.jit.si server**, which needs no account
+and no environment variable. Two consequences:
+
+- **Recording requires a paid 8x8 account.** The Start Recording control exists
+  and calls the Jitsi API, but on the free public server it will not produce a
+  file. Until that changes, the transcript is added by hand on the minutes page
+  (paste, or load a .txt), and Claude drafts the minutes from it.
+- **Self-hosting removes both limits.** Jitsi on the spare laptop server makes
+  recording free and unlimited, and Whisper transcription can run locally on the
+  same machine. When that exists, set `JITSI_SERVER_URL` and point the room at
+  it — the domain is the only value the client needs.
+
+Room names are `faithproof-board-<meeting-uuid>` and are not secret, so **lobby
+mode is enabled**: the first participant admits everyone else. Knowing a URL is
+not enough to sit in a board meeting.
+
+---
+
 ## ZOHO_SMTP_PASS (Phase 11 — Mail merge)
 
 Zoho app-specific password for info@faithfoundationsf.org.
@@ -83,9 +103,14 @@ contact whose `sms_consent` is false.
 
 ## Database migrations
 
-Migrations 006–013 were **applied directly to the live database** during the
+Migrations 006–014 were **applied directly to the live database** during the
 build (via a direct Postgres connection), so no manual SQL-editor step is
 required. The files remain in `supabase/migrations/` as the record.
+
+The `board-minutes` storage bucket (Phase 19, private, 50 MB limit) was created
+by calling `GET /api/setup/storage` once as an administrator. That is done, not
+pending. The endpoint is safe to call again — an existing bucket is reported,
+not recreated.
 
 Verify with: `select table_name from information_schema.tables where table_schema='public'`
 

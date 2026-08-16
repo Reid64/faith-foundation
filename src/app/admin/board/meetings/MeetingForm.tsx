@@ -34,6 +34,30 @@ export function MeetingForm({
         </Field>
       </div>
 
+      {/* Scheduling is what opens the meeting room: the Join button appears 30
+          minutes before the start time. A meeting with no start time is still
+          joinable on its date, so these stay optional. */}
+      <div className="grid gap-6 sm:grid-cols-2">
+        <Field
+          label="Meeting Start Time"
+          htmlFor="scheduled_start"
+          hint="The video room opens 30 minutes before this."
+        >
+          <TextInput
+            id="scheduled_start"
+            name="scheduled_start"
+            type="datetime-local"
+          />
+        </Field>
+        <Field label="Meeting End Time" htmlFor="scheduled_end">
+          <TextInput
+            id="scheduled_end"
+            name="scheduled_end"
+            type="datetime-local"
+          />
+        </Field>
+      </div>
+
       <Field
         label="Attendees"
         htmlFor="attendees"

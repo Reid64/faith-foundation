@@ -1,7 +1,64 @@
 # faith-foundation — STATE OF THE BUILD
 
 > Updated from a LIVE codebase audit on 2026-08-16 (BLUEPRINT Canonical Rule 9).
-> Last action: **FAITHPROOF PLATFORM COMPLETE — Phases 9-18 built, deployed and verified.**
+> Last action: **PHASE 19 COMPLETE — Board Meeting Room: video, AI minutes, digital signatures.**
+>
+> **Built:** Jitsi video integration with custom FaithProof chrome, branded pre-join screen with
+> camera preview, live participant list with active-speaker highlighting, custom controls bar
+> (mute / camera / screen share / recording / timer / end meeting), AI minutes generation via the
+> Claude API, transcript upload, inline minutes editing, a drawn-signature approval workflow, board
+> approval tracking, certified-minutes PDF generation filed to private Supabase Storage, and a
+> Command Center alert for meetings starting within two hours.
+>
+> **Migration 014 was applied directly to the live database** (board_meetings gains nine columns
+> plus a status CHECK; new `meeting_approvals` table). No SQL-editor step is outstanding. The
+> `board-minutes` storage bucket was created by calling `/api/setup/storage` once, as designed —
+> that is done, not pending.
+>
+> **Verified live: 47/47 on a purpose-built walk.** A throwaway admin created a meeting through the
+> real form, and the walk confirmed: scheduled times save, the Jitsi room name derives from the
+> meeting UUID, the Join button and the Command Center alert appear for an imminent meeting, the
+> pre-join screen renders with camera preview and participant sidebar, `/api/board/generate-minutes`
+> returns **400** without a transcript and **503** (not 500) without `ANTHROPIC_API_KEY`, a drawn
+> signature is captured as a 7 KB PNG and stored with IP and user agent, a second approval from the
+> same person is refused by the database (23505), certification is **not** offered while approvals
+> are outstanding, and a certified record withdraws the Edit button and says why. Both new API
+> routes return **401** to an anonymous caller.
+>
+> **One real defect found by that verification and fixed.** `datetime-local` inputs submit
+> wall-clock text with no timezone, and the server was parsing it with `new Date()` — which resolves
+> in the SERVER's zone (UTC on Vercel). A 6pm Texas meeting was being stored as 6pm UTC, five hours
+> early, which put the Join button and the Command Center alert in the wrong place. Meeting times
+> are now converted from and displayed in `America/Chicago`, verified correct on both sides of the
+> DST boundary.
+>
+> **Two documented deviations from the phase spec:**
+> 1. **Video tiles.** The spec describes a per-participant tile grid built outside the iFrame, with
+>    the Jitsi iframe in a hidden div. The Jitsi iFrame API exposes participant events and commands
+>    but not individual media streams, so a hidden iframe would show no video at all. Jitsi owns the
+>    video surface; the sidebar participant list, active-speaker highlight, controls bar and all
+>    branding are ours, and Jitsi's own toolbar and watermarks are off. Recorded in MeetingRoom.tsx.
+> 2. **Model id.** The spec names `claude-sonnet-4-6`. As in Phase 18, the route reads
+>    `ANTHROPIC_MODEL` with a current default so the model can change without a code edit.
+>
+> **Not verified, and deliberately so: the certified-PDF render on production.** Certification
+> requires every admin and board profile to have approved, and the only way to reach that state on
+> the live database would be to write fabricated approval signatures attributed to four real, named
+> directors into a legal-record table. That was not done. What IS verified: the certification gate
+> correctly refuses while approvals are outstanding, and the PDF renderer embeds a base64 signature
+> image and emits a valid `%PDF-` document in this exact runtime (checked in isolation).
+>
+> **Pending manual steps for Phase 19:**
+> - Add `ANTHROPIC_API_KEY` to Vercel — AI minutes generation returns a plain 503 until then.
+> - Add `ZOHO_SMTP_PASS` to Vercel — approval and draft-ready notifications are skipped until then,
+>   and never reported as sent.
+> - Jitsi recording on the public meet.jit.si server requires a paid 8x8 account; until then the
+>   transcript is uploaded by hand on the minutes page. Self-hosting Jitsi makes recording and
+>   local Whisper transcription free.
+>
+> Next: enter real data, add the two environment variables, and run a full meeting end to end.
+>
+> Prior action: **FAITHPROOF PLATFORM COMPLETE — Phases 9-18 built, deployed and verified.**
 >
 > **Phases complete:** 9 (Zeffy webhook + auto-population), 10 (CRM), 11 (Mail merge + inbound
 > parsing), 12 (Board portal), 13 (Grant tracking), 14 (Volunteer management), 15 (Fund

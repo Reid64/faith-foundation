@@ -286,13 +286,22 @@ const DARK_COUNT_TONES: Record<string, React.CSSProperties> = {
     color: "#fde68a",
     border: "1px solid rgba(251,191,36,0.3)",
   },
+  // Informational rather than overdue — added in Phase 19 for "a board meeting
+  // starts soon", which is a prompt, not a problem.
+  blue: {
+    backgroundColor: "rgba(96,165,250,0.2)",
+    color: "#bfdbfe",
+    border: "1px solid rgba(96,165,250,0.3)",
+  },
 };
+
+export type CountTone = "red" | "amber" | "blue";
 
 export function CountBadge({
   tone,
   count,
 }: {
-  tone: "red" | "amber";
+  tone: CountTone;
   count: number;
 }) {
   return (
