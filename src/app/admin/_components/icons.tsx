@@ -244,3 +244,14 @@ export function HandIcon(props: IconProps) {
     </Svg>
   );
 }
+
+/** Accounting — open ledger. */
+export function LedgerIcon(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <path d="M12 6.5S10 4.8 6.5 4.8c-1 0-1.8.1-2.5.3v13c.7-.2 1.5-.3 2.5-.3 3.5 0 5.5 1.7 5.5 1.7" />
+      <path d="M12 6.5S14 4.8 17.5 4.8c1 0 1.8.1 2.5.3v13c-.7-.2-1.5-.3-2.5-.3-3.5 0-5.5 1.7-5.5 1.7" />
+      <path d="M12 6.5v13.5" />
+    </Svg>
+  );
+}
