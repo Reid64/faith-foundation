@@ -208,3 +208,14 @@ export function UsersIcon(props: IconProps) {
     </Svg>
   );
 }
+
+/** Board portal — columned building. */
+export function BankIcon(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <path d="M3 9.5 12 4l9 5.5" />
+      <path d="M5 10v8M9.5 10v8M14.5 10v8M19 10v8" />
+      <path d="M3 20h18" />
+    </Svg>
+  );
+}

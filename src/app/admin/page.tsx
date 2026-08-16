@@ -41,7 +41,11 @@ function todayISODate(): string {
   return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
 }
 
-export default async function CommandCenterPage() {
+export default async function CommandCenterPage({
+  searchParams,
+}: {
+  searchParams?: { denied?: string };
+}) {
   const session = await getSession();
   if (!session) return null; // layout redirects; this satisfies the type checker
   const { supabase } = session;
@@ -144,6 +148,24 @@ export default async function CommandCenterPage() {
           recorded on the right.
         </p>
       </header>
+
+      {/*
+        Set by the board portal layout when a staff account reaches one of its
+        routes. Without this the redirect looks like a broken link.
+      */}
+      {searchParams?.denied === "board" ? (
+        <p
+          role="alert"
+          className="mb-6 rounded-lg px-4 py-3 text-sm"
+          style={{
+            backgroundColor: "#fffbeb",
+            color: "#d97706",
+            border: "1px solid #fde68a",
+          }}
+        >
+          The board portal is limited to directors and administrators.
+        </p>
+      ) : null}
 
       {/* ── Summary stats ──────────────────────────────────────────── */}
       <div

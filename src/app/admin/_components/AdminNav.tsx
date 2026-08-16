@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   ArrowsIcon,
+  BankIcon,
   CheckCircleIcon,
   GridIcon,
   GearIcon,
@@ -20,6 +21,7 @@ const NAV = [
   { href: "/admin/vouchers", label: "Vouchers", Icon: TicketIcon },
   { href: "/admin/promises", label: "Promises", Icon: CheckCircleIcon },
   { href: "/admin/proof-vault", label: "Proof Vault", Icon: ShieldIcon },
+  { href: "/admin/board", label: "Board", Icon: BankIcon },
   { href: "/admin/audit-log", label: "Audit Log", Icon: ListIcon },
   { href: "/admin/settings", label: "Settings", Icon: GearIcon },
 ];
