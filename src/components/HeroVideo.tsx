@@ -95,13 +95,6 @@ export default function HeroVideo({
       <div className="absolute inset-0 bg-gradient-to-tr from-black/55 via-black/20 to-transparent" />
 
       <div className="relative z-10 w-full">{children}</div>
-
-      {/* Scroll cue */}
-      <div className="pointer-events-none absolute inset-x-0 bottom-7 flex justify-center">
-        <span className="flex h-10 w-6 items-start justify-center rounded-full border-2 border-white/40 p-1.5">
-          <span className="h-2 w-1 animate-float-slow rounded-full bg-green-light" />
-        </span>
-      </div>
     </section>
   );
 }

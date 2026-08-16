@@ -1,6 +1,17 @@
 # faith-foundation — SESSION STATE
 
-> Tracks the live execution session. LATEST: **FaithProof MEGA-BUILD — Phases 3D, 4, 5, 6, 7, 8.
+> Tracks the live execution session. LATEST: **FIX — broken scroll indicator removed from the
+> homepage hero** (2026-08-16). The animated "mouse" scroll cue (rounded oval + floating dot) at the
+> bottom of the hero is gone. **It was not in `src/app/page.tsx`** — the homepage delegates its hero
+> to `<HeroVideo>`, and the cue lived in `src/components/HeroVideo.tsx` lines 99-104. The wrapper
+> div, the oval, the dot and the `{/* Scroll cue */}` comment were all deleted: **7 lines removed,
+> one file changed, nothing else touched.** `HeroVideo` is used only by the homepage, so nothing
+> else is affected; the shared `float-slow` keyframe in `tailwind.config.ts` was left alone.
+> Build PASSED (0 TS errors, 45/45 pages); `vercel --prod` READY
+> (`dpl_5fPXrA7Rbg5Gvv66uT9wiZ7r5G5W`). Verified live: **0 occurrences of `animate-float-slow`** on
+> the homepage, hero headline/subhead/both CTAs intact.
+>
+> PRIOR: **FaithProof MEGA-BUILD — Phases 3D, 4, 5, 6, 7, 8.
 > ALL COMPLETE** (2026-08-16). **FaithProof is FEATURE COMPLETE — ready for real data entry.**
 > 3D final colour system (page `#f0f0ef`, butter `#ffefb3` stat cards, two deep green `#013e37`
 > panels, white cards elsewhere) — **18/18** live. 4 status transitions + full CRUD: detail and edit
@@ -1425,5 +1436,40 @@ corresponding section disappears from the public page.
 5. **`audit_log` actor spoofing via the REST API** remains possible for an authenticated user.
 6. **Total donations is summed in JavaScript**, not SQL.
 7. **`notepad supabase password.txt`** still holds the live DB password in the working tree.
+
+- **Last updated:** 2026-08-16
+
+## 2026-08-16 — Homepage hero: broken scroll indicator removed
+
+**What was asked:** read `src/app/page.tsx`, find the scroll indicator (a mouse/oval shape with an
+animated dot, absolutely positioned at the bottom of the hero), delete it entirely including its
+wrapper, touch nothing else.
+
+**Where it actually was.** `src/app/page.tsx` contains no scroll indicator. The homepage hero is
+delegated to `<HeroVideo>`, and the cue lived in `src/components/HeroVideo.tsx`:
+
+    {/* Scroll cue */}
+    <div className="pointer-events-none absolute inset-x-0 bottom-7 flex justify-center">
+      <span className="flex h-10 w-6 items-start justify-center rounded-full border-2 border-white/40 p-1.5">
+        <span className="h-2 w-1 animate-float-slow rounded-full bg-green-light" />
+      </span>
+    </div>
+
+That matched the description exactly — absolutely positioned at the bottom of the hero, an oval
+outline (`h-10 w-6 rounded-full border-2`) with an animated dot inside (`animate-float-slow`). The
+whole block including the wrapper `<div>` and its comment was deleted.
+
+**Scope held.** One file changed, **7 lines removed, 0 added**. `src/app/page.tsx` is byte-identical
+(`git diff` empty). `HeroVideo` is imported by the homepage and nowhere else — confirmed by grep —
+so no other page loses a scroll cue. The `float-slow` keyframe in `tailwind.config.ts` was
+deliberately **not** removed: it is a shared animation token and deleting it would reach outside the
+requested change.
+
+**Gates.** `pnpm tsc --noEmit` 0 errors · `pnpm run build` PASSED, 45/45 pages · `vercel --prod`
+READY (`dpl_5fPXrA7Rbg5Gvv66uT9wiZ7r5G5W`).
+
+**Verified live:** `animate-float-slow` appears **0 times** on the homepage, while "Opening the door
+to", "homeownership", "Donate Now" and "Apply for Assistance" are all still present — the cue is
+gone and the rest of the hero is untouched.
 
 - **Last updated:** 2026-08-16

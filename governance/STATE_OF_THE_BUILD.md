@@ -1,7 +1,23 @@
 # faith-foundation — STATE OF THE BUILD
 
 > Updated from a LIVE codebase audit on 2026-08-16 (BLUEPRINT Canonical Rule 9).
-> Last action: **FAITHPROOF MEGA-BUILD — PHASES 3D, 4, 5, 6, 7, 8. Status: ALL COMPLETE.
+> Last action: **FIX — broken scroll indicator removed from the homepage hero.** The animated
+> "mouse" scroll cue at the bottom of the hero (a rounded oval with a floating dot inside) is gone.
+>
+> **It was not in `src/app/page.tsx`.** The homepage delegates its hero to `<HeroVideo>`, and the
+> cue lived in `src/components/HeroVideo.tsx` (lines 99-104) — a `pointer-events-none absolute
+> inset-x-0 bottom-7` wrapper holding a `h-10 w-6 rounded-full border-2 border-white/40` oval with
+> an `h-2 w-1 animate-float-slow rounded-full bg-green-light` dot. The whole block, including the
+> wrapper div and its `{/* Scroll cue */}` comment, was deleted: **7 lines removed, nothing else
+> touched.** `HeroVideo` is imported by the homepage and nowhere else, so the change is confined to
+> that one hero. The `float-slow` keyframe in `tailwind.config.ts` was deliberately left in place —
+> it is a shared animation token and removing it would reach outside the requested change.
+>
+> Build PASSED (0 TypeScript errors, 45/45 pages); `vercel --prod` -> READY
+> (`dpl_5fPXrA7Rbg5Gvv66uT9wiZ7r5G5W`). Verified live: **0 occurrences of `animate-float-slow`** on
+> the homepage, with the hero headline, subhead and both CTAs still present.
+>
+> Prior action: **FAITHPROOF MEGA-BUILD — PHASES 3D, 4, 5, 6, 7, 8. Status: ALL COMPLETE.
 > FAITHPROOF IS FEATURE COMPLETE — ready for real data entry.**
 >
 > **3D — final colour system.** Page `#f0f0ef`, butter `#ffefb3` stat cards, two deep green
