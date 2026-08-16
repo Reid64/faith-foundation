@@ -34,8 +34,15 @@ export function AdminForm({
   cancelHref,
   children,
 }: {
-  action: (formData: FormData) => Promise<{ error?: string; ok?: boolean }>;
-  successHref: string;
+  action: (
+    formData: FormData
+  ) => Promise<{ error?: string; ok?: boolean; id?: string }>;
+  /**
+   * Where to go once the server confirms the write. A function when the
+   * destination depends on the new row — grants land on their own detail page,
+   * which is only knowable after the insert returns an id.
+   */
+  successHref: string | ((result: { id?: string }) => string);
   submitLabel: string;
   cancelHref: string;
   children: React.ReactNode;
@@ -75,7 +82,11 @@ export function AdminForm({
       }
 
       // Only reached once the server has confirmed the insert.
-      router.push(successHref);
+      router.push(
+        typeof successHref === "function"
+          ? successHref(result ?? {})
+          : successHref
+      );
       router.refresh();
     } catch (cause) {
       setError(

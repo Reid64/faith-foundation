@@ -219,3 +219,17 @@ export function BankIcon(props: IconProps) {
     </Svg>
   );
 }
+
+/** Grants — trophy. */
+export function TrophyIcon(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <path d="M8 4h8v5a4 4 0 0 1-8 0V4Z" />
+      <path d="M8 5.5H5.5A2.5 2.5 0 0 0 5.5 10H6" />
+      <path d="M16 5.5h2.5a2.5 2.5 0 0 1 0 4.5H18" />
+      <path d="M12 13v3.5" />
+      <path d="M9 20h6" />
+      <path d="M10.5 16.5h3l.5 3.5h-4l.5-3.5Z" />
+    </Svg>
+  );
+}

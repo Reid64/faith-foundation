@@ -41,6 +41,13 @@ function todayISODate(): string {
   return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
 }
 
+/** Shift a YYYY-MM-DD string by whole days, staying on the UTC calendar. */
+function addDays(date: string, days: number): string {
+  const d = new Date(`${date}T00:00:00Z`);
+  d.setUTCDate(d.getUTCDate() + days);
+  return d.toISOString().slice(0, 10);
+}
+
 export default async function CommandCenterPage({
   searchParams,
 }: {
@@ -62,6 +69,8 @@ export default async function CommandCenterPage({
     verifiedDocs,
     activity,
     publicDonations,
+    grantsReporting,
+    grantDeadlines,
   ] = await Promise.all([
     supabase
       .from("transactions")
@@ -109,6 +118,19 @@ export default async function CommandCenterPage({
       .eq("type", "donation")
       .eq("status", "confirmed")
       .eq("is_public", true),
+    // Grant reporting due inside 30 days, and applications due inside 7. Both
+    // are cheap count-only queries; this Promise.all is the page's cost centre,
+    // so nothing here selects rows it does not display.
+    supabase
+      .from("grants")
+      .select("*", { count: "exact", head: true })
+      .eq("status", "reporting")
+      .lte("reporting_deadline", addDays(today, 30)),
+    supabase
+      .from("grants")
+      .select("*", { count: "exact", head: true })
+      .in("status", ["researching", "applied"])
+      .lte("application_deadline", addDays(today, 7)),
   ]);
 
   const totalDonatedCents = (donations.data ?? []).reduce(
@@ -130,10 +152,16 @@ export default async function CommandCenterPage({
   const pendingTxCount = pendingTx.count ?? 0;
   const pendingVoucherCount = pendingVouchers.count ?? 0;
   const overduePromiseCount = overduePromises.count ?? 0;
+  // Grant counts do not gate `attentionError` — a failure reading grants must
+  // not blank out the transaction and voucher queues, which matter more.
+  const grantsReportingCount = grantsReporting.error ? 0 : (grantsReporting.count ?? 0);
+  const grantDeadlineCount = grantDeadlines.error ? 0 : (grantDeadlines.count ?? 0);
   const nothingPending =
     pendingTxCount === 0 &&
     pendingVoucherCount === 0 &&
-    overduePromiseCount === 0;
+    overduePromiseCount === 0 &&
+    grantsReportingCount === 0 &&
+    grantDeadlineCount === 0;
 
   const entries = (activity.data ?? []) as AuditLogEntry[];
 
@@ -218,7 +246,7 @@ export default async function CommandCenterPage({
               tone="success"
               icon={<CheckIcon className="h-5 w-5" />}
               title="Nothing requires attention"
-              detail="No unconfirmed transactions, no pending vouchers, and no overdue promises."
+              detail="No unconfirmed transactions, no pending vouchers, no overdue promises, and no grant deadlines approaching."
             />
           ) : (
             <ul style={{ borderColor: "rgba(255,239,179,0.1)" }} className="divide-y">
@@ -247,6 +275,24 @@ export default async function CommandCenterPage({
                   count={overduePromiseCount}
                   label="Overdue promises"
                   detail="Still active past their target date"
+                />
+              ) : null}
+              {grantDeadlineCount > 0 ? (
+                <AttentionRow
+                  href="/admin/grants"
+                  tone="red"
+                  count={grantDeadlineCount}
+                  label="Grant deadlines this week"
+                  detail="Applications due within 7 days"
+                />
+              ) : null}
+              {grantsReportingCount > 0 ? (
+                <AttentionRow
+                  href="/admin/grants"
+                  tone="amber"
+                  count={grantsReportingCount}
+                  label="Grants reporting due soon"
+                  detail="Reports due within 30 days"
                 />
               ) : null}
             </ul>

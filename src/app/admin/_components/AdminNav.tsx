@@ -11,6 +11,7 @@ import {
   ListIcon,
   ShieldIcon,
   TicketIcon,
+  TrophyIcon,
   UsersIcon,
 } from "./icons";
 
@@ -20,6 +21,7 @@ const NAV = [
   { href: "/admin/transactions", label: "Transactions", Icon: ArrowsIcon },
   { href: "/admin/vouchers", label: "Vouchers", Icon: TicketIcon },
   { href: "/admin/promises", label: "Promises", Icon: CheckCircleIcon },
+  { href: "/admin/grants", label: "Grants", Icon: TrophyIcon },
   { href: "/admin/proof-vault", label: "Proof Vault", Icon: ShieldIcon },
   { href: "/admin/board", label: "Board", Icon: BankIcon },
   { href: "/admin/audit-log", label: "Audit Log", Icon: ListIcon },
