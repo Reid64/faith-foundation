@@ -1,6 +1,21 @@
 # faith-foundation — SESSION STATE
 
-> Tracks the live execution session. LATEST: **FIX — broken scroll indicator removed from the
+> Tracks the live execution session. LATEST: **UI POLISH PASS — admin background darkened, stat
+> cards corrected to butter, FaithProof section contrast fixed** (2026-08-16). Admin page background
+> `#f0f0ef` -> **`#e8e6e1`** medium warm gray, set once in `admin/layout.tsx` and inherited by every
+> sub-page (all seven verified individually on production). Four stat cards now **`#ffefb3` butter**
+> via inline style with a 3px `#013e37` top rail, 24px padding and a stronger shadow; number
+> 32px/700, label 11px/600 at 0.7 opacity, icon at 0.25. All white cards, tables and `/new` form
+> wrappers moved to `0 2px 6px rgba(0,0,0,0.08), 0 8px 24px rgba(1,62,55,0.1)` so they lift off the
+> darker page. FaithProof public page now alternates strictly navy `#16243F` -> warm gray `#f0ede6`
+> -> white `#ffffff`, with **no two adjacent sections sharing a background** (asserted as a test).
+> Scroll indicator was already removed last action and was re-verified. Build PASSED (0 TS errors,
+> 45/45 pages); `vercel --prod` READY (`dpl_CEhUtqABQEXxPbYpYNL1UgfkugCd`). Live computed-colour
+> verification **39/39**. Database untouched.
+> **Known interaction:** the alternation assumes all five public sections are enabled; turning one
+> off can place two `#f0ede6` sections adjacent. Not fixed — not asked for, and all five are on.
+>
+> PRIOR: **FIX — broken scroll indicator removed from the
 > homepage hero** (2026-08-16). The animated "mouse" scroll cue (rounded oval + floating dot) at the
 > bottom of the hero is gone. **It was not in `src/app/page.tsx`** — the homepage delegates its hero
 > to `<HeroVideo>`, and the cue lived in `src/components/HeroVideo.tsx` lines 99-104. The wrapper
@@ -1471,5 +1486,92 @@ READY (`dpl_5fPXrA7Rbg5Gvv66uT9wiZ7r5G5W`).
 **Verified live:** `animate-float-slow` appears **0 times** on the homepage, while "Opening the door
 to", "homeownership", "Donate Now" and "Apply for Assistance" are all still present — the cue is
 gone and the rest of the hero is untouched.
+
+- **Last updated:** 2026-08-16
+
+## 2026-08-16 — UI polish pass: admin background, stat cards, FaithProof section contrast
+
+Three tasks in one pass. Everything below was verified on **live production by computed colour** —
+**39/39** — not by reading the diff.
+
+### Task 1 — admin
+
+| Problem | Fix |
+| --- | --- |
+| Page background too light | `#f0f0ef` → **`#e8e6e1`**, a genuinely medium warm gray |
+| Stat cards pale peach | **`#ffefb3` butter**, inline style, 3px `#013e37` top rail, 24px padding, 12px radius, shadow `0 2px 8px rgba(1,62,55,0.15), 0 1px 3px rgba(0,0,0,0.1)` |
+| Sub-pages | Background is set in `layout.tsx` and **inherited**, so it was fixed there only |
+| White cards too flat | Shadow → `0 2px 6px rgba(0,0,0,0.08), 0 8px 24px rgba(1,62,55,0.1)` on cards, tables and forms |
+| `/new` forms invisible | Form wrapper → white, 12px radius, 32px padding, the shadow above, `1px solid rgba(0,0,0,0.08)` |
+
+Stat card internals: number `#013e37` 32px/700, label 11px/600 uppercase `0.08em` at **opacity 0.7**,
+icon `#013e37` at **opacity 0.25**. No Tailwind `bg-` class anywhere on these cards — the div carries
+`style={{ backgroundColor: '#ffefb3', ... }}` directly.
+
+**Where the changes actually went.** The brief pointed at `admin/page.tsx` for the stat cards, but
+the four cards are rendered through the shared `StatCard` in `_components/ui.tsx`, whose surface
+comes from `statCardStyle` in `_components/theme.ts`. `StatCard` is used **only** by the dashboard —
+confirmed by grep — so editing it changes exactly those four divs and nothing else. Same reasoning
+for the card and form shadows: they live in `cardStyle` / `tableStyle` / `formCardStyle`, so one edit
+each covers every white card across the admin area. Duplicating the literal styles into ten page
+files would have produced the same pixels and ten places to drift.
+
+**Sub-page backgrounds: fixed in one place, verified in seven.** The brief allowed either. The
+background is inherited from `layout.tsx`, so that is the only file changed — and each of
+`/admin/transactions`, `/vouchers`, `/promises`, `/proof-vault`, `/audit-log`, `/settings` and
+`/transactions/new` was then checked individually on production to confirm it actually resolves to
+`rgb(232, 230, 225)`.
+
+### Task 2 — FaithProof public page
+
+Section tones now alternate strictly, top to bottom:
+
+| Section | Tone |
+| --- | --- |
+| Hero | navy `#16243F` |
+| Accountability Pulse | warm gray `#f0ede6` |
+| Open Mission Ledger | white `#ffffff` |
+| Promises vs Performance | warm gray `#f0ede6` |
+| Proof Vault | white `#ffffff` |
+| Nothing Hidden | navy `#16243F` — untouched, as instructed |
+| Donor Impact Receipts | warm gray `#f0ede6` |
+
+**"No two adjacent sections share a background" is enforced as an assertion**, not an eyeball: the
+verification reads all seven computed backgrounds in document order and fails if any equals its
+predecessor.
+
+Cards: Pulse cards white with a 3px `#C9A227` gold top rail, 32px/24px padding, layered shadow,
+navy 32px/700 number and `#6b7280` 11px uppercase label. Ledger wrapper white / 12px radius /
+`0 2px 8px rgba(0,0,0,0.07)` / hairline border, with a navy header row in gold 11px uppercase at
+12px 16px padding. Promise cards and document cards carry their specified values.
+
+### Task 3 — scroll indicator
+
+**Already removed in the previous action** and re-verified here: `animate-float-slow` appears 0 times
+on the homepage, and the hero headline, subhead and both CTAs are intact. No further change was
+needed, so none was made.
+
+### Gates
+
+- `pnpm tsc --noEmit` — 0 errors
+- `pnpm run build` — PASSED, 45/45 pages
+- `vercel --prod` — READY (`dpl_CEhUtqABQEXxPbYpYNL1UgfkugCd`)
+- Live computed-colour verification — **39/39**
+- Database untouched — 0 rows in all six data tables, 5 settings rows, only the real admin account
+
+### Known interaction, not fixed
+
+The alternation is correct for the current configuration, where all five public sections are
+enabled. Sections render conditionally from the settings toggles, so disabling one can place two
+same-tone sections adjacent — hiding the Open Mission Ledger, for instance, puts Accountability
+Pulse directly above Promises and both are `#f0ede6`. Deriving each tone from the *rendered* order
+rather than the authored order would make the rule hold under every combination. It was not built:
+it was not asked for, and all five sections are currently on.
+
+### Not changed, deliberately
+
+`/login` still uses `#f0f0ef` for its page background. The brief scoped this pass to admin pages and
+the FaithProof public page, and the login screen was not listed — so it was left alone rather than
+swept in.
 
 - **Last updated:** 2026-08-16

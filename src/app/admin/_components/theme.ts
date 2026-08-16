@@ -4,7 +4,7 @@ import type { CSSProperties } from "react";
  * FaithProof admin design system — FINAL (Phase 3D).
  *
  * Three surface families, deliberately different from each other:
- *   page          #f0f0ef  warm light gray
+ *   page          #e8e6e1  medium warm gray
  *   stat cards    #ffefb3  butter
  *   dashboard     #013e37  deep green (the two Command Center panels only)
  *   everything    #ffffff  white cards — tables, forms, list pages, detail pages
@@ -20,7 +20,7 @@ import type { CSSProperties } from "react";
 
 // ── Palette ─────────────────────────────────────────────────────────────────
 
-export const PAGE_BG = "#f0f0ef";
+export const PAGE_BG = "#e8e6e1";
 export const SURFACE = "#ffffff";
 export const DEEP_GREEN = "#013e37";
 export const DEEP_GREEN_HOVER = "#025a50";
@@ -40,8 +40,10 @@ export const DANGER = "#dc2626";
 export const cardStyle: CSSProperties = {
   backgroundColor: SURFACE,
   borderRadius: 12,
-  border: "1px solid rgba(0,0,0,0.07)",
-  boxShadow: "0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(1,62,55,0.07)",
+  border: "1px solid rgba(0,0,0,0.08)",
+  // Stronger than a typical card shadow on purpose: the page is #e8e6e1, a
+  // medium warm gray, and a light shadow simply disappears against it.
+  boxShadow: "0 2px 6px rgba(0,0,0,0.08), 0 8px 24px rgba(1,62,55,0.1)",
 };
 
 /** Butter stat card — the four counters at the top of the Command Center. */
@@ -49,7 +51,8 @@ export const statCardStyle: CSSProperties = {
   backgroundColor: BUTTER,
   borderRadius: 12,
   border: "none",
-  boxShadow: "0 2px 8px rgba(1,62,55,0.12), 0 1px 3px rgba(0,0,0,0.08)",
+  borderTop: "3px solid #013e37",
+  boxShadow: "0 2px 8px rgba(1,62,55,0.15), 0 1px 3px rgba(0,0,0,0.1)",
   padding: 24,
 };
 
@@ -66,14 +69,17 @@ export const darkPanelStyle: CSSProperties = {
 export const tableStyle: CSSProperties = {
   backgroundColor: SURFACE,
   borderRadius: 12,
-  border: "1px solid rgba(0,0,0,0.07)",
-  boxShadow: "0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(1,62,55,0.07)",
+  border: "1px solid rgba(0,0,0,0.08)",
+  boxShadow: "0 2px 6px rgba(0,0,0,0.08), 0 8px 24px rgba(1,62,55,0.1)",
 };
 
 /** Form wrapper — white card with 32px padding. */
 export const formCardStyle: CSSProperties = {
-  ...cardStyle,
+  backgroundColor: "#ffffff",
+  borderRadius: 12,
   padding: 32,
+  boxShadow: "0 2px 6px rgba(0,0,0,0.08), 0 8px 24px rgba(1,62,55,0.1)",
+  border: "1px solid rgba(0,0,0,0.08)",
 };
 
 /** Login card. */

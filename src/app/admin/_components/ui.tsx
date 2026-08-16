@@ -142,13 +142,14 @@ export function StatCard({
             fontWeight: 600,
             textTransform: "uppercase",
             letterSpacing: "0.08em",
+            opacity: 0.7,
           }}
         >
           {label}
         </p>
         {/* Decorative only — each icon sits beside its own text label. */}
         {icon ? (
-          <span aria-hidden="true" style={{ color: "#013e37", opacity: 0.3 }}>
+          <span aria-hidden="true" style={{ color: "#013e37", opacity: 0.25 }}>
             {icon}
           </span>
         ) : null}

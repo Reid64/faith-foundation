@@ -43,7 +43,7 @@ export default async function AdminLayout({
   const role = profile?.role ?? null;
 
   return (
-    <div className="min-h-screen bg-[#f0f0ef]">
+    <div className="min-h-screen" style={{ backgroundColor: "#e8e6e1" }}>
       {/* The sidebar is the ONLY dark surface in the admin UI. */}
       <aside
         style={{ borderRight: "1px solid rgba(255,239,179,0.15)" }}
@@ -115,7 +115,12 @@ export default async function AdminLayout({
 
       {/* A <div>, not <main>: the root layout already wraps every route in
           <main id="main-content">, and a document may only have one <main>. */}
-      <div className="ml-60 min-h-screen bg-[#f0f0ef] p-8">{children}</div>
+      <div
+        className="ml-60 min-h-screen p-8"
+        style={{ backgroundColor: "#e8e6e1" }}
+      >
+        {children}
+      </div>
     </div>
   );
 }

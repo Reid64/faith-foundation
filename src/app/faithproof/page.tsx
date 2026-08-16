@@ -119,7 +119,11 @@ export default async function FaithProofPage({
 
       {/* ═══ 1 — ACCOUNTABILITY PULSE ═══ */}
       {settings.show_accountability_pulse ? (
-        <section id="accountability-pulse" className="bg-cream py-20 sm:py-24">
+        <section
+          id="accountability-pulse"
+          className="py-20 sm:py-24"
+          style={{ backgroundColor: "#f0ede6" }}
+        >
           <div className="mx-auto max-w-7xl px-6 sm:px-8">
             <Eyebrow>Accountability Pulse</Eyebrow>
             <h2 className="mt-3 text-3xl font-extrabold text-navy sm:text-4xl">
@@ -154,7 +158,10 @@ export default async function FaithProofPage({
 
       {/* ═══ 2 — OPEN MISSION LEDGER ═══ */}
       {settings.show_open_ledger ? (
-        <section className="bg-white py-20 sm:py-24">
+        <section
+          className="py-20 sm:py-24"
+          style={{ backgroundColor: "#ffffff" }}
+        >
           <div className="mx-auto max-w-7xl px-6 sm:px-8">
             <Eyebrow>Open Mission Ledger</Eyebrow>
             <h2 className="mt-3 text-3xl font-extrabold text-navy sm:text-4xl">
@@ -175,7 +182,16 @@ export default async function FaithProofPage({
               </div>
             ) : (
               <>
-                <div className="mt-10 overflow-hidden rounded-xl border border-black/5 shadow-sm">
+                <div
+                  className="mt-10"
+                  style={{
+                    backgroundColor: "#ffffff",
+                    borderRadius: 12,
+                    overflow: "hidden",
+                    boxShadow: "0 2px 8px rgba(0,0,0,0.07)",
+                    border: "1px solid rgba(0,0,0,0.07)",
+                  }}
+                >
                   <div className="overflow-x-auto">
                     <table className="w-full min-w-[46rem] border-separate border-spacing-0 text-left text-sm">
                       <thead>
@@ -250,7 +266,10 @@ export default async function FaithProofPage({
 
       {/* ═══ 3 — PROMISES VS PERFORMANCE ═══ */}
       {settings.show_promises ? (
-        <section className="bg-cream py-20 sm:py-24">
+        <section
+          className="py-20 sm:py-24"
+          style={{ backgroundColor: "#f0ede6" }}
+        >
           <div className="mx-auto max-w-7xl px-6 sm:px-8">
             <Eyebrow>Promises vs. Performance</Eyebrow>
             <h2 className="mt-3 text-3xl font-extrabold text-navy sm:text-4xl">
@@ -270,7 +289,13 @@ export default async function FaithProofPage({
                 {promises.map((p) => (
                   <article
                     key={p.id}
-                    className="overflow-hidden rounded-xl bg-white shadow-sm"
+                    style={{
+                      backgroundColor: "#ffffff",
+                      borderRadius: 12,
+                      boxShadow: "0 2px 8px rgba(0,0,0,0.07)",
+                      overflow: "hidden",
+                      border: "1px solid rgba(0,0,0,0.06)",
+                    }}
                   >
                     <div
                       style={{
@@ -333,7 +358,10 @@ export default async function FaithProofPage({
 
       {/* ═══ 4 — PROOF VAULT ═══ */}
       {settings.show_proof_vault ? (
-        <section className="bg-white py-20 sm:py-24">
+        <section
+          className="py-20 sm:py-24"
+          style={{ backgroundColor: "#ffffff" }}
+        >
           <div className="mx-auto max-w-7xl px-6 sm:px-8">
             <Eyebrow>Proof Vault</Eyebrow>
             <h2 className="mt-3 text-3xl font-extrabold text-navy sm:text-4xl">
@@ -354,7 +382,13 @@ export default async function FaithProofPage({
                 {documents.map((doc) => (
                   <article
                     key={doc.id}
-                    className="rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-sm"
+                    style={{
+                      backgroundColor: "#ffffff",
+                      borderRadius: 12,
+                      border: "1px solid #e5e7eb",
+                      boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+                      padding: 24,
+                    }}
                   >
                     <span
                       className="inline-flex items-center rounded-full border px-2 py-0.5 text-[11px] font-medium"
@@ -472,7 +506,10 @@ export default async function FaithProofPage({
       ) : null}
 
       {/* ═══ 6 — DONOR IMPACT RECEIPTS ═══ */}
-      <section className="bg-cream py-20 sm:py-24">
+      <section
+        className="py-20 sm:py-24"
+        style={{ backgroundColor: "#f0ede6" }}
+      >
         <div className="mx-auto max-w-3xl px-6 sm:px-8">
           <Eyebrow>Your Impact</Eyebrow>
           <h2 className="mt-3 text-3xl font-extrabold text-navy sm:text-4xl">
@@ -532,14 +569,30 @@ function HeroStat({ value, label }: { value: string; label: string }) {
 function PulseCard({ value, label }: { value: string; label: string }) {
   return (
     <div
-      className="rounded-xl bg-white px-6 py-8"
       style={{
+        backgroundColor: "#ffffff",
+        borderRadius: 12,
         borderTop: "3px solid #C9A227",
-        boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
+        padding: "32px 24px",
+        boxShadow:
+          "0 2px 8px rgba(0,0,0,0.07), 0 4px 16px rgba(22,36,63,0.08)",
       }}
     >
-      <p className="text-3xl font-extrabold tabular-nums text-navy">{value}</p>
-      <p className="mt-2 text-[13px] uppercase tracking-wider text-[#6b7280]">
+      <p
+        className="tabular-nums"
+        style={{ color: "#16243F", fontSize: 32, fontWeight: 700, lineHeight: 1.1 }}
+      >
+        {value}
+      </p>
+      <p
+        className="mt-2"
+        style={{
+          color: "#6b7280",
+          fontSize: 11,
+          textTransform: "uppercase",
+          letterSpacing: "0.08em",
+        }}
+      >
         {label}
       </p>
     </div>
@@ -556,9 +609,18 @@ function LedgerTh({
   return (
     <th
       scope="col"
-      className={`whitespace-nowrap bg-navy px-4 py-3 text-[11px] font-bold uppercase tracking-wider text-gold first:rounded-tl-xl last:rounded-tr-xl ${
+      className={`whitespace-nowrap first:rounded-tl-xl last:rounded-tr-xl ${
         align === "right" ? "text-right" : "text-left"
       }`}
+      style={{
+        backgroundColor: "#16243F",
+        color: "#C9A227",
+        fontSize: 11,
+        fontWeight: 700,
+        textTransform: "uppercase",
+        letterSpacing: "0.08em",
+        padding: "12px 16px",
+      }}
     >
       {children}
     </th>
