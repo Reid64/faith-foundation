@@ -115,6 +115,8 @@ export type LedgerFilters = {
   fund?: string;
   type?: string;
   from?: string;
+  /** Added in Phase 17 for the public API's date_to parameter. */
+  to?: string;
   page?: number;
   perPage?: number;
 };
@@ -139,6 +141,7 @@ export async function getPublicLedger(filters: LedgerFilters = {}) {
   if (filters.fund) query = query.eq("fund", filters.fund);
   if (filters.type) query = query.eq("type", filters.type);
   if (filters.from) query = query.gte("transaction_date", filters.from);
+  if (filters.to) query = query.lte("transaction_date", filters.to);
 
   const { data, count, error } = await query;
   return {
@@ -165,6 +168,7 @@ export async function getLedgerTotals(filters: LedgerFilters = {}) {
   if (filters.fund) query = query.eq("fund", filters.fund);
   if (filters.type) query = query.eq("type", filters.type);
   if (filters.from) query = query.gte("transaction_date", filters.from);
+  if (filters.to) query = query.lte("transaction_date", filters.to);
 
   const { data } = await query;
   return (data ?? []) as {

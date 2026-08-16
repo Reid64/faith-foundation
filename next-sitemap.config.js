@@ -53,6 +53,9 @@ module.exports = {
     "/programs/financial-literacy/",
     "/programs/single-parents",
     "/programs/single-parents/",
+    // The public API and its documentation page are developer surfaces, not
+    // marketing pages — they should not compete in search.
+    "/api/*",
   ],
   // /faithproof and /faithproof/explorer render live Supabase data, so they are
   // `force-dynamic` and never appear in the static build manifest that
