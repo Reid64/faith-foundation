@@ -1,7 +1,48 @@
 # faith-foundation — STATE OF THE BUILD
 
 > Updated from a LIVE codebase audit on 2026-08-16 (BLUEPRINT Canonical Rule 9).
-> Last action: **Z-INDEX ISOLATION APPLIED TO THE ADMIN SURFACES — and the `bg-cream` bleed it was
+> Last action: **SPEC FILES CREATED FOR PHASES 9-22 — no features built.** A new
+> `governance/faithproof-roadmap/` directory holds 15 markdown specs: `00-MASTER.md` (organization
+> facts, admin users, both design systems, phase index) plus one spec per phase — Zeffy webhook,
+> CRM, mail merge + parsing, donor portal, applicant portal, board portal, grants, document
+> generation, fund accounting, volunteers, SMS, AI intake, Cornerstone tracker, and the public API.
+> Every phase listed in the master index has a matching file; **only `governance/` changed — no
+> feature code, no migrations, no dependencies.**
+>
+> The specs were written verbatim as supplied. Each one additionally carries a short
+> **"Build-time notes"** section, clearly marked as added at spec creation rather than part of the
+> original brief, recording contradictions and risks found by checking each spec against the code
+> that exists today. These are notes for the builder, not changes to the plan. The ones that would
+> stop a build or cause harm:
+>
+> - **Phase 9** — `single_parent_stability` is not a `fund_designation` label, and the webhook
+>   cannot use the user's Supabase client (no session; RLS grants INSERT to `admin` only), so it
+>   must use the service-role client.
+> - **Phase 10** — RLS must be written with the `current_user_role()` helper; a policy that
+>   subqueries `profiles` is what caused the infinite recursion fixed in migration 002. The stated
+>   nav position ("between Settings and Audit Log") does not match the current sidebar order.
+> - **Phase 12** — `handle_new_user()` assigns every new signup `role = 'staff'`, so a donor
+>   self-registering through the portal would gain internal read access. **That trigger must change
+>   before the donor portal ships.**
+> - **Phase 13 / 16 / 21** — `notes_internal`, `internal_notes` and generated letters must never
+>   reach a client; a server component doing `select("*")` ships them in the RSC payload whether or
+>   not they render. Document storage buckets must be private.
+> - **Phase 14** — middleware cannot enforce role (it never reads `profiles`); the board gate has to
+>   live in the route layout plus RLS.
+> - **Phase 17** — nothing in the proposed schema makes a journal entry balance, and auto-posting
+>   must be idempotent or a re-confirm double-posts revenue.
+> - **Phase 19** — the `contacts` table has no SMS consent field; US SMS to individuals is
+>   TCPA-regulated and consent must exist before the first send.
+> - **Phase 20** — `ANTHROPIC_API_KEY` is described as "already available" but is in neither
+>   `.env.local` nor Vercel; it must be added, server-side only.
+> - **Phase 21** — "Bright Box" must not appear in public copy; the name was deliberately removed
+>   sitewide on 2026-08-14 to limit private-benefit exposure.
+> - **Phase 22** — the public API must reuse `src/lib/faithproof/public.ts` and the anon client, not
+>   the service-role client, so RLS stays a second line of defence on an unauthenticated endpoint.
+>
+> Ready for the autonomous build chain. Next: run the Phase 9 build prompt.
+>
+> Prior action: **Z-INDEX ISOLATION APPLIED TO THE ADMIN SURFACES — and the `bg-cream` bleed it was
 > meant to fix was measured and DOES NOT EXIST.** The admin content wrapper now carries
 > `position: relative; z-index: 10`, as do the stat-card grid and each stat card. Requested,
 > applied, deployed, verified — **13/13** live.
