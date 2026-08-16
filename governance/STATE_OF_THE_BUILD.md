@@ -1,7 +1,56 @@
 # faith-foundation — STATE OF THE BUILD
 
-> Updated from a LIVE codebase audit on 2026-08-15 (BLUEPRINT Canonical Rule 9).
-> Last action: **FAITHPROOF PHASE 3 CORRECTION — WORLD-CLASS DASHBOARD UI. Status: COMPLETE.**
+> Updated from a LIVE codebase audit on 2026-08-16 (BLUEPRINT Canonical Rule 9).
+> Last action: **FAITHPROOF MEGA-BUILD — PHASES 3D, 4, 5, 6, 7, 8. Status: ALL COMPLETE.
+> FAITHPROOF IS FEATURE COMPLETE — ready for real data entry.**
+>
+> **3D — final colour system.** Page `#f0f0ef`, butter `#ffefb3` stat cards, two deep green
+> `#013e37` Command Center panels, white cards everywhere else, deep green sidebar and table
+> headers with butter text. Verified live by computed colour — **18/18**, including all four
+> non-negotiables.
+>
+> **4 — status transitions + full CRUD.** Detail and edit pages for transactions, vouchers,
+> promises and proof documents; eight status transitions (confirm / reconcile / void, approve /
+> disburse / cancel, in-progress / fulfil / miss, verify / unverify / toggle-public); clickable
+> rows and cards. **This closes the "nothing can be actioned" gap that had stood since Phase 2.**
+> The AdminForm hydration race flagged in 3C is fixed: the submit button stays disabled until
+> React hydrates, so a click can no longer fall through to a native GET that silently discards the
+> record. Verified live — **14/14**, every transition landing in the database with its own audit
+> entry.
+>
+> **5 — settings.** Migration `005_settings_table.sql`; organization info, account + password
+> reset, five public-section toggles that save immediately, and three CSV exports.
+>
+> **6 + 7 — public transparency pages.** `/faithproof` (hero + six sections, all live Supabase
+> data) and `/faithproof/explorer` (fund/date/type filters, summary pills, paginated ledger, per-
+> fund in/out breakdown). Both use the real public brand tokens and carry SiteHeader/SiteFooter.
+> "Transparency" added to the header nav between Events and Contact.
+>
+> **8 — SEO, tests, polish.** `/faithproof` and `/faithproof/explorer` added to the sitemap at
+> priority 0.9/0.8 with `changefreq: daily`, NGO schema on the transparency page, five new
+> Playwright tests, and the dashboard's Public FaithProof Preview.
+>
+> **Verified on live production, end to end:** `ad-grants-readiness` **64/64** (59 original + 5
+> new), `site-audit` **135 passed + 1 flaky** (the known rotating newsletter timing flake, green on
+> retry — up from 128 because both new pages were added to the audited route list), Phase 3D colour
+> **18/18**, Phase 4 transitions **14/14**, Phases 5–7 **25/25**. Build PASSED (0 TypeScript
+> errors, **45/45 pages**); `vercel --prod` → READY (`dpl_G9LJdRJp2c34nkCeRN1E3DYLtPaS`). Database
+> left clean: **0 rows in all six data tables**, 5 settings rows, and only the real admin account.
+>
+> **Three corrections made beyond the brief, each load-bearing:** (1) `/faithproof` was in
+> `isInternalRoute`, which would have stripped SiteHeader/SiteFooter from the public page — removed;
+> (2) `robots.txt` disallowed `/faithproof` and the sitemap excluded it, which would have shipped
+> the flagship transparency page as uncrawlable — both reversed, and because the pages are
+> `force-dynamic` they had to be added via `additionalPaths` or they would have been silently
+> absent; (3) the settings table needed a public SELECT policy, or every section would have
+> rendered hidden for signed-out visitors.
+>
+> **Known remaining:** Google for Nonprofits application, Vercel Preview env vars, the first real
+> transactions to be entered, and donor impact receipt email automation. Next actions: enter the
+> first real transactions, submit Google for Nonprofits, submit the Ad Grants application. See the
+> 2026-08-16 mega-build entry at the end of this file.
+>
+> Prior action: **FAITHPROOF PHASE 3 CORRECTION — WORLD-CLASS DASHBOARD UI. Status: COMPLETE.**
 > The all-green admin UI shipped earlier the same day was replaced with a professional light-mode
 > dashboard. **The sidebar is now the only dark element.** Page background is warm cream
 > `#f8f7f4`; cards are white and genuinely float on it; deep green `#013e37` is an accent confined
@@ -2166,3 +2215,144 @@ button until hydration or by giving the action a no-JS `action=` path that redir
 5. **Total donations is summed in JavaScript** rather than SQL.
 6. **Vercel Preview env vars still unset** — Preview deploys will 500 until added.
 7. **`notepad supabase password.txt`** still holds the live DB password in the working tree.
+
+## 2026-08-16 — FaithProof mega-build: Phases 3D, 4, 5, 6, 7, 8
+
+Six phases in one autonomous session. FaithProof is now **feature complete** — an admin tool that
+records and actions real financial events, and a public transparency site that publishes them.
+
+### Phase 3D — final colour system
+
+| Surface | Value |
+| --- | --- |
+| Page background | `#f0f0ef` warm light gray |
+| Sidebar | `#013e37` deep green, butter text, 3px butter active rail, butter@50% icons |
+| Stat cards | **`#ffefb3` butter**, 24px padding, green 32px/700 numerals, green 11px labels |
+| The two Command Center panels | **`#013e37` deep green**, 28px padding, butter 17px headings |
+| Every other card | `#ffffff` white, 12px radius, `rgba(0,0,0,0.07)` border, two-layer shadow |
+| Table headers | `#013e37` with `#ffefb3` text, 11px uppercase, 11px rounded top corners |
+| Badges | light pastels, unchanged from 3C |
+
+Verified live by computed colour — **18/18**, including all four stated non-negotiables (page
+`#f0f0ef`, butter stat cards, dark green panels, dark green sidebar).
+
+### Phase 4 — status transitions + full CRUD
+
+**The single largest functional gap in FaithProof is now closed.** From Phase 2 until today the
+Command Center could report that a transaction was unconfirmed or a promise overdue, but nothing
+could be acted on without editing the database by hand.
+
+New: `[id]` detail pages and `[id]/edit` pages for all four entities, plus eight transitions —
+confirm / reconcile / void, approve / disburse / cancel, mark in-progress / fulfilled / missed,
+verify / unverify / toggle-public — and an inline proof-URL editor on promises. Rows and cards are
+clickable.
+
+Design decisions worth keeping:
+
+- **Status is not editable from the edit forms.** Every status change goes through its own
+  transition so it writes an audit entry with the correct verb. An edit form that could quietly
+  flip `pending` to `confirmed` would let a change bypass the record entirely.
+- **`applyTransition` reads the row before updating** and stores both old and new values in the
+  audit entry, and only writes the entry *after* the update succeeds — a refused transition never
+  leaves a log line claiming it happened.
+- **Unverifying a document clears `verified_by` and `verified_at`.** Leaving a name attached would
+  still credit someone with a check that no longer stands.
+- **`ActionButton` stays disabled until hydration** and reports refusals in place rather than
+  redirecting, so an RLS denial is explained instead of silently bouncing the user.
+
+**The Phase 3C hydration defect is fixed.** `AdminForm`'s submit button is disabled until React
+hydrates, closing the window in which a click performed a native GET and discarded the submission.
+
+Verified live — **14/14**: all eight transitions land in the database with the right timestamps and
+actor ids, all eight write distinct audit entries, row clicks navigate, and edit forms prefill.
+
+### Phase 5 — settings
+
+`005_settings_table.sql` (applied and verified). Four cards: read-only organization info, account
+with Supabase password reset, five public-section toggles that save on flip, and three CSV exports.
+
+Two notes:
+
+- **A public SELECT policy was added beyond the brief.** With only the admin policy, a signed-out
+  visitor reads zero rows from `settings` and *every* section of the public page would render as
+  hidden. The values are booleans describing which sections are shown — nothing sensitive.
+- **CSV export sets `Content-Disposition` client-side.** A server action is an RPC, not a route
+  handler, so it cannot set response headers; the action returns the CSV string and the browser
+  saves it via a Blob and the `download` attribute. Same filename, same result. The escaper also
+  guards against CSV injection — a field starting `=` `+` `-` `@` is executed as a formula by Excel
+  and Sheets, so those are prefixed.
+
+### Phases 6 + 7 — public transparency pages
+
+`/faithproof`: hero with three live counters, Accountability Pulse, Open Mission Ledger (paginated),
+Promises vs Performance, Proof Vault, Nothing Hidden (programs-vs-overhead bar), and the donor
+impact receipt form. `/faithproof/explorer`: fund / date-range / type filters via URL search params,
+four summary pills, paginated results, and a per-fund in/out/net breakdown with proportional bars.
+
+- **Brand tokens, not the brief's approximations.** The brief listed navy `#1B2A4A`, gold `#C8A951`,
+  cream `#FAFAF5`; the live site's actual tokens are navy `#16243F`, gold `#C9A227`, cream
+  `#FAF8F1`. The same brief said "match the existing public site aesthetic exactly", and those two
+  instructions conflict. The real tokens were used — a transparency page rendered in a slightly
+  different navy from every other page would read as broken, and the difference is invisible to
+  anyone except a colour picker. Verified: the hero computes to `rgb(22, 36, 63)`.
+- **Public queries filter explicitly as well as relying on RLS.** Belt and braces on the one surface
+  where a loosened policy would be visible to donors.
+- **Donor names are never selected** by any public query.
+- Percentages degrade honestly: with nothing recorded the overhead rate is `0.0%`, not `NaN` or a
+  misleading `100%`.
+
+### Phase 8 — SEO, tests, polish
+
+Sitemap now carries `/faithproof` (0.9) and `/faithproof/explorer` (0.8) at `changefreq: daily`;
+NGO schema on the transparency page; five new Playwright tests; Public FaithProof Preview on the
+dashboard; "Transparency" in the header nav between Events and Contact.
+
+### Three corrections beyond the brief — each one load-bearing
+
+1. **`/faithproof` was in `isInternalRoute`.** Phase 3 had put it there to strip chrome from admin
+   routes. Left alone, the flagship public page would have rendered with no site header and no
+   footer.
+2. **`robots.txt` disallowed `/faithproof` and the sitemap excluded it.** The page would have been
+   built, deployed, linked from the nav — and uncrawlable. Both reversed. And because both pages are
+   `force-dynamic` they never appear in the static manifest next-sitemap reads, so they had to be
+   added through `additionalPaths`; without that they were silently missing from a sitemap that
+   otherwise looked correct.
+3. **`settings` needed a public read policy** (above).
+
+Each of these would have shipped as a working build with a broken outcome. None was visible from
+TypeScript or the build log.
+
+### Verification
+
+| Gate | Result |
+| --- | --- |
+| `pnpm tsc --noEmit` | ✅ 0 errors |
+| `pnpm run build` | ✅ **45/45 pages** |
+| `vercel --prod` | ✅ READY — `dpl_G9LJdRJp2c34nkCeRN1E3DYLtPaS` |
+| Phase 3D colour, vs production | ✅ **18/18** |
+| Phase 4 transitions, vs production | ✅ **14/14** |
+| Phases 5–7 end-to-end, vs production | ✅ **25/25** |
+| `ad-grants-readiness` | ✅ **64/64** (59 + 5 new) |
+| `site-audit` | ✅ **135 passed + 1 flaky** (known rotating newsletter timing flake) |
+| Database after testing | ✅ 0 rows in all six data tables; 5 settings rows; only the real admin account |
+
+The 25-check run proved the whole chain: seed public transactions, a fulfilled promise and a
+verified document → the public page shows `$10,000.00` confirmed gifts, `$7,000.00` program spend,
+a computed `12.5%` overhead rate, the ledger rows, the Kept promise and the verified document →
+the explorer filters correctly by type and fund → a settings toggle flips the database and the
+corresponding section disappears from the public page.
+
+### Open items
+
+1. **No real data yet.** Every figure on `/faithproof` is legitimately zero until the first
+   transactions are entered. The tests assert that sections *render*, never that a number has a
+   particular value, so they stay valid once real data lands.
+2. **Google for Nonprofits + Ad Grants applications** — organizational, not code.
+3. **Vercel Preview env vars still unset** — Preview deploys 500 until added.
+4. **Donor impact receipt automation.** The form collects requests and emails them; issuing the
+   receipts is still manual.
+5. **`audit_log` actor spoofing via the REST API** remains possible for an authenticated user.
+6. **Total donations is summed in JavaScript**, not SQL.
+7. **`notepad supabase password.txt`** still holds the live DB password in the working tree.
+
+- **Last updated:** 2026-08-16

@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import Link from "next/link";
+import { ClickableRow } from "../_components/ClickableRow";
 import { InfoIcon } from "../_components/icons";
 import {
   EmptyState,
@@ -6,7 +8,6 @@ import {
   Panel,
   PrimaryLinkButton,
   QueryError,
-  TABLE_ROW,
   TableWrap,
   Td,
   Th,
@@ -71,11 +72,17 @@ export default async function VouchersPage() {
           </thead>
           <tbody>
             {rows.map((v) => (
-              <tr key={v.id} className={TABLE_ROW}>
+              <ClickableRow key={v.id} href={`/admin/vouchers/${v.id}`}>
                 <Td className="whitespace-nowrap font-medium">
-                  {v.voucher_number}
+                  <Link
+                    href={`/admin/vouchers/${v.id}`}
+                    className="hover:underline"
+                    style={{ color: "#013e37" }}
+                  >
+                    {v.voucher_number}
+                  </Link>
                 </Td>
-                <Td className="text-[#6b7280]">
+                <Td muted>
                   {FUND_LABELS[v.fund] ?? v.fund}
                 </Td>
                 <Td align="right" className="whitespace-nowrap tabular-nums">
@@ -93,17 +100,17 @@ export default async function VouchersPage() {
                     )
                   )}
                 </Td>
-                <Td className="text-[#6b7280]">
+                <Td muted>
                   {v.program || <span className="text-[#9ca3af]">—</span>}
                 </Td>
-                <Td className="whitespace-nowrap text-[#6b7280]">
+                <Td muted className="whitespace-nowrap">
                   {v.disbursed_at ? (
                     formatTimestamp(v.disbursed_at)
                   ) : (
                     <span className="text-[#9ca3af]">—</span>
                   )}
                 </Td>
-              </tr>
+              </ClickableRow>
             ))}
           </tbody>
         </TableWrap>

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { ExternalLinkIcon, InfoIcon } from "../_components/icons";
 import {
   Badge,
@@ -82,8 +83,14 @@ export default async function PromisesPage() {
             return (
               <Panel key={p.id} className="flex flex-col p-5">
                 <div className="flex items-start justify-between gap-3">
-                  <h2 className="text-base font-semibold leading-snug text-[#013e37]">
-                    {p.title}
+                  <h2 className="text-base font-semibold leading-snug">
+                    <Link
+                      href={`/admin/promises/${p.id}`}
+                      className="hover:underline"
+                      style={{ color: "#013e37" }}
+                    >
+                      {p.title}
+                    </Link>
                   </h2>
                   <div className="flex shrink-0 flex-col items-end gap-1.5">
                     <PromiseStatusBadge status={p.status} />

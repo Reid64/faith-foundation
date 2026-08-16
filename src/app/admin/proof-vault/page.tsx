@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import {
   ExternalLinkIcon,
   InfoIcon,
@@ -62,8 +63,14 @@ export default async function ProofVaultPage() {
           {rows.map((doc) => (
             <Panel key={doc.id} className="flex flex-col p-5">
               <div className="flex items-start justify-between gap-3">
-                <h2 className="text-base font-semibold leading-snug text-[#013e37]">
-                  {doc.title}
+                <h2 className="text-base font-semibold leading-snug">
+                  <Link
+                    href={`/admin/proof-vault/${doc.id}`}
+                    className="hover:underline"
+                    style={{ color: "#013e37" }}
+                  >
+                    {doc.title}
+                  </Link>
                 </h2>
                 {doc.verified ? (
                   <span

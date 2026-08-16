@@ -50,6 +50,12 @@ const PAGES = [
   "/programs/recovery/",
   "/programs/reentry/",
   "/programs/cornerstone-communities/",
+  // FaithProof public transparency pages (Phases 6–7). Listed here so they get
+  // the same per-page coverage as every other public route — load, canonical,
+  // console errors, internal links, footer form — and so the sitemap count
+  // assertion below stays exact.
+  "/faithproof/",
+  "/faithproof/explorer/",
 ];
 
 /** Routes retired as programs; must 308 to the programs hub. */

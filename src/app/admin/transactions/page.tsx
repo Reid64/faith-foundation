@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import Link from "next/link";
+import { ClickableRow } from "../_components/ClickableRow";
 import { InfoIcon } from "../_components/icons";
 import {
   EmptyState,
@@ -6,7 +8,6 @@ import {
   Panel,
   PrimaryLinkButton,
   QueryError,
-  TABLE_ROW,
   TableWrap,
   Td,
   Th,
@@ -74,14 +75,20 @@ export default async function TransactionsPage() {
           </thead>
           <tbody>
             {rows.map((tx) => (
-              <tr key={tx.id} className={TABLE_ROW}>
-                <Td className="whitespace-nowrap text-[#6b7280]">
-                  {formatDateOnly(tx.transaction_date)}
+              <ClickableRow key={tx.id} href={`/admin/transactions/${tx.id}`}>
+                <Td muted className="whitespace-nowrap">
+                  <Link
+                    href={`/admin/transactions/${tx.id}`}
+                    className="font-medium hover:underline"
+                    style={{ color: "#013e37" }}
+                  >
+                    {formatDateOnly(tx.transaction_date)}
+                  </Link>
                 </Td>
                 <Td>
                   <TransactionTypeBadge type={tx.type} />
                 </Td>
-                <Td className="text-[#6b7280]">
+                <Td muted>
                   {FUND_LABELS[tx.fund] ?? tx.fund}
                 </Td>
                 <Td align="right" className="whitespace-nowrap tabular-nums">
@@ -97,12 +104,12 @@ export default async function TransactionsPage() {
                 <Td>
                   <TransactionStatusBadge status={tx.status} />
                 </Td>
-                <Td className="text-[#6b7280]">
+                <Td muted>
                   {tx.reference_number || (
                     <span className="text-[#9ca3af]">—</span>
                   )}
                 </Td>
-              </tr>
+              </ClickableRow>
             ))}
           </tbody>
         </TableWrap>

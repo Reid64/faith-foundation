@@ -3,7 +3,8 @@ import { PlusIcon } from "./icons";
 import {
   BTN_PRIMARY,
   cardStyle,
-  panelStyle,
+  darkPanelStyle,
+  onDark,
   statCardStyle,
   tableStyle,
 } from "./theme";
@@ -11,11 +12,9 @@ import {
 /**
  * Presentational primitives for the FaithProof admin UI.
  *
- * Light dashboard: warm cream page (#f8f7f4), white floating cards, deep green
- * (#013e37) reserved for the sidebar, table header rows, primary buttons,
- * headings and numerals. Badges are light pastels.
- *
- * Colour values live in ./theme.ts.
+ * Surfaces: page #f0f0ef · stat cards #ffefb3 butter · the two Command Center
+ * panels #013e37 deep green · everything else white. Colour values live in
+ * ./theme.ts.
  */
 
 // ── Page header ─────────────────────────────────────────────────────────────
@@ -32,11 +31,16 @@ export function PageHeader({
   return (
     <header className="mb-8 flex flex-wrap items-start justify-between gap-4">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-[#013e37]">
+        <h1
+          className="tracking-tight"
+          style={{ color: "#013e37", fontSize: 24, fontWeight: 700 }}
+        >
           {title}
         </h1>
         {description ? (
-          <p className="mt-1 text-sm text-[#6b7280]">{description}</p>
+          <p className="mt-1 text-sm" style={{ color: "#6b7280" }}>
+            {description}
+          </p>
         ) : null}
       </div>
       {action}
@@ -61,21 +65,31 @@ export function PrimaryLinkButton({
 
 // ── Panels and cards ────────────────────────────────────────────────────────
 
+/** White card — tables, forms, list pages, detail pages. */
 export function Panel({
   children,
   className = "",
-  rail,
 }: {
   children: React.ReactNode;
   className?: string;
-  /** Optional coloured left rail, e.g. the amber/blue dashboard panels. */
-  rail?: string;
 }) {
   return (
-    <section
-      style={rail ? panelStyle(rail) : cardStyle}
-      className={`rounded-xl ${className}`}
-    >
+    <section style={cardStyle} className={className}>
+      {children}
+    </section>
+  );
+}
+
+/** Deep green panel — the two Command Center panels only. */
+export function DarkPanel({
+  children,
+  className = "",
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <section style={darkPanelStyle} className={className}>
       {children}
     </section>
   );
@@ -85,20 +99,24 @@ export function PanelHeader({
   icon,
   title,
   subtext,
-  iconClassName = "text-[#9ca3af]",
+  iconColor,
 }: {
   icon: React.ReactNode;
   title: string;
   subtext?: string;
-  iconClassName?: string;
+  iconColor?: string;
 }) {
   return (
     <div className="mb-5 flex items-start gap-3">
-      <span className={`mt-0.5 shrink-0 ${iconClassName}`}>{icon}</span>
+      <span className="mt-0.5 shrink-0" style={{ color: iconColor }}>
+        {icon}
+      </span>
       <div>
-        <h2 className="text-base font-semibold text-[#013e37]">{title}</h2>
+        <h2 style={onDark.heading}>{title}</h2>
         {subtext ? (
-          <p className="mt-0.5 text-[13px] text-[#6b7280]">{subtext}</p>
+          <p className="mt-0.5" style={onDark.subtext}>
+            {subtext}
+          </p>
         ) : null}
       </div>
     </div>
@@ -115,24 +133,30 @@ export function StatCard({
   icon?: React.ReactNode;
 }) {
   return (
-    <div style={statCardStyle} className="rounded-xl p-4">
+    <div style={statCardStyle}>
       <div className="flex items-center justify-between gap-2">
-        <p className="text-[11px] font-medium uppercase tracking-wider text-[#6b7280]">
+        <p
+          style={{
+            color: "#013e37",
+            fontSize: 11,
+            fontWeight: 600,
+            textTransform: "uppercase",
+            letterSpacing: "0.08em",
+          }}
+        >
           {label}
         </p>
-        {/* Decorative only — every icon sits beside its own text label, so it
-            carries no information of its own. */}
+        {/* Decorative only — each icon sits beside its own text label. */}
         {icon ? (
-          <span
-            aria-hidden="true"
-            className="text-[#013e37]"
-            style={{ opacity: 0.25 }}
-          >
+          <span aria-hidden="true" style={{ color: "#013e37", opacity: 0.3 }}>
             {icon}
           </span>
         ) : null}
       </div>
-      <p className="mt-2 text-[28px] font-bold leading-tight tabular-nums text-[#013e37]">
+      <p
+        className="mt-2 tabular-nums"
+        style={{ color: "#013e37", fontSize: 32, fontWeight: 700, lineHeight: 1.1 }}
+      >
         {value}
       </p>
     </div>
@@ -146,27 +170,56 @@ export function EmptyState({
   title,
   detail,
   tone = "muted",
+  onDarkPanel = false,
 }: {
   icon: React.ReactNode;
   title: string;
   detail?: string;
   tone?: "muted" | "success";
+  /** Set on the two deep green Command Center panels. */
+  onDarkPanel?: boolean;
 }) {
-  const ring =
-    tone === "success"
-      ? "bg-[#f0fdf4] text-[#16a34a]"
-      : "bg-[#f9fafb] text-[#d1d5db]";
+  const iconColor = onDarkPanel
+    ? tone === "success"
+      ? "rgba(255,239,179,0.4)"
+      : "rgba(255,239,179,0.3)"
+    : tone === "success"
+      ? "#16a34a"
+      : "#d1d5db";
+
+  const bubble = onDarkPanel
+    ? "rgba(255,239,179,0.08)"
+    : tone === "success"
+      ? "#f0fdf4"
+      : "#f9fafb";
 
   return (
     <div className="flex flex-col items-center justify-center px-4 py-12 text-center">
       <span
-        className={`flex h-11 w-11 items-center justify-center rounded-full ${ring}`}
+        className="flex h-11 w-11 items-center justify-center rounded-full"
+        style={{ backgroundColor: bubble, color: iconColor }}
       >
         {icon}
       </span>
-      <p className="mt-4 text-sm font-medium text-[#6b7280]">{title}</p>
+      <p
+        className="mt-4"
+        style={
+          onDarkPanel
+            ? onDark.emptyTitle
+            : { color: "#6b7280", fontSize: 14, fontWeight: 500 }
+        }
+      >
+        {title}
+      </p>
       {detail ? (
-        <p className="mt-1 max-w-sm text-xs leading-relaxed text-[#9ca3af]">
+        <p
+          className="mt-1 max-w-sm leading-relaxed"
+          style={
+            onDarkPanel
+              ? onDark.emptyDetail
+              : { color: "#9ca3af", fontSize: 13 }
+          }
+        >
           {detail}
         </p>
       ) : null}
@@ -184,25 +237,17 @@ export type BadgeTone =
   | "purple"
   | "gray";
 
-/**
- * Light pastel badge system — a tinted fill, a saturated text colour and a
- * matching 1px border. No dark badges anywhere.
- *
- * These six tones cover every status and type map in badges.tsx:
- *   green  confirmed · fulfilled · donation · disbursed · verified
- *   amber  pending · in_progress
- *   red    missed · expense · cancelled
- *   blue   reconciled · active · grant · approved
- *   purple voucher_disbursement
- *   gray   voided · revised · operational · expired · unverified
- */
-const BADGE_TONES: Record<BadgeTone, string> = {
-  green: "bg-[#f0fdf4] text-[#16a34a] border-[#bbf7d0]",
-  amber: "bg-[#fffbeb] text-[#d97706] border-[#fde68a]",
-  red: "bg-[#fef2f2] text-[#dc2626] border-[#fecaca]",
-  blue: "bg-[#eff6ff] text-[#2563eb] border-[#bfdbfe]",
-  purple: "bg-[#faf5ff] text-[#7c3aed] border-[#e9d5ff]",
-  gray: "bg-[#f9fafb] text-[#6b7280] border-[#e5e7eb]",
+/** Light pastel badge system — a tinted fill, saturated text, matching border. */
+const BADGE_TONES: Record<
+  BadgeTone,
+  { backgroundColor: string; color: string; borderColor: string }
+> = {
+  green: { backgroundColor: "#f0fdf4", color: "#16a34a", borderColor: "#bbf7d0" },
+  amber: { backgroundColor: "#fffbeb", color: "#d97706", borderColor: "#fde68a" },
+  red: { backgroundColor: "#fef2f2", color: "#dc2626", borderColor: "#fecaca" },
+  blue: { backgroundColor: "#eff6ff", color: "#2563eb", borderColor: "#bfdbfe" },
+  purple: { backgroundColor: "#faf5ff", color: "#7c3aed", borderColor: "#e9d5ff" },
+  gray: { backgroundColor: "#f9fafb", color: "#6b7280", borderColor: "#e5e7eb" },
 };
 
 export function Badge({
@@ -214,24 +259,45 @@ export function Badge({
 }) {
   return (
     <span
-      className={`inline-flex items-center whitespace-nowrap rounded-full border px-2 py-0.5 text-[11px] font-medium ${BADGE_TONES[tone]}`}
+      className="inline-flex items-center whitespace-nowrap rounded-full px-2 py-0.5 text-[11px] font-medium"
+      style={{ ...BADGE_TONES[tone], borderWidth: 1, borderStyle: "solid" }}
     >
       {children}
     </span>
   );
 }
 
-/** Count pill used in the Requires Attention panel. */
+/**
+ * Count pill for the Requires Attention panel.
+ *
+ * This one sits on the DEEP GREEN panel, so it uses the darker translucent
+ * variants from the spec rather than the light pastels — a #fef2f2 pill on
+ * #013e37 would glare.
+ */
+const DARK_COUNT_TONES: Record<string, React.CSSProperties> = {
+  red: {
+    backgroundColor: "rgba(248,113,113,0.2)",
+    color: "#fca5a5",
+    border: "1px solid rgba(248,113,113,0.3)",
+  },
+  amber: {
+    backgroundColor: "rgba(251,191,36,0.2)",
+    color: "#fde68a",
+    border: "1px solid rgba(251,191,36,0.3)",
+  },
+};
+
 export function CountBadge({
   tone,
   count,
 }: {
-  tone: BadgeTone;
+  tone: "red" | "amber";
   count: number;
 }) {
   return (
     <span
-      className={`inline-flex h-6 min-w-6 items-center justify-center rounded-full border px-2 text-xs font-bold tabular-nums ${BADGE_TONES[tone]}`}
+      className="inline-flex h-6 min-w-6 items-center justify-center rounded-full px-2 text-xs font-bold tabular-nums"
+      style={DARK_COUNT_TONES[tone]}
     >
       {count}
     </span>
@@ -241,12 +307,10 @@ export function CountBadge({
 // ── Tables ──────────────────────────────────────────────────────────────────
 
 export function TableWrap({ children }: { children: React.ReactNode }) {
-  // The table scrolls inside its own container so the page body never scrolls
-  // horizontally. `border-separate` (not collapse) is required for the header
-  // cells' rounded top corners to render at all — border-collapse discards
-  // border-radius on cells.
+  // `border-separate` (not collapse) is required for the header cells' rounded
+  // top corners to render — border-collapse discards border-radius on cells.
   return (
-    <div style={tableStyle} className="overflow-hidden rounded-xl">
+    <div style={tableStyle} className="overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full min-w-[52rem] border-separate border-spacing-0 text-left text-sm">
           {children}
@@ -266,9 +330,18 @@ export function Th({
   return (
     <th
       scope="col"
-      className={`whitespace-nowrap bg-[#013e37] px-4 py-3 text-[11px] font-semibold uppercase tracking-wider text-[#ffefb3] first:rounded-tl-xl last:rounded-tr-xl ${
+      className={`whitespace-nowrap first:rounded-tl-[11px] last:rounded-tr-[11px] ${
         align === "right" ? "text-right" : "text-left"
       }`}
+      style={{
+        backgroundColor: "#013e37",
+        color: "#ffefb3",
+        fontSize: 11,
+        fontWeight: 600,
+        textTransform: "uppercase",
+        letterSpacing: "0.08em",
+        padding: "12px 16px",
+      }}
     >
       {children}
     </th>
@@ -279,16 +352,23 @@ export function Td({
   children,
   align = "left",
   className = "",
+  muted = false,
 }: {
   children: React.ReactNode;
   align?: "left" | "right";
   className?: string;
+  /** Secondary columns (date, fund, reference) render one step down the ramp. */
+  muted?: boolean;
 }) {
   return (
     <td
-      className={`border-b border-[#f3f4f6] px-4 py-3 text-sm text-[#374151] ${
-        align === "right" ? "text-right" : "text-left"
-      } ${className}`}
+      className={`${align === "right" ? "text-right" : "text-left"} ${className}`}
+      style={{
+        borderBottom: "1px solid #f0f0ef",
+        padding: "12px 16px",
+        color: muted ? "#6b7280" : "#374151",
+        fontSize: 14,
+      }}
     >
       {children}
     </td>
@@ -297,18 +377,18 @@ export function Td({
 
 /** Shared <tr> styling: zebra striping plus the green-tinted hover wash. */
 export const TABLE_ROW =
-  "bg-white transition-colors even:bg-[#f8f7f4] hover:bg-[#f0fdf4]";
+  "bg-white transition-colors odd:bg-white even:bg-[#f8f8f7] hover:bg-[#f0fdf4]";
+
+/** Same, for rows that navigate on click. */
+export const TABLE_ROW_LINK = `${TABLE_ROW} cursor-pointer`;
 
 // ── Data-access failure notice ──────────────────────────────────────────────
 
 /**
- * Rendered when a Supabase query returns an error.
- *
- * This exists so a page can never present an RLS denial or a dropped
- * connection as "no records". An empty table and a forbidden table look
- * identical once you discard the error, and on an accountability product that
- * difference matters: "there are no unconfirmed transactions" and "you are not
- * allowed to see the unconfirmed transactions" must never render the same way.
+ * Rendered when a Supabase query returns an error, so a page can never present
+ * an RLS denial or a dropped connection as "no records". An empty table and a
+ * forbidden table look identical once you discard the error, and on an
+ * accountability product that difference matters.
  */
 export function QueryError({
   message,
@@ -318,12 +398,21 @@ export function QueryError({
   what: string;
 }) {
   return (
-    <div className="rounded-xl border border-[#fecaca] bg-[#fef2f2] p-4">
-      <p className="text-sm font-semibold text-[#dc2626]">
+    <div
+      className="p-4"
+      style={{
+        backgroundColor: "#fef2f2",
+        border: "1px solid #fecaca",
+        borderRadius: 12,
+      }}
+    >
+      <p className="text-sm font-semibold" style={{ color: "#dc2626" }}>
         Could not load {what}
       </p>
-      <p className="mt-1 text-xs leading-relaxed text-[#b91c1c]">{message}</p>
-      <p className="mt-2 text-xs leading-relaxed text-[#6b7280]">
+      <p className="mt-1 text-xs leading-relaxed" style={{ color: "#b91c1c" }}>
+        {message}
+      </p>
+      <p className="mt-2 text-xs leading-relaxed" style={{ color: "#6b7280" }}>
         This is a data-access failure, not an empty result. Nothing is being
         hidden from you deliberately — if this persists, check your role and the
         row level security policies for this table.

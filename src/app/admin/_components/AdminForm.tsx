@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BTN_SECONDARY, BTN_SUBMIT } from "./theme";
 
 /**
@@ -43,6 +43,18 @@ export function AdminForm({
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
+  /**
+   * False until React has hydrated this component.
+   *
+   * Before hydration `onSubmit` is not attached, so a click made the browser
+   * perform the form's NATIVE GET submit: the field values landed in the query
+   * string and the record was silently never created, with no error shown
+   * (reproduced against production in Phase 3C). Disabling the button until
+   * hydration closes that window — the user can still type, they simply cannot
+   * submit into a handler that does not exist yet.
+   */
+  const [ready, setReady] = useState(false);
+  useEffect(() => setReady(true), []);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -91,8 +103,12 @@ export function AdminForm({
       ) : null}
 
       <div className="flex items-center gap-3 border-t border-[#f3f4f6] pt-6">
-        <button type="submit" disabled={pending} className={BTN_SUBMIT}>
-          {pending ? "Saving…" : submitLabel}
+        <button
+          type="submit"
+          disabled={pending || !ready}
+          className={BTN_SUBMIT}
+        >
+          {pending ? "Saving..." : submitLabel}
         </button>
         <Link href={cancelHref} className={BTN_SECONDARY}>
           Cancel

@@ -95,13 +95,13 @@ export default async function AuditLogPage() {
                     <span className="text-[#9ca3af]">Unknown user</span>
                   )}
                 </Td>
-                <Td className="text-[#6b7280]">
+                <Td muted>
                   {humanizeEnum(entry.action)}
                 </Td>
-                <Td className="text-[#6b7280]">
+                <Td muted>
                   {humanizeEnum(entry.entity_type)}
                 </Td>
-                <Td className="font-mono text-xs text-[#9ca3af]">
+                <Td muted className="font-mono text-xs">
                   {shortId(entry.entity_id)}
                 </Td>
               </tr>

@@ -694,3 +694,73 @@ test.describe("Security and trust", () => {
     await expect(frame).toHaveAttribute("src", /^https:\/\/www\.zeffy\.com\//);
   });
 });
+
+/**
+ * FaithProof public transparency pages (Phases 6–7).
+ *
+ * These assert the SECTIONS render, not the numbers — the figures are live
+ * Supabase data and are legitimately zero until the first real transactions are
+ * entered. A test pinned to a value would fail the day the Foundation starts
+ * using the tool.
+ */
+test.describe("FaithProof public pages", () => {
+  test("/faithproof loads and contains key sections", async ({ page }) => {
+    await page.goto(`${BASE}/faithproof/`, { waitUntil: "domcontentloaded" });
+    await expect(page).toHaveTitle(/FaithProof/);
+    await expect(
+      page.getByRole("heading", { name: "Nothing Hidden. Everything Proven." })
+    ).toBeVisible();
+    await expect(page.getByText("Accountability Pulse").first()).toBeVisible();
+    await expect(page.getByText("Open Mission Ledger").first()).toBeVisible();
+    await expect(
+      page.getByText("Promises vs. Performance").first()
+    ).toBeVisible();
+    await expect(page.getByText("Proof Vault").first()).toBeVisible();
+    await expect(page.getByText("Nothing Hidden").first()).toBeVisible();
+  });
+
+  test("/faithproof keeps the public site chrome", async ({ page }) => {
+    await page.goto(`${BASE}/faithproof/`, { waitUntil: "domcontentloaded" });
+    await expect(page.locator("header nav").first()).toBeVisible();
+    await expect(page.locator("footer").first()).toBeAttached();
+  });
+
+  test("/faithproof/explorer loads", async ({ page }) => {
+    await page.goto(`${BASE}/faithproof/explorer/`, {
+      waitUntil: "domcontentloaded",
+    });
+    await expect(
+      page.getByRole("heading", { name: "Financial Explorer" })
+    ).toBeVisible();
+    await expect(page.locator("#fund")).toBeVisible();
+    await expect(page.locator("#type")).toBeVisible();
+    await expect(page.locator("#range")).toBeVisible();
+  });
+
+  test("Transparency sits between Events and Contact in the header nav", async ({
+    page,
+  }) => {
+    await page.goto(`${BASE}/`, { waitUntil: "domcontentloaded" });
+    const labels = await page
+      .locator("header nav")
+      .first()
+      .locator("a")
+      .allInnerTexts();
+    const cleaned = labels.map((l) => l.trim()).filter(Boolean);
+    const events = cleaned.indexOf("Events");
+    const transparency = cleaned.indexOf("Transparency");
+    const contact = cleaned.indexOf("Contact");
+    expect(transparency, "Transparency link missing from header").toBeGreaterThan(-1);
+    expect(transparency).toBeGreaterThan(events);
+    expect(transparency).toBeLessThan(contact);
+  });
+
+  test("/faithproof is indexable and in the sitemap", async ({ request }) => {
+    const robots = await (await request.get(`${BASE}/robots.txt`)).text();
+    expect(robots, "/faithproof must not be disallowed").not.toMatch(
+      /Disallow:\s*\/faithproof/
+    );
+    const sitemap = await (await request.get(`${BASE}/sitemap.xml`)).text();
+    expect(sitemap).toContain("/faithproof");
+  });
+});

@@ -16,7 +16,10 @@
  * cream header and navy footer would break. The login card carries its own
  * "Return to faithfoundationsf.org" link so the route back is not lost.
  */
-const INTERNAL_PREFIXES = ["/admin", "/faithproof", "/login"];
+// NOTE: "/faithproof" is deliberately NOT here. It is a PUBLIC transparency
+// page and must keep the site header and footer. Only the admin tool and its
+// login door are chrome-less.
+const INTERNAL_PREFIXES = ["/admin", "/login"];
 
 export function isInternalRoute(pathname: string | null): boolean {
   if (!pathname) return false;

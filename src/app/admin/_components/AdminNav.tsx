@@ -6,6 +6,7 @@ import {
   ArrowsIcon,
   CheckCircleIcon,
   GridIcon,
+  GearIcon,
   ListIcon,
   ShieldIcon,
   TicketIcon,
@@ -18,6 +19,7 @@ const NAV = [
   { href: "/admin/promises", label: "Promises", Icon: CheckCircleIcon },
   { href: "/admin/proof-vault", label: "Proof Vault", Icon: ShieldIcon },
   { href: "/admin/audit-log", label: "Audit Log", Icon: ListIcon },
+  { href: "/admin/settings", label: "Settings", Icon: GearIcon },
 ];
 
 /**
@@ -51,11 +53,14 @@ export function AdminNav() {
                 aria-current={active ? "page" : undefined}
                 className={`flex items-center gap-3 rounded-md border-l-[3px] px-3 py-2 text-sm transition ${
                   active
-                    ? "border-[#ffefb3] bg-[rgba(255,239,179,0.12)] font-medium text-white"
-                    : "border-transparent text-[rgba(255,255,255,0.6)] hover:bg-[rgba(255,255,255,0.06)] hover:text-white"
+                    ? "border-[#ffefb3] bg-[rgba(255,239,179,0.15)] font-medium text-[#ffefb3]"
+                    : "border-transparent text-[rgba(255,239,179,0.6)] hover:bg-[rgba(255,239,179,0.08)] hover:text-[#ffefb3]"
                 }`}
               >
-                <Icon className="h-4 w-4 shrink-0" />
+                <Icon
+                  className="h-4 w-4 shrink-0"
+                  style={{ color: active ? "#ffefb3" : "rgba(255,239,179,0.5)" }}
+                />
                 {label}
               </Link>
             </li>

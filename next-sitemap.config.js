@@ -5,6 +5,8 @@
 const PRIORITY_BY_PATH = {
   "": 1.0,
   "/donate": 0.9,
+  "/faithproof": 0.9,
+  "/faithproof/explorer": 0.8,
   "/programs": 0.8,
   "/about": 0.8,
   "/contact": 0.8,
@@ -35,15 +37,13 @@ module.exports = {
   // were retired; those routes only exist to redirect to /programs, so they
   // must stay out of the sitemap. `icon.png` is the app-router icon asset, not
   // a page.
-  // FaithProof is internal tooling — it must never appear in the sitemap or be
-  // crawled (both pages also send `robots: noindex` in their metadata).
+  // The ADMIN tool is internal and must never be crawled. /faithproof is the
+  // PUBLIC transparency page and is deliberately indexed at priority 0.9.
   exclude: [
     "/login",
     "/login/",
     "/admin",
     "/admin/*",
-    "/faithproof",
-    "/faithproof/*",
     "/icon.png",
     "/icon.png/",
     "/programs/emergency",
@@ -53,12 +53,20 @@ module.exports = {
     "/programs/single-parents",
     "/programs/single-parents/",
   ],
+  // /faithproof and /faithproof/explorer render live Supabase data, so they are
+  // `force-dynamic` and never appear in the static build manifest that
+  // next-sitemap crawls. They are public, indexable pages, so they are listed
+  // explicitly here — without this they are silently absent from the sitemap.
+  additionalPaths: async (config) => [
+    await config.transform(config, "/faithproof/"),
+    await config.transform(config, "/faithproof/explorer/"),
+  ],
   transform: async (config, path) => {
     const normalized = path.replace(/\/+$/, "");
 
     return {
       loc: path,
-      changefreq: "weekly",
+      changefreq: normalized.startsWith("/faithproof") ? "daily" : "weekly",
       priority: PRIORITY_BY_PATH[normalized] ?? DEFAULT_PRIORITY,
       lastmod: config.autoLastmod ? new Date().toISOString() : undefined,
     };
@@ -68,7 +76,7 @@ module.exports = {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/admin", "/login", "/faithproof"],
+        disallow: ["/admin", "/login"],
       },
     ],
   },

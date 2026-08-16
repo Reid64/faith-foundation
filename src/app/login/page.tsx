@@ -29,19 +29,20 @@ export default function LoginPage({
   const message = searchParams?.error ? ERRORS[searchParams.error] : null;
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#f8f7f4] px-6 py-16">
+    <div className="flex min-h-screen items-center justify-center bg-[#f0f0ef] px-6 py-16">
       <div className="w-full max-w-md">
         <div
           style={{
             backgroundColor: "#ffffff",
             borderRadius: 16,
+            padding: 40,
             boxShadow:
               "0 4px 6px rgba(0,0,0,0.05), 0 20px 40px rgba(1,62,55,0.1)",
           }}
-          className="p-10"
+          className=""
         >
           {/* The one green block on the page — the brand mark, not a fill. */}
-          <div className="inline-block rounded-xl bg-[#013e37] p-4">
+          <div className="inline-block bg-[#013e37]" style={{ borderRadius: 10, padding: 16 }}>
             <p className="text-[10px] font-semibold uppercase tracking-widest text-[#ffefb3]">
               FAITH FOUNDATION
             </p>

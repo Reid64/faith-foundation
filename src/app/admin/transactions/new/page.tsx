@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeftIcon } from "../../_components/icons";
-import { Panel } from "../../_components/ui";
+import { formCardStyle } from "../../_components/theme";
 import { AdminForm } from "../../_components/AdminForm";
 import {
   Checkbox,
@@ -36,13 +36,13 @@ export default function NewTransactionPage() {
     <div className="mx-auto max-w-2xl">
       <Link
         href="/admin/transactions"
-        className="mb-6 inline-flex items-center gap-2 text-sm text-[#6b7280] transition hover:text-[#013e37]"
+        className="mb-6 inline-flex items-center gap-2 text-sm font-medium transition hover:underline" style={{ color: "#013e37" }}
       >
         <ArrowLeftIcon className="h-4 w-4" />
         Back to Transactions
       </Link>
 
-      <h1 className="text-2xl font-bold tracking-tight text-[#013e37]">
+      <h1 className="tracking-tight" style={{ color: "#013e37", fontSize: 24, fontWeight: 700 }}>
         Add Transaction
       </h1>
       <p className="mt-1 text-sm text-[#6b7280]">
@@ -50,7 +50,7 @@ export default function NewTransactionPage() {
         confirmed before they count toward public totals.
       </p>
 
-      <Panel className="mt-6 p-6">
+      <div style={formCardStyle} className="mt-6">
         <AdminForm
           action={createTransaction}
           successHref="/admin/transactions"
@@ -142,7 +142,7 @@ export default function NewTransactionPage() {
             <TextInput id="reference_number" name="reference_number" />
           </Field>
         </AdminForm>
-      </Panel>
+      </div>
     </div>
   );
 }

@@ -12,6 +12,7 @@ import {
 } from "./_components/icons";
 import {
   CountBadge,
+  DarkPanel,
   EmptyState,
   Panel,
   PanelHeader,
@@ -56,6 +57,7 @@ export default async function CommandCenterPage() {
     fulfilled,
     verifiedDocs,
     activity,
+    publicDonations,
   ] = await Promise.all([
     supabase
       .from("transactions")
@@ -96,12 +98,27 @@ export default async function CommandCenterPage() {
       .select("*, actor:profiles(full_name, email)")
       .order("created_at", { ascending: false })
       .limit(10),
+    // Public-facing total: only rows the /faithproof page is allowed to show.
+    supabase
+      .from("transactions")
+      .select("amount_cents")
+      .eq("type", "donation")
+      .eq("status", "confirmed")
+      .eq("is_public", true),
   ]);
 
   const totalDonatedCents = (donations.data ?? []).reduce(
     (sum, row: { amount_cents: number }) => sum + (row.amount_cents ?? 0),
     0
   );
+
+  const publicDonatedCents = (publicDonations.data ?? []).reduce(
+    (sum, row: { amount_cents: number }) => sum + (row.amount_cents ?? 0),
+    0
+  );
+  const publicDonationsLabel = publicDonations.error
+    ? "—"
+    : formatCentsCompact(publicDonatedCents);
 
   const attentionError =
     pendingTx.error ?? pendingVouchers.error ?? overduePromises.error;
@@ -119,10 +136,10 @@ export default async function CommandCenterPage() {
   return (
     <div className="mx-auto max-w-7xl">
       <header className="mb-8">
-        <h1 className="text-2xl font-bold tracking-tight text-[#013e37]">
+        <h1 className="tracking-tight" style={{ color: "#013e37", fontSize: 24, fontWeight: 700 }}>
           Command Center
         </h1>
-        <p className="mt-1 text-sm text-[#6b7280]">
+        <p className="mt-1 text-sm" style={{ color: "#6b7280" }}>
           Everything awaiting a decision on the left, everything already
           recorded on the right.
         </p>
@@ -157,10 +174,10 @@ export default async function CommandCenterPage() {
       {/* ── Two panels ─────────────────────────────────────────────── */}
       <div className="grid gap-6 lg:grid-cols-2">
         {/* LEFT — Requires Attention */}
-        <Panel rail="#f59e0b" className="p-6">
+        <DarkPanel>
           <PanelHeader
             icon={<WarningIcon className="h-5 w-5" />}
-            iconClassName="text-[#f59e0b]"
+            iconColor="#fbbf24"
             title="Requires Attention"
             subtext="Items needing review or action"
           />
@@ -172,13 +189,14 @@ export default async function CommandCenterPage() {
             />
           ) : nothingPending ? (
             <EmptyState
+              onDarkPanel
               tone="success"
               icon={<CheckIcon className="h-5 w-5" />}
               title="Nothing requires attention"
               detail="No unconfirmed transactions, no pending vouchers, and no overdue promises."
             />
           ) : (
-            <ul className="divide-y divide-[#f3f4f6]">
+            <ul style={{ borderColor: "rgba(255,239,179,0.1)" }} className="divide-y">
               {pendingTxCount > 0 ? (
                 <AttentionRow
                   href="/admin/transactions"
@@ -208,13 +226,13 @@ export default async function CommandCenterPage() {
               ) : null}
             </ul>
           )}
-        </Panel>
+        </DarkPanel>
 
         {/* RIGHT — Recent Accountability Activity */}
-        <Panel rail="#3b82f6" className="p-6">
+        <DarkPanel>
           <PanelHeader
             icon={<ClockIcon className="h-5 w-5" />}
-            iconClassName="text-[#3b82f6]"
+            iconColor="#60a5fa"
             title="Recent Accountability Activity"
             subtext="Latest changes, newest first"
           />
@@ -226,30 +244,31 @@ export default async function CommandCenterPage() {
             />
           ) : entries.length === 0 ? (
             <EmptyState
+              onDarkPanel
               icon={<InfoIcon className="h-5 w-5" />}
               title="No activity recorded yet"
               detail="Add your first transaction to begin."
             />
           ) : (
-            <ul className="divide-y divide-[#f3f4f6]">
+            <ul style={{ borderColor: "rgba(255,239,179,0.1)" }} className="divide-y">
               {entries.map((entry) => (
                 <li key={entry.id} className="flex gap-3 py-3 first:pt-0">
-                  <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#013e37]" />
+                  <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#ffefb3]" />
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm text-[#374151]">
+                    <p className="text-sm" style={{ color: "#f1f5f9" }}>
                       <span className="font-medium">
                         {entry.actor?.full_name ||
                           entry.actor?.email ||
                           "Unknown user"}
                       </span>{" "}
-                      <span className="text-[#6b7280]">
+                      <span style={{ color: "rgba(255,239,179,0.7)" }}>
                         {humanizeEnum(entry.action).toLowerCase()}
                       </span>{" "}
-                      <span className="text-[#6b7280]">
+                      <span style={{ color: "rgba(255,239,179,0.7)" }}>
                         {humanizeEnum(entry.entity_type).toLowerCase()}
                       </span>
                     </p>
-                    <p className="mt-0.5 text-xs text-[#9ca3af]">
+                    <p className="mt-0.5" style={{ color: "rgba(255,239,179,0.45)", fontSize: 12 }}>
                       {formatRelative(entry.created_at)}
                     </p>
                   </div>
@@ -257,9 +276,51 @@ export default async function CommandCenterPage() {
               ))}
             </ul>
           )}
-        </Panel>
+        </DarkPanel>
       </div>
+
+      {/* ── Public FaithProof preview ─────────────────────────────── */}
+      <Panel className="mt-6 p-6">
+        <h2 style={{ color: "#013e37", fontSize: 16, fontWeight: 600 }}>
+          Public FaithProof Preview
+        </h2>
+        <p className="mt-1 text-sm" style={{ color: "#6b7280" }}>
+          What visitors can currently see on the public transparency page.
+        </p>
+        <div className="mt-4 flex flex-wrap gap-3">
+          <PreviewPill label="Public donations" value={publicDonationsLabel} />
+          <PreviewPill
+            label="Vouchers disbursed"
+            value={String(disbursed.count ?? 0)}
+          />
+          <PreviewPill
+            label="Promises kept"
+            value={String(fulfilled.count ?? 0)}
+          />
+        </div>
+        <Link
+          href="/faithproof"
+          className="mt-4 inline-block text-sm"
+          style={{ color: "#013e37", fontWeight: 600 }}
+        >
+          View public transparency page →
+        </Link>
+      </Panel>
     </div>
+  );
+}
+
+function PreviewPill({ label, value }: { label: string; value: string }) {
+  return (
+    <span
+      className="inline-flex flex-col rounded-lg px-4 py-2"
+      style={{ backgroundColor: "#ffefb3", color: "#013e37" }}
+    >
+      <span style={{ fontSize: 11, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", opacity: 0.75 }}>
+        {label}
+      </span>
+      <span style={{ fontSize: 18, fontWeight: 700 }}>{value}</span>
+    </span>
   );
 }
 
@@ -280,16 +341,16 @@ function AttentionRow({
     <li>
       <Link
         href={href}
-        className="-mx-2 flex items-center gap-3 rounded-lg px-2 py-3 transition hover:bg-[#f8f7f4]"
+        className="-mx-2 flex items-center gap-3 rounded-lg px-2 py-3 transition hover:bg-[rgba(255,239,179,0.06)]"
       >
         <CountBadge tone={tone} count={count} />
         <span className="min-w-0 flex-1">
-          <span className="block text-sm font-medium text-[#374151]">
+          <span className="block text-sm font-medium" style={{ color: "#ffefb3" }}>
             {label}
           </span>
-          <span className="block text-xs text-[#9ca3af]">{detail}</span>
+          <span className="block text-xs" style={{ color: "rgba(255,239,179,0.6)" }}>{detail}</span>
         </span>
-        <span aria-hidden="true" className="text-[#d1d5db]">
+        <span aria-hidden="true" style={{ color: "rgba(255,239,179,0.5)" }}>
           ›
         </span>
       </Link>

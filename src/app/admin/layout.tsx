@@ -22,9 +22,9 @@ const ROLE_TONES: Record<string, string> = {
   admin: "bg-[rgba(255,239,179,0.15)] text-[#ffefb3] border-[rgba(255,239,179,0.25)]",
   board: "bg-[rgba(147,197,253,0.15)] text-[#bfdbfe] border-[rgba(147,197,253,0.25)]",
   staff:
-    "bg-[rgba(255,255,255,0.1)] text-[rgba(255,255,255,0.7)] border-[rgba(255,255,255,0.2)]",
+    "bg-[rgba(255,239,179,0.1)] text-[rgba(255,239,179,0.7)] border-[rgba(255,239,179,0.2)]",
   public:
-    "bg-[rgba(255,255,255,0.1)] text-[rgba(255,255,255,0.7)] border-[rgba(255,255,255,0.2)]",
+    "bg-[rgba(255,239,179,0.1)] text-[rgba(255,239,179,0.7)] border-[rgba(255,239,179,0.2)]",
 };
 
 export default async function AdminLayout({
@@ -43,7 +43,7 @@ export default async function AdminLayout({
   const role = profile?.role ?? null;
 
   return (
-    <div className="min-h-screen bg-[#f8f7f4]">
+    <div className="min-h-screen bg-[#f0f0ef]">
       {/* The sidebar is the ONLY dark surface in the admin UI. */}
       <aside
         style={{ borderRight: "1px solid rgba(255,239,179,0.15)" }}
@@ -52,21 +52,21 @@ export default async function AdminLayout({
         <div className="px-5 py-5">
           <p
             className="text-[10px] font-semibold uppercase tracking-widest text-[#ffefb3]"
-            style={{ opacity: 0.7 }}
+            style={{ opacity: 0.75, letterSpacing: "0.15em" }}
           >
             FAITH FOUNDATION
           </p>
-          <p className="mt-1 text-xl font-semibold text-white">FaithProof</p>
+          <p className="mt-1 text-xl font-semibold text-[#ffefb3]">FaithProof</p>
         </div>
 
         <AdminNav />
 
         <div
-          style={{ borderTop: "1px solid rgba(255,255,255,0.1)" }}
+          style={{ borderTop: "1px solid rgba(255,239,179,0.2)" }}
           className="px-5 py-4"
         >
           <p
-            className="truncate text-xs text-[rgba(255,255,255,0.45)]"
+            className="truncate text-xs text-[rgba(255,239,179,0.5)]"
             title={email}
           >
             {email}
@@ -98,7 +98,7 @@ export default async function AdminLayout({
           <form action={signOut} className="mt-4">
             <button
               type="submit"
-              className="text-xs font-semibold uppercase tracking-wider text-[rgba(255,255,255,0.45)] transition hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ffefb3]"
+              className="text-xs font-semibold uppercase tracking-wider text-[rgba(255,239,179,0.5)] transition hover:text-[#ffefb3] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ffefb3]"
             >
               Sign Out
             </button>
@@ -106,7 +106,7 @@ export default async function AdminLayout({
 
           <Link
             href="/"
-            className="mt-3 block text-xs text-[rgba(255,255,255,0.35)] transition hover:text-[rgba(255,255,255,0.7)]"
+            className="mt-3 block text-xs text-[rgba(255,239,179,0.35)] transition hover:text-[#ffefb3]"
           >
             View public site
           </Link>
@@ -115,7 +115,7 @@ export default async function AdminLayout({
 
       {/* A <div>, not <main>: the root layout already wraps every route in
           <main id="main-content">, and a document may only have one <main>. */}
-      <div className="ml-60 min-h-screen bg-[#f8f7f4] p-8">{children}</div>
+      <div className="ml-60 min-h-screen bg-[#f0f0ef] p-8">{children}</div>
     </div>
   );
 }
