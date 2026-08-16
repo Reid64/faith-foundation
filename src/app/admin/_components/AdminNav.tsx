@@ -51,8 +51,8 @@ export function AdminNav() {
                 aria-current={active ? "page" : undefined}
                 className={`flex items-center gap-3 rounded-md border-l-2 px-3 py-2 text-sm transition ${
                   active
-                    ? "border-[#4A7C59] bg-[#1e293b] font-medium text-white"
-                    : "border-transparent text-[#94a3b8] hover:bg-[#1e293b]/50 hover:text-white"
+                    ? "border-[#ffefb3] bg-[rgba(255,239,179,0.12)] font-medium text-[#ffefb3]"
+                    : "border-transparent text-[rgba(255,239,179,0.7)] hover:bg-[rgba(255,239,179,0.08)] hover:text-[#ffefb3]"
                 }`}
               >
                 <Icon className="h-4 w-4 shrink-0" />

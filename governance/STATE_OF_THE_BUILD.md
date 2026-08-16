@@ -1,7 +1,44 @@
 # faith-foundation — STATE OF THE BUILD
 
 > Updated from a LIVE codebase audit on 2026-08-15 (BLUEPRINT Canonical Rule 9).
-> Last action: **FAITHPROOF PHASE 2 — COMMAND CENTER + LIVE DATA. Status: COMPLETE.** The white
+> Last action: **FAITHPROOF PHASE 3 — COLOR SYSTEM REDESIGN. Status: COMPLETE.** The FaithProof
+> admin colour system was rebuilt around the two brand colours — **deep green `#013e37`** and
+> **butter `#ffefb3`** — across the sidebar, Command Center, all four list views, all four create
+> forms, the audit log and the login page. Page background stays `#1e293b` as the base.
+>
+> **The public site is untouched, and that is a structural fact, not a claim:** `git status` shows
+> the phase modified 16 files, every one of them under `src/app/admin/` or `src/app/login/`, plus
+> one new file `src/app/admin/_components/theme.ts`. `tailwind.config.ts`, `globals.css`,
+> `src/components/` and every public page file are byte-identical.
+>
+> **Verified by computed colour, not by class name.** A 46-check browser test ran against **live
+> production** and read `getComputedStyle` on every surface, so a Tailwind class that failed to
+> compile would have failed the test even with correct-looking markup: **46/46**. It confirms the
+> deep green sidebar (`rgb(1,62,55)`), butter wordmark, butter@60% eyebrow, active nav
+> (butter@12% fill, butter text, 2px butter left border), butter@70% inactive nav, the ADMIN badge,
+> Sign Out at butter@50%, the stat-card gradient (`linear-gradient(135deg, rgb(1,62,55), rgb(1,46,40))`)
+> with its layered shadow and butter@20% top highlight, butter bold stat numbers, panel headers in
+> butter with butter@55% subtext, deep green tables with butter@60% headers and butter@8% row
+> borders, deep green form cards with butter@80% labels and butter/green buttons, and the deep green
+> login card with its butter button.
+>
+> Build PASSED (0 TypeScript errors, 42/42 pages); `vercel --prod` → READY
+> (`dpl_8xAbMpsx7Xk5aH33R6fuECgjRZZo`). Public regression suites against live production:
+> `ad-grants-readiness` **59/59**; `site-audit` **126 passed + 2 flaky** (both passed on retry — the
+> third-party Zeffy embed, and the pre-existing newsletter failure-notice timing assertion whose
+> failing page **rotates run to run**: /faq/, then /programs/homeownership/, then /volunteer/, with
+> 22 of 23 passing each time).
+>
+> **Four specified opacities land just under WCAG AA on deep green and were applied as specified,
+> not silently altered** — butter@0.5 (sign out, email, date labels) measures **3.78:1**,
+> butter@0.55 (panel subtext) **4.23:1**, against the 4.5:1 needed for normal text; the butter@0.35
+> stat icon measures 2.57:1 but is decorative and sits beside its own text label, so it is exempt.
+> Raising 0.5 → 0.6 and 0.55 → 0.6 would clear all of them (0.6 measures 4.74:1). This is an
+> internal tool, not a public page, so nothing here affects the site's Lighthouse Accessibility 100.
+> Next phase: FaithProof Phase 4 — status transitions + public transparency pages. See the
+> 2026-08-15 Phase 3 entry at the end of this file.
+>
+> Prior action: **FAITHPROOF PHASE 2 — COMMAND CENTER + LIVE DATA. Status: COMPLETE.** The white
 > placeholder admin shell was replaced with a production-quality dark Command Center and all six
 > sidebar sections were wired to live Supabase data. **The public site was not touched** — verified,
 > not assumed: `ad-grants-readiness` **59/59** and `site-audit` **127 passed + 1 flaky** against live
@@ -1863,3 +1900,138 @@ and `/admin` re-protected after sign-out.
    Preview deployments will 500 on every route until they are added via the dashboard.
 6. **`notepad supabase password.txt`** still holds the live database password in the working tree.
    Gitignored, never committed — move it to a password manager and delete it.
+
+## 2026-08-15 — FaithProof Phase 3: colour system redesign (deep green + butter)
+
+**Objective.** Rebuild the FaithProof admin colour system around two brand colours — deep green
+`#013e37` and butter `#ffefb3` — leaving the public site 100% untouched.
+
+### Colour map, before → after
+
+Every value was read out of the actual files first (Step 1), not assumed. The old admin palette was
+a blue-grey dark theme; the new one is deep green surfaces with butter as the single accent.
+
+| Old | Role | New |
+| --- | --- | --- |
+| `#0f1623` | sidebar bg, login page bg | sidebar → `#013e37`; login page → `#1e293b` |
+| `#111827` | main bg, input bg, row hover | main → `#1e293b`; input → `rgba(1,62,55,0.6)`; row hover → `rgba(255,239,179,0.05)` |
+| `#1e293b` | card bg | `#013e37` (and `#1e293b` is promoted to the page base) |
+| `#2d3748` | all borders | `rgba(255,239,179,0.15)` / `0.1` / `0.08` by context |
+| `#94a3b8` | secondary text | `rgba(255,239,179,0.7)` |
+| `#475569` | muted text | `rgba(255,239,179,0.5)` |
+| `#4A7C59` → `#3d6b4a` | accent, buttons, focus | `#ffefb3` → hover `#fff5cc`, button text `#013e37` |
+| `white` / `#f1f5f9` on headings | headings | `#ffefb3`, `font-bold` |
+| `#f1f5f9` | body text primary | unchanged — 10.98:1 on deep green |
+| `#22c55e` `#f59e0b` `#ef4444` `#3b82f6` | indicator set | `#4ade80` `#fbbf24` `#f87171` `#60a5fa` |
+
+`icons.tsx` needed no change — every icon is `stroke="currentColor"` with no literal colour, so all
+15 icons re-tinted themselves. `badges.tsx` needed no change either: it maps enums to tone *names*,
+and the tones are defined once in `ui.tsx`.
+
+### Files changed
+
+16 modified + 1 new, **all under `src/app/admin/` or `src/app/login/`**:
+`_components/theme.ts` (NEW), `_components/ui.tsx`, `_components/AdminNav.tsx`,
+`_components/AdminForm.tsx`, `_components/fields.tsx`, `layout.tsx`, `page.tsx`, the four list
+pages, the four `new` pages, `audit-log/page.tsx`, and `login/page.tsx`.
+
+### The new theme module
+
+`src/app/admin/_components/theme.ts` holds the palette in one place — raw hex constants, three
+inline `CSSProperties` surface styles (card, stat card, soft card, table), and literal Tailwind
+class strings for text/border/control/button patterns.
+
+**Why some values are inline styles and others Tailwind arbitrary values.** The brief asked for
+inline styles for rgba, gradients and shadows. Gradients, layered box-shadows and the card
+top-edge highlight are inline — they are awkward or ambiguous as Tailwind arbitrary values, since a
+comma-separated shadow list does not survive the arbitrary-value parser cleanly. Flat rgba colours
+stayed as Tailwind arbitrary values because **`hover:` and `focus:` variants cannot be expressed
+inline at all**, and the hover and focus states are themselves part of the brief (nav hover, button
+hover, input focus border, row hover). Applying the instruction literally to every rgba would have
+deleted every interactive state in the spec.
+
+**Why the palette is still not in `tailwind.config.ts`** — unchanged from Phase 2, and it matters
+more now: that config is shared with the public marketing site, and a token named `butter` or
+`card` in the global namespace is exactly how an internal colour eventually lands on a donor-facing
+page.
+
+### Two judgement calls worth recording
+
+1. **The `gray` badge tone is butter-tinted, not slate.** Keeping `bg-[#475569]/20` +
+   `text-[#94a3b8]` would have left one badge still speaking the old blue-grey language on a deep
+   green card, where it reads as a foreign object. It is now
+   `rgba(255,239,179,0.12)` / `rgba(255,239,179,0.75)`.
+2. **Secondary table columns stayed secondary.** Date, fund and reference cells were `#94a3b8`
+   before and are now butter@70%; the base cell colour is `#f1f5f9` exactly as specified. The brief
+   gives both "Cell text: #f1f5f9" and "Body text secondary: rgba(255,239,179,0.7)", and the
+   existing per-column hierarchy is what the second value is for.
+
+### Accessibility — measured, not estimated
+
+Contrast of butter over deep green, computed with the WCAG relative-luminance formula:
+
+| Element | Alpha | Ratio | AA needs | |
+| --- | --- | --- | --- | --- |
+| Body text `#f1f5f9` | — | **10.98** | 4.5 | ✅ |
+| Butter solid (headings, nav active) | 1.0 | **10.46** | 4.5 | ✅ |
+| Button: `#013e37` on butter | — | **10.46** | 4.5 | ✅ |
+| Form label | 0.8 | **7.26** | 4.5 | ✅ |
+| Nav link / secondary text | 0.7 | **5.92** | 4.5 | ✅ |
+| Stat card label (on gradient end) | 0.6 | **5.49** | 4.5 | ✅ |
+| Eyebrow, table header, empty-state text | 0.6 | **4.74** | 4.5 | ✅ |
+| **Panel subtext** | 0.55 | **4.23** | 4.5 | ⚠️ under |
+| **Sign out, email, date labels** | 0.5 | **3.78** | 4.5 | ⚠️ under |
+| Stat card icon (decorative) | 0.35 | 2.57 | 3.0 (n/a) | exempt — decorative, labelled |
+| `#fbbf24` warning | — | 7.21 | 4.5 | ✅ |
+| `#4ade80` success | — | 6.90 | 4.5 | ✅ |
+| `#60a5fa` info | — | 4.73 | 4.5 | ✅ |
+| `#c084fc` purple | — | 4.55 | 4.5 | ✅ |
+| `#f87171` danger | — | 4.35 | 4.5 | ⚠️ marginal |
+
+**Applied as specified rather than silently adjusted** — these are the brief's values and this is an
+internal tool behind auth, not a public page, so none of it touches the site's Lighthouse
+Accessibility 100. Raising the two flagged alphas from 0.5/0.55 to **0.6** clears both (4.74:1) and
+is a one-line change in `theme.ts` if wanted.
+
+Surface note: deep green cards on the `#1e293b` page differ by only 1.22:1 in luminance, so the
+butter@15% border and the layered shadow — not lightness — are what separate a card from the page.
+Both were verified present in the computed styles.
+
+### Verification
+
+| Gate | Result |
+| --- | --- |
+| `pnpm tsc --noEmit` | ✅ PASS — 0 errors |
+| `pnpm run build` | ✅ PASS — 42/42 pages |
+| Tailwind JIT emission | ✅ all 19 arbitrary rgba classes + all 10 solid hexes present in the compiled CSS |
+| `vercel --prod` | ✅ READY — `dpl_8xAbMpsx7Xk5aH33R6fuECgjRZZo` |
+| Computed-colour test vs **production** | ✅ **46/46** |
+| `ad-grants-readiness` vs production | ✅ **59/59** |
+| `site-audit` vs production | ✅ **126 passed + 2 flaky** (both green on retry) |
+| Files outside admin/login | ✅ **zero** |
+
+> **Verification note — a grep that lied.** The first CSS check reported the danger-red classes
+> missing while amber, blue, purple and green were present, which looked like a JIT failure on one
+> badge tone. They were there all along: Tailwind escapes commas in the *selector* as `\2c `, and
+> the minifier had rewritten those particular *declarations* away from literal-comma `rgba(...)`
+> form. Searching for `248,113,113` matched neither. The rewritten check builds the escaped selector
+> form and finds all 19. **Grepping minified CSS for a colour literal is not a test** — assert on
+> `getComputedStyle` in a browser, which is what the 46-check suite does.
+
+> **Third time for the same trap.** `document.querySelector("form")` in the test matched the
+> sidebar's Sign Out form, which has no `<section>` ancestor, so the form-card assertion threw.
+> Phase 2 hit the identical class of bug with `page.click('button[type=submit]')` and `[role=alert]`.
+> **In the admin shell the sidebar always comes first in DOM order** — anchor every query on
+> something inside the content area (a field id, an accessible name), never on the first element of
+> a generic type.
+
+### Open items — unchanged by this phase, carried into Phase 4
+
+1. **Create and read only — nothing can be actioned.** No status transitions exist, so items in
+   Requires Attention can be seen but never confirmed, approved, disbursed or fulfilled. Still the
+   largest functional gap.
+2. **Writes are admin-only** (RLS grants INSERT to `role = 'admin'` alone).
+3. **`audit_log` actor spoofing via the REST API** remains possible for an authenticated user.
+4. **Total donations is summed in JavaScript** rather than SQL.
+5. **Vercel Preview env vars still unset** — Preview deploys will 500 until added.
+6. **`notepad supabase password.txt`** still holds the live DB password in the working tree.

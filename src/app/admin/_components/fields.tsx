@@ -7,8 +7,7 @@
  * so whatever the user typed survives a failed submit.
  */
 
-const CONTROL =
-  "w-full rounded-lg border border-[#2d3748] bg-[#111827] px-3 py-2 text-sm text-[#f1f5f9] placeholder-[#475569] outline-none transition focus:border-[#4A7C59] focus:ring-1 focus:ring-[#4A7C59] disabled:opacity-60";
+import { CONTROL } from "./theme";
 
 export function Field({
   label,
@@ -27,7 +26,7 @@ export function Field({
     <div>
       <label
         htmlFor={htmlFor}
-        className="block text-sm font-medium text-[#f1f5f9]"
+        className="block text-sm font-medium text-[rgba(255,239,179,0.8)]"
       >
         {label}
         {required ? (
@@ -35,13 +34,15 @@ export function Field({
             *
           </span>
         ) : (
-          <span className="ml-2 text-xs font-normal text-[#475569]">
+          <span className="ml-2 text-xs font-normal text-[rgba(255,239,179,0.5)]">
             optional
           </span>
         )}
       </label>
       <div className="mt-1.5">{children}</div>
-      {hint ? <p className="mt-1.5 text-xs text-[#94a3b8]">{hint}</p> : null}
+      {hint ? (
+        <p className="mt-1.5 text-xs text-[rgba(255,239,179,0.6)]">{hint}</p>
+      ) : null}
     </div>
   );
 }
@@ -104,8 +105,11 @@ export function Select({
       required={required}
       className={CONTROL}
     >
+      {/* Native option lists are painted by the OS, so each option gets an
+          opaque deep-green background — the translucent control colour would
+          render as unreadable dark-on-dark in the open dropdown. */}
       {options.map((o) => (
-        <option key={o.value} value={o.value} className="bg-[#111827]">
+        <option key={o.value} value={o.value} className="bg-[#013e37]">
           {o.label}
         </option>
       ))}
@@ -158,12 +162,15 @@ export function Checkbox({
         name={name}
         type="checkbox"
         defaultChecked={defaultChecked}
-        className="mt-0.5 h-4 w-4 shrink-0 cursor-pointer rounded border-[#2d3748] bg-[#111827] accent-[#4A7C59]"
+        className="mt-0.5 h-4 w-4 shrink-0 cursor-pointer rounded border-[rgba(255,239,179,0.2)] bg-[rgba(1,62,55,0.6)] accent-[#ffefb3]"
       />
-      <label htmlFor={id} className="cursor-pointer text-sm text-[#f1f5f9]">
+      <label
+        htmlFor={id}
+        className="cursor-pointer text-sm text-[rgba(255,239,179,0.8)]"
+      >
         {label}
         {hint ? (
-          <span className="mt-0.5 block text-xs font-normal text-[#94a3b8]">
+          <span className="mt-0.5 block text-xs font-normal text-[rgba(255,239,179,0.6)]">
             {hint}
           </span>
         ) : null}

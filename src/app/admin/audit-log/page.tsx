@@ -80,27 +80,27 @@ export default async function AuditLogPage() {
           </thead>
           <tbody>
             {rows.map((entry) => (
-              <tr key={entry.id} className="transition hover:bg-[#111827]/40">
+              <tr key={entry.id} className="transition hover:bg-[rgba(255,239,179,0.05)]">
                 <Td className="whitespace-nowrap">
                   <span className="block text-[#f1f5f9]">
                     {formatTimestamp(entry.created_at)}
                   </span>
-                  <span className="block text-xs text-[#475569]">
+                  <span className="block text-xs text-[rgba(255,239,179,0.5)]">
                     {formatRelative(entry.created_at)}
                   </span>
                 </Td>
                 <Td>
                   {entry.actor?.full_name || entry.actor?.email || (
-                    <span className="text-[#475569]">Unknown user</span>
+                    <span className="text-[rgba(255,239,179,0.5)]">Unknown user</span>
                   )}
                 </Td>
-                <Td className="text-[#94a3b8]">
+                <Td className="text-[rgba(255,239,179,0.7)]">
                   {humanizeEnum(entry.action)}
                 </Td>
-                <Td className="text-[#94a3b8]">
+                <Td className="text-[rgba(255,239,179,0.7)]">
                   {humanizeEnum(entry.entity_type)}
                 </Td>
-                <Td className="font-mono text-xs text-[#475569]">
+                <Td className="font-mono text-xs text-[rgba(255,239,179,0.5)]">
                   {shortId(entry.entity_id)}
                 </Td>
               </tr>

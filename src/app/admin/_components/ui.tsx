@@ -1,18 +1,24 @@
 import Link from "next/link";
 import { PlusIcon } from "./icons";
+import {
+  BTN_PRIMARY,
+  cardStyle,
+  softCardStyle,
+  statCardStyle,
+  tableStyle,
+} from "./theme";
 
 /**
  * Presentational primitives for the FaithProof admin UI.
  *
- * The admin palette is expressed as arbitrary Tailwind values (`bg-[#1e293b]`)
- * ON PURPOSE. Adding these tokens to tailwind.config.ts would put an internal
- * tool's colours into the same namespace the public marketing site draws from,
- * where a future `text-slate` or `bg-card` could quietly leak onto a donor-
- * facing page. Admin colours stay local to admin files.
+ * Palette (admin + login only — never the public site):
+ *   page #1e293b · card/sidebar #013e37 deep green · accent #ffefb3 butter
+ *   card border rgba(255,239,179,0.15) · top highlight rgba(255,239,179,0.2)
+ *   success #4ade80 · warning #fbbf24 · danger #f87171 · info #60a5fa
  *
- * Palette: sidebar #0f1623 · main #111827 · card #1e293b · border #2d3748
- * text #f1f5f9 / #94a3b8 / #475569 · green #4A7C59 · success #22c55e
- * warning #f59e0b · danger #ef4444 · info #3b82f6
+ * Colour values live in ./theme.ts. See the note there on why they are not in
+ * tailwind.config.ts and why some are inline styles and others Tailwind
+ * arbitrary values.
  */
 
 // ── Page header ─────────────────────────────────────────────────────────────
@@ -29,11 +35,13 @@ export function PageHeader({
   return (
     <header className="mb-8 flex flex-wrap items-start justify-between gap-4">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight text-[#f1f5f9]">
+        <h1 className="text-2xl font-bold tracking-tight text-[#ffefb3]">
           {title}
         </h1>
         {description ? (
-          <p className="mt-1 text-sm text-[#94a3b8]">{description}</p>
+          <p className="mt-1 text-sm text-[rgba(255,239,179,0.6)]">
+            {description}
+          </p>
         ) : null}
       </div>
       {action}
@@ -49,10 +57,7 @@ export function PrimaryLinkButton({
   children: React.ReactNode;
 }) {
   return (
-    <Link
-      href={href}
-      className="inline-flex items-center gap-2 rounded-lg bg-[#4A7C59] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#3d6b4a] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#4A7C59] focus-visible:ring-offset-2 focus-visible:ring-offset-[#111827]"
-    >
+    <Link href={href} className={BTN_PRIMARY}>
       <PlusIcon className="h-4 w-4" />
       {children}
     </Link>
@@ -64,13 +69,17 @@ export function PrimaryLinkButton({
 export function Panel({
   children,
   className = "",
+  soft = false,
 }: {
   children: React.ReactNode;
   className?: string;
+  /** Lighter shadow, for dense card grids (promises, proof vault). */
+  soft?: boolean;
 }) {
   return (
     <section
-      className={`rounded-xl border border-[#2d3748] bg-[#1e293b] ${className}`}
+      style={soft ? softCardStyle : cardStyle}
+      className={`rounded-xl border border-[rgba(255,239,179,0.15)] ${className}`}
     >
       {children}
     </section>
@@ -81,7 +90,7 @@ export function PanelHeader({
   icon,
   title,
   subtext,
-  iconClassName = "text-[#94a3b8]",
+  iconClassName = "text-[rgba(255,239,179,0.6)]",
 }: {
   icon: React.ReactNode;
   title: string;
@@ -92,9 +101,11 @@ export function PanelHeader({
     <div className="mb-5 flex items-start gap-3">
       <span className={`mt-0.5 shrink-0 ${iconClassName}`}>{icon}</span>
       <div>
-        <h2 className="text-base font-semibold text-white">{title}</h2>
+        <h2 className="text-base font-semibold text-[#ffefb3]">{title}</h2>
         {subtext ? (
-          <p className="mt-0.5 text-xs text-[#94a3b8]">{subtext}</p>
+          <p className="mt-0.5 text-xs text-[rgba(255,239,179,0.55)]">
+            {subtext}
+          </p>
         ) : null}
       </div>
     </div>
@@ -105,22 +116,29 @@ export function StatCard({
   label,
   value,
   icon,
-  accent = "text-[#94a3b8]",
 }: {
   label: string;
   value: string | number;
   icon?: React.ReactNode;
-  accent?: string;
 }) {
   return (
-    <div className="rounded-xl border border-[#2d3748] bg-[#1e293b] p-4">
+    <div
+      style={statCardStyle}
+      className="rounded-xl border border-[rgba(255,239,179,0.15)] p-4"
+    >
       <div className="flex items-center justify-between gap-2">
-        <p className="text-[0.7rem] font-medium uppercase tracking-wider text-[#94a3b8]">
+        <p className="text-xs font-medium uppercase tracking-wider text-[rgba(255,239,179,0.6)]">
           {label}
         </p>
-        {icon ? <span className={accent}>{icon}</span> : null}
+        {/* Decorative only — every icon sits beside its own text label, so it
+            carries no information of its own. */}
+        {icon ? (
+          <span aria-hidden="true" className="text-[rgba(255,239,179,0.35)]">
+            {icon}
+          </span>
+        ) : null}
       </div>
-      <p className="mt-2 text-2xl font-semibold tabular-nums text-[#f1f5f9]">
+      <p className="mt-2 text-2xl font-bold tabular-nums text-[#ffefb3]">
         {value}
       </p>
     </div>
@@ -142,8 +160,8 @@ export function EmptyState({
 }) {
   const ring =
     tone === "success"
-      ? "bg-[#22c55e]/10 text-[#22c55e]"
-      : "bg-[#3b82f6]/10 text-[#3b82f6]";
+      ? "bg-[rgba(74,222,128,0.15)] text-[#4ade80]"
+      : "bg-[rgba(255,239,179,0.1)] text-[rgba(255,239,179,0.3)]";
 
   return (
     <div className="flex flex-col items-center justify-center px-4 py-12 text-center">
@@ -152,9 +170,9 @@ export function EmptyState({
       >
         {icon}
       </span>
-      <p className="mt-4 text-sm font-medium text-[#f1f5f9]">{title}</p>
+      <p className="mt-4 text-sm font-medium text-[#ffefb3]">{title}</p>
       {detail ? (
-        <p className="mt-1 max-w-sm text-xs leading-relaxed text-[#94a3b8]">
+        <p className="mt-1 max-w-sm text-xs leading-relaxed text-[rgba(255,239,179,0.6)]">
           {detail}
         </p>
       ) : null}
@@ -172,13 +190,22 @@ export type BadgeTone =
   | "purple"
   | "gray";
 
+/**
+ * Badge tones, retuned for the deep green surface.
+ *
+ * The status colours are the brief's indicator set (#4ade80 / #fbbf24 /
+ * #f87171 / #60a5fa) used directly as the text colour, over a 15% wash of
+ * themselves. `gray` is butter-tinted rather than slate: a neutral borrowed
+ * from the old blue-grey palette reads as a foreign object on deep green.
+ */
 const BADGE_TONES: Record<BadgeTone, string> = {
-  green: "bg-[#22c55e]/12 text-[#4ade80] ring-[#22c55e]/25",
-  amber: "bg-[#f59e0b]/12 text-[#fbbf24] ring-[#f59e0b]/25",
-  red: "bg-[#ef4444]/12 text-[#f87171] ring-[#ef4444]/25",
-  blue: "bg-[#3b82f6]/12 text-[#60a5fa] ring-[#3b82f6]/25",
-  purple: "bg-[#a855f7]/12 text-[#c084fc] ring-[#a855f7]/25",
-  gray: "bg-[#475569]/20 text-[#94a3b8] ring-[#475569]/35",
+  green: "bg-[rgba(74,222,128,0.15)] text-[#4ade80] ring-[rgba(74,222,128,0.3)]",
+  amber: "bg-[rgba(251,191,36,0.15)] text-[#fbbf24] ring-[rgba(251,191,36,0.3)]",
+  red: "bg-[rgba(248,113,113,0.15)] text-[#f87171] ring-[rgba(248,113,113,0.3)]",
+  blue: "bg-[rgba(96,165,250,0.15)] text-[#60a5fa] ring-[rgba(96,165,250,0.3)]",
+  purple:
+    "bg-[rgba(192,132,252,0.15)] text-[#c084fc] ring-[rgba(192,132,252,0.3)]",
+  gray: "bg-[rgba(255,239,179,0.12)] text-[rgba(255,239,179,0.75)] ring-[rgba(255,239,179,0.25)]",
 };
 
 export function Badge({
@@ -220,7 +247,10 @@ export function TableWrap({ children }: { children: React.ReactNode }) {
   // Tables must scroll inside their own container so the page body never
   // scrolls horizontally on a narrow viewport.
   return (
-    <div className="overflow-x-auto rounded-xl border border-[#2d3748] bg-[#1e293b]">
+    <div
+      style={tableStyle}
+      className="overflow-x-auto rounded-xl border border-[rgba(255,239,179,0.1)]"
+    >
       <table className="w-full min-w-[52rem] border-collapse text-left text-sm">
         {children}
       </table>
@@ -238,7 +268,7 @@ export function Th({
   return (
     <th
       scope="col"
-      className={`whitespace-nowrap border-b border-[#2d3748] px-4 py-3 text-[0.7rem] font-semibold uppercase tracking-wider text-[#94a3b8] ${
+      className={`whitespace-nowrap border-b border-[rgba(255,239,179,0.15)] px-4 py-3 text-xs font-semibold uppercase tracking-wider text-[rgba(255,239,179,0.6)] ${
         align === "right" ? "text-right" : "text-left"
       }`}
     >
@@ -258,7 +288,7 @@ export function Td({
 }) {
   return (
     <td
-      className={`border-b border-[#2d3748]/60 px-4 py-3 text-[#f1f5f9] ${
+      className={`border-b border-[rgba(255,239,179,0.08)] px-4 py-3 text-[#f1f5f9] ${
         align === "right" ? "text-right" : "text-left"
       } ${className}`}
     >
@@ -286,12 +316,12 @@ export function QueryError({
   what: string;
 }) {
   return (
-    <div className="rounded-xl border border-[#ef4444]/40 bg-[#ef4444]/10 p-4">
+    <div className="rounded-xl border border-[rgba(248,113,113,0.35)] bg-[rgba(248,113,113,0.12)] p-4">
       <p className="text-sm font-semibold text-[#f87171]">
         Could not load {what}
       </p>
       <p className="mt-1 text-xs leading-relaxed text-[#fca5a5]">{message}</p>
-      <p className="mt-2 text-xs leading-relaxed text-[#94a3b8]">
+      <p className="mt-2 text-xs leading-relaxed text-[rgba(255,239,179,0.7)]">
         This is a data-access failure, not an empty result. Nothing is being
         hidden from you deliberately — if this persists, check your role and the
         row level security policies for this table.

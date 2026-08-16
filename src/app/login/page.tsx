@@ -15,8 +15,11 @@ const ERRORS: Record<string, string> = {
   invalid: "Those credentials were not accepted. Please try again.",
 };
 
+// Kept local rather than imported from the admin theme module: /login is the
+// only page outside src/app/admin/ that uses this palette, and a shared import
+// would couple a public-routable page to the admin component tree.
 const CONTROL =
-  "w-full rounded-lg border border-[#2d3748] bg-[#111827] px-4 py-2.5 text-sm text-white placeholder-[#475569] outline-none transition focus:border-[#4A7C59] focus:ring-1 focus:ring-[#4A7C59]";
+  "w-full rounded-lg border border-[rgba(255,239,179,0.2)] bg-[rgba(1,62,55,0.6)] px-4 py-2.5 text-sm text-[#f1f5f9] placeholder-[rgba(255,239,179,0.35)] outline-none transition focus:border-[#ffefb3] focus:ring-1 focus:ring-[#ffefb3]";
 
 export default function LoginPage({
   searchParams,
@@ -26,16 +29,24 @@ export default function LoginPage({
   const message = searchParams?.error ? ERRORS[searchParams.error] : null;
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#0f1623] px-6 py-16">
+    <div className="flex min-h-screen items-center justify-center bg-[#1e293b] px-6 py-16">
       <div className="w-full max-w-md">
-        <div className="rounded-xl border border-[#2d3748] bg-[#1e293b] p-8 shadow-2xl">
-          <p className="text-[10px] font-semibold uppercase tracking-widest text-[#4A7C59]">
+        <div
+          style={{
+            backgroundColor: "#013e37",
+            borderTop: "1px solid rgba(255,239,179,0.2)",
+            boxShadow:
+              "0 4px 24px rgba(1,62,55,0.4), 0 1px 4px rgba(0,0,0,0.3)",
+          }}
+          className="rounded-xl border border-[rgba(255,239,179,0.15)] p-8"
+        >
+          <p className="text-[10px] font-semibold uppercase tracking-widest text-[rgba(255,239,179,0.6)]">
             FAITH FOUNDATION
           </p>
-          <h1 className="mt-1.5 text-2xl font-semibold text-white">
+          <h1 className="mt-1.5 text-2xl font-bold text-[#ffefb3]">
             FaithProof Admin
           </h1>
-          <p className="mt-2 text-sm leading-relaxed text-[#94a3b8]">
+          <p className="mt-2 text-sm leading-relaxed text-[rgba(255,239,179,0.7)]">
             Internal access for FAITH Foundation staff and board members. If you
             need an account, contact an administrator.
           </p>
@@ -44,7 +55,7 @@ export default function LoginPage({
             <div>
               <label
                 htmlFor="email"
-                className="block text-sm font-medium text-[#f1f5f9]"
+                className="block text-sm font-medium text-[rgba(255,239,179,0.8)]"
               >
                 Email address
               </label>
@@ -63,7 +74,7 @@ export default function LoginPage({
             <div>
               <label
                 htmlFor="password"
-                className="block text-sm font-medium text-[#f1f5f9]"
+                className="block text-sm font-medium text-[rgba(255,239,179,0.8)]"
               >
                 Password
               </label>
@@ -80,7 +91,7 @@ export default function LoginPage({
 
             <button
               type="submit"
-              className="w-full rounded-lg bg-[#4A7C59] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#3d6b4a] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#4A7C59] focus-visible:ring-offset-2 focus-visible:ring-offset-[#1e293b]"
+              className="w-full rounded-lg bg-[#ffefb3] px-5 py-2.5 text-sm font-semibold text-[#013e37] transition hover:bg-[#fff5cc] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ffefb3] focus-visible:ring-offset-2 focus-visible:ring-offset-[#013e37]"
             >
               Sign In
             </button>
@@ -93,10 +104,10 @@ export default function LoginPage({
           </form>
         </div>
 
-        <p className="mt-6 text-center text-xs text-[#475569]">
+        <p className="mt-6 text-center text-xs text-[rgba(255,239,179,0.5)]">
           <Link
             href="/"
-            className="underline underline-offset-4 transition hover:text-[#94a3b8]"
+            className="underline underline-offset-4 transition hover:text-[#ffefb3]"
           >
             Return to faithfoundationsf.org
           </Link>

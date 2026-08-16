@@ -60,14 +60,14 @@ export default async function ProofVaultPage() {
       ) : (
         <div className="grid gap-4 lg:grid-cols-2">
           {rows.map((doc) => (
-            <Panel key={doc.id} className="flex flex-col p-5">
+            <Panel key={doc.id} soft className="flex flex-col p-5">
               <div className="flex items-start justify-between gap-3">
-                <h2 className="text-base font-semibold leading-snug text-[#f1f5f9]">
+                <h2 className="text-base font-semibold leading-snug text-[#ffefb3]">
                   {doc.title}
                 </h2>
                 {doc.verified ? (
                   <span
-                    className="inline-flex shrink-0 items-center gap-1 rounded-full bg-[#22c55e]/12 px-2 py-0.5 text-[0.7rem] font-medium text-[#4ade80] ring-1 ring-inset ring-[#22c55e]/25"
+                    className="inline-flex shrink-0 items-center gap-1 rounded-full bg-[rgba(74,222,128,0.15)] px-2 py-0.5 text-[0.7rem] font-medium text-[#4ade80] ring-1 ring-inset ring-[rgba(74,222,128,0.3)]"
                     title={
                       doc.verified_at
                         ? `Verified ${formatTimestamp(doc.verified_at)}`
@@ -90,15 +90,15 @@ export default async function ProofVaultPage() {
               </div>
 
               {doc.description ? (
-                <p className="mt-3 flex-1 text-sm leading-relaxed text-[#94a3b8]">
+                <p className="mt-3 flex-1 text-sm leading-relaxed text-[rgba(255,239,179,0.7)]">
                   {truncate(doc.description, 200)}
                 </p>
               ) : (
                 <div className="flex-1" />
               )}
 
-              <div className="mt-4 flex items-center justify-between gap-3 border-t border-[#2d3748] pt-3">
-                <span className="text-xs text-[#475569]">
+              <div className="mt-4 flex items-center justify-between gap-3 border-t border-[rgba(255,239,179,0.15)] pt-3">
+                <span className="text-xs text-[rgba(255,239,179,0.5)]">
                   Added {formatTimestamp(doc.created_at)}
                 </span>
                 {doc.external_url ? (

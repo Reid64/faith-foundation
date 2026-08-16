@@ -14,11 +14,21 @@ export const metadata: Metadata = {
 // Auth state is per-request; nothing under /admin may be cached or prerendered.
 export const dynamic = "force-dynamic";
 
+/**
+ * Role pill tones.
+ *
+ * `admin` uses the butter accent specified for the admin badge. The other roles
+ * borrow the indicator set rather than the old slate greys, which read as a
+ * foreign object against the deep green sidebar.
+ */
 const ROLE_TONES: Record<string, string> = {
-  admin: "bg-[#22c55e]/15 text-[#4ade80] ring-[#22c55e]/30",
-  board: "bg-[#3b82f6]/15 text-[#60a5fa] ring-[#3b82f6]/30",
-  staff: "bg-[#475569]/25 text-[#94a3b8] ring-[#475569]/40",
-  public: "bg-[#475569]/25 text-[#94a3b8] ring-[#475569]/40",
+  admin:
+    "bg-[rgba(255,239,179,0.15)] text-[#ffefb3] ring-[rgba(255,239,179,0.3)]",
+  board: "bg-[rgba(96,165,250,0.15)] text-[#60a5fa] ring-[rgba(96,165,250,0.3)]",
+  staff:
+    "bg-[rgba(255,239,179,0.1)] text-[rgba(255,239,179,0.7)] ring-[rgba(255,239,179,0.2)]",
+  public:
+    "bg-[rgba(255,239,179,0.1)] text-[rgba(255,239,179,0.7)] ring-[rgba(255,239,179,0.2)]",
 };
 
 export default async function AdminLayout({
@@ -37,19 +47,22 @@ export default async function AdminLayout({
   const role = profile?.role ?? null;
 
   return (
-    <div className="min-h-screen bg-[#111827]">
-      <aside className="fixed inset-y-0 left-0 z-40 flex w-60 flex-col border-r border-[#2d3748] bg-[#0f1623]">
+    <div className="min-h-screen bg-[#1e293b]">
+      <aside className="fixed inset-y-0 left-0 z-40 flex w-60 flex-col border-r border-[rgba(255,239,179,0.15)] bg-[#013e37]">
         <div className="px-5 py-5">
-          <p className="text-[10px] font-semibold uppercase tracking-widest text-[#4A7C59]">
+          <p className="text-[10px] font-semibold uppercase tracking-widest text-[rgba(255,239,179,0.6)]">
             FAITH FOUNDATION
           </p>
-          <p className="mt-1 text-xl font-semibold text-white">FaithProof</p>
+          <p className="mt-1 text-xl font-semibold text-[#ffefb3]">FaithProof</p>
         </div>
 
         <AdminNav />
 
-        <div className="border-t border-[#2d3748] px-5 py-4">
-          <p className="truncate text-xs text-[#475569]" title={email}>
+        <div className="border-t border-[rgba(255,239,179,0.15)] px-5 py-4">
+          <p
+            className="truncate text-xs text-[rgba(255,239,179,0.5)]"
+            title={email}
+          >
             {email}
           </p>
 
@@ -68,7 +81,7 @@ export default async function AdminLayout({
               // policy resolves the caller's role from this row, so without it
               // every query returns empty and the tool looks merely idle.
               <span
-                className="inline-flex items-center rounded-full bg-[#ef4444]/15 px-2 py-0.5 text-[0.65rem] font-bold uppercase tracking-wider text-[#f87171] ring-1 ring-inset ring-[#ef4444]/30"
+                className="inline-flex items-center rounded-full bg-[rgba(248,113,113,0.15)] px-2 py-0.5 text-[0.65rem] font-bold uppercase tracking-wider text-[#f87171] ring-1 ring-inset ring-[rgba(248,113,113,0.3)]"
                 title="No row in profiles for this user — every table will read as empty until one exists."
               >
                 no profile
@@ -79,7 +92,7 @@ export default async function AdminLayout({
           <form action={signOut} className="mt-4">
             <button
               type="submit"
-              className="text-xs font-semibold uppercase tracking-wider text-[#94a3b8] transition hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-[#4A7C59]"
+              className="text-xs font-semibold uppercase tracking-wider text-[rgba(255,239,179,0.5)] transition hover:text-[#ffefb3] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ffefb3]"
             >
               Sign Out
             </button>
@@ -87,7 +100,7 @@ export default async function AdminLayout({
 
           <Link
             href="/"
-            className="mt-3 block text-xs text-[#475569] transition hover:text-[#94a3b8]"
+            className="mt-3 block text-xs text-[rgba(255,239,179,0.5)] transition hover:text-[#ffefb3]"
           >
             View public site
           </Link>
@@ -96,7 +109,7 @@ export default async function AdminLayout({
 
       {/* A <div>, not <main>: the root layout already wraps every route in
           <main id="main-content">, and a document may only have one <main>. */}
-      <div className="ml-60 min-h-screen bg-[#111827] p-8">{children}</div>
+      <div className="ml-60 min-h-screen bg-[#1e293b] p-8">{children}</div>
     </div>
   );
 }

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { BTN_SECONDARY, BTN_SUBMIT } from "./theme";
 
 /**
  * Shared submit wrapper for every FaithProof "new record" form.
@@ -83,24 +84,17 @@ export function AdminForm({
       {error ? (
         <p
           role="alert"
-          className="rounded-lg border border-[#ef4444]/40 bg-[#ef4444]/10 px-4 py-3 text-sm text-[#f87171]"
+          className="rounded-lg border border-[rgba(248,113,113,0.4)] bg-[rgba(248,113,113,0.12)] px-4 py-3 text-sm text-[#f87171]"
         >
           {error}
         </p>
       ) : null}
 
-      <div className="flex items-center gap-3 border-t border-[#2d3748] pt-6">
-        <button
-          type="submit"
-          disabled={pending}
-          className="inline-flex items-center rounded-lg bg-[#4A7C59] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#3d6b4a] disabled:cursor-not-allowed disabled:opacity-60 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#4A7C59] focus-visible:ring-offset-2 focus-visible:ring-offset-[#111827]"
-        >
+      <div className="flex items-center gap-3 border-t border-[rgba(255,239,179,0.15)] pt-6">
+        <button type="submit" disabled={pending} className={BTN_SUBMIT}>
           {pending ? "Saving…" : submitLabel}
         </button>
-        <Link
-          href={cancelHref}
-          className="text-sm text-[#94a3b8] transition hover:text-[#f1f5f9]"
-        >
+        <Link href={cancelHref} className={BTN_SECONDARY}>
           Cancel
         </Link>
       </div>

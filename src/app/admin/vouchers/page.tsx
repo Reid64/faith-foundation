@@ -70,11 +70,11 @@ export default async function VouchersPage() {
           </thead>
           <tbody>
             {rows.map((v) => (
-              <tr key={v.id} className="transition hover:bg-[#111827]/40">
+              <tr key={v.id} className="transition hover:bg-[rgba(255,239,179,0.05)]">
                 <Td className="whitespace-nowrap font-medium">
                   {v.voucher_number}
                 </Td>
-                <Td className="text-[#94a3b8]">
+                <Td className="text-[rgba(255,239,179,0.7)]">
                   {FUND_LABELS[v.fund] ?? v.fund}
                 </Td>
                 <Td align="right" className="whitespace-nowrap tabular-nums">
@@ -85,21 +85,21 @@ export default async function VouchersPage() {
                 </Td>
                 <Td>
                   {v.recipient_anonymous ? (
-                    <span className="text-[#475569]">Anonymous</span>
+                    <span className="text-[rgba(255,239,179,0.5)]">Anonymous</span>
                   ) : (
                     v.recipient_name || (
-                      <span className="text-[#475569]">—</span>
+                      <span className="text-[rgba(255,239,179,0.5)]">—</span>
                     )
                   )}
                 </Td>
-                <Td className="text-[#94a3b8]">
-                  {v.program || <span className="text-[#475569]">—</span>}
+                <Td className="text-[rgba(255,239,179,0.7)]">
+                  {v.program || <span className="text-[rgba(255,239,179,0.5)]">—</span>}
                 </Td>
-                <Td className="whitespace-nowrap text-[#94a3b8]">
+                <Td className="whitespace-nowrap text-[rgba(255,239,179,0.7)]">
                   {v.disbursed_at ? (
                     formatTimestamp(v.disbursed_at)
                   ) : (
-                    <span className="text-[#475569]">—</span>
+                    <span className="text-[rgba(255,239,179,0.5)]">—</span>
                   )}
                 </Td>
               </tr>

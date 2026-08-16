@@ -73,14 +73,14 @@ export default async function TransactionsPage() {
           </thead>
           <tbody>
             {rows.map((tx) => (
-              <tr key={tx.id} className="transition hover:bg-[#111827]/40">
-                <Td className="whitespace-nowrap text-[#94a3b8]">
+              <tr key={tx.id} className="transition hover:bg-[rgba(255,239,179,0.05)]">
+                <Td className="whitespace-nowrap text-[rgba(255,239,179,0.7)]">
                   {formatDateOnly(tx.transaction_date)}
                 </Td>
                 <Td>
                   <TransactionTypeBadge type={tx.type} />
                 </Td>
-                <Td className="text-[#94a3b8]">
+                <Td className="text-[rgba(255,239,179,0.7)]">
                   {FUND_LABELS[tx.fund] ?? tx.fund}
                 </Td>
                 <Td align="right" className="whitespace-nowrap tabular-nums">
@@ -88,17 +88,17 @@ export default async function TransactionsPage() {
                 </Td>
                 <Td>
                   {tx.donor_anonymous ? (
-                    <span className="text-[#475569]">Anonymous</span>
+                    <span className="text-[rgba(255,239,179,0.5)]">Anonymous</span>
                   ) : (
-                    tx.donor_name || <span className="text-[#475569]">—</span>
+                    tx.donor_name || <span className="text-[rgba(255,239,179,0.5)]">—</span>
                   )}
                 </Td>
                 <Td>
                   <TransactionStatusBadge status={tx.status} />
                 </Td>
-                <Td className="text-[#94a3b8]">
+                <Td className="text-[rgba(255,239,179,0.7)]">
                   {tx.reference_number || (
-                    <span className="text-[#475569]">—</span>
+                    <span className="text-[rgba(255,239,179,0.5)]">—</span>
                   )}
                 </Td>
               </tr>

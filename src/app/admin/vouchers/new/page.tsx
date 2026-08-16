@@ -43,16 +43,16 @@ export default async function NewVoucherPage() {
     <div className="mx-auto max-w-2xl">
       <Link
         href="/admin/vouchers"
-        className="mb-6 inline-flex items-center gap-2 text-sm text-[#94a3b8] transition hover:text-[#f1f5f9]"
+        className="mb-6 inline-flex items-center gap-2 text-sm text-[rgba(255,239,179,0.7)] transition hover:text-[#ffefb3]"
       >
         <ArrowLeftIcon className="h-4 w-4" />
         Back to Vouchers
       </Link>
 
-      <h1 className="text-2xl font-semibold tracking-tight text-[#f1f5f9]">
+      <h1 className="text-2xl font-bold tracking-tight text-[#ffefb3]">
         Issue Voucher
       </h1>
-      <p className="mt-1 text-sm text-[#94a3b8]">
+      <p className="mt-1 text-sm text-[rgba(255,239,179,0.7)]">
         New vouchers are recorded as <strong>pending</strong> and must be
         approved before disbursement.
       </p>

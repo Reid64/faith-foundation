@@ -119,10 +119,10 @@ export default async function CommandCenterPage() {
   return (
     <div className="mx-auto max-w-7xl">
       <header className="mb-8">
-        <h1 className="text-2xl font-semibold tracking-tight text-[#f1f5f9]">
+        <h1 className="text-2xl font-bold tracking-tight text-[#ffefb3]">
           Command Center
         </h1>
-        <p className="mt-1 text-sm text-[#94a3b8]">
+        <p className="mt-1 text-sm text-[rgba(255,239,179,0.6)]">
           Everything awaiting a decision on the left, everything already
           recorded on the right.
         </p>
@@ -136,25 +136,21 @@ export default async function CommandCenterPage() {
             donations.error ? "—" : formatCentsCompact(totalDonatedCents)
           }
           icon={<DollarIcon className="h-4 w-4" />}
-          accent="text-[#22c55e]"
         />
         <StatCard
           label="Vouchers disbursed"
           value={disbursed.error ? "—" : (disbursed.count ?? 0)}
           icon={<TicketIcon className="h-4 w-4" />}
-          accent="text-[#3b82f6]"
         />
         <StatCard
           label="Promises kept"
           value={fulfilled.error ? "—" : (fulfilled.count ?? 0)}
           icon={<CheckCircleIcon className="h-4 w-4" />}
-          accent="text-[#22c55e]"
         />
         <StatCard
           label="Documents verified"
           value={verifiedDocs.error ? "—" : (verifiedDocs.count ?? 0)}
           icon={<ShieldCheckIcon className="h-4 w-4" />}
-          accent="text-[#f59e0b]"
         />
       </div>
 
@@ -164,7 +160,7 @@ export default async function CommandCenterPage() {
         <Panel className="p-6">
           <PanelHeader
             icon={<WarningIcon className="h-5 w-5" />}
-            iconClassName="text-[#f59e0b]"
+            iconClassName="text-[#fbbf24]"
             title="Requires Attention"
             subtext="Items needing review or action"
           />
@@ -182,7 +178,7 @@ export default async function CommandCenterPage() {
               detail="No unconfirmed transactions, no pending vouchers, and no overdue promises."
             />
           ) : (
-            <ul className="divide-y divide-[#2d3748]">
+            <ul className="divide-y divide-[rgba(255,239,179,0.1)]">
               {pendingTxCount > 0 ? (
                 <AttentionRow
                   href="/admin/transactions"
@@ -218,7 +214,7 @@ export default async function CommandCenterPage() {
         <Panel className="p-6">
           <PanelHeader
             icon={<ClockIcon className="h-5 w-5" />}
-            iconClassName="text-[#3b82f6]"
+            iconClassName="text-[#60a5fa]"
             title="Recent Accountability Activity"
             subtext="Latest changes, newest first"
           />
@@ -235,10 +231,10 @@ export default async function CommandCenterPage() {
               detail="Add your first transaction to begin."
             />
           ) : (
-            <ul className="divide-y divide-[#2d3748]">
+            <ul className="divide-y divide-[rgba(255,239,179,0.1)]">
               {entries.map((entry) => (
                 <li key={entry.id} className="flex gap-3 py-3 first:pt-0">
-                  <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#4A7C59]" />
+                  <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#ffefb3]" />
                   <div className="min-w-0 flex-1">
                     <p className="text-sm text-[#f1f5f9]">
                       <span className="font-medium">
@@ -246,14 +242,14 @@ export default async function CommandCenterPage() {
                           entry.actor?.email ||
                           "Unknown user"}
                       </span>{" "}
-                      <span className="text-[#94a3b8]">
+                      <span className="text-[rgba(255,239,179,0.7)]">
                         {humanizeEnum(entry.action).toLowerCase()}
                       </span>{" "}
-                      <span className="text-[#94a3b8]">
+                      <span className="text-[rgba(255,239,179,0.7)]">
                         {humanizeEnum(entry.entity_type).toLowerCase()}
                       </span>
                     </p>
-                    <p className="mt-0.5 text-xs text-[#475569]">
+                    <p className="mt-0.5 text-xs text-[rgba(255,239,179,0.5)]">
                       {formatRelative(entry.created_at)}
                     </p>
                   </div>
@@ -284,16 +280,18 @@ function AttentionRow({
     <li>
       <Link
         href={href}
-        className="-mx-2 flex items-center gap-3 rounded-lg px-2 py-3 transition hover:bg-[#111827]/60"
+        className="-mx-2 flex items-center gap-3 rounded-lg px-2 py-3 transition hover:bg-[rgba(255,239,179,0.05)]"
       >
         <CountBadge tone={tone} count={count} />
         <span className="min-w-0 flex-1">
           <span className="block text-sm font-medium text-[#f1f5f9]">
             {label}
           </span>
-          <span className="block text-xs text-[#94a3b8]">{detail}</span>
+          <span className="block text-xs text-[rgba(255,239,179,0.7)]">
+            {detail}
+          </span>
         </span>
-        <span aria-hidden="true" className="text-[#475569]">
+        <span aria-hidden="true" className="text-[rgba(255,239,179,0.5)]">
           ›
         </span>
       </Link>
