@@ -52,7 +52,9 @@ export function hoursOf(value: string | number | null | undefined): number {
 }
 
 export function formatHours(value: number): string {
-  return `${value.toFixed(2).replace(/\.00$/, "")} h`;
+  // Trim trailing zeros, not just a whole ".00": 3.5 hours should read "3.5 h",
+  // not "3.50 h", and 4 hours should read "4 h".
+  return `${value.toFixed(2).replace(/\.?0+$/, "")} h`;
 }
 
 /** "14:30:00" → "2:30 PM". Postgres TIME has no timezone, so no conversion. */

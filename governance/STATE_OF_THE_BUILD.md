@@ -1,7 +1,65 @@
 # faith-foundation — STATE OF THE BUILD
 
 > Updated from a LIVE codebase audit on 2026-08-16 (BLUEPRINT Canonical Rule 9).
-> Last action: **SPEC FILES CREATED FOR PHASES 9-22 — no features built.** A new
+> Last action: **FAITHPROOF PLATFORM COMPLETE — Phases 9-18 built, deployed and verified.**
+>
+> **Phases complete:** 9 (Zeffy webhook + auto-population), 10 (CRM), 11 (Mail merge + inbound
+> parsing), 12 (Board portal), 13 (Grant tracking), 14 (Volunteer management), 15 (Fund
+> accounting), 16 (Cornerstone tracker + public page), 17 (Public API), 18 (AI intake assistant).
+> Ten phases, ten deploys, ten commits on `main`. Migrations 006-013 were applied directly to the
+> live database during the build — no manual SQL-editor step is outstanding.
+>
+> **FaithProof status: PLATFORM COMPLETE.** Every major feature in the roadmap is built. What
+> remains is data entry and four external credentials, listed below.
+>
+> **Verified live, not merely built.** Beyond `tsc` and `build` on every phase:
+> - `ad-grants-readiness` **64/64** on production.
+> - A purpose-built admin walk covering every new page: **61/61**, including that a `staff` account
+>   is redirected out of `/admin/board` with an explanation, that promoting the same account to
+>   `board` lets it in, and that a board member still cannot open the admin-only record-meeting form.
+> - The accounting ledger was exercised against the live database: an imbalanced entry is refused,
+>   confirming a transaction posts debit-cash / credit-revenue, re-confirming does not double-post,
+>   and voiding writes a reversing entry that nets the accounts back to zero.
+> - The Cornerstone public views were queried **as the `anon` role**: the base table returns zero
+>   rows, the view returns only started projects, and `internal_notes` is not a column of the view.
+> - All five public API endpoints return 200 with the documented envelope; an unknown filter value
+>   returns 400; no donor or recipient name appears in any response.
+>
+> **Two defects found by that verification and fixed, recorded because governance is a factual
+> record.** The volunteer hours report and the event roster both selected a `contacts.organization`
+> column that does not exist, so both pages rendered a query error on production — caught by the
+> admin walk, fixed, redeployed, re-verified 61/61. `formatHours` also rendered 3.5 hours as
+> "3.50 h"; it now trims trailing zeros.
+>
+> **Three deliberate deviations from the phase briefs, each documented where it lives:**
+> 1. **Phase 18 program list.** The brief's system prompt offered Single Parent Stability, Emergency
+>    Bridge Housing, and a Financial Literacy Program. All three were retired on 2026-08-14 and
+>    their routes 301 to `/programs`. Shipping it would have the assistant offer three nonexistent
+>    programs to families in housing crisis and collect their income and phone number against the
+>    offer. The prompt lists the programs actually run, and states that it cannot decide eligibility.
+> 2. **Sitemap.** The final brief asked for `/portal` and `/apply-portal`. Neither route exists —
+>    the donor-portal and applicant-portal phases were not part of this build — so they are NOT in
+>    the sitemap. `/cornerstone` was added and is live in it (26 URLs).
+> 3. **RLS.** Every policy in migrations 010-013 carries `WITH CHECK` mirroring `USING`. `FOR ALL`
+>    without `WITH CHECK` leaves INSERT and UPDATE unconstrained on the new row.
+>
+> **Outstanding manual steps** (full detail in `governance/faithproof-roadmap/SECRETS_PENDING.md`):
+> - `ANTHROPIC_API_KEY` — the intake assistant returns a plain 503 until it is set.
+> - `ZOHO_SMTP_PASS` — mail merge records every attempt as failed until it is set; it never reports
+>   a send that did not happen.
+> - `ZEFFY_WEBHOOK_SECRET` — generated, not yet enforced (Zapier's plain webhook action computes no
+>   HMAC). Webhook rows are written `pending` and `is_public: false`, so nothing unverified can
+>   reach a public total.
+> - Zapier configuration — see `ZAPIER-SETUP.md`.
+> - Twilio — Phase 19 (SMS) is not built.
+>
+> **The ledger should be reviewed by the Treasurer before it is relied on for a filing.** It is a
+> working double-entry system, verified for correctness of posting and balance, but it has not been
+> reviewed by an accountant.
+>
+> Next: enter real data, configure Zapier, obtain `ANTHROPIC_API_KEY`.
+>
+> Prior action: **SPEC FILES CREATED FOR PHASES 9-22 — no features built.** A new
 > `governance/faithproof-roadmap/` directory holds 15 markdown specs: `00-MASTER.md` (organization
 > facts, admin users, both design systems, phase index) plus one spec per phase — Zeffy webhook,
 > CRM, mail merge + parsing, donor portal, applicant portal, board portal, grants, document

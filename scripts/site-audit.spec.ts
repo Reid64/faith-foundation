@@ -56,6 +56,10 @@ const PAGES = [
   // assertion below stays exact.
   "/faithproof/",
   "/faithproof/explorer/",
+  // Public Cornerstone tracker (Phase 16). Same reason as the two above: it is
+  // a public route, so it gets the same per-page coverage, and the sitemap
+  // count assertion below is exact.
+  "/cornerstone/",
 ];
 
 /** Routes retired as programs; must 308 to the programs hub. */

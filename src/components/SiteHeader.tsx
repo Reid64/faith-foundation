@@ -176,6 +176,15 @@ export default function SiteHeader() {
               </Link>
             );
           })}
+          {/* Apply sits beside Donate, not in the nav row: the two audiences
+              the site serves are people who want to give and people who need
+              help, and the second should not have to hunt through Programs. */}
+          <Link
+            href="/apply"
+            className="rounded-full border-2 border-green px-5 py-2 text-sm font-bold text-green transition-all duration-300 hover:bg-green hover:text-white"
+          >
+            Apply
+          </Link>
           <Link
             href="/donate"
             className="rounded-full bg-green px-6 py-2.5 text-sm font-bold text-white shadow-green ring-1 ring-gold/50 transition-all duration-300 hover:bg-green-dark hover:ring-2 hover:ring-gold hover:shadow-lg"
@@ -246,8 +255,14 @@ export default function SiteHeader() {
             </Link>
           ))}
           <Link
+            href="/apply"
+            className="mt-4 rounded-full border-2 border-green px-6 py-3 text-center text-sm font-bold text-green"
+          >
+            Apply
+          </Link>
+          <Link
             href="/donate"
-            className="mt-4 rounded-full bg-green px-6 py-3 text-center text-sm font-bold text-white"
+            className="mt-2 rounded-full bg-green px-6 py-3 text-center text-sm font-bold text-white"
           >
             Donate
           </Link>

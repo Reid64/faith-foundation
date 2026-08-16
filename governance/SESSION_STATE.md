@@ -1,6 +1,72 @@
 # faith-foundation — SESSION STATE
 
-> Tracks the live execution session. LATEST: **UI POLISH PASS — admin background darkened, stat
+> Tracks the live execution session. LATEST: **FAITHPROOF MEGA-BUILD — PHASES 9 THROUGH 18, ALL
+> COMPLETE** (2026-08-16). Ten phases built end to end in one autonomous run: Zeffy webhook, CRM,
+> mail merge + inbound parsing, board portal, grant tracking, volunteer management, fund
+> accounting, Cornerstone tracker + public page, public API, AI intake assistant. Ten deploys, ten
+> commits on `main`, migrations 006-013 applied directly to the live database. **FaithProof is
+> PLATFORM COMPLETE** — what remains is data entry and four external credentials.
+>
+> **Verification, live on production, not merely "it built":**
+> - `pnpm tsc --noEmit` **0 errors** and `pnpm run build` clean at the end of every phase; final
+>   build **72 routes**.
+> - `ad-grants-readiness` **64/64**.
+> - `site-audit` **139 passed, 1 flaky** (the third-party Zeffy iframe on /donate, which passed on
+>   retry), **0 failed**.
+> - Purpose-built admin walk over every new page: **61/61**. It signs in as a throwaway `staff`
+>   account, walks eleven new admin pages asserting real content and the absence of query errors,
+>   confirms `staff` is redirected out of `/admin/board` **with an explanation on the Command
+>   Center**, promotes the same account to `board` and confirms it gets in, then confirms a board
+>   member still cannot open the admin-only record-meeting form. The user is deleted afterwards.
+> - Accounting exercised against the live database: an imbalanced entry is **refused** by the
+>   deferred constraint trigger; confirming a transaction posts debit-cash / credit-revenue with the
+>   right accounts; re-confirming after a bounce through `pending` does **not** double-post; voiding
+>   writes a reversing entry that nets both accounts back to **zero**. Test rows removed; the one
+>   real $200 transaction was never touched.
+> - Cornerstone public views queried **as the `anon` role**: base table returns **0 rows**, the view
+>   returns only started projects, and `internal_notes` is **not a column** of the view.
+> - All five public API endpoints return 200 with the documented envelope, an unknown fund filter
+>   returns **400**, and no donor or recipient name appears in any response.
+> - `/api/ai/intake` returns a plain **503** with no `ANTHROPIC_API_KEY` set, as designed; the three
+>   database writes it performs were validated against the live schema inside a rolled-back
+>   transaction.
+>
+> **Two defects found by that verification and fixed the same session.** The volunteer hours report
+> and the event roster both selected `contacts.organization` — a column that **does not exist** — so
+> both pages rendered a query error on production. Found by the admin walk (59/61), fixed,
+> redeployed, re-verified **61/61**. A sweep of **all 107 explicit column references** in the source
+> against `information_schema` found no other instance. `formatHours` also rendered 3.5 hours as
+> "3.50 h"; it now trims trailing zeros.
+>
+> **An operational mistake worth recording:** the first `site-audit` run reported 26 failures. They
+> were not real — two `vercel --prod` deploys landed *during* the 18-minute run, swapping the
+> deployment under the tests. Re-run cleanly with nothing else touching production: 139 passed.
+> Do not deploy while an audit is in flight.
+>
+> **Three deliberate deviations from the phase briefs, each documented where it lives:**
+> 1. **Phase 18 program list** (recorded in the route and in SECRETS_PENDING.md). The brief's system
+>    prompt offered Single Parent Stability, Emergency Bridge Housing, and a Financial Literacy
+>    Program — all three retired on 2026-08-14, all three now 301 to `/programs`. Shipping it would
+>    have the assistant offer nonexistent programs to families in housing crisis and collect their
+>    income and phone number against the offer. The shipped prompt lists the real programs and
+>    states that it cannot decide eligibility.
+> 2. **Sitemap** (recorded in next-sitemap.config.js). The final brief asked for `/portal` and
+>    `/apply-portal`; neither route exists, so neither is listed. `/cornerstone` was added and is
+>    live in the sitemap (**26 URLs**).
+> 3. **RLS** (recorded in each migration). Every policy in 010-013 carries `WITH CHECK` mirroring
+>    `USING`; `FOR ALL` without it leaves INSERT and UPDATE unconstrained on the new row.
+>
+> **Still pending, human-only** (`governance/faithproof-roadmap/SECRETS_PENDING.md`):
+> `ANTHROPIC_API_KEY`, `ZOHO_SMTP_PASS`, `ZEFFY_WEBHOOK_SECRET` enforcement, Zapier configuration,
+> and Twilio when SMS (Phase 19) is built. Each unset credential degrades honestly: the assistant
+> says it is not connected, mail records every attempt as failed, and webhook rows stay `pending`
+> and non-public.
+>
+> **The ledger has not been reviewed by an accountant.** It is verified for correctness of posting
+> and balance, not for treatment. The Treasurer should review it before it is relied on for a
+> filing.
+>
+> PRIOR: **UI POLISH PASS — admin background darkened, stat
 > cards corrected to butter, FaithProof section contrast fixed** (2026-08-16). Admin page background
 > `#f0f0ef` -> **`#e8e6e1`** medium warm gray, set once in `admin/layout.tsx` and inherited by every
 > sub-page (all seven verified individually on production). Four stat cards now **`#ffefb3` butter**

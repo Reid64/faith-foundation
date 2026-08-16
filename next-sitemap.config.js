@@ -64,6 +64,12 @@ module.exports = {
   //
   // /cornerstone is the same case: it renders live project state, so it is
   // `force-dynamic` and invisible to the crawler unless it is listed here.
+  //
+  // NOT listed: /portal and /apply-portal. The final polish brief asked for
+  // them, but neither route exists — the donor-portal and applicant-portal
+  // phases were not part of this build. Listing a URL that 404s tells search
+  // engines the sitemap is unreliable and helps nobody. Add them here when the
+  // routes are built.
   additionalPaths: async (config) => [
     await config.transform(config, "/faithproof/"),
     await config.transform(config, "/faithproof/explorer/"),
@@ -74,7 +80,10 @@ module.exports = {
 
     return {
       loc: path,
-      changefreq: normalized.startsWith("/faithproof") ? "daily" : "weekly",
+      changefreq:
+        normalized.startsWith("/faithproof") || normalized === "/cornerstone"
+          ? "daily"
+          : "weekly",
       priority: PRIORITY_BY_PATH[normalized] ?? DEFAULT_PRIORITY,
       lastmod: config.autoLastmod ? new Date().toISOString() : undefined,
     };

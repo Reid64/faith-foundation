@@ -54,7 +54,6 @@ type ContactLite = {
   id: string;
   first_name: string | null;
   last_name: string | null;
-  organization: string | null;
   email: string | null;
 };
 
@@ -75,12 +74,12 @@ export default async function EventDetailPage({
         .maybeSingle(),
       session.supabase
         .from("volunteer_shifts")
-        .select("*, contacts(id, first_name, last_name, organization, email)")
+        .select("*, contacts(id, first_name, last_name, email)")
         .eq("event_id", params.id)
         .order("created_at", { ascending: true }),
       session.supabase
         .from("contacts")
-        .select("id, first_name, last_name, organization")
+        .select("id, first_name, last_name")
         .eq("type", "volunteer")
         .order("last_name"),
     ]);
@@ -112,12 +111,7 @@ export default async function EventDetailPage({
   // reject them anyway, and offering the name invites a pointless error.
   const available = ((contacts ?? []) as ContactLite[])
     .filter((c) => !rostered.has(c.id))
-    .map((c) => ({
-      id: c.id,
-      label: c.organization
-        ? `${contactName(c)} — ${c.organization}`
-        : contactName(c),
-    }));
+    .map((c) => ({ id: c.id, label: contactName(c) }));
 
   return (
     <div className="mx-auto max-w-5xl">

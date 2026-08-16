@@ -141,7 +141,7 @@ export async function addVolunteerToEvent(
   const [{ data: contact }, { data: event }, { count }] = await Promise.all([
     session.supabase
       .from("contacts")
-      .select("id, type, first_name, last_name, organization")
+      .select("id, type, first_name, last_name")
       .eq("id", contactId)
       .maybeSingle(),
     session.supabase
@@ -332,14 +332,13 @@ export async function logHours(
 
 // ── CSV exports ─────────────────────────────────────────────────────────────
 
-const CONTACT_COLUMNS = "id, first_name, last_name, organization, email";
+const CONTACT_COLUMNS = "id, first_name, last_name, email";
 
 /** Only the contact columns these exports actually select. */
 type ContactLite = {
   id: string;
   first_name: string | null;
   last_name: string | null;
-  organization: string | null;
   email: string | null;
 };
 
