@@ -3,6 +3,7 @@ import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
+import IntakeChat from "@/components/IntakeChat";
 
 // Body / UI typeface — clean, highly legible humanist sans. Used in the
 // above-the-fold hero headline, so it stays on the preload critical path.
@@ -211,6 +212,9 @@ export default function RootLayout({
           {children}
         </main>
         <SiteFooter />
+        {/* Public only — IntakeChat consults isInternalRoute and renders
+            nothing on /admin and /login, like SiteHeader and SiteFooter. */}
+        <IntakeChat />
       </body>
     </html>
   );

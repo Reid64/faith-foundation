@@ -41,6 +41,20 @@ Required for the intake chat widget. **Not currently set anywhere.**
 Until it is set, `/api/ai/intake` returns a clear "assistant not configured"
 message and the widget tells the visitor to use the normal application form.
 
+**Model:** the route defaults to `claude-sonnet-5` and reads an optional
+`ANTHROPIC_MODEL` override, so the model can be changed without touching the
+system prompt. The phase brief named `claude-sonnet-4-6`; if the default ever
+returns a 404 for an unknown model, set `ANTHROPIC_MODEL` rather than editing
+the route.
+
+**Program list deviation, recorded deliberately:** the brief's system prompt
+offered Single Parent Stability, Emergency Bridge Housing, and a Financial
+Literacy Program. All three were retired on 2026-08-14 and their routes now 301
+to `/programs`. The shipped prompt offers only the programs FAITH Foundation
+actually runs — otherwise the assistant would offer nonexistent help to
+families in crisis and collect their income and phone number against it. The
+prompt also states explicitly that it cannot decide eligibility.
+
 ---
 
 ## ZOHO_SMTP_PASS (Phase 11 — Mail merge)

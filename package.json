@@ -15,6 +15,7 @@
     "audit:all": "pnpm run audit:readiness && pnpm run audit:site"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.117.1",
     "@supabase/ssr": "^0.12.4",
     "@supabase/supabase-js": "^2.112.3",
     "@types/nodemailer": "^8.0.1",
