@@ -10,10 +10,12 @@ import {
   ListIcon,
   ShieldIcon,
   TicketIcon,
+  UsersIcon,
 } from "./icons";
 
 const NAV = [
   { href: "/admin", label: "Dashboard", Icon: GridIcon },
+  { href: "/admin/crm", label: "CRM", Icon: UsersIcon },
   { href: "/admin/transactions", label: "Transactions", Icon: ArrowsIcon },
   { href: "/admin/vouchers", label: "Vouchers", Icon: TicketIcon },
   { href: "/admin/promises", label: "Promises", Icon: CheckCircleIcon },

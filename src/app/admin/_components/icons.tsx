@@ -196,3 +196,15 @@ export function GearIcon(props: IconProps) {
     </Svg>
   );
 }
+
+/** CRM — users. */
+export function UsersIcon(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <path d="M16 20v-1.5a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4V20" />
+      <circle cx="9" cy="7" r="3.2" />
+      <path d="M22 20v-1.5a4 4 0 0 0-3-3.85" />
+      <path d="M16 4.15a4 4 0 0 1 0 5.7" />
+    </Svg>
+  );
+}
