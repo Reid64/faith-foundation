@@ -15,6 +15,7 @@ const ABOUT_LINKS = [
 
 const NAV_LINKS = [
   { href: "/programs", label: "Programs" },
+  { href: "/cornerstone", label: "Cornerstone" },
   { href: "/impact", label: "Impact" },
   { href: "/events", label: "Events" },
   { href: "/faithproof", label: "Transparency" },

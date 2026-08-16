@@ -12,6 +12,7 @@ const PRIORITY_BY_PATH = {
   "/contact": 0.8,
   "/impact": 0.8,
   "/financial-transparency": 0.8,
+  "/cornerstone": 0.8,
 };
 
 const DEFAULT_PRIORITY = 0.7;
@@ -57,9 +58,13 @@ module.exports = {
   // `force-dynamic` and never appear in the static build manifest that
   // next-sitemap crawls. They are public, indexable pages, so they are listed
   // explicitly here — without this they are silently absent from the sitemap.
+  //
+  // /cornerstone is the same case: it renders live project state, so it is
+  // `force-dynamic` and invisible to the crawler unless it is listed here.
   additionalPaths: async (config) => [
     await config.transform(config, "/faithproof/"),
     await config.transform(config, "/faithproof/explorer/"),
+    await config.transform(config, "/cornerstone/"),
   ],
   transform: async (config, path) => {
     const normalized = path.replace(/\/+$/, "");

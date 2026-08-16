@@ -580,6 +580,19 @@ export default function CornerstoneCommunitiesPage() {
               administration. If you want to give toward a specific phase, contact
               us and we will designate your gift accordingly.
             </p>
+            {/* The live tracker reports the same four phases with real dates.
+                This page is the narrative; that page is the current state. They
+                must never disagree — see the note in src/app/cornerstone/page.tsx. */}
+            <p className="mt-4 leading-relaxed text-[#1B2A4A]">
+              <Link
+                href="/cornerstone"
+                className="font-bold underline underline-offset-4"
+              >
+                Track our progress phase by phase
+              </Link>{" "}
+              — updated as each milestone is actually reached, not when it is
+              planned.
+            </p>
           </div>
         </div>
       </section>

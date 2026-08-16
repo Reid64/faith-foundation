@@ -255,3 +255,14 @@ export function LedgerIcon(props: IconProps) {
     </Svg>
   );
 }
+
+/** Cornerstone Communities — house on a foundation. */
+export function HomeIcon(props: IconProps) {
+  return (
+    <Svg {...props}>
+      <path d="M4 10.5 12 4l8 6.5" />
+      <path d="M6 10v8h12v-8" />
+      <path d="M10 18v-4h4v4" />
+    </Svg>
+  );
+}
