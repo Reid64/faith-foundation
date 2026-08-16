@@ -146,7 +146,10 @@ export default async function CommandCenterPage() {
       </header>
 
       {/* ── Summary stats ──────────────────────────────────────────── */}
-      <div className="mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div
+        className="mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4"
+        style={{ position: "relative", zIndex: 10 }}
+      >
         <StatCard
           label="Total donations"
           value={

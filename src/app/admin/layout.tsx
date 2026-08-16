@@ -115,9 +115,23 @@ export default async function AdminLayout({
 
       {/* A <div>, not <main>: the root layout already wraps every route in
           <main id="main-content">, and a document may only have one <main>. */}
+      {/* `relative z-10` is defensive isolation, not a fix for a live bug: the
+          root <body> carries bg-cream, but an ancestor's opaque background is
+          painted BEHIND a descendant's, so it cannot bleed through this div.
+          Measured on production before and after — the painted pixels here are
+          rgb(232,230,225) either way. Keeping the stacking context costs
+          nothing and makes the isolation explicit for the next reader.
+
+          `ml-60` is load-bearing and must stay: the sidebar is `fixed`, so
+          without the margin this content slides underneath it. */}
       <div
-        className="ml-60 min-h-screen p-8"
-        style={{ backgroundColor: "#e8e6e1" }}
+        className="relative z-10 ml-60"
+        style={{
+          backgroundColor: "#e8e6e1",
+          minHeight: "100vh",
+          flex: 1,
+          padding: "32px",
+        }}
       >
         {children}
       </div>

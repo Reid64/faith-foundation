@@ -133,7 +133,7 @@ export function StatCard({
   icon?: React.ReactNode;
 }) {
   return (
-    <div style={statCardStyle}>
+    <div style={{ ...statCardStyle, position: "relative", zIndex: 10 }}>
       <div className="flex items-center justify-between gap-2">
         <p
           style={{

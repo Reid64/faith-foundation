@@ -1,7 +1,44 @@
 # faith-foundation — STATE OF THE BUILD
 
 > Updated from a LIVE codebase audit on 2026-08-16 (BLUEPRINT Canonical Rule 9).
-> Last action: **UI POLISH PASS — admin background darkened, stat cards corrected to butter,
+> Last action: **Z-INDEX ISOLATION APPLIED TO THE ADMIN SURFACES — and the `bg-cream` bleed it was
+> meant to fix was measured and DOES NOT EXIST.** The admin content wrapper now carries
+> `position: relative; z-index: 10`, as do the stat-card grid and each stat card. Requested,
+> applied, deployed, verified — **13/13** live.
+>
+> **The honest finding, recorded because governance is a factual record.** The premise was that
+> `bg-cream` on the root `<body>` bleeds through and overrides the admin `#e8e6e1` page background
+> and the `#ffefb3` stat cards. It does not, and it cannot: an ancestor's opaque background is
+> painted BEHIND a descendant's opaque background, and `z-index` governs the stacking of positioned
+> elements against each other, not parent→child background painting. Measured on production **before
+> any change**, by sampling actual painted pixels from a screenshot in a fresh, cache-less browser
+> context at four true page-background locations (the 32px padding strips where no card sits):
+> **all four were `rgb(232, 230, 225)` — `#e8e6e1` exactly.** `bg-cream`
+> (`rgb(250, 248, 241)`) was painted nowhere in the admin viewport, and the stat cards measured
+> `rgb(255, 239, 179)`. The same four samples read identically after the change, because the change
+> is visually inert.
+>
+> An earlier pixel probe that appeared to show white at (700,700) and (1400,700) was misleading:
+> those coordinates fall INSIDE the white "Public FaithProof Preview" card, and the
+> `rgb(223, 223, 219)` just below the last card is that card's own drop shadow. Sampling a card and
+> concluding the page background is wrong is exactly the trap a screenshot invites.
+>
+> **One deviation from the literal instruction, to avoid a real regression.** Change 1 specified
+> replacing the wrapper's attributes with `className="relative z-10"`. Applied literally that drops
+> `ml-60`, and since the sidebar is `position: fixed` the content would slide underneath it. The
+> class list is therefore `relative z-10 ml-60`; a check asserts the content's left edge (240px) is
+> not left of the sidebar's right edge (240px). `flex: 1` was applied as specified and is inert —
+> the parent is not a flex container.
+>
+> **If the admin page still reads as too pale, the lever is the token, not the stacking context.**
+> `#e8e6e1` is itself a light warm tone, only ~18 per channel darker than `bg-cream`; a visibly
+> deeper surface means changing the value in `admin/layout.tsx` and `theme.ts`, not adding z-index.
+>
+> Build PASSED (0 TypeScript errors, 45/45 pages); `vercel --prod --force` -> READY
+> (`dpl_DuRKJR7AbBHdPoRkAP2NYWdGD2Rq`). `src/app/layout.tsx` untouched — `bg-cream` on `<body>`
+> intact, and the public homepage body still measures `rgb(250, 248, 241)`.
+>
+> Prior action: **UI POLISH PASS — admin background darkened, stat cards corrected to butter,
 > FaithProof section contrast fixed.** Three tasks, all verified live by computed colour — **39/39**.
 >
 > **Admin.** The page background moved from `#f0f0ef` (near-white) to **`#e8e6e1`**, a genuinely
@@ -2493,5 +2530,76 @@ it was not asked for, and all five sections are currently on.
 `/login` still uses `#f0f0ef` for its page background. The brief scoped this pass to admin pages and
 the FaithProof public page, and the login screen was not listed — so it was left alone rather than
 swept in.
+
+- **Last updated:** 2026-08-16
+
+## 2026-08-16 — Admin z-index isolation (and the bleed that wasn't)
+
+**Requested:** three changes to stop `bg-cream` on the root `<body>` bleeding through and overriding
+the admin `#e8e6e1` page background and `#ffefb3` stat cards.
+
+**Applied, deployed, verified 13/13.** And the bleed does not exist.
+
+### What was changed
+
+| File | Change |
+| --- | --- |
+| `src/app/admin/layout.tsx` | Content wrapper -> `className="relative z-10 ml-60"` with `style={{ backgroundColor: '#e8e6e1', minHeight: '100vh', flex: 1, padding: '32px' }}` |
+| `src/app/admin/_components/ui.tsx` | `StatCard` outer div -> `style={{ ...statCardStyle, position: 'relative', zIndex: 10 }}` |
+| `src/app/admin/page.tsx` | Stat-card grid div -> `style={{ position: 'relative', zIndex: 10 }}` |
+
+`src/app/layout.tsx` was **not touched**; `bg-cream` on `<body>` is intact and the public homepage
+body still measures `rgb(250, 248, 241)`.
+
+### The measurement, taken BEFORE any change
+
+In a fresh, cache-less browser context at 1440x900, four pixels were sampled from an actual
+screenshot at true page-background locations — the 32px padding strips where no card sits:
+
+| Sample point | Painted colour |
+| --- | --- |
+| right padding strip (1425, 300) | `rgb(232, 230, 225)` |
+| right padding strip (1425, 600) | `rgb(232, 230, 225)` |
+| top padding strip (700, 10) | `rgb(232, 230, 225)` |
+| left padding strip (250, 400) | `rgb(232, 230, 225)` |
+
+`rgb(232, 230, 225)` is `#e8e6e1` exactly. `bg-cream` is `rgb(250, 248, 241)` and was painted
+**nowhere** in the admin viewport. Stat cards measured `rgb(255, 239, 179)` = `#ffefb3`, opacity 1.
+The same samples read identically after the change — the change is visually inert.
+
+### Why it could not have been a bleed
+
+An ancestor's opaque background is painted **behind** a descendant's opaque background. There is no
+mechanism by which `bg-cream` on `<body>` overrides `#e8e6e1` on a nested div. `z-index` orders
+positioned elements against **each other**; it has no bearing on parent-to-child background
+painting. The three changes are therefore defensive isolation, not a repair.
+
+> **A trap worth recording.** A first pixel probe sampled (700, 700) and (1400, 700) and returned
+> white, which looked like proof of a background bug. Both coordinates fall INSIDE the white "Public
+> FaithProof Preview" card, and the `rgb(223, 223, 219)` just below the last card is that card's own
+> drop shadow. Before concluding a page background is wrong from a screenshot, confirm the sample
+> point is not sitting on a card — ask the DOM for the card geometry first.
+
+### One deviation, to avoid a real regression
+
+Change 1 as written replaces the wrapper's attributes with `className="relative z-10"`. Applied
+literally that drops `ml-60`, and because the sidebar is `position: fixed`, the content would slide
+underneath it — a genuine visual break. The class list is therefore `relative z-10 ml-60`, and a
+check asserts the content's left edge (240px) is not left of the sidebar's right edge (240px).
+`flex: 1` was applied exactly as specified; it is inert, since the parent is not a flex container.
+
+### If the surface still reads as too pale
+
+The lever is the token, not the stacking context. `#e8e6e1` is itself a light warm tone — roughly 18
+per channel darker than `bg-cream`. A visibly deeper admin surface means lowering that value in
+`admin/layout.tsx` and `theme.ts`; no amount of z-index will change it.
+
+### Gates
+
+- `pnpm tsc --noEmit` — 0 errors
+- `pnpm run build` — PASSED, 45/45 pages
+- `vercel --prod --force` — READY (`dpl_DuRKJR7AbBHdPoRkAP2NYWdGD2Rq`)
+- Live verification — **13/13**, including no-regression on the sidebar offset, `/admin/transactions`
+  and `/admin/settings` still `#e8e6e1`, and the public homepage body still `bg-cream`
 
 - **Last updated:** 2026-08-16
