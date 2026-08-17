@@ -1,7 +1,92 @@
 # faith-foundation — STATE OF THE BUILD
 
 > Updated from a LIVE codebase audit on 2026-08-16 (BLUEPRINT Canonical Rule 9).
-> Last action: **PHASE 21 — BOARD MEETING ROOM REBUILT ON NATIVE WEBRTC. Jitsi removed. Built and
+> Last action: **PHASE 21.1 — TWO DEFECTS FROM LIVE BROWSER TESTING, FIXED. NOT DEPLOYED.**
+>
+> Both were found by the operator driving production in a real browser. **Neither was caught by the
+> Phase 21 suite**, and the reason is worth recording: every automated test ran against Playwright's
+> synthetic camera, which always supplies BOTH a camera and a microphone, and every test navigated
+> to the room by URL. Real hardware and real navigation were the two things the suite never
+> exercised.
+>
+> ---
+>
+> ### DEFECT 1 — a missing microphone blocked the meeting entirely
+>
+> **Reported:** Windows laptop, HP TrueVision HD camera with no microphone attached, camera working
+> elsewhere, Chrome set to Allow for both. Result: black preview, a banner blaming permissions, and
+> a Join button that never enabled. The director could not enter their own meeting.
+>
+> **Root cause, verified in the code, not guessed** (`MeetingRoom.tsx` as shipped in Phase 21):
+> a single `getUserMedia({ video: true, audio: true })`. That call is ALL OR NOTHING — if either
+> kind cannot be satisfied the whole promise rejects and you receive no tracks at all. With no
+> microphone present it threw `NotFoundError`, so `localStream` stayed null and
+> `disabled={joining || !localStream}` kept Join dead forever. Two aggravating faults in the same
+> block: a bare `catch {}` discarded the DOMException, so the *name* — the one piece of information
+> that says what to do about it — was thrown away; and the single message named BOTH devices and
+> blamed permission, which was wrong on all three counts.
+>
+> **Fix.** New `room/media.ts` acquires each kind independently and never throws. `MeetingRoom.tsx`
+> combines whatever it gets, reports **one notice per device**, and enables Join as soon as
+> acquisition settles — with anything, or with nothing. `NotFoundError`, `NotAllowedError`,
+> `NotReadableError` and `OverconstrainedError` each get their own sentence, because the remedy
+> differs: nothing to fix / change the site permission / close the app holding it / pick another
+> device. An absent device disables its own toggle ("No microphone") instead of pretending. Device
+> switching is now per-kind, so changing camera cannot disturb the microphone.
+>
+> **A second bug fixed with it, found while fixing the first.** Partial media would have half
+> worked: a participant with no microphone adds only a video track, negotiates a video-only session
+> and never HEARS anyone — the audio m-line simply would not exist. `useMeshCall` now adds a
+> `recvonly` transceiver for any kind it cannot send. A missing device costs you SENDING it, never
+> receiving it. That line is also what makes observer mode able to see and hear the room at all.
+>
+> ### DEFECT 2 — no way into the room without typing a URL
+>
+> **Reported:** nothing on the meeting detail page links to the video room; the only button is
+> "Record Vote". The operator typed `/room/` by hand.
+>
+> **Root cause.** A "Join Meeting" link did exist — wrapped in `{joinable ? … : null}`.
+> `isJoinable()` is false unless the meeting is already running, starts within 30 minutes, or is
+> dated today, so in practice the only door to the room was hidden almost all of the time. **Phase
+> 21 shipped without a usable entry point** and the suite did not notice, because it navigated
+> straight to `/room/`.
+>
+> **Fix.** The room panel now renders for any meeting that has not ended, with a primary
+> **"Join Video Meeting"** button in the design-system colours (`#013e37` on `#ffefb3`). Timing
+> moved into the sub-text, where it belongs — it describes the meeting, it does not decide whether
+> a door exists.
+>
+> **A third dead end found by the same audit, also fixed.** The minutes link was gated on
+> `actual_end`, so a meeting whose call was never formally ended had no path to its own minutes —
+> the transcript, AI draft and board-approval workflow were unreachable by clicking. An
+> "Open Minutes" button is now always present.
+>
+> **Board-section path audit.** Every route to a meeting — board landing (upcoming meetings, recent
+> votes), meetings list, votes list, Command Center "meeting starting soon" — lands on the meeting
+> detail page, which now always offers both the room and the minutes. No remaining dead ends.
+>
+> ---
+>
+> **Verification.** `pnpm tsc --noEmit` 0 errors; `pnpm run build` clean. `meeting-room.spec.ts`
+> extended from 6 to **13 tests, all passing**, covering: microphone missing → Join enabled with
+> video; camera missing → Join enabled with audio; neither → observer entry works; blocked and
+> in-use microphones produce different messages from a missing one; the detail page links to the
+> room and to the minutes by clicking.
+>
+> **Full suite, one run against the local build: 224 passed, 3 skipped, 0 failed.** Breakdown
+> against baseline: `site-audit` 139 (baseline 139, and no flaky this time), `ad-grants-readiness`
+> 62 + 2 skipped (baseline 62 + 2), `turnstile` 9 + 1 skipped (baseline 9 + 1), `meeting-room`
+> **13** (was 6). No regressions.
+>
+> **What the new tests do NOT prove.** Chromium cannot be made to deny one device here — measured,
+> not assumed: without `--use-fake-ui-for-media-stream` it supplies no media at all, and with it
+> every prompt is auto-accepted whatever permissions the context grants. So the failures are
+> injected by wrapping `getUserMedia` in the page. That exercises THIS codebase's branching
+> faithfully; it does not re-prove that Chrome raises those errors, which is specified behaviour and
+> which the operator has now demonstrated on real hardware. **A machine with a genuinely absent
+> microphone is still the only way to close the loop on Defect 1, and it should be retested there.**
+>
+> Prior action: **PHASE 21 — BOARD MEETING ROOM REBUILT ON NATIVE WEBRTC. Jitsi removed. Built and
 > verified locally. NOT DEPLOYED.**
 >
 > **Why.** The Jitsi iFrame API renders every participant inside a surface we do not own, so a

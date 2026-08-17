@@ -176,9 +176,25 @@ export function useMeshCall({
       connections.current.set(remoteId, record);
 
       // Our media, one copy per peer — this is the mesh upload cost.
-      streamRef.current?.getTracks().forEach((track) => {
-        pc.addTrack(track, streamRef.current as MediaStream);
+      const local = streamRef.current;
+      const kinds = new Set<string>();
+      local?.getTracks().forEach((track) => {
+        kinds.add(track.kind);
+        pc.addTrack(track, local);
       });
+
+      /**
+       * For any kind we cannot SEND, add a receive-only transceiver.
+       *
+       * Without this a participant with no microphone would negotiate a
+       * video-only session and never HEAR anyone — the m-line simply would not
+       * exist. Partial media has to stay one-directional, not mutual: a missing
+       * device costs you sending it, never receiving it. The same line is what
+       * makes observer mode (no camera, no microphone) able to see and hear the
+       * room at all.
+       */
+      if (!kinds.has("audio")) pc.addTransceiver("audio", { direction: "recvonly" });
+      if (!kinds.has("video")) pc.addTransceiver("video", { direction: "recvonly" });
 
       pc.onicecandidate = (event) => {
         if (event.candidate) {
@@ -469,18 +485,42 @@ export function useMeshCall({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [enabled, localStream, meetingId]);
 
-  /** Swap the outgoing video track on every peer (device change, screen share). */
-  const replaceVideoTrack = useCallback(async (track: MediaStreamTrack | null) => {
-    const swaps: Promise<void>[] = [];
-    connections.current.forEach((record) => {
-      record.pc.getSenders().forEach((sender) => {
-        if (sender.track?.kind === "video" || (!sender.track && track)) {
-          swaps.push(sender.replaceTrack(track).catch(() => {}));
-        }
+  /**
+   * Swap one outgoing track on every peer (device change, screen share).
+   *
+   * replaceTrack on a sender of the same kind needs no renegotiation. A sender
+   * with no track yet is matched by kind against the transceiver it belongs to,
+   * so a participant who starts with no camera and plugs one in later still
+   * sends on the right m-line.
+   */
+  const replaceTrackOfKind = useCallback(
+    async (kind: "video" | "audio", track: MediaStreamTrack | null) => {
+      const swaps: Promise<void>[] = [];
+      connections.current.forEach((record) => {
+        record.pc.getTransceivers().forEach((transceiver) => {
+          const senderKind =
+            transceiver.sender.track?.kind ??
+            transceiver.receiver.track?.kind ??
+            null;
+          if (senderKind === kind) {
+            swaps.push(transceiver.sender.replaceTrack(track).catch(() => {}));
+          }
+        });
       });
-    });
-    await Promise.all(swaps);
-  }, []);
+      await Promise.all(swaps);
+    },
+    []
+  );
+
+  const replaceVideoTrack = useCallback(
+    (track: MediaStreamTrack | null) => replaceTrackOfKind("video", track),
+    [replaceTrackOfKind]
+  );
+
+  const replaceAudioTrack = useCallback(
+    (track: MediaStreamTrack | null) => replaceTrackOfKind("audio", track),
+    [replaceTrackOfKind]
+  );
 
   return {
     peerId: peerId.current,
@@ -490,6 +530,7 @@ export function useMeshCall({
     error,
     setError,
     replaceVideoTrack,
+    replaceAudioTrack,
     leave: () => teardown.current(),
   };
 }

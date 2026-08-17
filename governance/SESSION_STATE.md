@@ -1,7 +1,44 @@
 # faith-foundation — SESSION STATE
 
-> Tracks the live execution session. LATEST: **PHASE 21 — MEETING ROOM REBUILT ON NATIVE WEBRTC,
-> JITSI REMOVED** (2026-08-16). Built, tested locally, **NOT DEPLOYED**.
+> Tracks the live execution session. LATEST: **PHASE 21.1 — TWO LIVE-BROWSER DEFECTS FIXED**
+> (2026-08-16). **NOT DEPLOYED.**
+>
+> **The lesson first.** Both defects came from the operator using production in a real browser, and
+> **neither was caught by a 13-suite, 200-plus-test automation stack**. The suite always ran against
+> Playwright's synthetic camera, which supplies both a camera and a microphone, and it always
+> navigated to the room by URL. Real hardware and real navigation were exactly the two things it
+> never touched. Green tests said the room worked; a director with an ordinary webcam could not get
+> in, and could not have found the door if he had.
+>
+> **Defect 1 — a webcam with no microphone locked the user out.** Root cause read from the code,
+> not guessed: one `getUserMedia({video, audio})`, which is all-or-nothing and rejects wholly when
+> either device is absent. `localStream` stayed null, Join stayed disabled, and a bare `catch {}`
+> threw away the DOMException name so the banner blamed permissions that were in fact granted.
+> Fixed in a new `room/media.ts`: each kind requested separately, one notice per device, distinct
+> wording for NotFound / NotAllowed / NotReadable / Overconstrained, Join enabled once acquisition
+> settles — with one device, or with none. Also fixed while in there: a participant who cannot SEND
+> a kind now adds a `recvonly` transceiver for it, otherwise a mic-less director would have
+> negotiated a video-only session and never heard anyone.
+>
+> **Defect 2 — the room had no entry point.** The "Join Meeting" link existed but sat behind
+> `{joinable ? … : null}`, and `isJoinable()` is false unless the meeting is running, starts within
+> 30 minutes, or is dated today. So the only door was hidden nearly always. Now a primary
+> **"Join Video Meeting"** button shows for any meeting that has not ended; timing is sub-text, not
+> a gate. A third dead end surfaced in the same audit: minutes were reachable only once `actual_end`
+> was set, stranding the transcript/approval workflow — an "Open Minutes" button is now always
+> present.
+>
+> **Verification.** tsc 0 errors, build clean, `meeting-room.spec.ts` **6 → 13 tests, 13/13**. Full
+> suite: **224 passed, 3 skipped, 0 failed** — site-audit 139, ad-grants 62+2, turnstile 9+1,
+> meeting-room 13. Baseline held on every suite.
+>
+> **Stated limit.** Chromium here cannot deny a single device (measured: no media at all without
+> the fake-UI flag, everything auto-accepted with it), so the new tests inject the failure by
+> wrapping `getUserMedia`. That proves this codebase's branching, not Chrome's behaviour. **Defect 1
+> should be retested on the actual laptop that produced it.**
+>
+> PRIOR: **PHASE 21 — MEETING ROOM REBUILT ON NATIVE WEBRTC, JITSI REMOVED** (2026-08-16). Built,
+> tested locally, **NOT DEPLOYED**.
 >
 > **The point of the rebuild.** The Jitsi iFrame API never exposed individual media streams, so
 > Phase 19 shipped with a documented deviation: no per-participant tile grid. That is now ours —

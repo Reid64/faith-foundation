@@ -20,11 +20,13 @@
 
 | Spec | Tests | Runs against | Last result |
 |---|---|---|---|
-| `scripts/site-audit.spec.ts` | 140 | live site, or `AUDIT_BASE_URL` | 139 passed, 1 flaky, 0 failed (local build, 2026-08-16) |
+| `scripts/site-audit.spec.ts` | 140 | live site, or `AUDIT_BASE_URL` | 139 passed, 0 failed (local build, 2026-08-16) |
 | `scripts/ad-grants-readiness.spec.ts` | 64 | live site, or `AUDIT_BASE_URL` | 62 passed, 2 skipped, 0 failed (local build, 2026-08-16) |
+
+**Combined run, 2026-08-16: 224 passed, 3 skipped, 0 failed** across all four suites.
 | `scripts/web3forms-wiring.spec.ts` | — | live site | not run this session |
 | `scripts/turnstile.spec.ts` | 10 | a build carrying the Turnstile keys | 10/10 across pass and fail modes (2026-08-16) |
-| `scripts/meeting-room.spec.ts` | 6 | a local build; needs the service key in `.env.local` | 6/6 (2026-08-16) |
+| `scripts/meeting-room.spec.ts` | 13 | a local build; needs the service key in `.env.local` | 13/13 (2026-08-16) |
 
 ### Running the meeting room spec (Phase 21)
 
@@ -56,6 +58,36 @@ product bug. That cost three failed runs on 2026-08-16.
 Offer/answer, ICE, the Cloudflare TURN array, the six-participant cap, ICE
 restart and speaker switching need two real browsers in one room against
 production credentials, and are listed as unverified in STATE_OF_THE_BUILD.
+
+### What the meeting-room suite missed, and why (2026-08-16)
+
+Two defects reached production and were found by a human in a real browser, not
+by these tests. Both gaps are structural and worth naming so they are not
+repeated:
+
+1. **The synthetic camera always supplies BOTH devices.** Playwright's
+   `--use-fake-device-for-media-stream` gives every run a camera *and* a
+   microphone, so the all-or-nothing `getUserMedia({video, audio})` call never
+   failed here. On a laptop whose webcam has no microphone it failed every time
+   and locked the user out entirely. **A green media test proves the happy
+   hardware path only.**
+2. **Every test navigated by URL.** `page.goto('/…/room/')` cannot notice that
+   nothing on the site LINKS to that page. Phase 21 shipped a room no board
+   member could reach by clicking, and the suite was silent about it.
+
+Both now have coverage: device-failure scenarios, and a test that clicks from
+the meeting detail page into the room and into the minutes.
+
+**Injecting a device failure.** Chromium here cannot be made to deny one device
+— measured, not assumed: with `--use-fake-device-for-media-stream` alone it
+supplies no media at all (`NotSupportedError`), and adding
+`--use-fake-ui-for-media-stream` auto-accepts every prompt regardless of which
+permissions the context granted. So `scripts/meeting-room.spec.ts` wraps
+`navigator.mediaDevices.getUserMedia` via `addInitScript` and rejects the chosen
+kind with a chosen DOMException name, letting the other kind through to the real
+implementation. This proves the application's branching. It does not re-prove
+Chrome's behaviour, and it is not a substitute for testing on a machine that
+genuinely lacks a microphone.
 
 ### Running the Turnstile spec
 

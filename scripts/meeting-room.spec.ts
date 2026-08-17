@@ -110,6 +110,49 @@ async function signIn(page: Page) {
   await page.waitForURL(/\/admin/, { timeout: 30_000 });
 }
 
+/**
+ * Make ONE kind of device fail, the way a real machine does.
+ *
+ * Chromium cannot be persuaded to deny a single device here: without
+ * `--use-fake-ui-for-media-stream` it provides no media at all
+ * (NotSupportedError), and with it every prompt is auto-accepted regardless of
+ * which permissions the context granted — both measured, not assumed. So the
+ * failure is injected at `getUserMedia` itself, wrapping the real one so the
+ * kind that should succeed still returns a genuine track.
+ *
+ * WHAT THIS PROVES: this codebase's branching — independent acquisition, the
+ * per-device message, and the Join gating. WHAT IT DOES NOT PROVE: that Chrome
+ * raises those errors in those situations. That is specified behaviour, and the
+ * operator already demonstrated it live on a webcam with no microphone.
+ */
+async function failDevice(
+  page: Page,
+  which: "video" | "audio" | "both",
+  errorName = "NotFoundError"
+) {
+  await page.addInitScript(
+    ([kind, name]) => {
+      const media = navigator.mediaDevices;
+      const original = media.getUserMedia.bind(media);
+      media.getUserMedia = (constraints?: MediaStreamConstraints) => {
+        const wantsVideo = Boolean(constraints?.video);
+        const wantsAudio = Boolean(constraints?.audio);
+        const blocked =
+          kind === "both" ||
+          (kind === "video" && wantsVideo) ||
+          (kind === "audio" && wantsAudio);
+        if (blocked) {
+          return Promise.reject(
+            new DOMException(`${name} (injected by the test)`, name)
+          );
+        }
+        return original(constraints);
+      };
+    },
+    [which, errorName] as const
+  );
+}
+
 test.describe("BOARD MEETING ROOM — WebRTC", () => {
   test("pre-join screen renders with preview and device selection", async ({
     page,
@@ -224,5 +267,139 @@ test.describe("BOARD MEETING ROOM — WebRTC", () => {
     } finally {
       await admin!.from("profiles").update({ role: "board" }).eq("id", userId!);
     }
+  });
+
+  test("a missing MICROPHONE still lets you join with video", async ({ page }) => {
+    await failDevice(page, "audio", "NotFoundError");
+    await signIn(page);
+    await page.goto(`/admin/board/meetings/${meetingId}/room/`, {
+      waitUntil: "domcontentloaded",
+    });
+
+    // The exact defect the operator hit: camera fine, no microphone, locked out.
+    const join = page.getByTestId("room-join");
+    await expect(join).toBeEnabled({ timeout: 20_000 });
+    await expect(join).toHaveText(/join meeting/i);
+
+    // The notice names the microphone and nothing else.
+    const notice = page.getByTestId("room-audio-notice");
+    await expect(notice).toBeVisible();
+    await expect(notice).toContainText(/no microphone was found/i);
+    await expect(page.getByTestId("room-video-notice")).toHaveCount(0);
+
+    // The mic control says what is true rather than pretending.
+    await expect(page.getByTestId("prejoin-mic")).toBeDisabled();
+    await expect(page.getByTestId("prejoin-mic")).toHaveText(/no microphone/i);
+    await expect(page.getByTestId("prejoin-cam")).toBeEnabled();
+
+    await join.click();
+    await expect(page.getByTestId("room-grid")).toBeVisible();
+    await expect(page.getByTestId("room-tile")).toHaveCount(1);
+  });
+
+  test("a missing CAMERA still lets you join with audio", async ({ page }) => {
+    await failDevice(page, "video", "NotFoundError");
+    await signIn(page);
+    await page.goto(`/admin/board/meetings/${meetingId}/room/`, {
+      waitUntil: "domcontentloaded",
+    });
+
+    const join = page.getByTestId("room-join");
+    await expect(join).toBeEnabled({ timeout: 20_000 });
+    await expect(join).toHaveText(/join meeting/i);
+
+    const notice = page.getByTestId("room-video-notice");
+    await expect(notice).toBeVisible();
+    await expect(notice).toContainText(/no camera was found/i);
+    await expect(page.getByTestId("room-audio-notice")).toHaveCount(0);
+
+    await expect(page.getByTestId("prejoin-cam")).toBeDisabled();
+    await expect(page.getByTestId("prejoin-mic")).toBeEnabled();
+
+    await join.click();
+    await expect(page.getByTestId("room-grid")).toBeVisible();
+  });
+
+  test("neither device still allows observer entry", async ({ page }) => {
+    await failDevice(page, "both", "NotFoundError");
+    await signIn(page);
+    await page.goto(`/admin/board/meetings/${meetingId}/room/`, {
+      waitUntil: "domcontentloaded",
+    });
+
+    const join = page.getByTestId("room-join");
+    await expect(join).toBeEnabled({ timeout: 20_000 });
+    await expect(join).toHaveText(/join as observer/i);
+    await expect(page.getByTestId("room-observer-note")).toBeVisible();
+    await expect(page.getByTestId("room-video-notice")).toBeVisible();
+    await expect(page.getByTestId("room-audio-notice")).toBeVisible();
+
+    // The point of observer mode: you get in.
+    await join.click();
+    await expect(page.getByTestId("room-shell")).toBeVisible();
+    await expect(page.getByTestId("room-grid")).toBeVisible();
+    await expect(page.getByTestId("room-controls")).toBeVisible();
+  });
+
+  test("a BLOCKED microphone reads differently from a missing one", async ({
+    page,
+  }) => {
+    await failDevice(page, "audio", "NotAllowedError");
+    await signIn(page);
+    await page.goto(`/admin/board/meetings/${meetingId}/room/`, {
+      waitUntil: "domcontentloaded",
+    });
+
+    const notice = page.getByTestId("room-audio-notice");
+    await expect(notice).toBeVisible();
+    // Permission wording, not "not found" — the remedy is different.
+    await expect(notice).toContainText(/blocked for this site/i);
+    await expect(notice).toContainText(/padlock/i);
+    await expect(page.getByTestId("room-join")).toBeEnabled();
+  });
+
+  test("a microphone held by another app reads differently again", async ({
+    page,
+  }) => {
+    await failDevice(page, "audio", "NotReadableError");
+    await signIn(page);
+    await page.goto(`/admin/board/meetings/${meetingId}/room/`, {
+      waitUntil: "domcontentloaded",
+    });
+
+    const notice = page.getByTestId("room-audio-notice");
+    await expect(notice).toBeVisible();
+    await expect(notice).toContainText(/already in use by another application/i);
+    await expect(page.getByTestId("room-join")).toBeEnabled();
+  });
+
+  test("the meeting detail page links to the room without typing a URL", async ({
+    page,
+  }) => {
+    await signIn(page);
+    await page.goto(`/admin/board/meetings/${meetingId}/`, {
+      waitUntil: "domcontentloaded",
+    });
+
+    const join = page.getByTestId("join-video-meeting");
+    await expect(join).toBeVisible();
+    await expect(join).toHaveText(/join video meeting/i);
+
+    // Reachable by clicking only — the defect was that this did not exist.
+    await join.click();
+    await page.waitForURL(/\/room\/?$/, { timeout: 20_000 });
+    await expect(page.getByTestId("room-prejoin")).toBeVisible();
+  });
+
+  test("the meeting detail page also links to the minutes", async ({ page }) => {
+    await signIn(page);
+    await page.goto(`/admin/board/meetings/${meetingId}/`, {
+      waitUntil: "domcontentloaded",
+    });
+
+    const minutes = page.getByTestId("open-minutes");
+    await expect(minutes).toBeVisible();
+    await minutes.click();
+    await page.waitForURL(/\/minutes\/?$/, { timeout: 20_000 });
   });
 });

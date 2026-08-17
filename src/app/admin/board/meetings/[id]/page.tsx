@@ -75,29 +75,82 @@ export default async function MeetingDetailPage({
         subtitle={`Recorded ${formatTimestamp(m.created_at)}.`}
       />
 
-      {/* The meeting room, and the minutes it produces. Shown above everything
-          else because during a meeting this is the only thing anyone wants. */}
-      {joinable ? (
+      {/*
+        THE ENTRY POINT TO THE VIDEO ROOM.
+
+        This was previously wrapped in `{joinable ? ... : null}`, and isJoinable()
+        is false unless the meeting is already running, starts within 30 minutes,
+        or is dated today. In practice that hid the ONLY link to the room almost
+        all of the time: the operator had to type the /room/ URL by hand, and the
+        page offered nothing but "Record Vote". A board member would never have
+        found it.
+
+        The room is now always one click away for a meeting that has not ended.
+        Timing belongs in the sub-text, not in whether the door exists.
+      */}
+      {!finished ? (
         <div
           className="mb-6 flex flex-wrap items-center justify-between gap-4 rounded-xl px-5 py-4"
           style={{ backgroundColor: "#013e37" }}
         >
           <div>
             <p style={{ color: "#ffefb3", fontSize: 15, fontWeight: 600 }}>
-              {m.actual_start ? "This meeting is in progress" : "The meeting room is open"}
+              {m.actual_start
+                ? "This meeting is in progress"
+                : joinable
+                  ? "The meeting room is open"
+                  : "Video meeting room"}
             </p>
             <p className="mt-0.5 text-sm" style={{ color: "rgba(255,239,179,0.6)" }}>
               {m.scheduled_start
                 ? `Scheduled for ${formatMeetingTime(m.scheduled_start)}`
-                : "No scheduled time recorded"}
+                : "No scheduled time recorded — the room is available whenever you need it."}
             </p>
           </div>
           <Link
             href={`/admin/board/meetings/${m.id}/room`}
+            data-testid="join-video-meeting"
             className="rounded-lg px-6 py-3 text-sm font-bold"
-            style={{ backgroundColor: "#16a34a", color: "#ffffff" }}
+            style={{ backgroundColor: "#ffefb3", color: "#013e37" }}
           >
-            Join Meeting
+            Join Video Meeting
+          </Link>
+        </div>
+      ) : null}
+
+      {/*
+        Minutes were reachable ONLY once actual_end was set — so a meeting whose
+        call was never formally ended had no path to its own minutes, and the
+        whole transcript / AI draft / approval workflow was unreachable by
+        clicking. The link is now always present; the minutes page handles the
+        empty case itself.
+      */}
+      {!finished ? (
+        <div
+          className="mb-6 flex flex-wrap items-center justify-between gap-4 rounded-xl px-5 py-4"
+          style={{
+            backgroundColor: "#ffffff",
+            border: "1px solid rgba(0,0,0,0.08)",
+            boxShadow: "0 2px 6px rgba(0,0,0,0.08), 0 8px 24px rgba(1,62,55,0.1)",
+          }}
+        >
+          <div className="flex flex-wrap items-center gap-3">
+            <span className="text-sm" style={{ color: "#374151" }}>
+              Minutes, transcript and board approval
+            </span>
+            {m.minutes_status !== "draft" ? (
+              <Badge tone={MINUTES_STATUS_TONES[m.minutes_status] ?? "gray"}>
+                {MINUTES_STATUS_LABELS[m.minutes_status] ?? m.minutes_status}
+              </Badge>
+            ) : null}
+          </div>
+          <Link
+            href={`/admin/board/meetings/${m.id}/minutes`}
+            data-testid="open-minutes"
+            className="rounded-lg px-5 py-2.5 text-sm font-semibold"
+            style={{ backgroundColor: "#013e37", color: "#ffefb3" }}
+          >
+            Open Minutes
           </Link>
         </div>
       ) : null}
@@ -124,6 +177,7 @@ export default async function MeetingDetailPage({
           </div>
           <Link
             href={`/admin/board/meetings/${m.id}/minutes`}
+            data-testid="open-minutes"
             className="rounded-lg px-5 py-2.5 text-sm font-semibold"
             style={{ backgroundColor: "#013e37", color: "#ffefb3" }}
           >

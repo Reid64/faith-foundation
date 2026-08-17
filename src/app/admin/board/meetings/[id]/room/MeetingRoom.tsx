@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { endMeeting, startMeeting } from "./actions";
 import {
@@ -10,6 +10,11 @@ import {
   useMeshCall,
 } from "./useMeshCall";
 import { useActiveSpeaker } from "./useActiveSpeaker";
+import {
+  acquireTrack,
+  deviceMessage,
+  type DeviceState,
+} from "./media";
 
 /**
  * FaithProof board meeting room — native WebRTC mesh.
@@ -67,7 +72,13 @@ export function MeetingRoom({
   const [sharing, setSharing] = useState(false);
   const [elapsed, setElapsed] = useState(0);
   const [ending, setEnding] = useState(false);
-  const [mediaError, setMediaError] = useState<string | null>(null);
+
+  // Per-device outcome. A failure on one must never speak for the other — that
+  // is the whole point of the 2026-08-16 fix.
+  const [videoState, setVideoState] = useState<DeviceState>({ ok: false });
+  const [audioState, setAudioState] = useState<DeviceState>({ ok: false });
+  const [acquiring, setAcquiring] = useState(true);
+  const [switchError, setSwitchError] = useState<string | null>(null);
 
   const [cameras, setCameras] = useState<Device[]>([]);
   const [mics, setMics] = useState<Device[]>([]);
@@ -86,6 +97,7 @@ export function MeetingRoom({
     error: meshError,
     setError: setMeshError,
     replaceVideoTrack,
+    replaceAudioTrack,
     leave: leaveMesh,
   } = useMeshCall({
     meetingId,
@@ -104,33 +116,42 @@ export function MeetingRoom({
   );
 
   // ── Media acquisition ────────────────────────────────────────────────────
-  const openMedia = useCallback(
-    async (video: string | undefined, audio: string | undefined) => {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: video ? { deviceId: { exact: video } } : true,
-        audio: audio ? { deviceId: { exact: audio } } : true,
-      });
-      return stream;
-    },
-    []
-  );
-
+  //
+  // Camera and microphone are requested INDEPENDENTLY. A combined
+  // getUserMedia({video, audio}) rejects wholesale when either device is
+  // missing, which is exactly how a webcam with no microphone locked a director
+  // out of their own meeting. See ./media.ts.
   useEffect(() => {
     let cancelled = false;
 
     (async () => {
-      try {
-        const stream = await openMedia(undefined, undefined);
-        if (cancelled) {
-          stream.getTracks().forEach((t) => t.stop());
-          return;
-        }
-        streamRef.current = stream;
-        cameraTrack.current = stream.getVideoTracks()[0] ?? null;
-        setLocalStream(stream);
+      const [video, audio] = await Promise.all([
+        acquireTrack("video"),
+        acquireTrack("audio"),
+      ]);
 
-        // Labels are only populated once permission has been granted, which is
-        // why enumeration happens after getUserMedia rather than before.
+      if (cancelled) {
+        video.track?.stop();
+        audio.track?.stop();
+        return;
+      }
+
+      const stream = new MediaStream();
+      if (video.track) stream.addTrack(video.track);
+      if (audio.track) stream.addTrack(audio.track);
+
+      streamRef.current = stream;
+      cameraTrack.current = video.track;
+      setVideoState(video.state);
+      setAudioState(audio.state);
+      // Set even when empty: an observer with no devices still enters the room,
+      // and useMeshCall keys off a non-null stream.
+      setLocalStream(stream);
+      setAcquiring(false);
+
+      // Labels only populate once permission has been granted for that kind,
+      // which is why enumeration happens after acquisition, not before.
+      try {
         const devices = await navigator.mediaDevices.enumerateDevices();
         if (cancelled) return;
         setCameras(
@@ -149,21 +170,21 @@ export function MeetingRoom({
               label: d.label || `Microphone ${i + 1}`,
             }))
         );
-        setCameraId(stream.getVideoTracks()[0]?.getSettings().deviceId ?? "");
-        setMicId(stream.getAudioTracks()[0]?.getSettings().deviceId ?? "");
       } catch {
-        if (!cancelled) {
-          setMediaError(
-            "Camera and microphone are unavailable. Check the browser permission for this site, then reload."
-          );
-        }
+        /* enumeration is a convenience; the call does not depend on it */
       }
+
+      setCameraId(video.track?.getSettings().deviceId ?? "");
+      setMicId(audio.track?.getSettings().deviceId ?? "");
+      // A device that is absent cannot be "on".
+      if (!video.track) setCamOn(false);
+      if (!audio.track) setMicOn(false);
     })();
 
     return () => {
       cancelled = true;
     };
-  }, [openMedia]);
+  }, []);
 
   // Stop every track when the component goes away, on any path out.
   useEffect(() => {
@@ -194,36 +215,62 @@ export function MeetingRoom({
   }, [joined]);
 
   // ── Device switching ─────────────────────────────────────────────────────
-  async function switchDevice(nextCamera: string, nextMic: string) {
-    try {
-      const stream = await openMedia(nextCamera || undefined, nextMic || undefined);
-      const old = streamRef.current;
-      streamRef.current = stream;
-      cameraTrack.current = stream.getVideoTracks()[0] ?? null;
-      setLocalStream(stream);
+  //
+  // One kind at a time. Swapping the camera must not disturb the microphone,
+  // and a failed swap must leave the working device alone.
+  async function switchDevice(kind: "video" | "audio", deviceId: string) {
+    setSwitchError(null);
+    const result = await acquireTrack(kind, deviceId || undefined);
 
-      // Apply the current mute state to the new tracks, or switching a device
-      // would silently unmute someone.
-      stream.getAudioTracks().forEach((t) => (t.enabled = micOn));
-      stream.getVideoTracks().forEach((t) => (t.enabled = camOn));
-
-      if (joined && !sharing) {
-        await replaceVideoTrack(stream.getVideoTracks()[0] ?? null);
-      }
-      old?.getTracks().forEach((t) => t.stop());
-    } catch {
-      setMediaError("That device could not be opened. The previous one is still in use.");
+    if (!result.track) {
+      if (kind === "video") setVideoState(result.state);
+      else setAudioState(result.state);
+      setSwitchError(
+        deviceMessage(kind, result.state) ??
+          "That device could not be opened. The previous one is still in use."
+      );
+      return;
     }
+
+    const stream = streamRef.current ?? new MediaStream();
+    const previous =
+      kind === "video" ? stream.getVideoTracks()[0] : stream.getAudioTracks()[0];
+    if (previous) {
+      stream.removeTrack(previous);
+      previous.stop();
+    }
+
+    // Carry the current mute state across, or switching a device would
+    // silently unmute someone.
+    result.track.enabled = kind === "video" ? camOn : micOn;
+    stream.addTrack(result.track);
+
+    if (kind === "video") {
+      cameraTrack.current = result.track;
+      setVideoState({ ok: true });
+      if (joined && !sharing) await replaceVideoTrack(result.track);
+    } else {
+      setAudioState({ ok: true });
+      if (joined) await replaceAudioTrack(result.track);
+    }
+
+    streamRef.current = stream;
+    // A new MediaStream identity so dependent effects (preview binding, active
+    // speaker analysis) re-run against the changed track set.
+    setLocalStream(new MediaStream(stream.getTracks()));
   }
 
   // ── Controls ─────────────────────────────────────────────────────────────
   function toggleMic() {
+    // No microphone means nothing to unmute. The button says so instead.
+    if (!audioState.ok) return;
     const next = !micOn;
     setMicOn(next);
     streamRef.current?.getAudioTracks().forEach((t) => (t.enabled = next));
   }
 
   function toggleCam() {
+    if (!videoState.ok) return;
     const next = !camOn;
     setCamOn(next);
     streamRef.current?.getVideoTracks().forEach((t) => (t.enabled = next));
@@ -252,7 +299,9 @@ export function MeetingRoom({
   }
 
   async function join() {
-    if (joining || !localStream) return;
+    // Deliberately NOT gated on having tracks: a director with no camera and no
+    // microphone still enters, sees and hears the room as an observer.
+    if (joining || acquiring) return;
     setJoining(true);
     streamRef.current?.getAudioTracks().forEach((t) => (t.enabled = micOn));
     streamRef.current?.getVideoTracks().forEach((t) => (t.enabled = camOn));
@@ -284,6 +333,10 @@ export function MeetingRoom({
     streamRef.current = null;
     router.push(result.redirectTo ?? `/admin/board/meetings/${meetingId}/minutes`);
   }
+
+  const hasVideo = videoState.ok;
+  const hasAudio = audioState.ok;
+  const observerOnly = !hasVideo && !hasAudio;
 
   const total = peers.length + 1;
   const full = roomFull || total > MAX_PARTICIPANTS;
@@ -348,7 +401,33 @@ export function MeetingRoom({
               />
             </div>
 
-            {mediaError ? (
+            {/* One notice PER DEVICE. The old single banner named both and
+                blamed permissions, which was wrong on all three counts when a
+                webcam simply had no microphone attached. */}
+            {[
+              { kind: "video" as const, state: videoState },
+              { kind: "audio" as const, state: audioState },
+            ].map(({ kind, state }) => {
+              const message = acquiring ? null : deviceMessage(kind, state);
+              if (!message) return null;
+              return (
+                <p
+                  key={kind}
+                  role="alert"
+                  data-testid={`room-${kind}-notice`}
+                  className="mt-3 rounded-lg px-3 py-2 text-sm"
+                  style={{
+                    backgroundColor: "rgba(251,191,36,0.15)",
+                    color: "#fde68a",
+                    border: "1px solid rgba(251,191,36,0.4)",
+                  }}
+                >
+                  {message}
+                </p>
+              );
+            })}
+
+            {switchError ? (
               <p
                 role="alert"
                 className="mt-3 rounded-lg px-3 py-2 text-sm"
@@ -358,7 +437,7 @@ export function MeetingRoom({
                   border: "1px solid rgba(239,68,68,0.4)",
                 }}
               >
-                {mediaError}
+                {switchError}
               </p>
             ) : null}
 
@@ -369,7 +448,7 @@ export function MeetingRoom({
                   value={cameraId}
                   onChange={(e) => {
                     setCameraId(e.target.value);
-                    void switchDevice(e.target.value, micId);
+                    void switchDevice("video", e.target.value);
                   }}
                   data-testid="room-camera-select"
                   className="mt-1 w-full rounded-lg px-3 py-2 text-sm"
@@ -390,7 +469,7 @@ export function MeetingRoom({
                   value={micId}
                   onChange={(e) => {
                     setMicId(e.target.value);
-                    void switchDevice(cameraId, e.target.value);
+                    void switchDevice("audio", e.target.value);
                   }}
                   data-testid="room-mic-select"
                   className="mt-1 w-full rounded-lg px-3 py-2 text-sm"
@@ -412,26 +491,30 @@ export function MeetingRoom({
               <button
                 type="button"
                 onClick={toggleMic}
-                className="rounded-lg px-4 py-2 text-sm font-semibold"
+                disabled={!hasAudio}
+                data-testid="prejoin-mic"
+                className="rounded-lg px-4 py-2 text-sm font-semibold disabled:opacity-50"
                 style={
-                  micOn
+                  micOn && hasAudio
                     ? { backgroundColor: BUTTER, color: GREEN }
                     : { backgroundColor: "rgba(255,239,179,0.1)", color: BUTTER }
                 }
               >
-                {micOn ? "Mic On" : "Mic Off"}
+                {!hasAudio ? "No microphone" : micOn ? "Mic On" : "Mic Off"}
               </button>
               <button
                 type="button"
                 onClick={toggleCam}
-                className="rounded-lg px-4 py-2 text-sm font-semibold"
+                disabled={!hasVideo}
+                data-testid="prejoin-cam"
+                className="rounded-lg px-4 py-2 text-sm font-semibold disabled:opacity-50"
                 style={
-                  camOn
+                  camOn && hasVideo
                     ? { backgroundColor: BUTTER, color: GREEN }
                     : { backgroundColor: "rgba(255,239,179,0.1)", color: BUTTER }
                 }
               >
-                {camOn ? "Camera On" : "Camera Off"}
+                {!hasVideo ? "No camera" : camOn ? "Camera On" : "Camera Off"}
               </button>
             </div>
 
@@ -445,13 +528,32 @@ export function MeetingRoom({
             <button
               type="button"
               onClick={join}
-              disabled={joining || !localStream}
+              // Enabled as soon as acquisition has settled, whatever it found.
+              // Missing devices cost you those devices, not the meeting.
+              disabled={joining || acquiring}
               data-testid="room-join"
               className="mt-6 w-full rounded-xl py-3 font-bold disabled:opacity-60"
               style={{ backgroundColor: BUTTER, color: GREEN }}
             >
-              {joining ? "Connecting…" : "Join Meeting"}
+              {acquiring
+                ? "Checking your devices…"
+                : joining
+                  ? "Connecting…"
+                  : observerOnly
+                    ? "Join as observer"
+                    : "Join Meeting"}
             </button>
+
+            {observerOnly && !acquiring ? (
+              <p
+                className="mt-2 text-center text-xs"
+                data-testid="room-observer-note"
+                style={{ color: "rgba(255,239,179,0.6)" }}
+              >
+                You will join without sending audio or video. You can still see
+                and hear everyone else.
+              </p>
+            ) : null}
 
             <button
               type="button"

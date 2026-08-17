@@ -246,6 +246,43 @@ it.
 
 ---
 
+## 6d. Retest the meeting room on the laptop that failed (2026-08-16)
+
+**Status: FIXED IN CODE, NEEDS RE-TESTING ON THE ORIGINAL HARDWARE.**
+
+Two defects you found in the browser are fixed:
+
+1. **A webcam with no microphone locked you out.** The room asked for camera and
+   microphone in a single request, which fails as a unit — no microphone meant
+   no camera either, a black preview, a misleading "check permissions" banner,
+   and a permanently disabled Join button. Camera and microphone are now
+   requested separately. A missing device costs you that device only; you can
+   join with video alone, audio alone, or as an observer with neither, and you
+   will still see and hear everyone regardless.
+
+2. **There was no way into the room except typing the URL.** The Join link was
+   hidden unless the meeting was already running or due within 30 minutes. The
+   meeting detail page now always shows a **"Join Video Meeting"** button, and an
+   **"Open Minutes"** button beside it (minutes were previously unreachable
+   unless the call had been formally ended).
+
+**Required human action after deploy — on the SAME HP TrueVision laptop:**
+- Open a meeting from `/admin/board/meetings`, confirm **"Join Video Meeting"**
+  is visible without typing a URL.
+- Enter the room. Expect the camera preview to show, one amber notice reading
+  "No microphone was found on this computer. You can still join with video
+  only.", the microphone button greyed out and labelled "No microphone", and
+  Join **enabled**.
+- Join, and confirm you can hear a second participant even though you cannot
+  speak. That last part is the piece automation cannot check here.
+
+If the notice instead says the microphone is *blocked* or *in use*, that is a
+different fault with a different remedy and the wording now tells you which.
+
+**Recorded outcome:** _(fill in)_
+
+---
+
 ## 7. Beneficiary and testimonial verification
 
 **Status: RESOLVED ON THE SITE — re-verify before adding anything back.**
@@ -337,6 +374,7 @@ enforce.
 | 6 | Formsubmit activation | No | **Yes — forms do not deliver until done** |
 | 6b | Turnstile keys set; watch spam after deploy | Keys not visible to the repo | No |
 | 6c | Two-person WebRTC test call after deploy | No — needs two browsers | **Yes, before a real meeting** |
+| 6d | Retest room on the no-microphone laptop | No — needs that hardware | **Yes, it locked a director out** |
 | 7 | Beneficiary verification | Resolved on site | No |
 | 8 | Financial records | No | Possibly |
 | 9 | Social profiles | Removed pending real accounts | No |
