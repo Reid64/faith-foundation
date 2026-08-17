@@ -96,39 +96,63 @@ step.
 - **CLI tools:** git, node, pnpm, supabase, vercel
 
 ## Architecture Overview
-- **Tables:** 0 (tenant-scoped: none)
-- **API routes:** 0
-- **Pages:** 0; **components:** 0; **layouts:** 0
-- **Interaction maps:** 0 (Contract 18 granularity)
-- **Roles:** —
-- **Agents:** —
+> **Regenerated 2026-08-17.** The numbers below were counted from the live
+> database and the App Router file tree. The previous version of this section
+> was FORGE 2.0 scaffolding claiming 0 tables, 0 API routes and 0 pages, which
+> had not been true since Phase 1.
+
+- **Tables:** 27 (plus 3 views: `account_balances`, `cornerstone_milestones_public`, `cornerstone_projects_public`)
+- **Enum types:** 16; **RPC functions:** 7
+- **Migrations applied:** 14
+- **RLS policies:** 52 (from migrations)
+- **API routes:** 15
+- **Pages:** 86 (of which 56 under `/admin`); **layouts:** 3; **components:** 15
+- **Playwright specs:** 10
+- **Roles:** `admin`, `board`, `staff`, `public` — resolved by `current_user_role()`
+- **Tenant scoping:** none. This is a single-organisation application, so there
+  is no `company_id` anywhere. Canonical Rule 1 below is FORGE boilerplate for
+  multi-tenant projects and does not apply here.
 
 ## Project Structure
 ```
 faith-foundation/
-├── app/
-│   ├── layout.tsx
-│   ├── page.tsx
-├── components/
-├── lib/
-│   └── supabase/
-│       ├── client.ts
-│       └── server.ts
-├── supabase/
-│   └── migrations/
-├── tests/
+├── src/
+│   ├── app/
+│   │   ├── admin/            56 pages — the FaithProof back office
+│   │   ├── api/              15 route handlers
+│   │   ├── (public pages)/   30 pages
+│   │   └── layout.tsx
+│   ├── components/           15 shared components
+│   └── lib/
+│       ├── supabase/         client.ts · server.ts · service.ts
+│       ├── faithproof/       session, formatting, public data, pusherServer
+│       └── turnstile.ts
+├── supabase/migrations/      14 migrations
+├── scripts/                  10 Playwright specs
+├── governance/
 ├── middleware.ts
-├── package.json
-└── tsconfig.json
+└── package.json
 ```
 
 ## Environment Variables
-No project-specific environment variables were specified by the architecture.
-The FORGE default stack requires at least:
+Public (inlined into the client bundle by design):
 ```
-NEXT_PUBLIC_SUPABASE_URL=
-NEXT_PUBLIC_SUPABASE_ANON_KEY=
-SUPABASE_SERVICE_ROLE_KEY=
+NEXT_PUBLIC_SUPABASE_URL
+NEXT_PUBLIC_SUPABASE_ANON_KEY
+NEXT_PUBLIC_TURNSTILE_SITE_KEY
+NEXT_PUBLIC_PUSHER_KEY
+NEXT_PUBLIC_PUSHER_CLUSTER
+NEXT_PUBLIC_WEB3FORMS_KEY
+```
+Server-only — none of these may ever appear in `.next/static`, and a test
+asserts it:
+```
+SUPABASE_SERVICE_ROLE_KEY
+TURNSTILE_SECRET_KEY
+PUSHER_APP_ID · PUSHER_SECRET
+CLOUDFLARE_TURN_KEY_ID · CLOUDFLARE_TURN_API_TOKEN
+ANTHROPIC_API_KEY            (unset in production — AI features degrade to 503)
+INBOUND_WEBHOOK_SECRET       (optional; the inbound email webhook is open when unset)
 ```
 
 ## Canonical Rules

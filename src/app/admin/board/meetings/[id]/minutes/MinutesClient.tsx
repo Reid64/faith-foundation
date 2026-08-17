@@ -270,6 +270,7 @@ export function TranscriptEntry({
               type="file"
               accept=".txt,text/plain"
               onChange={readFile}
+              aria-label="Load a transcript from a .txt file"
               className="mb-3 block text-sm"
               style={{ color: "#374151" }}
             />
