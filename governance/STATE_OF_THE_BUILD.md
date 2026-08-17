@@ -1,7 +1,98 @@
 # faith-foundation — STATE OF THE BUILD
 
-> Updated from a LIVE codebase audit on 2026-08-16 (BLUEPRINT Canonical Rule 9).
-> Last action: **PHASE 21.1 — TWO DEFECTS FROM LIVE BROWSER TESTING, FIXED. NOT DEPLOYED.**
+> Updated from a LIVE codebase audit on 2026-08-17 (BLUEPRINT Canonical Rule 9).
+> Last action: **PHASE 21.2 — THE ORPHANED-PAGE DEFECT CLASS CLOSED, NOT ANOTHER INSTANCE OF IT.
+> NOT DEPLOYED.**
+>
+> Three live incidents in three runs, all the same shape: a page that exists, builds and works,
+> which no logged-in user can reach by clicking. This run fixes the two outstanding instances and
+> then puts a standing guard in place so the class cannot recur silently.
+>
+> ---
+>
+> ### DEFECT A — no way to create a board meeting
+>
+> **Root cause, read from the code.** The "Record Meeting" button on
+> `/admin/board/meetings` was gated on `role === 'admin'`, and `/admin/board/meetings/new`
+> enforced the same rule with a bare `redirect()`. The operator is signed in as **board**
+> (`reid@faithfoundationsf.org`), so the button did not exist and the URL bounced silently — which
+> reads as a broken page, not a refusal.
+>
+> **The gate was also wrong on the merits.** Migration 009 grants `board_meetings` FOR ALL to
+> admin **and board**, and `createMeeting` gates on the same pair. The UI was stricter than both
+> the database and the server action it calls. Every other write in the portal — votes,
+> transcripts, minutes, approvals — is open to directors.
+>
+> **Fix.** Admin and board both see the button and can use the form. Anyone who genuinely lacks
+> permission now gets a sentence saying so instead of a redirect. **This reverses a Phase 19
+> decision** ("board members read the minute book; only an administrator writes to it"), recorded
+> here because it was a deliberate reversal, not an oversight.
+>
+> ### DEFECT B — an ended meeting was a locked door
+>
+> `actual_end` gates the room, `/api/pusher/auth` and `/api/pusher/signal`, so the moment it was
+> set the room closed for everyone — including whoever set it. A dropped connection or a mis-click
+> locked the entire board out of their own meeting with no recovery. The operator hit exactly that:
+> joined, left, and the Join button vanished on every machine.
+>
+> **Fix.** `reopenMeeting()` — **admin only, audited**, keeping the previous end time in the audit
+> entry so the original record survives. Refused outright once minutes are **certified**: those are
+> signed by the whole board, and a room should not resume under them. A "Reopen Meeting" button
+> appears on the detail page of any ended meeting, and board members can rejoin immediately after.
+>
+> **Confirmation on End Meeting: yes, implemented.** The conclusion and the reasoning: ending is one
+> click, it disconnects every participant at once, it sits next to Leave, and only an administrator
+> can undo it. That combination is where a confirmation earns its keep. The wording says what
+> happens to everyone else, not just to the person clicking.
+>
+> ### DEFECT C — the systemic audit
+>
+> **56 routes enumerated from the App Router file tree. Result: every one is reachable by clicking
+> from /admin, for both the admin and the board role, verified by crawling the rendered DOM — not
+> by reading the source.**
+>
+> The finding that matters is about the *shape* of the defect. A static link check reports **zero**
+> orphans: all three incident pages had a link in the source. What hid them was the condition
+> around the link — a role gate, a time window, an `actual_end` flag. **grep cannot see that; only
+> walking the DOM can.** That is why the guard is a crawl.
+>
+> Two documented exceptions, both with reasons in the test file:
+> - `/admin/board/meetings/[id]/room` — reachable, and `meeting-room.spec.ts` clicks into it from
+>   the detail page; a blind crawl should not open a live camera session on every pass.
+> - For the **board role only**, `/admin/promises/[id]` and `/edit` — a data-visibility limit, not
+>   an orphan: migration 001 lets anyone read promises with `is_public = true` and **admins** read
+>   the rest, so a director sees a promise detail page only when a published promise exists. The
+>   admin crawl covers both.
+>
+> **A related finding, reported not changed:** board members cannot read internal (non-public)
+> promises at all — by explicit RLS design since migration 001. If directors are meant to see the
+> foundation's unpublished commitments, that is a policy decision and a migration, and it was not
+> made unasked.
+>
+> ---
+>
+> **The standing guard.** `scripts/admin-navigation.spec.ts` enumerates routes from the file tree
+> (never a hand-kept list), seeds one row per entity, and crawls as both roles. A page added by a
+> future phase is included automatically and the suite fails until something links to it.
+> `governance/AGENTS.md` now carries the rule as a **Six Laws WIRING (Law 5)** requirement: no page
+> is complete until it is reachable by clicking from `/admin`.
+>
+> **Housekeeping.** A leftover test account from my own Phase 21 diagnostics
+> (`diag-…@faithproof.invalid`) still held role `board`, which put it in the minutes approval
+> quorum — it would have made certification of real minutes impossible. Deleted, along with a
+> leftover diagnostic meeting. The quorum is now exactly the five real profiles.
+>
+> **Verification.** `pnpm tsc --noEmit` 0 errors; `pnpm run build` clean.
+> `admin-navigation.spec.ts` **3/3** (admin crawl 59 pages, board crawl 57).
+> `meeting-room.spec.ts` **13 → 16, 16/16**, including: an ended meeting closes the room and
+> redirects to the minutes, an admin can reopen it and the audit entry is written, a reopened
+> meeting can be rejoined by clicking, and a board member is not offered Reopen.
+>
+> **What is still unverified:** a real peer connection, which needs two browsers on production
+> credentials, and Defect 1 of Phase 21.1 on the actual no-microphone laptop. Both remain open in
+> OPERATOR_ACTIONS.
+>
+> Prior action: **PHASE 21.1 — TWO DEFECTS FROM LIVE BROWSER TESTING, FIXED. NOT DEPLOYED.**
 >
 > Both were found by the operator driving production in a real browser. **Neither was caught by the
 > Phase 21 suite**, and the reason is worth recording: every automated test ran against Playwright's

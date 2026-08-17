@@ -1,7 +1,42 @@
 # faith-foundation — SESSION STATE
 
-> Tracks the live execution session. LATEST: **PHASE 21.1 — TWO LIVE-BROWSER DEFECTS FIXED**
-> (2026-08-16). **NOT DEPLOYED.**
+> Tracks the live execution session. LATEST: **PHASE 21.2 — ORPHANED-PAGE DEFECT CLASS CLOSED**
+> (2026-08-17). **NOT DEPLOYED.**
+>
+> **Three incidents, one class.** The room, the minutes page, and now meeting creation: pages that
+> exist, build, and pass their own tests, which no user can reach by clicking. This run fixed the
+> two outstanding instances and then built the guard.
+>
+> **Defect A — no way to create a meeting.** The button was gated on `role === 'admin'` and
+> `/new` enforced it with a silent `redirect()`. The operator is a **board** member, so the button
+> was invisible and the URL bounced. The gate was also stricter than the database: migration 009
+> grants board_meetings FOR ALL to admin AND board, and `createMeeting` already accepted both. Now
+> both roles can record a meeting, and a genuine refusal explains itself. **This reverses a Phase 19
+> decision, deliberately.**
+>
+> **Defect B — an ended meeting was unrecoverable.** `actual_end` closes the room, the channel auth
+> and the signal relay at once, so one click locked the whole board out with no way back.
+> `reopenMeeting()` is admin-only and audited (the previous end time is kept in the audit entry),
+> and refuses once minutes are **certified**. **End Meeting now requires confirmation** — one click,
+> everyone disconnected, only an admin can undo: that is where a confirmation earns its keep.
+>
+> **Defect C — the audit.** 56 routes enumerated from the file tree; **all reachable by clicking for
+> both roles**, proven by crawling the rendered DOM. The important part: a *static* link check finds
+> **zero** orphans, because all three incident pages had links in the source — hidden behind a role
+> gate, a time window, an `actual_end` flag. grep cannot see a condition; a crawl can.
+>
+> **The guard.** `scripts/admin-navigation.spec.ts` reads routes from the App Router tree, seeds one
+> row per entity, and crawls as admin and as board. New pages are picked up automatically, so the
+> suite fails until someone links to them. AGENTS.md now carries it as a Six Laws WIRING rule.
+>
+> **My own residue, cleaned.** A `diag-…@faithproof.invalid` account from the Phase 21 diagnostics
+> still held role `board` — it sat in the minutes approval quorum and would have blocked
+> certification of real minutes forever. Deleted, with a leftover diagnostic meeting. Quorum is back
+> to the five real profiles.
+>
+> **Verification.** tsc 0 errors, build clean, `admin-navigation` 3/3, `meeting-room` **16/16**.
+>
+> PRIOR: **PHASE 21.1 — TWO LIVE-BROWSER DEFECTS FIXED** (2026-08-16). **NOT DEPLOYED.**
 >
 > **The lesson first.** Both defects came from the operator using production in a real browser, and
 > **neither was caught by a 13-suite, 200-plus-test automation stack**. The suite always ran against

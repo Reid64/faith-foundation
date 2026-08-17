@@ -283,6 +283,45 @@ different fault with a different remedy and the wording now tells you which.
 
 ---
 
+## 6e. Board meeting room — creation, and getting back in (2026-08-17)
+
+**Status: FIXED IN CODE. NOT DEPLOYED.**
+
+Three things you reported are addressed:
+
+1. **You can now create a meeting.** The "Record Meeting" button was only shown
+   to the `admin` role, and `/admin/board/meetings/new` silently bounced anyone
+   else — you are signed in as `reid@faithfoundationsf.org`, which is **board**.
+   Both roles can now record a meeting, which also matches what the database has
+   always allowed.
+
+2. **An ended meeting can be reopened.** Ending a meeting closed the room for
+   everyone permanently. An administrator now sees a **"Reopen Meeting"** button
+   on any ended meeting; it clears the end time, writes an audit entry naming who
+   reopened it, and directors can rejoin straight away. It is refused once
+   minutes are certified — at that point the board has signed the record, and a
+   new meeting is the right answer.
+
+3. **Ending now asks first.** "End Meeting" disconnects every participant at
+   once and only an administrator can undo it, so it now shows a confirmation
+   saying exactly that.
+
+**One thing to know about roles.** Reopening is administrator-only, on purpose:
+it changes the recorded duration of a corporate meeting. You are a `board`
+profile, so you will not see that button — `info@faithfoundationsf.org` will. If
+you would rather directors could reopen their own meetings, say so and it is a
+one-line change.
+
+**Also worth a decision:** board members cannot see **internal** (unpublished)
+promises at `/admin/promises` — only published ones. That has been the RLS rule
+since the first migration and was not changed here. If directors should see the
+foundation's unpublished commitments, that needs a policy decision and a
+migration.
+
+**Recorded outcome:** _(fill in)_
+
+---
+
 ## 7. Beneficiary and testimonial verification
 
 **Status: RESOLVED ON THE SITE — re-verify before adding anything back.**
@@ -375,6 +414,7 @@ enforce.
 | 6b | Turnstile keys set; watch spam after deploy | Keys not visible to the repo | No |
 | 6c | Two-person WebRTC test call after deploy | No — needs two browsers | **Yes, before a real meeting** |
 | 6d | Retest room on the no-microphone laptop | No — needs that hardware | **Yes, it locked a director out** |
+| 6e | Decide: should directors be able to reopen meetings, and see internal promises? | Policy decision | No |
 | 7 | Beneficiary verification | Resolved on site | No |
 | 8 | Financial records | No | Possibly |
 | 9 | Social profiles | Removed pending real accounts | No |

@@ -19,7 +19,8 @@ import {
   type BoardMeeting,
   type BoardVote,
 } from "@/lib/faithproof/board";
-import { addVote } from "../../actions";
+import { addVote, reopenMeeting } from "../../actions";
+import { ActionButton } from "../../../_components/ActionButton";
 import { AddVoteForm } from "./AddVoteForm";
 
 export const metadata: Metadata = {
@@ -65,6 +66,7 @@ export default async function MeetingDetailPage({
   const votes = (voteRows ?? []) as BoardVote[];
   const joinable = isJoinable(m);
   const finished = Boolean(m.actual_end);
+  const isAdmin = session.profile?.role === "admin";
   const duration = meetingDuration(m.actual_start, m.actual_end);
 
   return (
@@ -175,14 +177,28 @@ export default async function MeetingDetailPage({
               </Badge>
             ) : null}
           </div>
-          <Link
-            href={`/admin/board/meetings/${m.id}/minutes`}
-            data-testid="open-minutes"
-            className="rounded-lg px-5 py-2.5 text-sm font-semibold"
-            style={{ backgroundColor: "#013e37", color: "#ffefb3" }}
-          >
-            View Minutes
-          </Link>
+          <div className="flex flex-wrap items-center gap-3">
+            {/*
+              An ended meeting closes the room for everyone, so there has to be
+              a way back in. Admin only, and audited — see reopenMeeting().
+            */}
+            {isAdmin && m.minutes_status !== "certified" ? (
+              <ActionButton
+                action={reopenMeeting.bind(null, m.id)}
+                label="Reopen Meeting"
+                variant="secondary"
+                confirm="Reopen this meeting? The room becomes available again and the recorded end time is cleared. This is written to the audit log."
+              />
+            ) : null}
+            <Link
+              href={`/admin/board/meetings/${m.id}/minutes`}
+              data-testid="open-minutes"
+              className="rounded-lg px-5 py-2.5 text-sm font-semibold"
+              style={{ backgroundColor: "#013e37", color: "#ffefb3" }}
+            >
+              View Minutes
+            </Link>
+          </div>
         </div>
       ) : null}
 

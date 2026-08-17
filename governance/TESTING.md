@@ -26,7 +26,8 @@
 **Combined run, 2026-08-16: 224 passed, 3 skipped, 0 failed** across all four suites.
 | `scripts/web3forms-wiring.spec.ts` | — | live site | not run this session |
 | `scripts/turnstile.spec.ts` | 10 | a build carrying the Turnstile keys | 10/10 across pass and fail modes (2026-08-16) |
-| `scripts/meeting-room.spec.ts` | 13 | a local build; needs the service key in `.env.local` | 13/13 (2026-08-16) |
+| `scripts/meeting-room.spec.ts` | 16 | a local build; needs the service key in `.env.local` | 16/16 (2026-08-17) |
+| `scripts/admin-navigation.spec.ts` | 3 | a local build; needs the service key in `.env.local` | 3/3 (2026-08-17) |
 
 ### Running the meeting room spec (Phase 21)
 
@@ -58,6 +59,38 @@ product bug. That cost three failed runs on 2026-08-16.
 Offer/answer, ICE, the Cloudflare TURN array, the six-participant cap, ICE
 restart and speaker switching need two real browsers in one room against
 production credentials, and are listed as unverified in STATE_OF_THE_BUILD.
+
+### The navigation crawl — the guard against orphaned pages (2026-08-17)
+
+`scripts/admin-navigation.spec.ts` is the standing enforcement of the AGENTS.md
+rule that **no page is done until it is reachable by clicking**.
+
+It enumerates every route from the App Router file tree (never a hand-kept
+list), seeds one row per entity so list pages have rows to link to, then crawls
+from `/admin` as an **admin** and again as a **board member**, following only
+anchors that are actually rendered. Any route never reached fails the test with
+its path in the message.
+
+Because routes come from the file tree, a page added by a future phase is
+included automatically and the suite fails until something links to it. That is
+the point: three separate live incidents were pages that existed and worked but
+that nobody could navigate to, and all three had a link in the source, hidden
+behind a condition. **grep cannot catch this; only walking the DOM can.**
+
+Two documented exclusions, both with reasons in the file:
+- `/admin/board/meetings/[id]/room` — reachable, and `meeting-room.spec.ts`
+  clicks into it from the detail page; a blind crawl should not open a live
+  call with camera and microphone on every pass.
+- For the board role only, `/admin/promises/[id]` and its `/edit` — a
+  data-visibility limit rather than an orphan. Migration 001 lets anyone read
+  promises with `is_public = true` and **admins** read the rest, so a board
+  member sees a promise detail page only when a published promise exists. The
+  fixture is deliberately internal, because a test promise must never appear on
+  the public /faithproof page. The admin crawl covers both routes, and the board
+  crawl still asserts `/admin/promises` itself is reachable.
+
+**Seeded fixtures are removed in `afterAll`**, and transactions and vouchers are
+created `pending` so the accounting triggers never fire against real books.
 
 ### What the meeting-room suite missed, and why (2026-08-16)
 

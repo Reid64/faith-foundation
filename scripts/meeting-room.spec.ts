@@ -402,4 +402,119 @@ test.describe("BOARD MEETING ROOM — WebRTC", () => {
     await minutes.click();
     await page.waitForURL(/\/minutes\/?$/, { timeout: 20_000 });
   });
+
+  test("an ENDED meeting closes the room, and an admin can reopen it", async ({
+    page,
+  }) => {
+    test.skip(!admin, "needs service role");
+
+    // The suite's user is a board member; reopening is an administrator's act,
+    // so this test needs the admin role and hands it back afterwards.
+    await admin!.from("profiles").update({ role: "admin" }).eq("id", userId!);
+
+    // End it the way the room does.
+    await admin!
+      .from("board_meetings")
+      .update({ actual_end: new Date().toISOString() })
+      .eq("id", meetingId!);
+
+    await signIn(page);
+    await page.goto(`/admin/board/meetings/${meetingId}/`, {
+      waitUntil: "domcontentloaded",
+    });
+
+    // Closed: no way in. This is the state that locked the whole board out.
+    await expect(page.getByTestId("join-video-meeting")).toHaveCount(0);
+    await expect(page.getByText(/meeting complete/i)).toBeVisible();
+
+    // And the room itself refuses, sending you to the minutes instead.
+    await page.goto(`/admin/board/meetings/${meetingId}/room/`, {
+      waitUntil: "domcontentloaded",
+    });
+    await page.waitForURL(/\/minutes\/?$/, { timeout: 20_000 });
+
+    // The recovery. The button carries a confirm, so accept it.
+    await page.goto(`/admin/board/meetings/${meetingId}/`, {
+      waitUntil: "domcontentloaded",
+    });
+    page.on("dialog", (d) => d.accept());
+    const reopen = page.getByRole("button", { name: /reopen meeting/i });
+    await expect(reopen).toBeVisible();
+    await reopen.click();
+
+    // Back in, by clicking.
+    await expect(page.getByTestId("join-video-meeting")).toBeVisible({
+      timeout: 20_000,
+    });
+
+    const { data: after } = await admin!
+      .from("board_meetings")
+      .select("actual_end")
+      .eq("id", meetingId!)
+      .maybeSingle();
+    expect((after as { actual_end: string | null }).actual_end).toBeNull();
+
+    // Reopening is a change to a corporate record, so it is audited.
+    const { data: entries } = await admin!
+      .from("audit_log")
+      .select("action, entity_id")
+      .eq("entity_id", meetingId!)
+      .eq("action", "board_meeting.reopened");
+    expect((entries ?? []).length).toBeGreaterThan(0);
+
+    await admin!.from("profiles").update({ role: "board" }).eq("id", userId!);
+  });
+
+  test("a reopened meeting can be rejoined", async ({ page }) => {
+    test.skip(!admin, "needs service role");
+
+    await admin!
+      .from("board_meetings")
+      .update({ actual_end: null })
+      .eq("id", meetingId!);
+
+    await signIn(page);
+    await page.goto(`/admin/board/meetings/${meetingId}/`, {
+      waitUntil: "domcontentloaded",
+    });
+
+    await page.getByTestId("join-video-meeting").click();
+    await page.waitForURL(/\/room\/?$/, { timeout: 20_000 });
+    await expect(page.getByTestId("room-prejoin")).toBeVisible();
+
+    const join = page.getByTestId("room-join");
+    await expect(join).toBeEnabled({ timeout: 20_000 });
+    await join.click();
+    await expect(page.getByTestId("room-grid")).toBeVisible();
+  });
+
+  test("a board member cannot reopen a meeting", async ({ page }) => {
+    test.skip(!admin, "needs service role");
+
+    await admin!
+      .from("board_meetings")
+      .update({ actual_end: new Date().toISOString() })
+      .eq("id", meetingId!);
+    await admin!.from("profiles").update({ role: "board" }).eq("id", userId!);
+
+    try {
+      await signIn(page);
+      await page.goto(`/admin/board/meetings/${meetingId}/`, {
+        waitUntil: "domcontentloaded",
+      });
+      // Reopening rewrites the recorded duration of a corporate meeting, so it
+      // stays with administrators.
+      await expect(
+        page.getByRole("button", { name: /reopen meeting/i })
+      ).toHaveCount(0);
+      // But the minutes stay reachable, which is the point of that link.
+      await expect(page.getByTestId("open-minutes")).toBeVisible();
+    } finally {
+      await admin!.from("profiles").update({ role: "board" }).eq("id", userId!);
+      await admin!
+        .from("board_meetings")
+        .update({ actual_end: null })
+        .eq("id", meetingId!);
+    }
+  });
 });

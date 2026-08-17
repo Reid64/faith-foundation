@@ -321,6 +321,21 @@ export function MeetingRoom({
 
   async function finish() {
     if (ending) return;
+
+    /**
+     * CONFIRMATION IS REQUIRED, and the conclusion is deliberate.
+     *
+     * Ending is one click, it closes the room for every participant at once,
+     * and only an administrator can undo it. That combination — irreversible by
+     * the people it affects, adjacent to Leave, and taken mid-meeting — is
+     * exactly where a confirmation earns its keep. The wording says what
+     * happens to everyone else, not just to the person clicking.
+     */
+    const confirmed = window.confirm(
+      "End this meeting for everyone? All participants are disconnected and the room closes. An administrator can reopen it afterwards."
+    );
+    if (!confirmed) return;
+
     setEnding(true);
     const result = await endMeeting(meetingId);
     if (result?.error) {

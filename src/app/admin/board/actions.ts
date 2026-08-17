@@ -108,6 +108,76 @@ export async function createMeeting(formData: FormData): Promise<Result> {
   return { ok: true, id: data.id };
 }
 
+/**
+ * Reopen a meeting that was marked ended.
+ *
+ * WHY THIS EXISTS. `actual_end` is the gate on the room, on /api/pusher/auth
+ * and on /api/pusher/signal, so the moment it is set the room is closed to
+ * everyone — including the person who set it. A dropped connection, a
+ * mis-click, or a meeting that resumes after a break therefore locked the whole
+ * board out of their own meeting with no recovery. The operator hit exactly
+ * that: joined, left, and the Join button vanished on every machine.
+ *
+ * ADMIN ONLY, and audited. Reopening changes the recorded duration of a
+ * corporate meeting, so it is a deliberate act by a named person, not a quiet
+ * state flip. The audit entry keeps the previous end time so the original
+ * record is never lost.
+ */
+export async function reopenMeeting(meetingId: string): Promise<Result> {
+  const gate = await boardSession();
+  if ("error" in gate) return { error: gate.error };
+  const { session } = gate;
+
+  if (session.profile?.role !== "admin") {
+    return { error: "Only an administrator can reopen a meeting." };
+  }
+
+  const { data: before } = await session.supabase
+    .from("board_meetings")
+    .select("actual_end, minutes_status")
+    .eq("id", meetingId)
+    .maybeSingle();
+
+  const previous = before as
+    | { actual_end: string | null; minutes_status: string }
+    | null;
+
+  if (!previous) return { error: "That meeting no longer exists." };
+  if (!previous.actual_end) return { error: "That meeting is already open." };
+
+  // Certified minutes are a signed record of a meeting that finished. Reopening
+  // it would let the room resume under a meeting whose minutes the board has
+  // already approved and the Secretary certified.
+  if (previous.minutes_status === "certified") {
+    return {
+      error:
+        "These minutes are certified. Record a new meeting rather than reopening a closed one.",
+    };
+  }
+
+  const { error } = await session.supabase
+    .from("board_meetings")
+    .update({ actual_end: null })
+    .eq("id", meetingId);
+
+  if (error) return { error: describeDbError(error, "reopen this meeting") };
+
+  await writeAuditLog(session.supabase, {
+    actorId: session.userId,
+    action: "board_meeting.reopened",
+    entityType: "board_meetings",
+    entityId: meetingId,
+    oldValue: { actual_end: previous.actual_end },
+    newValue: { actual_end: null },
+  });
+
+  revalidatePath(`/admin/board/meetings/${meetingId}`);
+  revalidatePath(`/admin/board/meetings/${meetingId}/room`);
+  revalidatePath("/admin/board/meetings");
+  revalidatePath("/admin/board");
+  return { ok: true };
+}
+
 export async function addVote(
   meetingId: string,
   formData: FormData

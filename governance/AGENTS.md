@@ -6,6 +6,37 @@
 ## Orchestration
 _(no orchestration specified)_
 
+## STANDING RULE — reachability is part of "done" (added 2026-08-17)
+
+**No page is complete until it can be reached by clicking from `/admin`.**
+
+This is a **Six Laws WIRING requirement (Law 5)**, not a nicety. A route that
+builds, renders and passes its own tests but that nobody can navigate to has not
+shipped — it has been written.
+
+The rule exists because the same defect reached production three times:
+
+| Incident | Page | How it was hidden |
+| --- | --- | --- |
+| Phase 21 | `/admin/board/meetings/[id]/room` | link wrapped in a time window that was almost never open |
+| Phase 21.1 | `/admin/board/meetings/[id]/minutes` | link gated on `actual_end` being set |
+| Phase 21.2 | `/admin/board/meetings/new` | button gated on `role === 'admin'`, stricter than the RLS policy |
+
+Every one of them HAD a link in the source. A grep would have said they were
+fine. What hid them was a condition around the link, which is why the guard has
+to walk the rendered DOM.
+
+**The guard is `scripts/admin-navigation.spec.ts`.** It enumerates every route
+from the App Router file tree, crawls from `/admin` as an admin and again as a
+board member following only rendered anchors, and fails if any route was never
+reached. It is not a snapshot: routes come from the file tree, so a page added
+in a future phase is included automatically and the test fails until someone
+links to it.
+
+**If a route is genuinely meant to be unreachable by crawling**, add it to
+`EXCLUDED` (or `EXCLUDED_FOR_BOARD`) *with the reason in the same commit*. An
+exclusion without a reason is the defect wearing a different hat.
+
 ## Agent Definitions
 This project defines no autonomous agents.
 
@@ -17,6 +48,9 @@ This project defines no autonomous agents.
 > For completeness, the one automated non-request process in the live system is
 > the Zeffy webhook receiver (`/api/webhooks/zeffy`), which is an inbound
 > endpoint rather than an agent.
+>
+> **Re-checked 2026-08-17 (Phase 21.2).** Still accurate — the navigation crawl and
+> the reopen action add no agents.
 >
 > **Re-checked 2026-08-16 (Phase 21 — WebRTC meeting room).** Still accurate. The
 > rebuild added three API routes, two React hooks and a client component. The

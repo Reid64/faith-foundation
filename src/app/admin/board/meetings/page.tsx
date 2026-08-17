@@ -39,7 +39,20 @@ export default async function MeetingsPage() {
     .order("meeting_date", { ascending: false });
 
   const rows = (data ?? []) as BoardMeeting[];
-  const isAdmin = session.profile?.role === "admin";
+  /**
+   * Who may record a meeting.
+   *
+   * Phase 19 restricted this to `admin` in the UI only — the RLS policy on
+   * board_meetings (migration 009) grants FOR ALL to admin AND board, and the
+   * createMeeting action gates on the same pair. So the button was stricter
+   * than both the database and the server action, and the practical effect was
+   * that a director signed in as `board` saw no way to create a meeting and was
+   * silently bounced from /new. Every other write in this portal — votes,
+   * transcripts, minutes, approvals — is open to board members; recording a
+   * meeting now matches.
+   */
+  const canCreate =
+    session.profile?.role === "admin" || session.profile?.role === "board";
 
   return (
     <div className="mx-auto max-w-7xl">
@@ -47,7 +60,7 @@ export default async function MeetingsPage() {
         title="Board Meetings"
         description={`${count ?? 0} meeting${count === 1 ? "" : "s"} on record.`}
         action={
-          isAdmin ? (
+          canCreate ? (
             <PrimaryLinkButton href="/admin/board/meetings/new">
               Record Meeting
             </PrimaryLinkButton>
@@ -64,9 +77,9 @@ export default async function MeetingsPage() {
             icon={<InfoIcon className="h-5 w-5" />}
             title="No meetings recorded"
             detail={
-              isAdmin
+              canCreate
                 ? "Record the first meeting to start the minute book."
-                : "An administrator records meetings here."
+                : "A board member or administrator records meetings here."
             }
           />
         </Panel>
