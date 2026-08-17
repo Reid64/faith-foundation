@@ -310,6 +310,20 @@ finding — each is an untested area.
    *name* or *value* it holds locally reaches the client bundle. It cannot read
    Vercel's environment, so `INBOUND_WEBHOOK_SECRET` (HIGH 2) has to be checked
    by the operator.
+10. **Every button pressed on every page.** This is the biggest gap and it is
+    worth being precise about, because the brief asked for it. Every interactive
+    element on all 56 admin routes was **enumerated and inspected** — counted,
+    checked for an accessible name, checked that its link resolves — and the
+    counts are in `test-results/admin-surface.json`. But they were not all
+    *pressed*. Pressing every button on a live database means firing every
+    status transition, every delete and every send on real records.
+    What was pressed, end to end, with the result checked **against the
+    database** rather than against the on-screen message: a CSV export, a list
+    search, an edit-form save, and a status transition. What was deliberately
+    not pressed: anything that posts to the ledger, sends an email, or deletes a
+    row it did not create. Closing this gap properly needs a disposable copy of
+    the database, which is the right next investment if this level of assurance
+    is wanted routinely.
 
 ---
 
@@ -317,13 +331,32 @@ finding — each is an untested area.
 
 ```
 pnpm tsc --noEmit     0 errors
-pnpm run build        clean
+pnpm run build        clean — 72/72 static pages generated
 npx playwright test   258 passed · 3 skipped · 0 failed · 0 flaky   (261 total)
 ```
 
 The full suite was run with **no arguments**, against a local production build
 on `http://localhost:3300`. Naming specific spec files is how
 `web3forms-wiring.spec.ts` stayed red for two phases without anyone noticing.
+
+**Zero failures, but not always zero flakes.** The suite was run four times end
+to end. One run was completely clean as above. The others each showed one or two
+tests that failed on the first attempt and passed on retry, always the same two
+kinds and never an assertion about behaviour:
+
+- `FORMS › newsletter form works: /<page>/` — a different page each time. The
+  form posts through `/api/forms/submit`, which calls Cloudflare's siteverify
+  over the network before answering.
+- `BUTTONS › Zeffy donation embed loads on /donate` — timed out once waiting for
+  an iframe served by `zeffy.com`. Re-run on its own immediately afterwards it
+  passed in **955 ms**, and `curl https://www.zeffy.com/` answered 200 in 0.35 s.
+  The same run's build had retried a Google Fonts download, so the machine's
+  network was stalling at that moment.
+
+Both depend on a third party answering while four workers share one server.
+They are recorded rather than suppressed: a retry that hides a real failure is
+worse than a flake, so if either starts failing *in isolation*, that is a
+genuine signal.
 
 ### Accounting for every test
 
