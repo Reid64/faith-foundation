@@ -402,6 +402,130 @@ enforce.
 
 ---
 
+## 11. Two-factor authentication — enrolment is live, enforcement is NOT
+
+**Status: ENROLMENT SHIPPED, NOT ENFORCED. Operator decision, deliberately not
+taken by the build.**
+
+`/admin/settings` now has a **Two-Factor Authentication** card. Anyone with an
+admin login can register an authenticator app (TOTP), add a second one as a
+backup, and remove either. It is opt-in and it changes nothing about signing in.
+
+### What is true today
+
+- A password login produces an `aal1` session. Supabase only raises a session to
+  `aal2` when the application asks it to. **Nothing in this codebase asks.**
+  `middleware.ts` is untouched and `/login` is unchanged.
+- So a director who enrols can still sign in with a password alone. This is
+  covered by a test that exists specifically to catch enforcement arriving by
+  accident: `scripts/mfa.spec.ts` → _"a user WITH a factor can still sign in
+  with only a password"_. If that test ever fails, someone has switched
+  enforcement on, deliberately or not.
+- **TOTP only.** Supabase's phone/SMS factor is a paid add-on (~$75/month plus
+  per-message fees). TOTP is free on every project and works with Google
+  Authenticator, Authy, 1Password and Microsoft Authenticator.
+- **There are no printable recovery codes.** Supabase does not issue them. The
+  documented recovery path is a *second enrolled factor*, which is why the
+  settings screen pushes hard for one.
+- Adding or removing a factor once you already have one requires proving the
+  first one (Supabase answers `AAL2 required to enroll a new factor` otherwise).
+  The screen handles this: it asks for a code from your existing authenticator,
+  then continues. This is confined to the settings page — it is not a login step.
+
+### Before enforcing anything — do these in order
+
+1. **Enrol yourself, and add a backup factor**, on two separate devices. Do not
+   skip the backup; without it you are one lost phone away from item 4 below.
+2. **Get every director enrolled with two factors each**, and confirm it — read
+   the count on each person's own settings page, or list factors per user with
+   the service role key. Enforcing while one director has zero factors locks
+   that director out on their next sign-in.
+3. **Decide who the break-glass account is.** At least one admin must be
+   reachable another way (a second admin account whose factors you personally
+   hold, or the Supabase Dashboard login, which is separate from this app).
+4. **Rehearse recovery before you need it** — run the removal in section 11.3
+   against a throwaway account and confirm you can get back in.
+
+### 11.1 How enforcement would be switched on — DO NOT DO THIS TONIGHT
+
+This is written down so the change is understood, not so it is applied. It
+requires editing `middleware.ts`, which this build was explicitly forbidden to
+touch.
+
+1. Add a challenge page (for example `/login/verify`) that calls
+   `supabase.auth.mfa.challenge()` on the user's verified factor, takes a six
+   digit code, calls `supabase.auth.mfa.verify()`, and then redirects to the
+   originally requested URL.
+2. In `middleware.ts`, after the existing session lookup, call
+   `supabase.auth.mfa.getAuthenticatorAssuranceLevel()`. Redirect to the
+   challenge page **only** when `currentLevel === 'aal1' && nextLevel ===
+   'aal2'` — that combination means "this user has a verified factor and has
+   not used it in this session". A user with no factor returns `nextLevel ===
+   'aal1'` and must fall straight through untouched, or enforcement becomes a
+   lockout for everyone who has not enrolled.
+3. Exclude the challenge page itself from the check, or it will redirect to
+   itself forever.
+4. Test on a **preview deployment first**, with: an enrolled user, a
+   not-enrolled user, a user with an expired session, and the sign-out flow.
+5. Only then promote to production, and stay signed in on a second browser
+   until you have confirmed a fresh sign-in works.
+
+Optional and stricter: RLS policies can require `auth.jwt() ->> 'aal' = 'aal2'`
+for sensitive tables. Do not attempt this until step 5 above has been stable for
+a while — it fails closed against the database, so a mistake reads as data
+disappearing rather than as a login problem.
+
+### 11.2 What to test first, specifically
+
+Run these before and after any enforcement change:
+
+- `npx playwright test scripts/mfa.spec.ts` — all five must pass.
+- The last test in that file is the tripwire. **Once you intend enforcement, it
+  must be rewritten deliberately**, not deleted quietly, and the commit that
+  changes it should say so.
+- Sign in as a director account that has **no** factor, on the production URL.
+  It must reach `/admin` with no prompt.
+
+### 11.3 Recovering a director who has lost their authenticator
+
+This is the case that will actually happen. The user cannot fix it themselves:
+adding a replacement factor requires a code from the factor they have lost.
+
+**Option A — the other factor.** If they registered a backup, they use it. This
+is why the backup is pushed so hard. Nothing else is needed.
+
+**Option B — an administrator removes the factor.** Requires the service role
+key (in `.env.local`, never in the repo). This logs that user out of every
+active session, which is intended.
+
+```js
+// scratch script, run locally, service role key only — never ship this
+const { createClient } = require("@supabase/supabase-js");
+const admin = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL,
+                           process.env.SUPABASE_SERVICE_ROLE_KEY,
+                           { auth: { persistSession: false } });
+
+const { data: list } = await admin.auth.admin.mfa.listFactors({ userId: "<their-user-id>" });
+console.log(list.factors);            // confirm you are removing the right one
+
+await admin.auth.admin.mfa.deleteFactor({ userId: "<their-user-id>", id: "<factor-id>" });
+```
+
+The Supabase Dashboard also shows factors under **Authentication → Users →**
+the user, and can delete them there.
+
+**Verify the person's identity out of band before doing this** — a phone call,
+not an email. Removing a factor on the word of an email is the exact attack MFA
+is meant to stop.
+
+**If enforcement is on and the last admin is locked out**, the Supabase
+Dashboard is the way back: it is a separate login and can delete the factor.
+Do not lose access to the Supabase account itself.
+
+**Recorded outcome:** _(fill in)_
+
+---
+
 ## Summary table
 
 | # | Item | Can the repo verify it? | Blocking the application? |
@@ -420,3 +544,4 @@ enforce.
 | 8 | Financial records | No | Possibly |
 | 9 | Social profiles | Removed pending real accounts | No |
 | 10 | Content Security Policy | Decision, not a defect | No |
+| 11 | Two-factor: enrol yourself + a backup, get directors enrolled, decide on enforcement | Enrolment tested; enforcement deliberately not built | No — but do not enforce until 11.1–11.3 are done |
