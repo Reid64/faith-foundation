@@ -96,18 +96,18 @@ step.
 - **CLI tools:** git, node, pnpm, supabase, vercel
 
 ## Architecture Overview
-> **Regenerated 2026-08-17.** The numbers below were counted from the live
+> **Regenerated 2026-08-18.** The numbers below were counted from the live
 > database and the App Router file tree. The previous version of this section
 > was FORGE 2.0 scaffolding claiming 0 tables, 0 API routes and 0 pages, which
 > had not been true since Phase 1.
 
 - **Tables:** 27 (plus 3 views: `account_balances`, `cornerstone_milestones_public`, `cornerstone_projects_public`)
 - **Enum types:** 16; **RPC functions:** 7
-- **Migrations applied:** 14
+- **Migrations applied:** 15
 - **RLS policies:** 52 (from migrations)
 - **API routes:** 15
 - **Pages:** 86 (of which 56 under `/admin`); **layouts:** 3; **components:** 15
-- **Playwright specs:** 11
+- **Playwright specs:** 12
 - **Roles:** `admin`, `board`, `staff`, `public` — resolved by `current_user_role()`
 - **Tenant scoping:** none. This is a single-organisation application, so there
   is no `company_id` anywhere. Canonical Rule 1 below is FORGE boilerplate for
@@ -127,8 +127,8 @@ faith-foundation/
 │       ├── supabase/         client.ts · server.ts · service.ts
 │       ├── faithproof/       session, formatting, public data, pusherServer
 │       └── turnstile.ts
-├── supabase/migrations/      14 migrations
-├── scripts/                  11 Playwright specs
+├── supabase/migrations/      15 migrations
+├── scripts/                  12 Playwright specs
 ├── governance/
 ├── middleware.ts
 └── package.json

@@ -1,8 +1,87 @@
 # faith-foundation — STATE OF THE BUILD
 
-> Updated from a LIVE codebase audit on 2026-08-17 (BLUEPRINT Canonical Rule 9).
-> Last action: **PHASE 23 — OPT-IN TOTP MFA, AND A FULL SYSTEM AUDIT.
-> NOT DEPLOYED. On branch `phase-23/mfa-and-system-audit`, not `master`.**
+> Updated from a LIVE codebase audit on 2026-08-18 (BLUEPRINT Canonical Rule 9).
+> Last action: **PHASE 24 — FUND DESIGNATION THROUGH THE LEDGER.
+> NOT DEPLOYED. On branch `phase-24/fund-designation`, not `main`.**
+>
+> ---
+>
+> ## PHASE 24 — 2026-08-18
+>
+> ### SIX FUNDS, NOT TEN — the documentation was wrong
+>
+> Zeffy's live donation form offers **six** funds: General Fund, Housing Voucher Program,
+> Veterans Path Home, Recovery Housing, Second Chance Reentry, Cornerstone Communities.
+> Prior documentation said ten. Ten is the size of the `fund_designation` enum, and the two
+> had been conflated. The enum keeps all ten deliberately — three name programmes retired on
+> 2026-08-14 that historical rows still carry, and `operational` is internal money never
+> offered to a donor. Dropping enum labels live rows depend on would be data loss dressed up
+> as tidying. The six are enforced in the application as `DONOR_FUNDS`.
+>
+> Display labels now match the form exactly, so a donor to "Veterans Path Home" is no longer
+> shown "Veterans".
+>
+> ### THE COLUMN ALREADY EXISTED
+>
+> The brief asked for a migration adding fund designation to `transactions`. It has been
+> there since migration 001 — `NOT NULL fund_designation` — along with per-fund cash
+> accounts (1000–1060) and per-fund program expense accounts (5000–5290). The live schema
+> was read before anything was written.
+>
+> ### WHAT WAS ACTUALLY BROKEN — and the answer to the FASB question
+>
+> **Designated gifts WERE posting to restricted net assets.** Accounts 4100, 4200 and 4600
+> all carry `is_restricted = true`, so the restricted/unrestricted split under ASU 2016-14
+> was correct and the reports were not lying about it.
+>
+> **What was impossible was telling three of the six funds apart.** Revenue accounts existed
+> for only `unrestricted`, `housing_voucher` and `veterans`. Recovery, Reentry and
+> Cornerstone donations all fell through `revenue_code_for()` to account 4600, "Donations —
+> Other Restricted", whose fund is NULL. Half the donor-facing funds shared one revenue line.
+> `journal_lines` carried no fund at all, so attribution died the moment two funds shared an
+> account.
+>
+> Migration 015 gives each of those three its own restricted revenue account (4210, 4220,
+> 4230), adds `journal_lines.fund` set at write time, and threads the fund through
+> `post_journal_pair` and all three auto-posting triggers — including the void reversal,
+> which copies lines and would otherwise drop the attribution it is reversing. Verified
+> against the live database inside a rolled-back transaction: all six funds post balanced,
+> restricted, with the fund on every line.
+>
+> `transactions.fund_backfilled` flags a designation that was inferred rather than stated by
+> the donor. Editing a transaction clears it, because that is what verification means.
+>
+> ### THE ZEFFY POLLER IS STILL NOT BUILT — and this run did not guess
+>
+> `/api/cron/poll-donations` does not exist; confirmed again. It was **not** built this run,
+> because the format of a Zeffy notification email is unknown and could not be discovered:
+> the `ZOHO_IMAP_*` values are stored **encrypted** in Vercel and `vercel env pull` returns
+> them as empty strings. Verified that this is a CLI limitation and not empty variables —
+> `NEXT_PUBLIC_SUPABASE_URL` pulled empty too, and it is certainly populated.
+>
+> A parser written against a guessed format fails silently, and the money it drops is real.
+> So instead: `scripts/zeffy-inspect.mjs`, a dependency-free, read-only IMAP inspector that
+> prints the true structure of a real Zeffy email. One command with the credentials from the
+> Vercel dashboard and the parser can be written the same day. Details in OPERATOR_ACTIONS §12.
+>
+> **`CRON_SECRET` is not set in Vercel** — confirmed, as the brief anticipated. It is needed
+> before any cron route ships.
+>
+> ### Public display
+>
+> `/faithproof` and `/faithproof/explorer` publish a total per fund. Aggregates only:
+> `getFundTotals()` selects `fund` and `amount_cents` and nothing else, so the data structure
+> cannot carry a donor name — a stronger guarantee than remembering not to render one. A test
+> plants an unmistakable donor name on a private confirmed gift and asserts it appears nowhere.
+>
+> ### Verification
+>
+> tsc 0 errors · build clean · **267 passed, 3 skipped, 0 failed, 0 flaky** of 270
+> (261 baseline + 9 new fund tests).
+>
+> ---
+>
+> ## PHASE 23 — 2026-08-17 (previous)
 >
 > ---
 >

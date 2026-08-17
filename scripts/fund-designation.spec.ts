@@ -163,6 +163,17 @@ const SIX = [
   "Cornerstone Communities",
 ];
 
+/**
+ * SERIAL. These tests share fixtures created once in `beforeAll` — the
+ * designated gift the admin tests open by id, and the planted donor name the
+ * privacy tests need to still exist. Under `fullyParallel` the file's tests are
+ * spread across workers, each running its own `beforeAll` AND its own
+ * `afterAll`, so one worker's teardown deletes rows while another is still
+ * reading them. The symptom was a 404 on a detail page that had existed a
+ * second earlier.
+ */
+test.describe.configure({ mode: "serial" });
+
 test.describe("Fund designation — admin", () => {
   test("the transaction list shows the fund and offers all six as filters", async ({
     page,

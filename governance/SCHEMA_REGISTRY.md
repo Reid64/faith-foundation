@@ -1,7 +1,7 @@
 # faith-foundation — SCHEMA REGISTRY
 
-> **Regenerated 2026-08-17 from the live database.** This replaces the FORGE 2.0
-> scaffolding of 2026-06-12, which claimed 0 tables against 14 applied
+> **Regenerated 2026-08-18 from the live database.** This replaces the FORGE 2.0
+> scaffolding of 2026-06-12, which claimed 0 tables against 15 applied
 > migrations and had been carrying a drift notice ever since.
 
 ## How this was produced, and what you can trust
@@ -26,9 +26,9 @@ that limitation is stated here rather than hidden.
 - **Views:** 3 (`account_balances`, `cornerstone_milestones_public`, `cornerstone_projects_public`)
 - **Enum types:** 16
 - **RPC functions exposed:** 7
-- **Migrations applied:** 14
+- **Migrations applied:** 15
 - **RLS policies (from migrations):** 52
-- **Indexes (from migrations):** 22
+- **Indexes (from migrations):** 23
 
 ### The role helper
 
@@ -331,7 +331,7 @@ Policies: `Internal users can manage journal_entries` (012_fund_accounting.sql)
 
 ### `journal_lines`
 
-1 RLS policy, 2 indexes (from migrations).
+1 RLS policy, 3 indexes (from migrations).
 
 | Column | Type | Required | Default | Notes |
 | --- | --- | --- | --- | --- |
@@ -341,6 +341,7 @@ Policies: `Internal users can manage journal_entries` (012_fund_accounting.sql)
 | `debit_cents` | int32 | yes | `0` |  |
 | `credit_cents` | int32 | yes | `0` |  |
 | `memo` | text |  |  |  |
+| `fund` | fund_designation (enum) |  |  | enum: `housing_voucher`, `financial_literacy`, `veterans`, `recovery`, `reentry`, `operational`, `unrestricted`, `single_parent_stability`, `emergency_bridge`, `cornerstone_communities` |
 
 Policies: `Internal users can manage journal_lines` (012_fund_accounting.sql)
 
@@ -475,6 +476,7 @@ Policies: `Internal users can manage tasks` (007_crm_schema.sql)
 | `zeffy_transaction_id` | text |  |  |  |
 | `zeffy_campaign` | text |  |  |  |
 | `donor_email` | text |  |  |  |
+| `fund_backfilled` | boolean | yes | `false` |  |
 
 Policies: `Public can view public transactions` (001_faithproof_foundation.sql), `Internal users can view all transactions` (001_faithproof_foundation.sql), `Admins can manage transactions` (001_faithproof_foundation.sql), `Internal users can view all transactions` (002_fix_rls_recursion.sql), `Admins can manage transactions` (002_fix_rls_recursion.sql)
 
@@ -594,6 +596,39 @@ Policies: `Public can view anonymized disbursed vouchers` (001_faithproof_founda
 | `public_notes` | text |
 | `updated_at` | timestamp with time zone |
 
+## The six funds — and why the enum has ten
+
+**Corrected 2026-08-18.** Earlier documentation said this organisation has
+TEN funds. It does not. Zeffy's live donation form offers exactly **six**,
+verified against the form itself:
+
+| On the Zeffy form | Enum value | Revenue account | Restricted? |
+| --- | --- | --- | --- |
+| General Fund | `unrestricted` | 4000 | No |
+| Housing Voucher Program | `housing_voucher` | 4100 | Yes |
+| Veterans Path Home | `veterans` | 4200 | Yes |
+| Recovery Housing | `recovery` | 4210 | Yes |
+| Second Chance Reentry | `reentry` | 4220 | Yes |
+| Cornerstone Communities | `cornerstone_communities` | 4230 | Yes |
+
+Ten was the size of the `fund_designation` enum, not the number of choices a
+donor is offered, and the two had been conflated. The enum keeps all ten
+deliberately:
+
+- `financial_literacy`, `single_parent_stability`, `emergency_bridge` name
+  programmes retired on 2026-08-14. Historical rows still carry them, so
+  dropping the labels would be data loss dressed up as tidying.
+- `operational` is an internal designation for administrative money. It has
+  never appeared on a donation form and must never be offered as a gift
+  designation.
+
+The six are enforced in the application as `DONOR_FUNDS`
+(`src/lib/faithproof/types.ts`), which every gift-designation control reads
+from. `SELECTABLE_FUNDS` is the six plus `operational`, for internal records
+such as expenses. Accounts 4210, 4220 and 4230 were added by migration 015 —
+before it those three funds shared account 4600 and could not be told apart
+on the revenue side.
+
 ## Enum types
 
 - `account_type` — `asset`, `liability`, `equity`, `revenue`, `expense`
@@ -623,7 +658,7 @@ Policies: `Public can view anonymized disbursed vouchers` (001_faithproof_founda
 - `program_expense_code_for_fund()`
 - `revenue_code_for()`
 
-Defined in migrations: `account_id_for_code`, `assert_entry_balances`, `auto_journal_on_transaction_confirm`, `auto_journal_on_voucher_disbursed`, `cash_code_for_fund`, `create_journal_entry`, `current_user_role`, `handle_new_user`, `post_journal_pair`, `program_expense_code_for_fund`, `revenue_code_for`, `reverse_journal_on_transaction_void`, `update_updated_at`
+Defined in migrations: `account_id_for_code`, `assert_entry_balances`, `auto_journal_on_transaction_confirm`, `auto_journal_on_voucher_disbursed`, `cash_code_for_fund`, `create_journal_entry`, `current_user_role`, `handle_new_user`, `journal_line_fund_default`, `post_journal_pair`, `program_expense_code_for_fund`, `revenue_code_for`, `reverse_journal_on_transaction_void`, `update_updated_at`, `with`
 
 ## Indexes (from migrations)
 
@@ -649,6 +684,7 @@ Defined in migrations: `account_id_for_code`, `assert_entry_balances`, `auto_jou
 - `idx_cornerstone_milestones_project` on `cornerstone_milestones` — 013_cornerstone.sql
 - `idx_board_meetings_scheduled_start` on `board_meetings` — 014_board_meeting_room.sql
 - `idx_meeting_approvals_meeting` on `meeting_approvals` — 014_board_meeting_room.sql
+- `idx_journal_lines_fund` on `journal_lines` — 015_fund_designation_through_ledger.sql
 
 ## RLS policies (from migrations)
 
@@ -723,6 +759,7 @@ Defined in migrations: `account_id_for_code`, `assert_entry_balances`, `auto_jou
 - 012_fund_accounting.sql
 - 013_cornerstone.sql
 - 014_board_meeting_room.sql
+- 015_fund_designation_through_ledger.sql
 
 ## Known drift, recorded rather than fixed
 

@@ -1,7 +1,33 @@
 # faith-foundation — SESSION STATE
 
-> Tracks the live execution session. LATEST: **PHASE 23 — OPT-IN TOTP MFA + FULL SYSTEM AUDIT**
-> (2026-08-17). **NOT DEPLOYED. Branch `phase-23/mfa-and-system-audit`, not `master`.**
+> Tracks the live execution session. LATEST: **PHASE 24 — FUND DESIGNATION THROUGH THE LEDGER**
+> (2026-08-18). **NOT DEPLOYED. Branch `phase-24/fund-designation`, not `main`.**
+>
+> **Six funds, not ten.** Zeffy's live form offers six. Ten was the enum size, and the two had
+> been conflated in the documentation. Recorded in SCHEMA_REGISTRY with the mapping table.
+>
+> **Delivered.** Migration 015: dedicated restricted revenue accounts for Recovery, Reentry and
+> Cornerstone (they shared account 4600 and were indistinguishable on the revenue side);
+> `journal_lines.fund` set at write time and threaded through every auto-posting trigger;
+> `transactions.fund_backfilled` to flag an inferred designation rather than assert it. Admin
+> list gains a working fund filter; detail and edit already showed the fund. All four financial
+> reports gained a per-fund breakout that names the restriction class. `/faithproof` and the
+> explorer publish per-fund totals as aggregates.
+>
+> **The FASB answer, since the brief asked:** designated gifts were ALREADY posting to
+> restricted net assets — the restricted/unrestricted split was correct. The defect was
+> granularity, not classification.
+>
+> **NOT built, deliberately:** the Zeffy IMAP poller. The `ZOHO_IMAP_*` values are encrypted in
+> Vercel and `vercel env pull` returns them empty, so a real notification email could not be
+> read, and the brief said not to guess the format. `scripts/zeffy-inspect.mjs` is a read-only
+> inspector that prints the real structure — one command unblocks it. See OPERATOR_ACTIONS §12.
+>
+> **Verification:** tsc 0 errors · build clean · 267 passed / 3 skipped / 0 failed / 0 flaky.
+>
+> ---
+>
+> ## Previous: PHASE 23 — OPT-IN TOTP MFA + FULL SYSTEM AUDIT (2026-08-17)
 >
 > An unattended overnight run under five hard limits: no middleware changes, no deploy, read-only
 > against the production database apart from tagged fixture rows, no MFA enforcement, and nothing

@@ -526,6 +526,101 @@ Do not lose access to the Supabase account itself.
 
 ---
 
+## 12. The Zeffy donation poller — blocked on one credential
+
+**Status: NOT BUILT. Blocked, deliberately, on a value only you can read.**
+
+`/api/cron/poll-donations` still does not exist. It was not built on 2026-08-18
+either, and the reason matters more than the gap.
+
+### Why it was not built
+
+The poller's whole job is to parse Zeffy's donation notification emails. Nobody
+has ever seen one in a form that can be written against. To read one you need
+the mailbox, and the mailbox credentials are stored in Vercel as **encrypted**
+values that `vercel env pull` returns as empty strings — verified, and verified
+to be a CLI limitation rather than empty variables, because
+`NEXT_PUBLIC_SUPABASE_URL` pulled empty too and that one is certainly populated.
+
+A parser written against a guessed email format does not fail loudly. It matches
+nothing, records nothing, and the donations it silently drops are real. So it
+was not written.
+
+### What to do — about a minute
+
+Get the four values from the Vercel dashboard (Project → Settings → Environment
+Variables) or your password manager, and run the inspector. It is **read-only** —
+every fetch uses `BODY.PEEK`, so nothing is marked read, moved or deleted — and
+it needs no `npm install`.
+
+PowerShell:
+
+```powershell
+$env:ZOHO_IMAP_HOST="imap.zoho.com"
+$env:ZOHO_IMAP_PORT="993"
+$env:ZOHO_IMAP_USER="donations@faithfoundationsf.org"
+$env:ZOHO_IMAP_PASS="<the app password>"
+node scripts/zeffy-inspect.mjs
+```
+
+Add `--redact` if the output is going anywhere shared — it masks names, emails
+and amounts while leaving the structure intact:
+
+```powershell
+node scripts/zeffy-inspect.mjs --redact
+```
+
+It prints the folder list, how many messages match Zeffy, and the two most
+recent matching messages in full. That output is everything the parser needs.
+
+**If it says login refused:** Zoho rejects an ordinary mailbox password when
+two-factor authentication is on. Generate an app password at Zoho Mail →
+Settings → Security → App Passwords. If that is what happened, the value in
+Vercel is also wrong and the poller would never have worked.
+
+**If it finds no Zeffy message:** the notification may arrive from an address
+that does not contain "zeffy", or be filed outside INBOX. The inspector prints
+the folder list and the 25 most recent senders so you can see which.
+
+### What still has to be built afterwards, and what is already done
+
+Already in place — this is why it is a small job once the format is known:
+
+- `transactions` already has every column the poller needs to write:
+  `amount_cents`, `donor_name`, `donor_email`, `transaction_date`, `fund`,
+  `zeffy_transaction_id`, `zeffy_campaign`.
+- `zeffy_transaction_id` is **UNIQUE**, so idempotency is enforced by the
+  database rather than by hopeful code. Keying on the Zeffy reference number is
+  exactly right.
+- `mapCampaignToFund()` in `src/lib/faithproof/funds.ts` already turns Zeffy's
+  fund wording into a designation, matching the longest phrase so "Second Chance
+  Reentry" cannot be captured by the bare "reentry" fragment. It reports whether
+  it matched, so an unrecognised fund is flagged rather than quietly filed as
+  General Fund.
+
+Still to build: the IMAP read loop, the parse function, and marking messages
+processed so a re-run is safe.
+
+### Two decisions to make first
+
+1. **`CRON_SECRET` is not set in Vercel.** Confirmed. A cron route must refuse
+   callers that do not present it — otherwise it is a third unauthenticated
+   endpoint, which is the finding already open against the Zeffy webhook
+   (AUDIT_REPORT, HIGH 1). Add it before the route ships, not after.
+2. **How a message is marked processed.** The two honest options are the IMAP
+   `\Seen` flag, or moving to a `Processed` folder. Moving is safer — a human
+   opening the mailbox cannot accidentally mark something read and hide a
+   donation from the poller forever. Either way it must be idempotent, and the
+   UNIQUE constraint is the real guarantee.
+
+**There is no "Check for Donations" button anywhere in the admin.** The brief
+asked for it to be wired if it existed; it does not. It should be added in the
+same change as the route, on `/admin/transactions`.
+
+**Recorded outcome:** _(fill in)_
+
+---
+
 ## Summary table
 
 | # | Item | Can the repo verify it? | Blocking the application? |
@@ -545,3 +640,4 @@ Do not lose access to the Supabase account itself.
 | 9 | Social profiles | Removed pending real accounts | No |
 | 10 | Content Security Policy | Decision, not a defect | No |
 | 11 | Two-factor: enrol yourself + a backup, get directors enrolled, decide on enforcement | Enrolment tested; enforcement deliberately not built | No — but do not enforce until 11.1–11.3 are done |
+| 12 | Run `node scripts/zeffy-inspect.mjs` and send the output — it unblocks the donation poller | No — the IMAP credentials are encrypted in Vercel | **Yes, if donations are to be recorded automatically** |

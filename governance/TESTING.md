@@ -241,6 +241,37 @@ One test **skips** in pass mode by design: under an always-passes secret a bogus
 token is supposed to be accepted, so asserting a rejection there would be
 testing Cloudflare's test key rather than this codebase. It runs in fail mode.
 
+### Fund designation (2026-08-18)
+
+`scripts/fund-designation.spec.ts` follows a designation from the transaction
+row, into the double-entry ledger, out to the admin screens, and onto the public
+pages.
+
+**It never creates a PUBLIC confirmed donation, and neither should anything
+else.** The test database IS the live database, so a fixture marked
+`is_public: true` and `status: 'confirmed'` appears on the real transparency
+page for as long as the run takes — fake money on the one page whose entire
+purpose is that the numbers are true. Every fixture here is `is_public: false`,
+which RLS makes invisible to anonymous readers, and the public assertions run
+against the single real donation already on record ($200.00, General Fund).
+
+**It cleans the ledger it writes, by hand, and must.** `journal_entries.reference`
+is text rather than a foreign key — deliberately, so voiding leaves a trail a
+deletion cannot erase. The consequence is that deleting a transaction leaves its
+journal entries behind. A suite that confirms a fixture and only deletes the
+transaction quietly accumulates fake entries in the real books on every run. Net
+zero, but present, and a ledger nobody trusts is worse than no ledger. Four such
+entries were found and removed while writing this suite.
+
+**The privacy test is the load-bearing one.** It plants an unmistakable donor
+name on a private confirmed gift and asserts that name appears nowhere on
+`/faithproof` or the explorer — not beside a fund, not anywhere on the page. If
+the public queries are ever widened, that is what catches it.
+
+**Serial, like `mfa.spec.ts`.** Shared fixtures plus `fullyParallel` means one
+worker's `afterAll` deletes rows another worker is still reading; the symptom was
+a 404 on a detail page that existed a second earlier.
+
 ## API Tests
 _(no API test suites designed)_
 

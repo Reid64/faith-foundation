@@ -66,8 +66,20 @@ operator is asleep. That is an operations decision, not a code cleanup.
 
 ### HIGH 2 — The inbound email webhook fails open when unconfigured
 
-**`src/app/api/webhooks/email-inbound/route.ts:55`** — severity **high**, **not
-fixed, needs an operator decision.**
+**`src/app/api/webhooks/email-inbound/route.ts:55`** — severity **high**,
+**RESOLVED IN PRODUCTION 2026-08-17 by the operator. The code pattern remains
+and is still worth changing.**
+
+> **UPDATE, 2026-08-18.** This audit could not read Vercel's environment when it
+> was written, so it could not say whether the endpoint was actually open. It is
+> not: `vercel env ls production` shows **`INBOUND_WEBHOOK_SECRET` created 2h
+> before that check**, i.e. the operator set it in response to this finding. The
+> token check therefore runs and anonymous writes are refused.
+>
+> What has not changed is the fail-open shape: if that variable is ever removed
+> or renamed, the endpoint silently reopens with no error and no log line. The
+> three-line fix — refuse when `SECRET` is missing — is still worth making, but
+> it is now a hardening task rather than an exposure.
 
 ```ts
 const SECRET = process.env.INBOUND_WEBHOOK_SECRET;
@@ -77,17 +89,17 @@ if (SECRET) {                       // ← the check only happens if it is set
 }
 ```
 
-If `INBOUND_WEBHOOK_SECRET` is not set in the environment, the check is skipped
-entirely and the endpoint accepts anonymous writes to `contacts`,
-`interactions` and `audit_log` via the service-role client. Whether the site is
-currently protected therefore depends on a variable this audit cannot read from
-Vercel. **The operator should check that variable first** — if it is unset, this
-endpoint is open right now.
+If `INBOUND_WEBHOOK_SECRET` is not set, the check is skipped entirely and the
+endpoint accepts anonymous writes to `contacts`, `interactions` and `audit_log`
+through the service-role client. It **is** set in production as of 2026-08-17,
+so the endpoint is protected today.
 
-Fail-open is the wrong default for an authentication check. The fix is three
-lines — refuse when `SECRET` is missing — but it will take the endpoint offline
-if Zoho forwarding is live and unconfigured, so it is the operator's call, and
-it should be made together with the variable.
+Fail-open remains the wrong default for an authentication check: the protection
+depends on a variable's continued existence, and its removal produces no error
+and no log line. The fix is three lines — refuse when `SECRET` is missing. It
+would take the endpoint offline if Zoho forwarding were ever live and
+unconfigured, so it stays the operator's call, but the variable is now set and
+that risk has largely gone with it.
 
 ---
 
@@ -320,8 +332,11 @@ finding — each is an untested area.
    director, a real signature, a genuine two-person meeting.
 9. **Production environment variables.** This audit can prove that no secret
    *name* or *value* it holds locally reaches the client bundle. It cannot read
-   Vercel's environment, so `INBOUND_WEBHOOK_SECRET` (HIGH 2) has to be checked
-   by the operator.
+   Vercel's *values* — they are stored encrypted and `vercel env pull` returns
+   empty strings for every one of them, verified. It CAN read the variable
+   names and creation times via `vercel env ls`, which is how HIGH 2 was closed
+   on 2026-08-18 and how `CRON_SECRET` and `ANTHROPIC_API_KEY` were confirmed
+   absent.
 10. **Every button pressed on every page.** This is the biggest gap and it is
     worth being precise about, because the brief asked for it. Every interactive
     element on all 56 admin routes was **enumerated and inspected** — counted,

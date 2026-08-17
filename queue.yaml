@@ -8,6 +8,48 @@
 # Build HALTS after governance + queue for Gate 3 (human approval, Contract 2).
 
 # ─────────────────────────────────────────────────────────────────────────────
+# COMPLETED OUT OF QUEUE — Phase 24: fund designation through the ledger (2026-08-18)
+#
+# A comment, not an entry, for the same reason as the phases below.
+#
+#   Added:    supabase/migrations/015_fund_designation_through_ledger.sql
+#             src/lib/faithproof/funds.ts          (one shared campaign->fund map)
+#             scripts/fund-designation.spec.ts     (9 tests)
+#             scripts/zeffy-inspect.mjs            (read-only IMAP inspector)
+#   Touched:  src/lib/faithproof/types.ts          (DONOR_FUNDS, ZEFFY_FUND_LABELS,
+#                                                   labels matched to the live form)
+#             src/lib/faithproof/public.ts         (getFundTotals — aggregates only)
+#             src/app/admin/transactions/page.tsx  (fund filter, unverified flag)
+#             src/app/admin/transactions/[id]/page.tsx
+#             src/app/admin/transactions/[id]/edit/actions.ts
+#             src/app/admin/accounting/reports/page.tsx  (per-fund breakout x4)
+#             src/app/faithproof/page.tsx, .../explorer/page.tsx
+#             src/app/api/webhooks/zeffy/route.ts  (uses the shared fund map)
+#   Deps:     none.
+#   Schema:   migration 015, APPLIED to production. Revenue accounts 4210/4220/4230,
+#             journal_lines.fund, transactions.fund_backfilled, revenue_code_for()
+#             and all three auto-posting triggers updated.
+#
+#   GROUND TRUTH CORRECTED: Zeffy offers SIX funds, not ten. Ten was the enum
+#   size. The enum keeps ten on purpose — 3 retired programmes with live rows,
+#   plus `operational` which is internal and never donor-facing.
+#
+#   FASB ANSWER: designated gifts were ALREADY posting to restricted net assets.
+#   The defect was granularity — Recovery, Reentry and Cornerstone shared revenue
+#   account 4600 and could not be told apart. Not a misclassification.
+#
+#   NOT DONE ON PURPOSE:
+#             - /api/cron/poll-donations. The ZOHO_IMAP_* values are encrypted in
+#               Vercel and `vercel env pull` returns them empty, so no real Zeffy
+#               email could be read. The brief said do not guess the format, and
+#               a silently-failing donation parser drops real money.
+#               scripts/zeffy-inspect.mjs unblocks it in one command.
+#             - the Vercel cron entry and CRON_SECRET (not set; see OPERATOR_ACTIONS §12)
+#             - a "Check for Donations" button: none exists anywhere in the admin
+#   Verified: tsc 0 errors, build clean, 267 passed / 3 skipped / 0 failed of 270.
+#   NOT DEPLOYED. Branch phase-24/fund-designation.
+
+# ─────────────────────────────────────────────────────────────────────────────
 # COMPLETED OUT OF QUEUE — Phase 23: opt-in TOTP MFA + full system audit (2026-08-17)
 #
 # A comment, not an entry, for the same reason as the phases below: every real
