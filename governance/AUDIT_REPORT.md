@@ -244,7 +244,19 @@ as a finding.
 
 ---
 
-### LOW 13 — `board_meetings.jitsi_room_name` is written but never read
+### LOW 13 — Test accounts accumulate because the audit log will not let go
+
+Every test run leaves a throwaway auth account behind: `audit_log.actor_id`
+references `profiles` with no cascade, so a user who acted during a run cannot
+be deleted. 56 have built up. All are demoted to role `public` and none can
+reach `/admin`, so they are inert — but the count grows with every run.
+
+Not cleaned up, deliberately: removing them means deleting audit rows first.
+Details and options in the test-data section below.
+
+---
+
+### LOW 14 — `board_meetings.jitsi_room_name` is written but never read
 
 Already recorded in `SCHEMA_REGISTRY.md`. Left in place; dropping a populated
 column is a migration, and none was in scope.
@@ -406,7 +418,7 @@ the same run. Reported here in full, as required.
 
 | What | Naming | Removed |
 | --- | --- | --- |
-| Throwaway auth users | `mfa-*`, `apiauth-*`, `sweep-*`, `nav-*` — all `@faithproof.invalid` | Yes, in `afterAll`. If deletion is refused because the user wrote to `audit_log` (an intentional FK with no cascade), the profile is demoted to role `public` instead. |
+| Throwaway auth users | `mfa-*`, `apiauth-*`, `sweep-*`, `nav-*`, `p21-room-*` — all `@faithproof.invalid` | **Partly. See below — 56 remain, all demoted to role `public`.** |
 | One row per entity | `contacts`, `tasks`, `campaign_tags`, `email_templates`, `transactions`, `vouchers`, `promises`, `proof_documents`, `grants`, `volunteer_events`, `cornerstone_projects`, `board_meetings` — each titled `AUDIT SWEEP - delete me` | Yes, in reverse creation order. |
 | States chosen to be inert | `transactions` and `vouchers` stay `pending` so accounting triggers never fire; `promises` and `proof_documents` are `is_public: false` so nothing could surface publicly | — |
 
@@ -415,6 +427,37 @@ pipeline stage, and the fixture promise's title. Both rows were deleted
 afterwards.
 
 **Nothing else in the production database was created, updated or deleted.**
+
+### Correction: 56 throwaway accounts could not be deleted
+
+Checked after the run rather than assumed, and the assumption would have been
+wrong. Every fixture **row** is gone — contacts, promises, transactions,
+meetings, grants, all of it, verified by query. But **56 auth users remain**,
+accumulated across this session's test runs.
+
+They cannot be deleted, and the reason is a feature: `audit_log.actor_id`
+references `profiles` with **no cascade**, deliberately, so that deleting a user
+cannot erase what that user did. 68 audit rows point at these accounts, and
+Supabase answers `Database error deleting user`. The specs' fallback did fire
+correctly — **all 56 are role `public`**, which is the role an anonymous visitor
+has. None can reach `/admin`.
+
+**This was not cleaned up on purpose.** The only way to remove them is to delete
+the audit rows first, and deleting rows from an audit log — in production,
+unattended, to tidy up after a test — is precisely the thing an audit log exists
+to prevent. It is also outside the read-only limit this run was given.
+
+**For the operator.** They are inert and can be left. If you want them gone,
+decide first what should happen to the 68 audit entries; the honest options are
+to keep the accounts as tombstones for the trail, or to archive those entries
+before removing the users. A better long-term fix is for test accounts to avoid
+writing to the audit log at all, or for the suite to use a disposable database.
+
+```sql
+-- what is left, and proof it is harmless
+select role, count(*) from profiles
+where email like '%@faithproof.invalid' group by role;   -- expect: public | 56
+```
 
 To confirm nothing was left behind:
 
