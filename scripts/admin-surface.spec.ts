@@ -209,6 +209,13 @@ async function sweep(page: Page, role: "admin" | "board") {
   }
 }
 
+/**
+ * Serial: both tests append to one `findings` array that `afterAll` writes to
+ * `test-results/admin-surface.json`. Split across workers, each would write a
+ * partial file over the other's.
+ */
+test.describe.configure({ mode: "serial" });
+
 test.describe("Admin surface", () => {
   test("every admin route renders cleanly for an administrator", async ({ page }) => {
     test.setTimeout(20 * 60_000);

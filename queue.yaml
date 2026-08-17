@@ -8,6 +8,38 @@
 # Build HALTS after governance + queue for Gate 3 (human approval, Contract 2).
 
 # ─────────────────────────────────────────────────────────────────────────────
+# COMPLETED OUT OF QUEUE — Phase 23: opt-in TOTP MFA + full system audit (2026-08-17)
+#
+# A comment, not an entry, for the same reason as the phases below: every real
+# entry here is a prompt a FORGE runner EXECUTES, and a finished phase listed as
+# one would be built again.
+#
+#   Added:    src/app/admin/settings/MfaSection.tsx
+#             scripts/mfa.spec.ts
+#             scripts/_fixtures.ts            (shared audit fixtures, not a spec)
+#             scripts/admin-surface.spec.ts
+#             scripts/public-surface.spec.ts
+#             scripts/api-authorization.spec.ts
+#             scripts/admin-actions.spec.ts
+#             governance/AUDIT_REPORT.md
+#   Touched:  src/app/admin/settings/page.tsx            (MFA card)
+#             src/app/admin/crm/contacts/[id]/page.tsx   (h2 -> h1, no h1 existed)
+#             .../meetings/[id]/minutes/MinutesClient.tsx (two missing labels)
+#             scripts/admin-navigation.spec.ts           (crawl budget + pattern fixes)
+#             scripts/meeting-room.spec.ts               (test email collisions)
+#   Regenerated from the live database:
+#             governance/BLUEPRINT.md, governance/SCHEMA_REGISTRY.md
+#   Deps:     none.
+#   Schema:   NONE. Supabase Auth stores MFA factors itself; no migration.
+#   NOT DONE ON PURPOSE:
+#             - MFA enforcement (needs middleware; runbook in OPERATOR_ACTIONS §11)
+#             - authentication on /api/webhooks/zeffy and email-inbound
+#               (breaks live Zapier/Zoho integrations — operator decision)
+#             - the Zeffy IMAP poller, which does not exist and was not built
+#   Verified: tsc 0 errors, build clean, 258 passed / 3 skipped / 0 failed of 261.
+#   NOT DEPLOYED. Branch phase-23/mfa-and-system-audit.
+
+# ─────────────────────────────────────────────────────────────────────────────
 # COMPLETED OUT OF QUEUE — Phase 21: WebRTC meeting room (2026-08-16)
 #
 # A comment, not an entry, for the same reason as Phase 20 below: every real

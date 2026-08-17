@@ -1,8 +1,54 @@
 # faith-foundation — STATE OF THE BUILD
 
 > Updated from a LIVE codebase audit on 2026-08-17 (BLUEPRINT Canonical Rule 9).
-> Last action: **PHASE 21.2 — THE ORPHANED-PAGE DEFECT CLASS CLOSED, NOT ANOTHER INSTANCE OF IT.
-> NOT DEPLOYED.**
+> Last action: **PHASE 23 — OPT-IN TOTP MFA, AND A FULL SYSTEM AUDIT.
+> NOT DEPLOYED. On branch `phase-23/mfa-and-system-audit`, not `master`.**
+>
+> ---
+>
+> ## PHASE 23 — 2026-08-17 (unattended overnight run)
+>
+> **Two-factor authentication, opt in.** `/admin/settings` now has an MFA card: enrol an
+> authenticator, verify with a real code, see what is registered, add a **backup** factor, remove
+> one. TOTP only — Supabase's phone factor is a paid add-on. The screen says plainly that a factor
+> is registered but **not required at sign-in**, because that is the truth: nothing here asks
+> Supabase to raise a session to `aal2`. Middleware, `/login` and session handling are untouched.
+>
+> **The one thing that had to be got right**, and is tested as such: a user who enrols can still
+> sign in with a password alone. Getting that wrong locks four directors out of their own board
+> portal, so `scripts/mfa.spec.ts` asserts it explicitly and `AGENTS.md` now carries a standing
+> rule not to weaken that test to make a change pass.
+>
+> **Found while building it.** Supabase refuses `enroll` and `unenroll` from an `aal1` session once
+> a factor is verified — "AAL2 required to enroll a new factor". Since Supabase issues **no**
+> recovery codes, a second factor is the only self-service way back in, and that constraint made it
+> impossible to add for anyone who had just signed in with a password. The screen now steps the
+> session up on demand: prove the authenticator you already have, then add or remove one. Confined
+> to the settings page; it is not a login step.
+>
+> **Enforcement was deliberately NOT built.** It needs a middleware change and carries a real
+> lockout risk. The runbook — how to switch it on, what to test first, and how an administrator
+> recovers a director who has lost their phone — is `OPERATOR_ACTIONS.md` §11.
+>
+> **Full system audit.** Every route loaded, every API route called at three authentication levels,
+> the client bundle searched for every server-only secret by name and by value. **No critical
+> findings.** Two high findings, both unauthenticated write endpoints (`/api/webhooks/zeffy` has no
+> authentication at all; `/api/webhooks/email-inbound` fails **open** when its secret is unset) —
+> reported, not fixed, because changing them breaks live integrations and that is an operations
+> decision. Confirmed the operator's two suspicions: the Zeffy IMAP poller **does not exist**
+> anywhere in the repository, and `ANTHROPIC_API_KEY` is unset so both AI routes return an honest
+> 503. Everything in `governance/AUDIT_REPORT.md`.
+>
+> **BLUEPRINT.md and SCHEMA_REGISTRY.md regenerated from the live database.** They claimed 0 tables
+> against 14 applied migrations. They now report 27 tables, 3 views, 16 enums, 7 RPCs, 52 policies
+> and 22 indexes — with the provenance of each section stated, because a registry that overstates
+> what it knows is worse than one that admits its limits.
+>
+> **Verification:** tsc 0 errors · build clean · **258 passed, 3 skipped, 0 failed, 0 flaky** of 261.
+>
+> ---
+>
+> ## PHASE 21.2 — 2026-08-17 (previous)
 >
 > Three live incidents in three runs, all the same shape: a page that exists, builds and works,
 > which no logged-in user can reach by clicking. This run fixes the two outstanding instances and

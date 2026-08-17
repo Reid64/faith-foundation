@@ -43,7 +43,14 @@ const SUPABASE_URL = env.NEXT_PUBLIC_SUPABASE_URL ?? "";
 const SERVICE_KEY = env.SUPABASE_SERVICE_ROLE_KEY ?? "";
 const CONFIGURED = Boolean(SUPABASE_URL && SERVICE_KEY);
 
-const EMAIL = `p21-room-${Date.now().toString(36)}@faithproof.invalid`;
+// A timestamp alone is not unique here: with `fullyParallel`, this file's tests
+// are spread across workers, each importing this module and creating its own
+// throwaway account, and two workers starting in the same millisecond collide
+// with "A user with this email address has already been registered". Observed,
+// not hypothetical.
+const EMAIL = `p21-room-${Date.now().toString(36)}-${Math.random()
+  .toString(36)
+  .slice(2, 7)}@faithproof.invalid`;
 const PASSWORD = "Sm0ke-Test-P21room";
 
 let userId: string | null = null;
@@ -71,8 +78,25 @@ test.beforeAll(async () => {
     email_confirm: true,
     user_metadata: { full_name: "Phase 21 Room Test" },
   });
-  if (error) throw new Error("createUser: " + error.message);
-  userId = created.user.id;
+
+  if (error) {
+    /**
+     * On a retry Playwright can re-run this hook against the same module
+     * instance, so `EMAIL` is unchanged and Supabase answers "already
+     * registered". That made this file intermittently red for a reason that
+     * has nothing to do with the meeting room. Reuse the account instead of
+     * failing the whole file.
+     */
+    if (!/already been registered/i.test(error.message)) {
+      throw new Error("createUser: " + error.message);
+    }
+    const { data: list } = await admin.auth.admin.listUsers({ perPage: 200 });
+    const existing = list?.users.find((u) => u.email === EMAIL);
+    if (!existing) throw new Error("createUser: " + error.message);
+    userId = existing.id;
+  } else {
+    userId = created.user.id;
+  }
 
   // The room is board-only, so the throwaway account is promoted.
   await admin.from("profiles").update({ role: "board" }).eq("id", userId);

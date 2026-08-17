@@ -37,6 +37,30 @@ links to it.
 `EXCLUDED` (or `EXCLUDED_FOR_BOARD`) *with the reason in the same commit*. An
 exclusion without a reason is the defect wearing a different hat.
 
+**The guard itself needs guarding (added 2026-08-17).** The crawl was found to
+have two holes, both invisible until the database held more than one fixture row
+per table: it stopped after 80 pages without saying so — reporting real pages as
+orphaned when it had simply run out of budget — and it let a `/new` form vouch
+for a `[id]` detail route, so a genuinely orphaned detail page would have passed.
+Both are fixed, and the budget now throws rather than truncating. If you change
+this spec, the questions to ask are **"can it stop early and still report a
+verdict?"** and **"can one URL be credited to a route it did not actually
+visit?"**
+
+## STANDING RULE — enrolling in MFA must never change how anyone signs in (added 2026-08-17)
+
+`/admin/settings` offers opt-in TOTP enrolment. Nothing in this codebase asks
+Supabase to raise a session to `aal2`, so a user who enrols still signs in with
+a password alone. **That is a deliberate property, not an oversight.**
+
+The tripwire is the last test in `scripts/mfa.spec.ts` — _"a user WITH a factor
+can still sign in with only a password"_. If it fails, enforcement has arrived
+by accident and directors are one deploy away from being locked out of their own
+board portal. **Do not delete or weaken that test to make a change pass.** When
+enforcement is genuinely wanted it is an operator decision with a written
+runbook (`OPERATOR_ACTIONS.md` §11), and the commit that rewrites the test must
+say so in its message.
+
 ## Agent Definitions
 This project defines no autonomous agents.
 

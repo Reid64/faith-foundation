@@ -130,6 +130,62 @@ Two documented exclusions, both with reasons in the file:
 **Seeded fixtures are removed in `afterAll`**, and transactions and vouchers are
 created `pending` so the accounting triggers never fire against real books.
 
+#### Two holes in the guard, found 2026-08-17 by running it under load
+
+Both were invisible while the database held exactly one fixture row per table,
+which is the only condition the crawl had ever run in.
+
+1. **It stopped after 80 pages and said nothing.** A single fixture set used 61
+   of those. Once the audit suites seeded a few more rows, the breadth-first
+   queue filled with detail pages, the budget ran out before the crawl reached
+   `/edit` and `/minutes`, and the test reported them as ORPHANED — with their
+   links sitting there unconditionally in the source. **A guard that cries wolf
+   because a list got longer will be ignored, and then it guards nothing.** The
+   budget is 200 and exceeding it now throws, so the crawl can no longer report
+   a result it did not finish computing.
+
+2. **A `/new` page could vouch for a detail page.** `[id]` matches any segment,
+   `new` included, so visiting `/admin/crm/contacts/new` marked
+   `/admin/crm/contacts/[id]` as reached. A genuinely orphaned detail page would
+   have passed. Each URL now resolves to its **most specific** pattern — fewest
+   placeholders wins.
+
+**One optimisation that must not be reintroduced.** Visiting a single row per
+dynamic route makes the crawl fast and deterministic, and it is wrong: some
+links are conditional on the row (a transaction is editable only while pending;
+a campaign is sendable only while it has recipients), so whichever row the crawl
+happened to land on would decide the verdict. It was tried on 2026-08-17 and
+reverted the same night. Walk every row.
+
+### The audit suites (2026-08-17)
+
+Four read-only suites added by the full system audit. They inspect; they do not
+click anything that submits, transitions or deletes.
+
+| Spec | What it covers |
+| --- | --- |
+| `admin-surface.spec.ts` | All 56 `/admin` routes × admin and board: renders, has an `h1`, no `undefined`/`NaN`/`[object Object]`/`Invalid Date` on screen, every button has an accessible name, every control has a label, every internal link resolves, no console errors. Writes `test-results/admin-surface.json`. |
+| `public-surface.spec.ts` | All 30 public routes: 200, `<title>`, exactly one `h1`, header and footer, no placeholder copy, no dead links, and **the corporate donor partner is never named**. Also walks the four-step application wizard to its submit button without pressing it. |
+| `api-authorization.spec.ts` | Every API route unauthenticated, as board, and as admin. Asserts 401 for anonymous callers, 403 for the wrong role, and that public endpoints leak no `internal_notes` or `donor_email`. |
+| `admin-actions.spec.ts` | CSV export produces a real file with a header row, list search filters, an edit form and a status transition **persist to the database** (checked against Supabase, not against the on-screen message), and an empty list explains itself. |
+
+Shared fixtures live in `scripts/_fixtures.ts`. It is not a spec file — Playwright
+collects `*.spec.ts` only — so it holds no tests.
+
+**Two suites are `serial` on purpose.** `mfa.spec.ts` and
+`admin-surface.spec.ts` declare `test.describe.configure({ mode: "serial" })`.
+Under `fullyParallel` their tests were spread across workers, each of which
+re-imports the module and creates its own throwaway account — so the MFA test
+that adds a backup factor was looking at an account that had never enrolled one.
+If either file starts failing in ways that make no sense, check that line first.
+
+**Throwaway account emails need a random suffix, not just a timestamp.** Two
+workers starting in the same millisecond produce the same address and Supabase
+answers "A user with this email address has already been registered", which
+fails a whole file for a reason unrelated to what it tests. Playwright can also
+re-run `beforeAll` against an unchanged module on retry, so `meeting-room.spec.ts`
+reuses the existing account instead of failing.
+
 ### What the meeting-room suite missed, and why (2026-08-16)
 
 Two defects reached production and were found by a human in a real browser, not

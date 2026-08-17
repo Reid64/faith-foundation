@@ -1,7 +1,34 @@
 # faith-foundation — SESSION STATE
 
-> Tracks the live execution session. LATEST: **PHASE 21.2 — ORPHANED-PAGE DEFECT CLASS CLOSED**
-> (2026-08-17). **NOT DEPLOYED.**
+> Tracks the live execution session. LATEST: **PHASE 23 — OPT-IN TOTP MFA + FULL SYSTEM AUDIT**
+> (2026-08-17). **NOT DEPLOYED. Branch `phase-23/mfa-and-system-audit`, not `master`.**
+>
+> An unattended overnight run under five hard limits: no middleware changes, no deploy, read-only
+> against the production database apart from tagged fixture rows, no MFA enforcement, and nothing
+> that could lock a user out of `/admin`. **All five held.**
+>
+> **Delivered.** (1) Opt-in TOTP MFA in `/admin/settings` — enrol, verify, list, add a backup,
+> remove, with an on-demand step-up because Supabase refuses to add a second factor from an `aal1`
+> session. Enrolment changes nothing about signing in, and a test asserts exactly that. (2) A full
+> system audit: 56 admin routes x 2 roles, 30 public routes, 15 API routes at three authentication
+> levels, and a secret scan of the client bundle. `governance/AUDIT_REPORT.md` has every finding.
+>
+> **No critical findings.** Two high ones, both unauthenticated webhooks, reported rather than
+> fixed because the fix breaks a live integration and needs the operator awake.
+>
+> **Fixed here** (low risk, unambiguous): a contact detail page with no `h1` at all, two unlabelled
+> controls in the minutes editor, and two real holes in the orphaned-page guard — it truncated its
+> crawl silently at 80 pages and let a `/new` form vouch for a `[id]` detail route.
+>
+> **Left for the operator:** the two webhook decisions, `INBOUND_WEBHOOK_SECRET` (check whether it
+> is even set), `ANTHROPIC_API_KEY`, whether to enforce MFA (runbook in `OPERATOR_ACTIONS.md` §11),
+> and a plaintext database password sitting in the project folder.
+>
+> **Verification:** tsc 0 errors · build clean · 258 passed / 3 skipped / 0 failed / 0 flaky.
+>
+> ---
+>
+> ## Previous: PHASE 21.2 — ORPHANED-PAGE DEFECT CLASS CLOSED (2026-08-17)
 >
 > **Three incidents, one class.** The room, the minutes page, and now meeting creation: pages that
 > exist, build, and pass their own tests, which no user can reach by clicking. This run fixed the

@@ -107,7 +107,7 @@ step.
 - **RLS policies:** 52 (from migrations)
 - **API routes:** 15
 - **Pages:** 86 (of which 56 under `/admin`); **layouts:** 3; **components:** 15
-- **Playwright specs:** 10
+- **Playwright specs:** 11
 - **Roles:** `admin`, `board`, `staff`, `public` — resolved by `current_user_role()`
 - **Tenant scoping:** none. This is a single-organisation application, so there
   is no `company_id` anywhere. Canonical Rule 1 below is FORGE boilerplate for
@@ -128,7 +128,7 @@ faith-foundation/
 │       ├── faithproof/       session, formatting, public data, pusherServer
 │       └── turnstile.ts
 ├── supabase/migrations/      14 migrations
-├── scripts/                  10 Playwright specs
+├── scripts/                  11 Playwright specs
 ├── governance/
 ├── middleware.ts
 └── package.json

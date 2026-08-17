@@ -95,8 +95,11 @@ const EXCLUDED_FOR_BOARD: Record<string, string> = {
     "RLS: board members may read only public promises; covered by the admin crawl",
 };
 
-const EMAIL_ADMIN = `nav-admin-${Date.now().toString(36)}@faithproof.invalid`;
-const EMAIL_BOARD = `nav-board-${Date.now().toString(36)}@faithproof.invalid`;
+// A timestamp alone is not unique across parallel workers — see the note in
+// scripts/meeting-room.spec.ts, where the collision was actually observed.
+const RUN = `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`;
+const EMAIL_ADMIN = `nav-admin-${RUN}@faithproof.invalid`;
+const EMAIL_BOARD = `nav-board-${RUN}@faithproof.invalid`;
 const PASSWORD = "Sm0ke-Test-Nav212";
 
 const admin: SupabaseClient | null = CONFIGURED
@@ -236,13 +239,44 @@ function matchesPattern(url: string, pattern: string): boolean {
  * Walk the admin from /admin, following ONLY anchors that are rendered.
  * Returns the set of route patterns actually reached.
  */
+const BUDGET = 200;
+
+/**
+ * The most specific route a URL belongs to.
+ *
+ * `[id]` matches ANY segment, `new` included, so `/admin/crm/contacts/new`
+ * matches both `/admin/crm/contacts/[id]` and `/admin/crm/contacts/new`. Taking
+ * the first match in sorted order picks the `[id]` one, which then counts the
+ * "new" form as though a detail page had been seen. Prefer the pattern with the
+ * fewest placeholders — a literal segment beats a wildcard.
+ */
+function bestPattern(url: string): string | undefined {
+  const matches = ROUTES.filter((r) => matchesPattern(url, r));
+  if (matches.length === 0) return undefined;
+  return matches.sort(
+    (a, b) => (a.match(/\[/g)?.length ?? 0) - (b.match(/\[/g)?.length ?? 0)
+  )[0];
+}
+
 async function crawl(page: Page): Promise<{ reached: Set<string>; visited: string[] }> {
   const queue = ["/admin/"];
   const seen = new Set<string>();
   const reached = new Set<string>();
   const visited: string[] = [];
 
-  while (queue.length > 0 && visited.length < 80) {
+  /**
+   * EVERY row's detail page is walked, not one per route.
+   *
+   * Visiting only the first instance was tried and is wrong: some links are
+   * conditional on the row (a transaction can only be edited while it is
+   * pending; a campaign can only be sent while it has recipients), so the
+   * single row the crawl happened to land on decided the verdict. Walking them
+   * all is what makes "no orphaned pages" mean anything.
+   *
+   * What that costs is breadth, which is what the budget below is for — and it
+   * is now an error rather than a silent truncation.
+   */
+  while (queue.length > 0 && visited.length < BUDGET) {
     const next = queue.shift() as string;
     const key = next.replace(/\/+$/, "");
     if (seen.has(key)) continue;
@@ -251,13 +285,16 @@ async function crawl(page: Page): Promise<{ reached: Set<string>; visited: strin
     // The room is excluded from the crawl itself; see EXCLUDED.
     if (/\/room\/?$/.test(key)) continue;
 
+    const pattern = bestPattern(key);
+
     await page.goto(next, { waitUntil: "domcontentloaded" });
     await page.waitForLoadState("networkidle").catch(() => {});
     visited.push(key);
 
-    for (const pattern of ROUTES) {
-      if (matchesPattern(key, pattern)) reached.add(pattern);
-    }
+    // Only the most specific pattern counts as reached. Marking every matching
+    // pattern would let `/contacts/new` vouch for `/contacts/[id]`, so a genuine
+    // orphaned detail page would pass.
+    if (pattern) reached.add(pattern);
 
     const hrefs: string[] = await page.$$eval('a[href^="/admin"]', (nodes) =>
       nodes
@@ -270,6 +307,14 @@ async function crawl(page: Page): Promise<{ reached: Set<string>; visited: strin
       if (!clean.startsWith("/admin")) continue;
       if (!seen.has(clean.replace(/\/+$/, ""))) queue.push(clean);
     }
+  }
+
+  // Never truncate silently: a crawl that stopped early would report pages as
+  // orphaned when it simply ran out of budget.
+  if (visited.length >= BUDGET) {
+    throw new Error(
+      `crawl hit its ${BUDGET}-page budget with ${queue.length} URLs still queued — raise BUDGET rather than trusting this result`
+    );
   }
 
   return { reached, visited };

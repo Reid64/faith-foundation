@@ -37,7 +37,9 @@ const SUPABASE_URL = env.NEXT_PUBLIC_SUPABASE_URL ?? "";
 const SERVICE_KEY = env.SUPABASE_SERVICE_ROLE_KEY ?? "";
 const CONFIGURED = Boolean(SUPABASE_URL && SERVICE_KEY);
 
-const EMAIL = `mfa-${Date.now().toString(36)}@faithproof.invalid`;
+const EMAIL = `mfa-${Date.now().toString(36)}-${Math.random()
+  .toString(36)
+  .slice(2, 7)}@faithproof.invalid`;
 const PASSWORD = "Sm0ke-Test-Mfa23";
 
 let userId: string | null = null;
@@ -177,6 +179,18 @@ async function enrol(page: Page, opts: { stepUp?: boolean } = {}): Promise<strin
   await page.getByTestId("mfa-verify").click();
   return secret;
 }
+
+/**
+ * SERIAL, and it has to be.
+ *
+ * These tests are one continuous story on one account: enrol, add a backup,
+ * remove one, then sign in. Under the config's `fullyParallel` the tests get
+ * spread across workers, each of which re-imports this module and therefore
+ * gets its OWN `EMAIL`, its own throwaway user and its own `firstSecret` — so a
+ * test looking for the factor enrolled by the previous one finds an account
+ * that never had it. Serial mode keeps them in one worker, in order.
+ */
+test.describe.configure({ mode: "serial" });
 
 test.describe("MFA — opt-in TOTP enrolment", () => {
   test("the settings page offers enrolment and says it is not enforced", async ({
