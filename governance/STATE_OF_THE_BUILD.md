@@ -92,6 +92,16 @@
 > credentials, and Defect 1 of Phase 21.1 on the actual no-microphone laptop. Both remain open in
 > OPERATOR_ACTIONS.
 >
+> **A fourth finding, from running the WHOLE suite for the first time in three phases.**
+> `scripts/web3forms-wiring.spec.ts` had been failing since Phase 20 and nobody had seen it: every
+> "no regression" run since then named three or four spec files, and this was never one of them.
+> The failures were not regressions — the spec asserted the pre-Phase-20 architecture, where the
+> browser posted straight to formsubmit.co. It has been rewritten to assert the current path and
+> the security property that the browser must NOT reach the relay directly. **The regression run is
+> now `npx playwright test` with no arguments;** a named list measures only the specs you
+> remembered. My earlier "224 passed / 3 skipped" baseline carried this blind spot and is corrected
+> here.
+>
 > Prior action: **PHASE 21.1 — TWO DEFECTS FROM LIVE BROWSER TESTING, FIXED. NOT DEPLOYED.**
 >
 > Both were found by the operator driving production in a real browser. **Neither was caught by the

@@ -36,6 +36,18 @@
 >
 > **Verification.** tsc 0 errors, build clean, `admin-navigation` 3/3, `meeting-room` **16/16**.
 >
+> **Ran the whole suite for the first time in three phases, and it found something.**
+> `web3forms-wiring.spec.ts` had been red since Phase 20 — unnoticed because every regression run
+> since then named specific spec files and never that one. Not a regression: it asserted the
+> pre-Phase-20 architecture (browser posts straight to formsubmit.co). Rewritten to assert the
+> current route and the property that the browser must not reach the relay directly. From now on
+> the regression run is `npx playwright test` with no arguments.
+>
+> **A diagnosis trap, recorded because it cost time twice.** A `next start` server left up across
+> several suites starts answering 400 for `_next/static/chunks/*.js`. Pages still server-render
+> fully, but hydration never runs, so every click is inert and it reads exactly like a product bug.
+> Restart the server between long runs.
+>
 > PRIOR: **PHASE 21.1 — TWO LIVE-BROWSER DEFECTS FIXED** (2026-08-16). **NOT DEPLOYED.**
 >
 > **The lesson first.** Both defects came from the operator using production in a real browser, and

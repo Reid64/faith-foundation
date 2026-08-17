@@ -24,7 +24,7 @@
 | `scripts/ad-grants-readiness.spec.ts` | 64 | live site, or `AUDIT_BASE_URL` | 62 passed, 2 skipped, 0 failed (local build, 2026-08-16) |
 
 **Combined run, 2026-08-16: 224 passed, 3 skipped, 0 failed** across all four suites.
-| `scripts/web3forms-wiring.spec.ts` | — | live site | not run this session |
+| `scripts/web3forms-wiring.spec.ts` | 6 | a local build with the Turnstile test keys | 6/6 (2026-08-17, rewritten) |
 | `scripts/turnstile.spec.ts` | 10 | a build carrying the Turnstile keys | 10/10 across pass and fail modes (2026-08-16) |
 | `scripts/meeting-room.spec.ts` | 16 | a local build; needs the service key in `.env.local` | 16/16 (2026-08-17) |
 | `scripts/admin-navigation.spec.ts` | 3 | a local build; needs the service key in `.env.local` | 3/3 (2026-08-17) |
@@ -59,6 +59,38 @@ product bug. That cost three failed runs on 2026-08-16.
 Offer/answer, ICE, the Cloudflare TURN array, the six-participant cap, ICE
 restart and speaker switching need two real browsers in one room against
 production credentials, and are listed as unverified in STATE_OF_THE_BUILD.
+
+### Run the WHOLE suite, not a list of files (2026-08-17)
+
+`scripts/web3forms-wiring.spec.ts` had been failing since **Phase 20** and
+nobody noticed, because every "no regression" run since then named three or four
+spec files explicitly and this was never one of them. `npx playwright test` with
+no filter is what surfaced it.
+
+The failures were real but not regressions: the spec asserted that the BROWSER
+posts directly to `formsubmit.co`, which Phase 20 deliberately replaced with
+`/api/forms/submit` so a Turnstile token could be checked before anything is
+forwarded. It has been rewritten to assert the current architecture, including
+the security property that the browser must NOT reach formsubmit.co directly.
+
+**Rule: the regression run is `npx playwright test` with no arguments.** A named
+list of specs measures the specs you remembered.
+
+### A diagnosis trap worth naming: the degraded long-running server (2026-08-17)
+
+Twice now, a `next start` server left up across several full suites began
+answering **400** for `/_next/static/chunks/*.js`. The page still server-renders
+perfectly — the HTML contains every element — but hydration never runs, so every
+button is inert and tests fail with things like "element is not enabled" or a
+form that will not advance a step. It reads exactly like a product defect.
+
+Symptoms, so it is recognised next time rather than re-diagnosed:
+- elements are present in `curl` output and in the DOM, but clicks do nothing;
+- `page.on("requestfailed")` shows aborted or 400 `_next/static/chunks` requests;
+- a fresh `pnpm run build && pnpm start` makes it disappear.
+
+**Restart the server between long runs.** This is the sibling of the rule
+already recorded: never rebuild while a server under test is running.
 
 ### The navigation crawl — the guard against orphaned pages (2026-08-17)
 
