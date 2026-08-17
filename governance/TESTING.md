@@ -24,6 +24,38 @@
 | `scripts/ad-grants-readiness.spec.ts` | 64 | live site, or `AUDIT_BASE_URL` | 62 passed, 2 skipped, 0 failed (local build, 2026-08-16) |
 | `scripts/web3forms-wiring.spec.ts` | — | live site | not run this session |
 | `scripts/turnstile.spec.ts` | 10 | a build carrying the Turnstile keys | 10/10 across pass and fail modes (2026-08-16) |
+| `scripts/meeting-room.spec.ts` | 6 | a local build; needs the service key in `.env.local` | 6/6 (2026-08-16) |
+
+### Running the meeting room spec (Phase 21)
+
+The room is board-only and needs a camera, so the spec creates a throwaway
+board account (service key from `.env.local`, skipping the file entirely if it
+is absent) and Playwright supplies a synthetic camera. **The fake-media flags
+live in `playwright.config.ts`, not in the spec** — `launchOptions` set through
+`test.use()` were silently ignored here, and the symptom was a Join button that
+never enabled.
+
+```powershell
+pnpm run build; pnpm start -p 3200
+$env:AUDIT_BASE_URL = "http://localhost:3200"
+npx playwright test scripts/meeting-room.spec.ts
+```
+
+**Serve every feature key at once.** A server started with only the Pusher
+values fails five `turnstile` widget tests — correctly, because the widget is
+absent when unconfigured. Export the Turnstile test keys and the Pusher values
+in the same shell before building, or run the suites separately and read the
+failures for what they are.
+
+**Do not rebuild while that server is running.** `next start` resolves chunk
+files per request; a rebuild changes their hashes, every chunk 404s, the page
+never hydrates and every interaction test fails for a reason that looks like a
+product bug. That cost three failed runs on 2026-08-16.
+
+**What this spec cannot cover.** One browser cannot establish a peer connection.
+Offer/answer, ICE, the Cloudflare TURN array, the six-participant cap, ICE
+restart and speaker switching need two real browsers in one room against
+production credentials, and are listed as unverified in STATE_OF_THE_BUILD.
 
 ### Running the Turnstile spec
 

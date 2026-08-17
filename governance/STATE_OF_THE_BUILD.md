@@ -1,7 +1,85 @@
 # faith-foundation — STATE OF THE BUILD
 
 > Updated from a LIVE codebase audit on 2026-08-16 (BLUEPRINT Canonical Rule 9).
-> Last action: **PHASE 20 — CLOUDFLARE TURNSTILE ON EVERY PUBLIC FORM. Built and verified
+> Last action: **PHASE 21 — BOARD MEETING ROOM REBUILT ON NATIVE WEBRTC. Jitsi removed. Built and
+> verified locally. NOT DEPLOYED.**
+>
+> **Why.** The Jitsi iFrame API renders every participant inside a surface we do not own, so a
+> per-participant tile grid was impossible — Phase 19 recorded that as a documented deviation. The
+> room now runs mesh WebRTC: each remote stream is our own `<video>` in our own CSS grid, and the
+> active-speaker border is drawn on the tile it belongs to.
+>
+> **Architecture.** Mesh peer-to-peer, one RTCPeerConnection per remote participant, capped at
+> **6** (a seventh means six simultaneous uploads each). Signalling rides a Pusher **private**
+> channel `private-meeting-<id>`; TURN relay credentials are minted per session by Cloudflare.
+>
+> **Files added:** `src/lib/faithproof/pusherServer.ts`, `src/app/api/pusher/auth/route.ts`,
+> `src/app/api/pusher/signal/route.ts`, `src/app/api/webrtc/turn-credentials/route.ts`,
+> `src/app/admin/board/meetings/[id]/room/useMeshCall.ts`,
+> `src/app/admin/board/meetings/[id]/room/useActiveSpeaker.ts`,
+> `scripts/meeting-room.spec.ts`.
+> **Files replaced:** `src/app/admin/board/meetings/[id]/room/MeetingRoom.tsx` (Jitsi → WebRTC),
+> `src/app/admin/board/meetings/[id]/room/page.tsx` (no longer passes a room name).
+> **Files touched:** `playwright.config.ts` (synthetic camera), plus stale-comment corrections in
+> `src/lib/faithproof/board.ts`, `src/app/admin/board/actions.ts`, `room/actions.ts`.
+> **Dependencies:** `pusher` and `pusher-js` added. **Jitsi was never an npm package** — it was a
+> runtime `<script>` from meet.jit.si, and that script tag is gone. Nothing was uninstalled.
+> **No migration.** `board_meetings.jitsi_room_name` is left in place and still written on create;
+> nothing reads it. Dropping a populated column is a migration this phase deliberately does not ship.
+>
+> **Capabilities preserved:** pre-join screen (now with real camera/microphone SELECTION, which the
+> Jitsi version lacked), participant sidebar with live roster and active-speaker highlight, mute,
+> camera toggle, screen share, meeting timer, participant count, `startMeeting` on join,
+> admin-only End Meeting → `/minutes`, full-viewport layout, teardown on leave.
+>
+> **Capabilities DROPPED, reported before dropping:**
+> 1. **Recording.** The Jitsi recording button called an API that requires a paid 8x8 account and
+>    never worked on the free server (recorded in SECRETS_PENDING). Native WebRTC has no server-side
+>    recorder, so the button is gone rather than kept as decoration.
+> 2. **Jitsi lobby mode.** Replaced by something stronger: `/api/pusher/auth` refuses the channel
+>    unless the session's role is admin or board AND RLS shows them that meeting.
+>
+> **Verified locally (server on :3200, fake Pusher values, Cloudflare not reachable):**
+> - `pnpm tsc --noEmit` **0 errors**; `pnpm run build` clean.
+> - **Route security 12/12.** All three routes return **401** anonymous and **403** to a `staff`
+>   user. A board member is refused a non-meeting channel, a meeting that does not exist, and a
+>   meeting that has already ended — and is authorised, with a signature, for their own open meeting.
+> - **`scripts/meeting-room.spec.ts` 6/6:** pre-join with preview and both device pickers, the grid
+>   and control bar after joining, mic/camera state changes, leave returns to the meeting record, no
+>   Jitsi anywhere in the DOM, and a non-board user cannot reach the room.
+> - **Secrets stay server-side.** From one build with real-shaped values: `PUSHER_SECRET` → 0 files
+>   in `.next/static`, `CLOUDFLARE_TURN_API_TOKEN` → 0, `CLOUDFLARE_TURN_KEY_ID` → 0, while
+>   `NEXT_PUBLIC_PUSHER_KEY` → 1 file (public by design). That contrast is the proof.
+> - **Existing suites against the local build — no regression.** One run of
+>   `site-audit` + `ad-grants-readiness` + `turnstile` gave **206 passed, 5 failed, 3 skipped**;
+>   all five failures were `turnstile` widget-presence tests, because that server was started
+>   without `NEXT_PUBLIC_TURNSTILE_SITE_KEY` and the widget correctly renders "Spam protection is
+>   not configured" instead. Re-run against a build carrying BOTH key sets: **15 passed, 1 skipped,
+>   0 failed** (turnstile 9+1, meeting-room 6). `site-audit` and `ad-grants-readiness` had **zero**
+>   failures in the combined run, matching the 139 / 62+2-skipped baseline.
+>
+> **A real defect found by testing and fixed.** The room is a full-viewport overlay, but it renders
+> inside the admin layout's `relative z-10` content wrapper — a stacking context. Its `z-50`
+> therefore lost to the admin sidebar's `z-40` in the root context, so the sidebar painted over the
+> left 240px of the room and swallowed clicks on Leave. Playwright named it exactly ("`<aside>`
+> subtree intercepts pointer events"). Fixed with a portal to `document.body`; raising the z-index
+> could not have worked, because the cap is the parent. **This bug predates Phase 21** — the Jitsi
+> room had the same overlay and the Phase 19 smoke test never clicked inside it.
+>
+> **WHAT IS NOT VERIFIED, and cannot be from here:** a peer connection. Everything above is
+> single-participant. Offer/answer exchange, ICE candidate flow, the TURN array from Cloudflare
+> (the token is only in Vercel — the route returns a clear 503 without it), the 6-participant cap,
+> the ICE-restart path, chunked SDP reassembly, and active-speaker switching between two people all
+> need **two real browsers in one room against production credentials**. None of it is claimed.
+> First deploy should be a two-person test call before a real board meeting depends on it.
+>
+> **Operator note:** no Pusher dashboard toggle is required. Signalling is relayed through
+> `/api/pusher/signal` rather than Pusher client events precisely so the build does not depend on a
+> setting nobody remembers flipping — and so the sender's identity is stamped server-side.
+>
+> **NOT DEPLOYED.** Build passes and governance is updated; deployment is Reid's step.
+>
+> Prior action: **PHASE 20 — CLOUDFLARE TURNSTILE ON EVERY PUBLIC FORM. Built and verified
 > locally. NOT DEPLOYED — Reid runs deploy.ps1.**
 >
 > **The finding that shaped the work.** All five public forms POSTed from the browser STRAIGHT to

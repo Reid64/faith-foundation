@@ -5,6 +5,20 @@
 > Every table, column, and constraint below is authoritative. Phase 4 (Sentinel) checks
 > live database state against this registry (Contract 13, schema drift check).
 
+## Phase 21 — WebRTC meeting room (2026-08-16): NO SCHEMA CHANGE
+
+The rebuild added no tables, columns, indexes, RLS policies or migrations.
+Signalling state lives in the browser and in Pusher for the length of a call;
+nothing about a peer connection is persisted.
+
+One thing a drift check WILL notice and should not act on:
+`board_meetings.jitsi_room_name` still exists and is still written when a
+meeting is created, but nothing reads it — the room name is now derived
+server-side as `private-meeting-<id>`. It is left in place on purpose. Dropping
+a populated column is a migration, and Phase 21 deliberately ships none.
+
+---
+
 ## Phase 20 — Turnstile (2026-08-16): NO SCHEMA CHANGE
 
 Cloudflare Turnstile added **no tables, no columns, no indexes, no RLS policies

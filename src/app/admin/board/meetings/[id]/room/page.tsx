@@ -5,7 +5,6 @@ import { formatDateOnly } from "@/lib/faithproof/format";
 import {
   MEETING_TYPE_LABELS,
   formatMeetingTime,
-  roomNameFor,
   type BoardMeeting,
 } from "@/lib/faithproof/board";
 import { MeetingRoom } from "./MeetingRoom";
@@ -20,10 +19,14 @@ export const dynamic = "force-dynamic";
 /**
  * Server shell for the meeting room.
  *
- * The room itself is a client component — it needs getUserMedia, a script tag
- * and the Jitsi API — but the room NAME and the participant's identity are
- * resolved here, on the server, behind RLS. A client that could pick its own
- * room name could join any board meeting it could guess.
+ * The room itself is a client component — it needs getUserMedia, WebRTC and a
+ * websocket — but the participant's identity and their right to be here are
+ * resolved HERE, on the server, behind RLS.
+ *
+ * The signalling channel is derived from the meeting id (private-meeting-<id>)
+ * rather than passed in, and /api/pusher/auth re-checks the session, the role
+ * and the meeting on every subscription. A client cannot talk its way into a
+ * meeting by naming one.
  */
 export default async function MeetingRoomPage({
   params,
@@ -56,9 +59,6 @@ export default async function MeetingRoomPage({
   return (
     <MeetingRoom
       meetingId={meeting.id}
-      // Older meetings pre-date the column; derive the same name rather than
-      // failing to open a room for them.
-      roomName={meeting.jitsi_room_name ?? roomNameFor(meeting.id)}
       title={`${MEETING_TYPE_LABELS[meeting.type] ?? meeting.type} meeting`}
       subtitle={
         meeting.scheduled_start
@@ -66,7 +66,6 @@ export default async function MeetingRoomPage({
           : formatDateOnly(meeting.meeting_date)
       }
       displayName={profile?.full_name || session.email || "Board member"}
-      email={session.email}
       isAdmin={profile?.role === "admin"}
     />
   );

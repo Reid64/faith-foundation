@@ -25,7 +25,20 @@ export default defineConfig({
   projects: [
     {
       name: "chromium",
-      use: { ...devices["Desktop Chrome"] },
+      use: {
+        ...devices["Desktop Chrome"],
+        launchOptions: {
+          // A synthetic camera and microphone, and no permission prompt.
+          // scripts/meeting-room.spec.ts needs getUserMedia to resolve, and
+          // headless Chromium answers NotSupportedError without these (checked,
+          // not assumed). Inert for every other spec — nothing else asks for
+          // media.
+          args: [
+            "--use-fake-device-for-media-stream",
+            "--use-fake-ui-for-media-stream",
+          ],
+        },
+      },
     },
   ],
 });

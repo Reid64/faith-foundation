@@ -73,6 +73,7 @@ export type BoardMeeting = {
   created_at: string;
   updated_at: string;
   // Phase 19 — meeting room, transcript and minutes workflow.
+  /** Vestigial since Phase 21 — see roomNameFor(). Nothing reads it. */
   jitsi_room_name: string | null;
   scheduled_start: string | null;
   scheduled_end: string | null;
@@ -94,7 +95,15 @@ export type MeetingApproval = {
   user_agent: string | null;
 };
 
-/** Jitsi room for a meeting. The UUID is the secret — see the security note. */
+/**
+ * Legacy room name for a meeting.
+ *
+ * Phase 21 replaced Jitsi with native WebRTC; signalling now happens on the
+ * Pusher channel `private-meeting-<id>`, derived server-side, and nothing reads
+ * this value any more. It is still written on create so the `jitsi_room_name`
+ * column keeps its shape for the meetings recorded under Phase 19 — dropping a
+ * populated column is a migration, and this phase deliberately ships none.
+ */
 export function roomNameFor(meetingId: string): string {
   return `faithproof-board-${meetingId}`;
 }

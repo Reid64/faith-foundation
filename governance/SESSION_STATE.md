@@ -1,7 +1,61 @@
 # faith-foundation — SESSION STATE
 
-> Tracks the live execution session. LATEST: **PHASE 20 — CLOUDFLARE TURNSTILE ON EVERY PUBLIC
-> FORM** (2026-08-16). Built, tested locally, **NOT DEPLOYED** — Reid runs deploy.ps1.
+> Tracks the live execution session. LATEST: **PHASE 21 — MEETING ROOM REBUILT ON NATIVE WEBRTC,
+> JITSI REMOVED** (2026-08-16). Built, tested locally, **NOT DEPLOYED**.
+>
+> **The point of the rebuild.** The Jitsi iFrame API never exposed individual media streams, so
+> Phase 19 shipped with a documented deviation: no per-participant tile grid. That is now ours —
+> mesh WebRTC, one `<video>` per peer in a CSS grid, active-speaker border drawn on the tile.
+> Signalling on a Pusher **private** channel; Cloudflare mints TURN credentials per session.
+>
+> **Security shape.** `NEXT_PUBLIC_PUSHER_KEY` is in the bundle by design and is only enough to
+> open a socket. `/api/pusher/auth` is the whole boundary: session → role (admin/board) → the
+> meeting itself read through RLS → and a closed meeting is refused. Signalling is relayed through
+> `/api/pusher/signal` rather than Pusher client events, for two reasons: client events are a
+> dashboard toggle a build should not silently depend on, and relaying lets the SERVER stamp the
+> sender's identity, so a browser cannot label itself as another director.
+>
+> **Verification (local, server on :3200):**
+> - `tsc` **0 errors**; `pnpm run build` clean.
+> - **Route security 12/12** — 401 anonymous and 403 for `staff` on all three routes; a board member
+>   refused a non-meeting channel, a nonexistent meeting and an ENDED meeting, and authorised with a
+>   signature for their own open meeting.
+> - **`scripts/meeting-room.spec.ts` 6/6** — pre-join with preview and both device pickers, grid +
+>   control bar after joining, mic/camera state, leave returns to the record, no Jitsi in the DOM,
+>   non-board user cannot reach the room.
+> - **Bundle grep from one build with real-shaped values:** PUSHER_SECRET 0 files,
+>   CLOUDFLARE_TURN_API_TOKEN 0, CLOUDFLARE_TURN_KEY_ID 0, NEXT_PUBLIC_PUSHER_KEY 1 (expected).
+> - **No regression in the existing suites.** Combined run: **206 passed, 5 failed, 3 skipped** —
+>   every failure a `turnstile` widget test on a server started without the Turnstile site key, so
+>   the widget was legitimately absent. Re-run with both key sets present: **15 passed, 1 skipped,
+>   0 failed**. `site-audit` and `ad-grants-readiness` failed nothing, matching baseline.
+>
+> **A real defect found by testing, and it predates this phase.** The room overlay renders inside
+> the admin layout's `relative z-10` wrapper, which is a stacking context — so its `z-50` lost to
+> the admin sidebar's `z-40` and the sidebar covered the left 240px of the room, swallowing clicks
+> on Leave. Playwright reported it precisely. Fixed with a portal to `document.body`; a bigger
+> z-index could not have helped because the cap is the parent. The Jitsi room had the same overlay
+> and the Phase 19 smoke test never clicked inside it.
+>
+> **An operational mistake worth recording, second of its kind.** The room spec failed three times
+> with "Join never enables". Cause: I ran `pnpm run build` twice WHILE the `next start` server under
+> test was running, so it served HTML referencing chunk hashes that no longer existed — a 404 storm,
+> no hydration, no effects, permanently disabled button. Phase 20 recorded "do not deploy during an
+> audit"; this is its sibling — **do not rebuild while a local server under test is running.**
+>
+> **NOT VERIFIED, and stated plainly rather than implied:** no peer connection was ever established.
+> One browser cannot do it. Offer/answer, ICE, the real Cloudflare `iceServers` array (the token
+> lives only in Vercel; the route returns a clean 503 without it), the 6-participant cap, ICE
+> restart, chunked SDP reassembly and speaker switching between two people all require two real
+> browsers in one room on production credentials. **First deploy should be a two-person test call
+> before a board meeting depends on it.**
+>
+> **Dropped, reported before dropping:** the Jitsi recording button (it called a paid-tier API and
+> never worked on the free server) and Jitsi lobby mode (replaced by role-and-RLS channel auth,
+> which is stronger). `jitsi_room_name` stays in the database, unread — dropping a populated column
+> is a migration this phase does not ship.
+>
+> PRIOR: **PHASE 20 — CLOUDFLARE TURNSTILE ON EVERY PUBLIC FORM** (2026-08-16). Built, tested locally, **NOT DEPLOYED** — Reid runs deploy.ps1.
 >
 > **Audit first, and it changed the design.** All five public forms POSTed from the browser
 > directly to `formsubmit.co`, with no server in the path. A Turnstile widget on its own would

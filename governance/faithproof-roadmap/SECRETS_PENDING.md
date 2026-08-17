@@ -57,6 +57,46 @@ prompt also states explicitly that it cannot decide eligibility.
 
 ---
 
+## Pusher and Cloudflare TURN (Phase 21 — WebRTC meeting room) — ALREADY SET
+
+```
+PUSHER_APP_ID  PUSHER_KEY  PUSHER_SECRET  PUSHER_CLUSTER   # server only
+NEXT_PUBLIC_PUSHER_KEY  NEXT_PUBLIC_PUSHER_CLUSTER         # public by design
+CLOUDFLARE_TURN_KEY_ID  CLOUDFLARE_TURN_API_TOKEN          # server only
+```
+
+**All eight are already set in Vercel production.** This build neither created
+nor modified them. Nothing is pending.
+
+They are **not** in local `.env.local`, by design:
+- Without `NEXT_PUBLIC_PUSHER_KEY`, the pre-join screen says signalling is not
+  configured — you can open the room and see yourself, and nobody can join you.
+- Without `CLOUDFLARE_TURN_*`, `/api/webrtc/turn-credentials` returns a clear
+  **503** and the call falls back to STUN only, which works on permissive
+  networks and fails on restrictive ones. The client says so rather than failing
+  silently.
+
+**No Pusher dashboard toggle is needed.** Signalling is relayed through
+`/api/pusher/signal`, not Pusher client events — deliberately, so the build does
+not depend on a setting nobody remembers flipping, and so the sender's identity
+is stamped from the server session rather than trusted from the browser.
+
+**Verified 2026-08-16:** `PUSHER_SECRET`, `CLOUDFLARE_TURN_API_TOKEN` and
+`CLOUDFLARE_TURN_KEY_ID` appear in **zero** files under `.next/static`;
+`NEXT_PUBLIC_PUSHER_KEY` appears in one, which is what it is for.
+
+---
+
+## Jitsi — REMOVED in Phase 21 (kept for history)
+
+Jitsi is gone. The section below described the recording and transcription
+limits of the free meet.jit.si server and no longer applies to the meeting room.
+**Transcription still works exactly as it did**: paste or upload a transcript on
+the minutes page, and Claude drafts the minutes from it. What disappeared is the
+recording button, which required a paid 8x8 account and never produced a file.
+
+Original note follows.
+
 ## Jitsi recording and transcription (Phase 19 — Board Meeting Room)
 
 Board meetings run on the **public meet.jit.si server**, which needs no account

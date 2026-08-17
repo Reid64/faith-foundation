@@ -217,6 +217,35 @@ move to a different destination) — not a code change here.
 
 ---
 
+## 6c. Board meeting room — first call should be a rehearsal
+
+**Status: CODE READY, NOT PROVEN IN A REAL CALL.**
+
+Phase 21 replaced Jitsi with native WebRTC. Everything that can be verified from
+one browser has been (see STATE_OF_THE_BUILD). What **cannot** be verified from
+here is a peer connection: two browsers must actually join the same room.
+
+**Required human action before a real board meeting depends on it:** after
+deploying, open the room on two devices — ideally on different networks, one of
+them a mobile connection — and confirm each sees and hears the other, that the
+active-speaker border follows the person talking, and that Leave and End Meeting
+behave. If video fails on a restrictive network, the TURN credentials are the
+first thing to check (`/api/webrtc/turn-credentials` returns 503 when
+`CLOUDFLARE_TURN_KEY_ID` / `CLOUDFLARE_TURN_API_TOKEN` are missing).
+
+**Capacity is six.** That is a property of mesh video, not a setting: a seventh
+participant would mean six simultaneous uploads each. Beyond six the room shows
+a clear "room is full" state. Lifting it needs an SFU, which is a server.
+
+**Recording is gone.** The Jitsi recording button required a paid 8x8 account
+and never produced a file on the free server. Minutes still work exactly as
+before: paste or upload a transcript on the minutes page and Claude drafts from
+it.
+
+**Recorded outcome:** _(fill in)_
+
+---
+
 ## 7. Beneficiary and testimonial verification
 
 **Status: RESOLVED ON THE SITE — re-verify before adding anything back.**
@@ -307,6 +336,7 @@ enforce.
 | 5 | Zeffy processor configuration | Embed only | No, but donations may fail |
 | 6 | Formsubmit activation | No | **Yes — forms do not deliver until done** |
 | 6b | Turnstile keys set; watch spam after deploy | Keys not visible to the repo | No |
+| 6c | Two-person WebRTC test call after deploy | No — needs two browsers | **Yes, before a real meeting** |
 | 7 | Beneficiary verification | Resolved on site | No |
 | 8 | Financial records | No | Possibly |
 | 9 | Social profiles | Removed pending real accounts | No |

@@ -17,3 +17,10 @@ This project defines no autonomous agents.
 > For completeness, the one automated non-request process in the live system is
 > the Zeffy webhook receiver (`/api/webhooks/zeffy`), which is an inbound
 > endpoint rather than an agent.
+>
+> **Re-checked 2026-08-16 (Phase 21 — WebRTC meeting room).** Still accurate. The
+> rebuild added three API routes, two React hooks and a client component. The
+> only long-lived process it introduces is a **browser-side** websocket to
+> Pusher plus RTCPeerConnections between participants — both live in the user's
+> tab for the duration of a meeting and end when it does. No server-side agent,
+> no scheduler, no daemon.

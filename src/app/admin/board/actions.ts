@@ -64,10 +64,10 @@ export async function createMeeting(formData: FormData): Promise<Result> {
   }
 
   /**
-   * The id is generated here rather than by the database so the Jitsi room name
-   * can be derived from it in the SAME insert. Letting Postgres assign it would
-   * mean a second UPDATE to fill in the room name, and a meeting that failed
-   * between the two would have no room at all.
+   * The id is generated here rather than by the database so the room name can
+   * be derived from it in the SAME insert. (Since Phase 21 the room name is
+   * vestigial — signalling uses private-meeting-<id> — but generating the id
+   * up front still avoids a second write, so it stays.)
    */
   const id = crypto.randomUUID();
 

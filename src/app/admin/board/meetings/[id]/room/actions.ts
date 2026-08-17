@@ -59,8 +59,9 @@ export async function startMeeting(meetingId: string): Promise<Result> {
  * End the meeting. Admin only — one person closes the room for everyone.
  *
  * Returns the path to the minutes rather than redirecting, so the client can
- * hang up the Jitsi call first. Redirecting from the action would tear the page
- * down mid-call and leave the conference thinking the participant is still in it.
+ * close its peer connections and stop its media tracks first. Redirecting from
+ * the action would tear the page down mid-call, leaving tracks live and the
+ * other participants staring at a frozen tile.
  */
 export async function endMeeting(meetingId: string): Promise<Result> {
   const gate = await boardSession();
