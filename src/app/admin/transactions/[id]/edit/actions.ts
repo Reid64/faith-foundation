@@ -66,6 +66,10 @@ export async function updateTransaction(
   const patch = {
     type: type as TransactionType,
     fund: fund as FundDesignation,
+    // An administrator opening this form and saving a fund IS the verification
+    // the flag was waiting for, so the "unverified" mark comes off. It only
+    // ever meant "nobody has checked this", not "this is wrong".
+    fund_backfilled: false,
     amount_cents: amountCents,
     transaction_date: transactionDate,
     donor_name: donorAnonymous ? null : donorName || null,

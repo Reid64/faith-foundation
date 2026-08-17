@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase/service";
+import { mapCampaignToFund } from "@/lib/faithproof/funds";
 
 /**
  * Zeffy donation webhook.
@@ -19,31 +20,6 @@ import { supabaseAdmin } from "@/lib/supabase/service";
  */
 
 export const dynamic = "force-dynamic";
-
-const FUND_MAP: Record<string, string> = {
-  "housing voucher": "housing_voucher",
-  housing: "housing_voucher",
-  veterans: "veterans",
-  veteran: "veterans",
-  recovery: "recovery",
-  reentry: "reentry",
-  "second chance": "reentry",
-  "single parent": "single_parent_stability",
-  emergency: "emergency_bridge",
-  "financial literacy": "financial_literacy",
-  cornerstone: "cornerstone_communities",
-  general: "unrestricted",
-  unrestricted: "unrestricted",
-};
-
-function mapFund(campaign: string): string {
-  if (!campaign) return "unrestricted";
-  const lower = campaign.toLowerCase();
-  for (const [key, value] of Object.entries(FUND_MAP)) {
-    if (lower.includes(key)) return value;
-  }
-  return "unrestricted";
-}
 
 /** Parse "$1,234.56" / "1234.56" / 1234.56 into integer cents. */
 function toCents(amount: unknown): number | null {
@@ -88,9 +64,13 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const fundDesignation = fund
-      ? mapFund(String(fund))
-      : mapFund(String(campaign ?? ""));
+    // An explicit `fund` field wins; otherwise read the campaign name. When
+    // neither says anything recognisable the gift lands in the General Fund and
+    // is FLAGGED as inferred, so nobody later mistakes a default for a choice.
+    const fundMatch = mapCampaignToFund(
+      fund ? String(fund) : String(campaign ?? "")
+    );
+    const fundDesignation = fundMatch.fund;
     const txDate = toDate(date);
     const zeffyId = transaction_id
       ? String(transaction_id)
@@ -119,6 +99,9 @@ export async function POST(req: NextRequest) {
         status: "pending",
         amount_cents: amountCents,
         fund: fundDesignation,
+        // The fund was inferred, not stated by the donor. Recorded so the admin
+        // UI can show it as unverified rather than asserting a designation.
+        fund_backfilled: !fundMatch.matched,
         // `donor_anonymous` here means "Zeffy sent us no name", not a donor
         // request for anonymity. The name is stored when we have one.
         donor_name: donorName || null,
@@ -153,6 +136,7 @@ export async function POST(req: NextRequest) {
         source: "zeffy_webhook",
         amount_cents: amountCents,
         fund: fundDesignation,
+        fund_matched_on: fundMatch.via,
         campaign: campaign ?? null,
       },
     });

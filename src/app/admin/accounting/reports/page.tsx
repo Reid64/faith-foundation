@@ -27,6 +27,8 @@ type ReportKey = (typeof REPORTS)[number]["key"];
 type LineRow = {
   debit_cents: number;
   credit_cents: number;
+  /** Added in migration 015 — the fund this line belongs to, set at write time. */
+  fund: FundDesignation | null;
   journal_entries: { date: string } | { date: string }[] | null;
   accounts:
     | {
@@ -95,7 +97,7 @@ export default async function ReportsPage({
   let query = session.supabase
     .from("journal_lines")
     .select(
-      "debit_cents, credit_cents, journal_entries!inner(date), accounts!inner(code, name, type, fund, is_restricted)"
+      "debit_cents, credit_cents, fund, journal_entries!inner(date), accounts!inner(code, name, type, fund, is_restricted)"
     );
 
   if (report === "position") {
@@ -123,7 +125,11 @@ export default async function ReportsPage({
         code: account.code,
         name: account.name,
         type: account.type,
-        fund: account.fund,
+        // The LINE's fund wins. The account's is a fallback for entries posted
+        // before migration 015 and for manual entries to shared accounts.
+        // Reporting on the account alone was why Recovery, Reentry and
+        // Cornerstone donations were indistinguishable — they shared one.
+        fund: r.fund ?? account.fund,
         restricted: account.is_restricted,
       },
     ];
@@ -273,7 +279,7 @@ export default async function ReportsPage({
           ) : report === "funds" ? (
             <FundsReport rows={accountRows} />
           ) : (
-            <CashFlowReport year={year} rows={rows} />
+            <CashFlowReport year={year} rows={rows} accountRows={accountRows} />
           )}
         </Panel>
       )}
@@ -436,6 +442,12 @@ function PositionReport({
           </p>
         ) : null}
       </div>
+      <FundBreakout
+        rows={rows}
+        types={["asset"]}
+        title="Assets by fund"
+        note="Where the money sits. A restricted fund may only be spent on its purpose."
+      />
     </>
   );
 }
@@ -462,6 +474,18 @@ function ActivitiesReport({
       />
       <Section title="Revenue" rows={revenue} total={totalRevenue} />
       <Section title="Expenses" rows={expenses} total={totalExpenses} />
+      <FundBreakout
+        rows={rows}
+        types={["revenue"]}
+        title="Revenue by fund"
+        note="What was given to each fund in this period. Aggregate only — no donor is named."
+      />
+      <FundBreakout
+        rows={rows}
+        types={["expense"]}
+        title="Expenses by fund"
+        note="What each fund was spent on in this period."
+      />
       <div
         className="mt-6 flex items-center justify-between rounded-xl px-4 py-3"
         style={{ backgroundColor: "#ffefb3", color: "#013e37" }}
@@ -472,6 +496,114 @@ function ActivitiesReport({
         </span>
       </div>
     </>
+  );
+}
+
+/**
+ * Per-fund breakout, shared by all four reports.
+ *
+ * Under FASB ASU 2016-14 a nonprofit reports net assets WITH and WITHOUT donor
+ * restrictions, and a donor's designation is exactly what creates a
+ * restriction. The restricted/unrestricted split was already right here; what
+ * no report could show was WHICH restricted fund a figure belonged to, because
+ * Recovery, Reentry and Cornerstone donations all posted to one shared revenue
+ * account. Migration 015 gave every line its own fund, and this is what reads
+ * it back.
+ *
+ * Aggregate only — a fund total never names a donor. See
+ * /governance/donor-privacy.
+ */
+function FundBreakout({
+  rows,
+  types,
+  title,
+  note,
+}: {
+  rows: AccountRow[];
+  types: AccountType[];
+  title: string;
+  note: string;
+}) {
+  const byFund = new Map<string, { restricted: boolean; total: number }>();
+  for (const r of rows) {
+    if (!types.includes(r.type)) continue;
+    const key = r.fund ?? "unassigned";
+    const cur = byFund.get(key) ?? { restricted: r.restricted, total: 0 };
+    cur.total += r.balance;
+    cur.restricted = cur.restricted || r.restricted;
+    byFund.set(key, cur);
+  }
+
+  const entries = Array.from(byFund.entries())
+    .filter(([, v]) => v.total !== 0)
+    .sort((a, b) => b[1].total - a[1].total);
+
+  if (entries.length === 0) return null;
+
+  const restricted = entries.filter(([, v]) => v.restricted).reduce((n, [, v]) => n + v.total, 0);
+  const unrestricted = entries.filter(([, v]) => !v.restricted).reduce((n, [, v]) => n + v.total, 0);
+
+  return (
+    <section className="mt-8" data-testid="fund-breakout">
+      <h3 className="text-sm font-semibold" style={{ color: "#013e37" }}>
+        {title}
+      </h3>
+      <p className="mt-1 text-xs" style={{ color: "#6b7280" }}>
+        {note}
+      </p>
+      <table className="mt-3 w-full">
+        <thead>
+          <tr>
+            {["Fund", "Restriction", "Amount"].map((h, i) => (
+              <th
+                key={h}
+                className={`pb-2 text-xs font-semibold uppercase tracking-wider ${
+                  i === 2 ? "text-right" : "text-left"
+                }`}
+                style={{ color: "#6b7280" }}
+              >
+                {h}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {entries.map(([fund, v]) => (
+            <tr key={fund} style={{ borderTop: "1px solid #f0f0ef" }}>
+              <td className="py-2 text-sm" style={{ color: "#111827" }}>
+                {fund === "unassigned"
+                  ? "Unassigned"
+                  : (FUND_LABELS[fund as FundDesignation] ?? fund)}
+              </td>
+              <td className="py-2 text-sm" style={{ color: "#6b7280" }}>
+                {v.restricted ? "With donor restrictions" : "Without donor restrictions"}
+              </td>
+              <td className="py-2 text-right text-sm tabular-nums" style={{ color: "#111827" }}>
+                {money(v.total)}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+        <tfoot>
+          <tr style={{ borderTop: "2px solid #013e37" }}>
+            <td className="pt-2 text-sm font-semibold" style={{ color: "#013e37" }} colSpan={2}>
+              With donor restrictions
+            </td>
+            <td className="pt-2 text-right text-sm font-bold tabular-nums" style={{ color: "#013e37" }}>
+              {money(restricted)}
+            </td>
+          </tr>
+          <tr>
+            <td className="pt-1 text-sm font-semibold" style={{ color: "#013e37" }} colSpan={2}>
+              Without donor restrictions
+            </td>
+            <td className="pt-1 text-right text-sm font-bold tabular-nums" style={{ color: "#013e37" }}>
+              {money(unrestricted)}
+            </td>
+          </tr>
+        </tfoot>
+      </table>
+    </section>
   );
 }
 
@@ -561,7 +693,15 @@ function FundsReport({ rows }: { rows: AccountRow[] }) {
   );
 }
 
-function CashFlowReport({ year, rows }: { year: number; rows: Flat[] }) {
+function CashFlowReport({
+  year,
+  rows,
+  accountRows,
+}: {
+  year: number;
+  rows: Flat[];
+  accountRows: AccountRow[];
+}) {
   // Cash movement only — the 1xxx cash accounts. A debit to cash is an inflow,
   // a credit is an outflow.
   const months = Array.from({ length: 12 }, (_, i) => ({
@@ -627,6 +767,12 @@ function CashFlowReport({ year, rows }: { year: number; rows: Flat[] }) {
           {money(totalIn - totalOut)}
         </span>
       </div>
+      <FundBreakout
+        rows={accountRows}
+        types={["asset"]}
+        title="Cash movement by fund"
+        note="Net change in each fund's cash position over the year."
+      />
     </>
   );
 }

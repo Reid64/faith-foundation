@@ -6,6 +6,7 @@ import {
   getPublicLedger,
   getPublicPromises,
   getPublicSettings,
+  getFundTotals,
   getPublicStats,
 } from "@/lib/faithproof/public";
 import { formatCents, formatDateOnly, humanizeEnum } from "@/lib/faithproof/format";
@@ -64,13 +65,15 @@ export default async function FaithProofPage({
 }) {
   const page = Math.max(1, Number(searchParams?.page ?? 1) || 1);
 
-  const [settings, stats, ledger, promises, documents] = await Promise.all([
-    getPublicSettings(),
-    getPublicStats(),
-    getPublicLedger({ page }),
-    getPublicPromises(),
-    getPublicDocuments(),
-  ]);
+  const [settings, stats, ledger, promises, documents, fundTotals] =
+    await Promise.all([
+      getPublicSettings(),
+      getPublicStats(),
+      getPublicLedger({ page }),
+      getPublicPromises(),
+      getPublicDocuments(),
+      getFundTotals(),
+    ]);
 
   const totalPages = Math.max(1, Math.ceil(ledger.total / ledger.perPage));
 
@@ -152,6 +155,60 @@ export default async function FaithProofPage({
                 label="Promises on Track"
               />
             </div>
+          </div>
+        </section>
+      ) : null}
+
+      {/* ═══ 1b — RAISED BY FUND ═══ */}
+      {settings.show_open_ledger ? (
+        <section className="py-20 sm:py-24" style={{ backgroundColor: "#FAF8F1" }}>
+          <div className="mx-auto max-w-7xl px-6 sm:px-8">
+            <Eyebrow>Designated Giving</Eyebrow>
+            <h2 className="mt-3 text-3xl font-extrabold text-navy sm:text-4xl">
+              Raised by Fund
+            </h2>
+            <p className="mt-3 max-w-3xl text-base text-[#6b7280]">
+              Donors may direct a gift to a specific programme, and a restricted
+              gift may only be spent on the programme it was given to. These are
+              totals across all donors.{" "}
+              <strong className="text-navy">
+                We never publish which fund an individual donor chose.
+              </strong>{" "}
+              See our{" "}
+              <Link href="/governance/donor-privacy" className="underline">
+                donor privacy commitment
+              </Link>
+              .
+            </p>
+
+            <dl
+              className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3"
+              data-testid="fund-totals"
+            >
+              {fundTotals.map((f) => (
+                <div
+                  key={f.fund}
+                  className="rounded-2xl px-6 py-7"
+                  style={{
+                    backgroundColor: "#ffffff",
+                    border: "1px solid rgba(22,36,63,0.08)",
+                  }}
+                >
+                  <dt className="text-sm font-semibold text-navy">{f.label}</dt>
+                  <dd
+                    className="mt-2 text-3xl font-extrabold tabular-nums"
+                    style={{ color: "#16243F" }}
+                  >
+                    {formatCents(f.totalCents)}
+                  </dd>
+                  <dd className="mt-1 text-sm text-[#6b7280]">
+                    {f.giftCount === 0
+                      ? "No confirmed gifts yet"
+                      : `${f.giftCount} confirmed ${f.giftCount === 1 ? "gift" : "gifts"}`}
+                  </dd>
+                </div>
+              ))}
+            </dl>
           </div>
         </section>
       ) : null}

@@ -80,7 +80,17 @@ export default async function TransactionDetailPage({
           <Row label="Type" value={<TransactionTypeBadge type={tx.type} />} />
           <Row
             label="Fund"
-            value={<Badge tone="gray">{FUND_LABELS[tx.fund] ?? tx.fund}</Badge>}
+            value={
+              <span className="flex flex-wrap items-center gap-2" data-testid="tx-fund">
+                <Badge tone="gray">{FUND_LABELS[tx.fund] ?? tx.fund}</Badge>
+                {tx.fund_backfilled ? (
+                  <span className="text-xs" style={{ color: "#92400e" }}>
+                    unverified — inferred, not stated by the donor. Editing this
+                    transaction confirms it.
+                  </span>
+                ) : null}
+              </span>
+            }
           />
           <Row
             label="Amount"

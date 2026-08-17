@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import {
+  getFundTotals,
   getLedgerTotals,
   getPublicLedger,
 } from "@/lib/faithproof/public";
@@ -69,9 +70,10 @@ export default async function ExplorerPage({
 
   const filters = { fund: fund || undefined, type: type || undefined, from };
 
-  const [ledger, all] = await Promise.all([
+  const [ledger, all, fundTotals] = await Promise.all([
     getPublicLedger({ ...filters, page }),
     getLedgerTotals(filters),
+    getFundTotals(),
   ]);
 
   const totalCents = all.reduce((n, r) => n + (r.amount_cents ?? 0), 0);
@@ -127,6 +129,34 @@ export default async function ExplorerPage({
           <p className="mt-3 max-w-2xl text-base text-[#6b7280]">
             Filter and drill into every category of public giving and spending.
           </p>
+
+          {/* ── Raised by fund ─────────────────────────────────────── */}
+          <section className="mt-8" data-testid="fund-totals">
+            <h2 className="text-sm font-bold uppercase tracking-wider text-navy">
+              Total raised by fund
+            </h2>
+            <p className="mt-1 text-sm text-[#6b7280]">
+              Aggregate totals across all donors. Which fund an individual donor
+              chose is never published — see our{" "}
+              <Link href="/governance/donor-privacy" className="underline">
+                donor privacy commitment
+              </Link>
+              .
+            </p>
+            <dl className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {fundTotals.map((f) => (
+                <div
+                  key={f.fund}
+                  className="flex items-baseline justify-between gap-3 rounded-lg bg-white px-4 py-3 shadow-sm"
+                >
+                  <dt className="text-sm font-medium text-navy">{f.label}</dt>
+                  <dd className="text-base font-bold tabular-nums text-navy">
+                    {formatCents(f.totalCents)}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+          </section>
 
           {/* ── Filter bar ─────────────────────────────────────────── */}
           <form

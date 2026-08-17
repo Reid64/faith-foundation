@@ -1,5 +1,12 @@
 import { createServerClient } from "@/lib/supabase/server";
-import type { ProofDocument, Promise_, Transaction } from "./types";
+import {
+  DONOR_FUNDS,
+  FUND_LABELS,
+  type FundDesignation,
+  type ProofDocument,
+  type Promise_,
+  type Transaction,
+} from "./types";
 
 /**
  * Public FaithProof queries.
@@ -30,7 +37,65 @@ export type PublicStats = {
   totalPublicPromises: number;
 };
 
+export type FundTotal = {
+  fund: FundDesignation;
+  label: string;
+  totalCents: number;
+  giftCount: number;
+};
+
 export type PublicSettings = Record<string, boolean>;
+
+/**
+ * Total raised per fund, for the public transparency pages.
+ *
+ * PRIVACY IS THE POINT OF THE SHAPE. This returns sums and counts and nothing
+ * else — no donor name, no donor email, no individual gift, not even a
+ * timestamp that could single one out. /governance/donor-privacy promises that
+ * an individual donor's designation is never published, and the way to keep
+ * that promise is to make the data structure incapable of carrying it rather
+ * than to remember not to render it. `select("fund, amount_cents")` is
+ * deliberate: widening it would be the bug.
+ *
+ * Only confirmed, public transactions count, which is the same rule the
+ * Accountability Pulse uses and is enforced by RLS besides.
+ *
+ * Funds with nothing raised are returned with a zero so the page shows the
+ * whole slate a donor could give to, not just the popular ones.
+ */
+export async function getFundTotals(): Promise<FundTotal[]> {
+  const supabase = await createServerClient();
+
+  const { data } = await supabase
+    .from("transactions")
+    .select("fund, amount_cents")
+    .eq("status", "confirmed")
+    .eq("is_public", true)
+    .eq("type", "donation");
+
+  const rows = (data ?? []) as { fund: FundDesignation; amount_cents: number }[];
+
+  const totals = new Map<FundDesignation, { totalCents: number; giftCount: number }>();
+  for (const fund of DONOR_FUNDS) totals.set(fund, { totalCents: 0, giftCount: 0 });
+
+  for (const row of rows) {
+    // A gift carrying a retired fund still counts, and gets its own line rather
+    // than being quietly folded into the General Fund.
+    const cur = totals.get(row.fund) ?? { totalCents: 0, giftCount: 0 };
+    cur.totalCents += row.amount_cents ?? 0;
+    cur.giftCount += 1;
+    totals.set(row.fund, cur);
+  }
+
+  return Array.from(totals.entries())
+    .map(([fund, v]) => ({
+      fund,
+      label: FUND_LABELS[fund] ?? fund,
+      totalCents: v.totalCents,
+      giftCount: v.giftCount,
+    }))
+    .sort((a, b) => b.totalCents - a.totalCents || a.label.localeCompare(b.label));
+}
 
 /** Section toggles from the settings table; defaults to shown. */
 export async function getPublicSettings(): Promise<PublicSettings> {

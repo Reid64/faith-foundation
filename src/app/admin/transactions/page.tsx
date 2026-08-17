@@ -18,7 +18,13 @@ import {
 } from "../_components/badges";
 import { getSession } from "@/lib/faithproof/session";
 import { formatCents, formatDateOnly } from "@/lib/faithproof/format";
-import { FUND_LABELS, type Transaction } from "@/lib/faithproof/types";
+import {
+  DONOR_FUNDS,
+  FUND_LABELS,
+  SELECTABLE_FUNDS,
+  type FundDesignation,
+  type Transaction,
+} from "@/lib/faithproof/types";
 
 export const metadata: Metadata = {
   title: "Transactions | FaithProof",
@@ -27,14 +33,28 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
-export default async function TransactionsPage() {
+export default async function TransactionsPage({
+  searchParams,
+}: {
+  searchParams?: { fund?: string };
+}) {
   const session = await getSession();
   if (!session) return null;
 
-  const { data, error } = await session.supabase
+  // Only a real fund filters. An unknown value is ignored rather than returning
+  // an empty table that looks like "there are no transactions".
+  const requested = searchParams?.fund ?? "";
+  const activeFund = (SELECTABLE_FUNDS as string[]).includes(requested)
+    ? (requested as FundDesignation)
+    : null;
+
+  let query = session.supabase
     .from("transactions")
     .select("*")
     .order("transaction_date", { ascending: false });
+  if (activeFund) query = query.eq("fund", activeFund);
+
+  const { data, error } = await query;
 
   const rows = (data ?? []) as Transaction[];
 
@@ -50,14 +70,37 @@ export default async function TransactionsPage() {
         }
       />
 
+      {/* ── Fund filter ────────────────────────────────────────────────
+          Links, not a form: a filtered list is a place you can send someone,
+          and the URL is what makes that possible. */}
+      <div className="mb-5 flex flex-wrap gap-2" data-testid="fund-filter">
+        <FundChip href="/admin/transactions" label="All funds" active={!activeFund} />
+        {DONOR_FUNDS.map((f) => (
+          <FundChip
+            key={f}
+            href={`/admin/transactions?fund=${f}`}
+            label={FUND_LABELS[f]}
+            active={activeFund === f}
+          />
+        ))}
+      </div>
+
       {error ? (
         <QueryError what="transactions" message={error.message} />
       ) : rows.length === 0 ? (
         <Panel>
           <EmptyState
             icon={<InfoIcon className="h-5 w-5" />}
-            title="No transactions recorded yet"
-            detail="Use Add Transaction to record the first donation, grant or expense."
+            title={
+              activeFund
+                ? `No transactions in ${FUND_LABELS[activeFund]}`
+                : "No transactions recorded yet"
+            }
+            detail={
+              activeFund
+                ? "Nothing has been recorded against this fund. Choose All funds to see everything."
+                : "Use Add Transaction to record the first donation, grant or expense."
+            }
           />
         </Panel>
       ) : (
@@ -89,7 +132,16 @@ export default async function TransactionsPage() {
                   <TransactionTypeBadge type={tx.type} />
                 </Td>
                 <Td muted>
-                  {FUND_LABELS[tx.fund] ?? tx.fund}
+                  <span data-testid="tx-fund">{FUND_LABELS[tx.fund] ?? tx.fund}</span>
+                  {tx.fund_backfilled ? (
+                    <span
+                      className="ml-2 rounded px-1.5 py-0.5 text-[11px] font-medium"
+                      style={{ backgroundColor: "#fef3c7", color: "#92400e" }}
+                      title="This fund was inferred, not stated by the donor."
+                    >
+                      unverified
+                    </span>
+                  ) : null}
                 </Td>
                 <Td align="right" className="whitespace-nowrap tabular-nums">
                   {formatCents(tx.amount_cents)}
@@ -115,5 +167,30 @@ export default async function TransactionsPage() {
         </TableWrap>
       )}
     </div>
+  );
+}
+
+/** One filter chip. Admin palette: selected is the deep green on butter. */
+function FundChip({
+  href,
+  label,
+  active,
+}: {
+  href: string;
+  label: string;
+  active: boolean;
+}) {
+  return (
+    <Link
+      href={href}
+      className="rounded-full px-3.5 py-1.5 text-sm font-medium transition-colors"
+      style={
+        active
+          ? { backgroundColor: "#013e37", color: "#ffefb3" }
+          : { backgroundColor: "#ffffff", color: "#013e37", border: "1px solid #d9d5cc" }
+      }
+    >
+      {label}
+    </Link>
   );
 }

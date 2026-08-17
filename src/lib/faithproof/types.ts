@@ -58,6 +58,52 @@ export const SELECTABLE_FUNDS: FundDesignation[] = FUND_DESIGNATIONS.filter(
   (f) => !RETIRED_FUNDS.includes(f)
 );
 
+/**
+ * THE SIX FUNDS A DONOR CAN ACTUALLY CHOOSE.
+ *
+ * Verified against the live Zeffy donation form on 2026-08-17. Earlier
+ * documentation said ten. Ten is the size of the database enum, not the number
+ * of options a donor is offered — the two had been conflated, and the ledger
+ * inherited the confusion.
+ *
+ * The enum keeps all ten deliberately: three name programs retired on
+ * 2026-08-14 and must stay so historical rows still render, and `operational`
+ * is an internal designation for administrative money that has never appeared
+ * on a donation form. So there are three different lists and they are not
+ * interchangeable:
+ *
+ *   DONOR_FUNDS       — the six. Use wherever a GIFT is being designated.
+ *   SELECTABLE_FUNDS  — the six plus `operational`, for internal records such
+ *                       as expenses and grants, which are not donor gifts.
+ *   FUND_DESIGNATIONS — all ten, for rendering rows that already exist.
+ *
+ * Order matches the Zeffy form, General Fund first.
+ */
+export const DONOR_FUNDS: FundDesignation[] = [
+  "unrestricted",
+  "housing_voucher",
+  "veterans",
+  "recovery",
+  "reentry",
+  "cornerstone_communities",
+];
+
+/**
+ * The exact wording each fund carries on the Zeffy form, lowercased.
+ *
+ * This is the string a donor actually read before giving, so it is what an
+ * email parser must match and what a receipt should echo back. If a fund is
+ * renamed on the live form, rename it here in the same commit.
+ */
+export const ZEFFY_FUND_LABELS: Record<string, FundDesignation> = {
+  "general fund": "unrestricted",
+  "housing voucher program": "housing_voucher",
+  "veterans path home": "veterans",
+  "recovery housing": "recovery",
+  "second chance reentry": "reentry",
+  "cornerstone communities": "cornerstone_communities",
+};
+
 export const VOUCHER_STATUSES = [
   "pending",
   "approved",
@@ -94,17 +140,25 @@ export type UserRole = (typeof USER_ROLES)[number];
 
 // ── Human-readable labels ───────────────────────────────────────────────────
 
+/**
+ * Display names.
+ *
+ * The six donor-facing funds are named EXACTLY as the Zeffy form names them,
+ * because a donor who gave to "Veterans Path Home" should not have to work out
+ * that the receipt saying "Veterans" means the same thing. `operational` is
+ * marked internal so it is never mistaken for something a donor chose.
+ */
 export const FUND_LABELS: Record<FundDesignation, string> = {
-  housing_voucher: "Housing Voucher",
-  veterans: "Veterans",
-  recovery: "Recovery",
-  reentry: "Reentry",
-  operational: "Operational",
-  unrestricted: "Unrestricted",
+  unrestricted: "General Fund",
+  housing_voucher: "Housing Voucher Program",
+  veterans: "Veterans Path Home",
+  recovery: "Recovery Housing",
+  reentry: "Second Chance Reentry",
+  cornerstone_communities: "Cornerstone Communities",
+  operational: "Operational (internal)",
   financial_literacy: "Financial Literacy (retired)",
   single_parent_stability: "Single Parent Stability (retired)",
   emergency_bridge: "Emergency Bridge (retired)",
-  cornerstone_communities: "Cornerstone Communities",
 };
 
 export const TRANSACTION_TYPE_LABELS: Record<TransactionType, string> = {
@@ -152,10 +206,19 @@ export type Transaction = {
   status: TransactionStatus;
   amount_cents: number;
   fund: FundDesignation;
+  /**
+   * True when the fund was inferred or defaulted rather than stated by the
+   * donor. Shown as "unverified" in the admin so a default is never mistaken
+   * for a designation. See migration 015.
+   */
+  fund_backfilled: boolean;
   description: string | null;
   donor_name: string | null;
+  donor_email: string | null;
   donor_anonymous: boolean;
   reference_number: string | null;
+  zeffy_transaction_id: string | null;
+  zeffy_campaign: string | null;
   transaction_date: string;
   confirmed_at: string | null;
   confirmed_by: string | null;
