@@ -1,6 +1,52 @@
 # faith-foundation — SESSION STATE
 
-> Tracks the live execution session. LATEST: **PHASE 19 — BOARD MEETING ROOM** (2026-08-16).
+> Tracks the live execution session. LATEST: **PHASE 20 — CLOUDFLARE TURNSTILE ON EVERY PUBLIC
+> FORM** (2026-08-16). Built, tested locally, **NOT DEPLOYED** — Reid runs deploy.ps1.
+>
+> **Audit first, and it changed the design.** All five public forms POSTed from the browser
+> directly to `formsubmit.co`, with no server in the path. A Turnstile widget on its own would
+> therefore have been decorative — the bot never loads the page. Submissions now go to
+> **`/api/forms/submit`**, which verifies the token and only then forwards to Formsubmit
+> server-side. The direct POST was correct while the site was a static export; Phase 1 ended that,
+> and `src/lib/web3forms.ts` still carried the stale "there is no server to POST to" comment.
+>
+> **Five public forms, not four.** Newsletter (SiteFooter, on every page), Contact, Volunteer,
+> Housing application, and — found by traversal, not in the brief — the **Impact receipt form on
+> /faithproof**. Left alone with reasons recorded: `/faithproof/explorer` (a GET filter bar),
+> `/login` (internal-tool door), IntakeChat (`/api/ai/intake`, already IP-limited), and everything
+> under `/admin/**`.
+>
+> **Verification, all local against `next start` with Cloudflare's published test keys:**
+> - `pnpm tsc --noEmit` **0 errors**; `pnpm run build` clean (pre-existing `<img>` warnings only).
+> - New `scripts/turnstile.spec.ts`: **9 passed / 1 skipped** in pass mode; the skipped case
+>   **passes** against an always-fails secret — **10/10 across both modes**.
+> - **Existing `site-audit.spec.ts` against the local build: 139 passed, 1 flaky, 0 failed** — the
+>   same result as the production baseline, with Turnstile in the path of every form test.
+> - Gate probed directly: accepting secret → the route forwards (Formsubmit answered with its own
+>   rate-limit message, which is proof the forward happened); rejecting secret → **400** and
+>   nothing forwarded.
+> - Asserted, not assumed: `TURNSTILE_SECRET_KEY` appears in no script the browser downloads.
+>
+> **A near-miss caught by reading the code instead of trusting the brief.** The route's first
+> version hand-wrote the allowlist and guessed the application subject as "Housing Voucher
+> Application"; the form actually sends "Housing Assistance Application". Every application would
+> have been rejected with "Unknown form." Both sides now read `src/lib/formSubjects.ts`.
+>
+> **Two TEST defects, not product defects, found and fixed:** a wrong selector (`#interest` vs the
+> volunteer form's `#v-interest`), and an assertion that a bogus token is rejected while the server
+> ran Cloudflare's always-PASSES secret — which is precisely what that key is for. The rejection
+> assertion now runs against a second server in fail mode.
+>
+> **Stated limit, not glossed:** the Formsubmit address has been public in the bundle for months.
+> It is server-side now, so it is no longer advertised, but a bot that already has it can post to
+> `formsubmit.co` directly and nothing here can stop that. If spam does not drop after deploy, that
+> is where it is coming from.
+>
+> **Left for Reid to decide:** whether to gate the IntakeChat first message too. It is the most
+> expensive public endpoint (writes contacts, spends Anthropic tokens); gating a conversation is a
+> product call, so it was not done unasked.
+>
+> PRIOR: **PHASE 19 — BOARD MEETING ROOM** (2026-08-16).
 > Video meetings, AI-drafted minutes and digitally signed board approval, built inside the Command
 > Center. Migration 014 applied directly to the live database; the `board-minutes` storage bucket
 > created by calling `/api/setup/storage` once. Build clean (0 TS errors), `vercel --prod` READY.

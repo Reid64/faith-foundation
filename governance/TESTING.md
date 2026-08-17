@@ -14,7 +14,41 @@
 > reachable. The build is HALTED at Gate 2 regardless.
 
 ## Playwright Specifications
-_(no Playwright specs designed)_
+
+> The skeleton below was never filled in by FORGE. This inventory is the real
+> one, audited from `scripts/` on 2026-08-16.
+
+| Spec | Tests | Runs against | Last result |
+|---|---|---|---|
+| `scripts/site-audit.spec.ts` | 140 | live site, or `AUDIT_BASE_URL` | 139 passed, 1 flaky, 0 failed (local build, 2026-08-16) |
+| `scripts/ad-grants-readiness.spec.ts` | 64 | live site, or `AUDIT_BASE_URL` | 62 passed, 2 skipped, 0 failed (local build, 2026-08-16) |
+| `scripts/web3forms-wiring.spec.ts` | — | live site | not run this session |
+| `scripts/turnstile.spec.ts` | 10 | a build carrying the Turnstile keys | 10/10 across pass and fail modes (2026-08-16) |
+
+### Running the Turnstile spec
+
+It needs a server that actually has the keys, so it is run against a local
+`next start` using Cloudflare's published test keys:
+
+```powershell
+# pass mode — the widget solves itself, so the UI assertions can run
+$env:NEXT_PUBLIC_TURNSTILE_SITE_KEY = "1x00000000000000000000AA"
+$env:TURNSTILE_SECRET_KEY           = "1x0000000000000000000000000000000AA"
+pnpm run build; pnpm start -p 3100
+$env:AUDIT_BASE_URL = "http://localhost:3100"
+npx playwright test scripts/turnstile.spec.ts
+
+# fail mode — proves a token Cloudflare rejects is refused with 400
+$env:NEXT_PUBLIC_TURNSTILE_SITE_KEY = "2x00000000000000000000AB"
+$env:TURNSTILE_SECRET_KEY           = "2x0000000000000000000000000000000AA"
+pnpm run build; pnpm start -p 3101
+$env:AUDIT_BASE_URL = "http://localhost:3101"; $env:TURNSTILE_TEST_MODE = "fail"
+npx playwright test scripts/turnstile.spec.ts -g "server gate"
+```
+
+One test **skips** in pass mode by design: under an always-passes secret a bogus
+token is supposed to be accepted, so asserting a rejection there would be
+testing Cloudflare's test key rather than this codebase. It runs in fail mode.
 
 ## API Tests
 _(no API test suites designed)_

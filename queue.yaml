@@ -7,6 +7,33 @@
 # Standard build order: schema → auth → api → ui → features → agents → dashboards → settings → tests → deploy → verify.
 # Build HALTS after governance + queue for Gate 3 (human approval, Contract 2).
 
+# ─────────────────────────────────────────────────────────────────────────────
+# COMPLETED OUT OF QUEUE — Phase 20: Cloudflare Turnstile (2026-08-16)
+#
+# Recorded as a comment ON PURPOSE. Every entry in this file is a prompt a
+# FORGE runner will EXECUTE; adding a finished phase as a real entry would
+# schedule it to be built a second time. The queue is a work list, not a log.
+#
+#   Added:    src/components/TurnstileWidget.tsx
+#             src/lib/turnstile.ts
+#             src/lib/formSubjects.ts
+#             src/app/api/forms/submit/route.ts
+#             scripts/turnstile.spec.ts
+#   Changed:  src/components/SiteFooter.tsx
+#             src/app/contact/ContactForm.tsx
+#             src/app/volunteer/VolunteerForm.tsx
+#             src/app/apply/ApplicationForm.tsx
+#             src/app/faithproof/ImpactReceiptForm.tsx
+#             src/lib/web3forms.ts
+#   Verified: tsc 0 errors; build clean;
+#             turnstile.spec.ts 10/10 across pass and fail modes;
+#             site-audit.spec.ts 139 passed / 1 flaky / 0 failed (local build);
+#             ad-grants-readiness.spec.ts 62 passed / 2 skipped / 0 failed.
+#   Status:   BUILT AND VERIFIED LOCALLY — NOT DEPLOYED. Reid runs deploy.ps1.
+#
+# The `deploy` entry below still applies and will pick this change up.
+# ─────────────────────────────────────────────────────────────────────────────
+
 - id: deploy
   name: "Deploy to production"
   prompt_type: deploy

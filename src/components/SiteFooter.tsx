@@ -2,10 +2,16 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { isInternalRoute } from "@/lib/chrome";
 import { openMailto } from "@/lib/mailto";
 import { submitForm } from "@/lib/web3forms";
+import { FORM_SUBJECTS } from "@/lib/formSubjects";
+import {
+  TURNSTILE_ENABLED,
+  TurnstileWidget,
+  type TurnstileHandle,
+} from "@/components/TurnstileWidget";
 
 const PROGRAM_LINKS = [
   { href: "/programs/homeownership", label: "Homeownership" },
@@ -62,6 +68,8 @@ export default function SiteFooter() {
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [token, setToken] = useState<string | null>(null);
+  const turnstile = useRef<TurnstileHandle>(null);
   const pathname = usePathname();
 
   // See SiteHeader — the internal FaithProof shell renders without public
@@ -95,10 +103,17 @@ export default function SiteFooter() {
                 setError(null);
                 setSubmitting(true);
                 const result = await submitForm(
-                  "FAITH Foundation — Newsletter Signup",
-                  { email: address, list: "Newsletter" }
+                  FORM_SUBJECTS.newsletter,
+                  { email: address, list: "Newsletter" },
+                  token
                 );
                 setSubmitting(false);
+
+                // Single-use token. This form sits on every public page and is
+                // the one bots have actually been hitting, so a stale token
+                // must never be re-sent.
+                turnstile.current?.reset();
+                setToken(null);
 
                 if (result.ok) setSubmitted(true);
                 else setError(result.error);
@@ -120,7 +135,7 @@ export default function SiteFooter() {
                 />
                 <button
                   type="submit"
-                  disabled={submitting}
+                  disabled={submitting || (TURNSTILE_ENABLED && !token && !submitted)}
                   className="shrink-0 rounded-full bg-gold px-6 py-3 text-sm font-bold text-navy transition-colors hover:bg-gold-light disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {submitting
@@ -130,6 +145,15 @@ export default function SiteFooter() {
                       : "Subscribe"}
                 </button>
               </div>
+              {/* Dark theme: this band is navy. Hidden once subscribed so the
+                  confirmed state stays a clean single line. */}
+              {!submitted ? (
+                <TurnstileWidget
+                  ref={turnstile}
+                  onVerify={setToken}
+                  theme="dark"
+                />
+              ) : null}
               {error && (
                 <p role="alert" className="text-sm leading-relaxed text-gold-light">
                   {error}{" "}

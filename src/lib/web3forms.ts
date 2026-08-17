@@ -1,73 +1,64 @@
 /**
- * Formsubmit.co submission for the site's forms.
+ * Public form submission.
  *
- * The site is a static export (`output: "export"`), so there is no server to
- * POST to. Formsubmit is a hosted endpoint that forwards submissions straight
- * to a mailbox — here, info@faithfoundationsf.org — which is why it works from
- * a fully static build.
+ * HISTORY, because the name and the mechanism have both changed and the file
+ * path is load-bearing across five forms:
+ *   - Web3Forms (never delivered — the access key was never obtained)
+ *   - Formsubmit.co, POSTed straight from the browser
+ *   - now: POSTed to our own /api/forms/submit, which verifies a Cloudflare
+ *     Turnstile token and only then forwards to Formsubmit server-side.
  *
- * No account, no API key, no environment variable. The destination mailbox is
- * part of the URL, so there is nothing to configure in Vercel and nothing that
- * has to be inlined at build time.
+ * The earlier direct-to-Formsubmit design was correct while the site was a
+ * static export with no server. That stopped being true in Phase 1, and a
+ * browser that posts directly to a third party cannot be protected by a
+ * CAPTCHA at all — there is no server in the path to check the token. Hence the
+ * route.
  *
- * One caveat worth knowing: Formsubmit sends a one-time activation email to
- * info@faithfoundationsf.org the first time a form is submitted. Until someone
- * clicks the link in that email, Formsubmit answers with `success: "false"` and
- * an activation message — which this module reports as a failure, so the form
- * shows the message and the email fallback rather than a false success.
+ * The destination address no longer appears in the client bundle.
  *
- * Verify with: npx playwright test scripts/site-audit.spec.ts
+ * Verify with: npx playwright test scripts/turnstile.spec.ts
  */
 
-export const FORMSUBMIT_ENDPOINT =
-  "https://formsubmit.co/ajax/info@faithfoundationsf.org";
+/** Our own gate. The Formsubmit endpoint now lives only on the server. */
+export const FORM_ENDPOINT = "/api/forms/submit";
 
 export type SubmitResult = { ok: true } | { ok: false; error: string };
 
 /**
  * POSTs a submission and reports whether it was actually accepted.
  *
- * Delivery is only reported on a 200 AND a truthy `success` in the body.
- * Formsubmit can answer 200 with `success: "false"` (an unactivated form, for
- * one), so trusting the status code alone would show a success state for a
- * message that was never delivered — the exact failure mode this site has
- * already shipped three times. Note that Formsubmit returns `success` as the
- * STRING "true", not a boolean, so both are accepted here.
+ * Delivery is only reported on a 200 AND `ok: true` in the body. The route
+ * returns 400 when the Turnstile check fails and 502 when Formsubmit refuses,
+ * and in both cases the message is written for the person reading it.
  */
 export async function submitForm(
   subject: string,
-  fields: Record<string, string>
+  fields: Record<string, string>,
+  turnstileToken?: string | null
 ): Promise<SubmitResult> {
   try {
-    const response = await fetch(FORMSUBMIT_ENDPOINT, {
+    const response = await fetch(FORM_ENDPOINT, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
       },
-      body: JSON.stringify({
-        _subject: subject,
-        _template: "table",
-        _captcha: "false",
-        from_name: "FAITH Foundation Website",
-        ...fields,
-      }),
+      body: JSON.stringify({ subject, fields, turnstileToken }),
     });
 
-    let payload: { success?: boolean | string; message?: string } = {};
+    let payload: { ok?: boolean; error?: string } = {};
     try {
       payload = await response.json();
     } catch {
       // Non-JSON body — fall through to the status check below.
     }
 
-    const accepted = payload.success === true || payload.success === "true";
-    if (response.ok && accepted) return { ok: true };
+    if (response.ok && payload.ok === true) return { ok: true };
 
     return {
       ok: false,
       error:
-        payload.message ||
+        payload.error ||
         `The form service responded with an error (${response.status}).`,
     };
   } catch (err) {

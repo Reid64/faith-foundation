@@ -5,6 +5,28 @@
 > Every table, column, and constraint below is authoritative. Phase 4 (Sentinel) checks
 > live database state against this registry (Contract 13, schema drift check).
 
+## Phase 20 — Turnstile (2026-08-16): NO SCHEMA CHANGE
+
+Cloudflare Turnstile added **no tables, no columns, no indexes, no RLS policies
+and no migration**. Verification happens in-request against Cloudflare and
+nothing about it is persisted. Recorded explicitly so a future schema-drift
+check does not go looking for a table that was never meant to exist.
+
+> **DRIFT NOTICE (2026-08-16).** The registry below is the original FORGE 2.0
+> output from 2026-06-12 and states 0 tables / 0 indexes / 0 RLS policies / 0
+> migrations. That has not been true since Phase 1. The live database now has
+> **14 applied migrations** (`supabase/migrations/001_*` through `014_*`) and
+> roughly thirty tables, including transactions, vouchers, promises,
+> proof_documents, contacts, grants, volunteer_*, accounts / journal_entries /
+> journal_lines, cornerstone_*, board_meetings and meeting_approvals.
+>
+> This notice is deliberately a pointer, not a rewrite: regenerating the
+> registry from the live database is a real task with real review value, and
+> hand-writing thirty table definitions from memory into an authoritative
+> document is exactly the kind of plausible-but-unverified content that makes a
+> registry worse than useless. The authoritative sources today are the migration
+> files in `supabase/migrations/` and the live database itself.
+
 ## Database
 - **Tables:** 0
 - **Indexes:** 0

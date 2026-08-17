@@ -1,6 +1,6 @@
 # OPERATOR ACTIONS — Required Before the Google for Nonprofits Application
 
-**Last updated: 2026-08-15**
+**Last updated: 2026-08-16**
 
 This file lists work that **cannot be completed from the codebase**. Every item
 here requires a human with access to an external account, a legal record, or
@@ -154,9 +154,18 @@ donor tips. If Zeffy's pricing model changes, that sentence in
 
 **Status: BLOCKED ON A HUMAN. Requires mailbox access.**
 
-All four site forms (Contact, Volunteer, Housing Assistance Application,
-Newsletter) POST to
-`https://formsubmit.co/ajax/info@faithfoundationsf.org`.
+> **UPDATED 2026-08-16 (Phase 20 — Turnstile).** Two corrections to the paragraph
+> below. There are **five** forms, not four — the impact receipt form on
+> `/faithproof` was missed in the original count. And they no longer POST to
+> Formsubmit from the browser: they POST to **`/api/forms/submit`** on this
+> site, which verifies a Cloudflare Turnstile token and only then forwards to
+> Formsubmit server-side. The activation requirement below is unchanged and
+> still outstanding.
+
+All five site forms (Contact, Volunteer, Housing Assistance Application,
+Newsletter, Impact receipt) reach
+`https://formsubmit.co/ajax/info@faithfoundationsf.org` — now via this site's
+own `/api/forms/submit` rather than directly from the browser.
 
 Formsubmit sends a **one-time activation email** to
 `info@faithfoundationsf.org` on the first submission to a new address. **Until
@@ -177,6 +186,32 @@ the Privacy Policy, and the form offers a phone alternative. If the organization
 wants applicant data to avoid third-party relay entirely, that requires moving to
 a hosted form endpoint or a case-management intake system — an infrastructure
 decision, not a content fix.
+
+**Recorded outcome:** _(fill in)_
+
+---
+
+## 6b. Cloudflare Turnstile — keys and spam monitoring
+
+**Status: KEYS ALREADY SET BY THE OPERATOR. One thing to watch after deploy.**
+
+`NEXT_PUBLIC_TURNSTILE_SITE_KEY` and `TURNSTILE_SECRET_KEY` are set in Vercel
+production. They were **not** created or modified by the build, and they are not
+in local `.env.local` — a local `pnpm dev` therefore shows "Spam protection is
+not configured in this environment" and skips the check with a warning, while
+production refuses every submission if the secret is ever missing.
+
+**What to watch after deploying.** The bot signups may not stop, and if they do
+not, the cause is knowable: the Formsubmit address
+(`formsubmit.co/ajax/info@faithfoundationsf.org`) has been present in the public
+JavaScript bundle for months. It is server-side only now, so it is no longer
+advertised — but any bot that already harvested it can keep POSTing to
+Formsubmit **directly**, completely bypassing this site and its CAPTCHA. Nothing
+in the codebase can prevent that.
+
+If spam continues at the same rate after deploy, that is the explanation, and
+the fix is at the Formsubmit end (enable their own captcha for the address, or
+move to a different destination) — not a code change here.
 
 **Recorded outcome:** _(fill in)_
 
@@ -271,6 +306,7 @@ enforce.
 | 4 | Board / officer accuracy | Internal consistency only | Possibly |
 | 5 | Zeffy processor configuration | Embed only | No, but donations may fail |
 | 6 | Formsubmit activation | No | **Yes — forms do not deliver until done** |
+| 6b | Turnstile keys set; watch spam after deploy | Keys not visible to the repo | No |
 | 7 | Beneficiary verification | Resolved on site | No |
 | 8 | Financial records | No | Possibly |
 | 9 | Social profiles | Removed pending real accounts | No |

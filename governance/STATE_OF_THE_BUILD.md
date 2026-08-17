@@ -1,7 +1,79 @@
 # faith-foundation — STATE OF THE BUILD
 
 > Updated from a LIVE codebase audit on 2026-08-16 (BLUEPRINT Canonical Rule 9).
-> Last action: **PHASE 19 COMPLETE — Board Meeting Room: video, AI minutes, digital signatures.**
+> Last action: **PHASE 20 — CLOUDFLARE TURNSTILE ON EVERY PUBLIC FORM. Built and verified
+> locally. NOT DEPLOYED — Reid runs deploy.ps1.**
+>
+> **The finding that shaped the work.** All five public forms POSTed from the browser STRAIGHT to
+> `formsubmit.co`. There was no server in the path, so a CAPTCHA widget alone would have been
+> decorative — a bot that never loads the page cannot be stopped by a widget on it. (The direct
+> POST was correct when the site was a static export; that stopped being true in Phase 1.) So the
+> browser now posts to **`/api/forms/submit`**, which verifies the Turnstile token and only then
+> forwards to Formsubmit server-side.
+>
+> **Public forms found by traversal — five, not the four expected:**
+> 1. Newsletter — `src/components/SiteFooter.tsx` (renders on EVERY public page; the one being
+>    abused)
+> 2. Contact — `src/app/contact/ContactForm.tsx`
+> 3. Volunteer — `src/app/volunteer/VolunteerForm.tsx`
+> 4. Housing application — `src/app/apply/ApplicationForm.tsx` (4 steps; widget on the last)
+> 5. **Impact receipt — `src/app/faithproof/ImpactReceiptForm.tsx`** — not in the brief's expected
+>    list, found by traversal, wired like the rest.
+>
+> **Deliberately NOT wired, each for a stated reason:** `/faithproof/explorer` (a `method="get"`
+> filter bar that submits nothing), `/login` (the door to the internal tool, not a public form — a
+> misconfigured key there would lock out staff), the IntakeChat widget (`/api/ai/intake`, which
+> already carries its own 20/hour per-IP limit — see the recommendation below), and every form
+> under `/admin/**`, which is auth-protected and was not touched.
+>
+> **Files added:** `src/components/TurnstileWidget.tsx` (one script tag for the whole site, single
+> shared widget, imperative reset), `src/lib/turnstile.ts` (server-only siteverify, fails closed),
+> `src/lib/formSubjects.ts` (one source for the subject allowlist), `src/app/api/forms/submit/route.ts`
+> (the gate), `scripts/turnstile.spec.ts` (10 tests).
+> **Files changed:** the five form components, `src/lib/web3forms.ts` (now posts to our route).
+>
+> **Verified locally against `next start` with Cloudflare's published test keys:**
+> - `pnpm tsc --noEmit` **0 errors**; `pnpm run build` clean (only the pre-existing `<img>` lint
+>   warnings).
+> - `scripts/turnstile.spec.ts` **9 passed / 1 skipped** in pass mode, and the skipped one **passes**
+>   in a second run against an always-fails secret: **10/10 across the two modes**. The widget is
+>   present on all five forms, absent on steps 1-3 of the application and present on step 4, and the
+>   submit button is driven by the token.
+> - The gate, probed directly: with a secret that ACCEPTS, the route forwards to Formsubmit (which
+>   answered with its own rate-limit message — proof the forward happened). With a secret that
+>   REJECTS, the route answers **400** and forwards nothing.
+> - `TURNSTILE_SECRET_KEY` appears in no script the browser downloads (asserted, not assumed).
+>
+> **Two test defects found and fixed during verification, not product defects:** the spec used
+> `#interest` where the volunteer form uses `#v-interest`, and it asserted a bogus token is rejected
+> while running Cloudflare's always-PASSES secret, which is what that key exists to do. The second
+> assertion now runs against an always-fails server.
+>
+> **One near-miss worth recording.** The route's first version hand-wrote the subject allowlist and
+> guessed "Housing Voucher Application"; the application form actually sends "Housing Assistance
+> Application", so every application would have been refused with "Unknown form." Both sides now
+> read `src/lib/formSubjects.ts`, which removes the whole class of drift.
+>
+> **An honest limit, stated rather than implied.** The Formsubmit address is an email address in a
+> URL and has been in the public bundle for months. It is now server-side only, so it is no longer
+> advertised — but a bot that already harvested it can keep POSTing to `formsubmit.co` directly, and
+> nothing in this repository can prevent that. Closing it needs a Formsubmit-side control or a
+> different destination. **Recommendation:** watch whether spam actually stops after deploy; if it
+> does not, the bots are hitting Formsubmit directly and the fix is at that end.
+>
+> **Recommendation for Reid, not done without asking:** the IntakeChat endpoint is the most
+> expensive public surface (it writes contacts and spends Anthropic tokens). It has an IP rate limit
+> but no CAPTCHA. Gating the first message would be a small change; it was left alone because
+> gating a conversation is a product decision.
+>
+> **Environment:** `NEXT_PUBLIC_TURNSTILE_SITE_KEY` and `TURNSTILE_SECRET_KEY` are already set in
+> Vercel production and were neither created nor modified. They are NOT in local `.env.local`, so a
+> local `pnpm dev` shows "Spam protection is not configured in this environment" and the server
+> skips the check with a loud warning — in production a missing secret refuses every submission.
+>
+> **NOT DEPLOYED.** Build passes and governance is updated; deployment is Reid's step.
+>
+> Prior action: **PHASE 19 COMPLETE — Board Meeting Room: video, AI minutes, digital signatures.**
 >
 > **Built:** Jitsi video integration with custom FaithProof chrome, branded pre-join screen with
 > camera preview, live participant list with active-speaker highlighting, custom controls bar

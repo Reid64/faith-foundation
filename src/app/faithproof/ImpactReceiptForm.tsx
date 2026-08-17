@@ -1,9 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import FormErrorNotice from "@/components/FormErrorNotice";
+import {
+  TURNSTILE_ENABLED,
+  TurnstileWidget,
+  type TurnstileHandle,
+} from "@/components/TurnstileWidget";
 import { openMailto } from "@/lib/mailto";
 import { submitForm } from "@/lib/web3forms";
+import { FORM_SUBJECTS } from "@/lib/formSubjects";
 
 /**
  * Impact receipt request.
@@ -18,6 +24,8 @@ export default function ImpactReceiptForm() {
   const [submitting, setSubmitting] = useState(false);
   const [sent, setSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [token, setToken] = useState<string | null>(null);
+  const turnstile = useRef<TurnstileHandle>(null);
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -25,10 +33,15 @@ export default function ImpactReceiptForm() {
     setSubmitting(true);
     setError(null);
 
-    const result = await submitForm("Impact Receipt Request", {
-      email,
-      message: `Impact receipt requested for: ${email}`,
-    });
+    const result = await submitForm(
+      FORM_SUBJECTS.impactReceipt,
+      { email, message: `Impact receipt requested for: ${email}` },
+      token
+    );
+
+    // Single-use token: reset whether the request landed or not.
+    turnstile.current?.reset();
+    setToken(null);
 
     if (result.ok) {
       setSent(true);
@@ -51,7 +64,8 @@ export default function ImpactReceiptForm() {
 
   return (
     <div>
-      <form onSubmit={onSubmit} className="flex flex-col gap-3 sm:flex-row">
+      <form onSubmit={onSubmit} className="flex flex-col gap-3">
+        <div className="flex flex-col gap-3 sm:flex-row">
         <label htmlFor="receipt-email" className="sr-only">
           Your email address
         </label>
@@ -67,11 +81,17 @@ export default function ImpactReceiptForm() {
         />
         <button
           type="submit"
-          disabled={submitting}
+          disabled={submitting || (TURNSTILE_ENABLED && !token)}
           className="shrink-0 rounded-lg bg-navy px-6 py-3 font-bold text-gold transition hover:bg-navy-light disabled:opacity-60"
         >
-          {submitting ? "Sending…" : "Request My Receipt"}
+          {submitting
+            ? "Sending…"
+            : TURNSTILE_ENABLED && !token
+              ? "Complete the check"
+              : "Request My Receipt"}
         </button>
+        </div>
+        <TurnstileWidget ref={turnstile} onVerify={setToken} />
       </form>
 
       {error ? (

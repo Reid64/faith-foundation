@@ -1,9 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { openMailto } from "@/lib/mailto";
 import { submitForm } from "@/lib/web3forms";
+import { FORM_SUBJECTS } from "@/lib/formSubjects";
 import FormErrorNotice from "@/components/FormErrorNotice";
+import {
+  TURNSTILE_ENABLED,
+  TurnstileWidget,
+  type TurnstileHandle,
+} from "@/components/TurnstileWidget";
 
 const INTERESTS = [
   "Tenancy & life-skills coaching",
@@ -19,6 +25,8 @@ export default function VolunteerForm() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [attempt, setAttempt] = useState<Record<string, string>>({});
+  const [token, setToken] = useState<string | null>(null);
+  const turnstile = useRef<TurnstileHandle>(null);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -40,11 +48,16 @@ export default function VolunteerForm() {
     setSubmitting(true);
 
     const result = await submitForm(
-      "FAITH Foundation — Volunteer Application",
-      fields
+      FORM_SUBJECTS.volunteer,
+      fields,
+      token
     );
 
     setSubmitting(false);
+
+    // The token is single use — reset after success and after failure alike.
+    turnstile.current?.reset();
+    setToken(null);
 
     if (result.ok) setSubmitted(true);
     else setError(result.error);
@@ -192,12 +205,17 @@ export default function VolunteerForm() {
         aria-hidden
         style={{ display: "none" }}
       />
+      <TurnstileWidget ref={turnstile} onVerify={setToken} className="mt-8" />
       <button
         type="submit"
-        disabled={submitting}
-        className="mt-8 w-full rounded-full bg-green px-8 py-4 text-base font-bold text-white shadow-green transition-all duration-300 hover:bg-green-dark hover:shadow-card-lg disabled:cursor-not-allowed disabled:opacity-60"
+        disabled={submitting || (TURNSTILE_ENABLED && !token)}
+        className="mt-6 w-full rounded-full bg-green px-8 py-4 text-base font-bold text-white shadow-green transition-all duration-300 hover:bg-green-dark hover:shadow-card-lg disabled:cursor-not-allowed disabled:opacity-60"
       >
-        {submitting ? "Sending…" : "Sign Up to Volunteer"}
+        {submitting
+          ? "Sending…"
+          : TURNSTILE_ENABLED && !token
+            ? "Complete the spam check"
+            : "Sign Up to Volunteer"}
       </button>
       {error && (
         <FormErrorNotice message={error} onEmailFallback={emailFallback} />

@@ -1,15 +1,23 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { openMailto } from "@/lib/mailto";
 import { submitForm } from "@/lib/web3forms";
+import { FORM_SUBJECTS } from "@/lib/formSubjects";
 import FormErrorNotice from "@/components/FormErrorNotice";
+import {
+  TURNSTILE_ENABLED,
+  TurnstileWidget,
+  type TurnstileHandle,
+} from "@/components/TurnstileWidget";
 
 export default function ContactForm() {
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [attempt, setAttempt] = useState<Record<string, string>>({});
+  const [token, setToken] = useState<string | null>(null);
+  const turnstile = useRef<TurnstileHandle>(null);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -31,11 +39,17 @@ export default function ContactForm() {
     setSubmitting(true);
 
     const result = await submitForm(
-      "FAITH Foundation — Contact Form Submission",
-      fields
+      FORM_SUBJECTS.contact,
+      fields,
+      token
     );
 
     setSubmitting(false);
+
+    // A Turnstile token is single use. Reset after every attempt, or a retry
+    // after a failure would send a token the server has already consumed.
+    turnstile.current?.reset();
+    setToken(null);
 
     // Success is shown only on a confirmed delivery, never optimistically.
     if (result.ok) setSubmitted(true);
@@ -183,12 +197,21 @@ export default function ContactForm() {
         aria-hidden
         style={{ display: "none" }}
       />
+      <TurnstileWidget
+        ref={turnstile}
+        onVerify={setToken}
+        className="mt-6"
+      />
       <button
         type="submit"
-        disabled={submitting}
-        className="mt-8 w-full rounded-full bg-green px-8 py-4 text-base font-bold text-white shadow-green transition-all duration-300 hover:bg-green-dark hover:shadow-card-lg disabled:cursor-not-allowed disabled:opacity-60"
+        disabled={submitting || (TURNSTILE_ENABLED && !token)}
+        className="mt-6 w-full rounded-full bg-green px-8 py-4 text-base font-bold text-white shadow-green transition-all duration-300 hover:bg-green-dark hover:shadow-card-lg disabled:cursor-not-allowed disabled:opacity-60"
       >
-        {submitting ? "Sending…" : "Send Message"}
+        {submitting
+          ? "Sending…"
+          : TURNSTILE_ENABLED && !token
+            ? "Complete the spam check"
+            : "Send Message"}
       </button>
       {error && (
         <FormErrorNotice message={error} onEmailFallback={emailFallback} />

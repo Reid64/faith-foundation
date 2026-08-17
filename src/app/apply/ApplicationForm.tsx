@@ -3,7 +3,13 @@
 import { useRef, useState } from "react";
 import { openMailto } from "@/lib/mailto";
 import { submitForm } from "@/lib/web3forms";
+import { FORM_SUBJECTS } from "@/lib/formSubjects";
 import FormErrorNotice from "@/components/FormErrorNotice";
+import {
+  TURNSTILE_ENABLED,
+  TurnstileWidget,
+  type TurnstileHandle,
+} from "@/components/TurnstileWidget";
 
 const STEPS = [
   { id: 1, label: "Your Information" },
@@ -29,6 +35,8 @@ export default function ApplicationForm() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [attempt, setAttempt] = useState<Record<string, string>>({});
+  const [token, setToken] = useState<string | null>(null);
+  const turnstile = useRef<TurnstileHandle>(null);
 
   function capture() {
     const el = formRef.current;
@@ -97,12 +105,14 @@ export default function ApplicationForm() {
     setError(null);
     setSubmitting(true);
 
-    const result = await submitForm(
-      "FAITH Foundation — Housing Assistance Application",
-      fields
-    );
+    const result = await submitForm(FORM_SUBJECTS.apply, fields, token);
 
     setSubmitting(false);
+
+    // Single-use token: reset after success and after failure alike, so a
+    // retry on this four-step form does not send a spent one.
+    turnstile.current?.reset();
+    setToken(null);
 
     if (result.ok) setSubmitted(true);
     else setError(result.error);
@@ -369,6 +379,10 @@ export default function ApplicationForm() {
           </fieldset>
         )}
 
+        {step === STEPS.length ? (
+          <TurnstileWidget ref={turnstile} onVerify={setToken} className="mt-8" />
+        ) : null}
+
         {/* Navigation */}
         <div className="mt-8 flex items-center justify-between gap-4">
           <button
@@ -390,10 +404,14 @@ export default function ApplicationForm() {
           ) : (
             <button
               type="submit"
-              disabled={submitting}
+              disabled={submitting || (TURNSTILE_ENABLED && !token)}
               className="rounded-full bg-green px-8 py-3 text-base font-bold text-white shadow-green transition-all duration-300 hover:bg-green-dark hover:shadow-card-lg disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {submitting ? "Submitting…" : "Submit Application"}
+              {submitting
+                ? "Submitting…"
+                : TURNSTILE_ENABLED && !token
+                  ? "Complete the spam check"
+                  : "Submit Application"}
             </button>
           )}
         </div>

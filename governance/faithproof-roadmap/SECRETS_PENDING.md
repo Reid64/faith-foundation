@@ -77,6 +77,29 @@ not enough to sit in a board meeting.
 
 ---
 
+## Cloudflare Turnstile (Phase 20 — public form CAPTCHA) — ALREADY SET
+
+```
+NEXT_PUBLIC_TURNSTILE_SITE_KEY   # public by design, identifies the widget
+TURNSTILE_SECRET_KEY             # server only, never NEXT_PUBLIC_
+```
+
+**Both are already set in Vercel production.** This build neither created nor
+modified them. Unlike every other entry in this file, nothing is pending.
+
+They are deliberately **not** in local `.env.local`. Consequences, by design:
+- **Local / preview without the keys:** the widget renders "Spam protection is
+  not configured in this environment", and the server logs a loud warning and
+  skips the check, so development is not bricked.
+- **Production without the secret:** every submission is refused. A spam gate
+  that opens when its checker is missing is not a gate.
+
+For local testing use Cloudflare's published test keys — always passes:
+`1x00000000000000000000AA` / `1x0000000000000000000000000000000AA`; always
+fails: `2x00000000000000000000AB` / `2x0000000000000000000000000000000AA`.
+
+---
+
 ## ZOHO_SMTP_PASS (Phase 11 — Mail merge)
 
 Zoho app-specific password for info@faithfoundationsf.org.

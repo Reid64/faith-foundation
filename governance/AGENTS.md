@@ -8,3 +8,12 @@ _(no orchestration specified)_
 
 ## Agent Definitions
 This project defines no autonomous agents.
+
+> **Checked 2026-08-16 (Phase 20 — Turnstile).** Still accurate. The Turnstile work
+> added a React component, a server-side verifier, a shared constants module and
+> one API route — no autonomous agent, no orchestration, no scheduled process.
+> Recorded so the file is known to have been audited rather than skipped.
+>
+> For completeness, the one automated non-request process in the live system is
+> the Zeffy webhook receiver (`/api/webhooks/zeffy`), which is an inbound
+> endpoint rather than an agent.
