@@ -1,7 +1,46 @@
 # faith-foundation — SESSION STATE
 
-> Tracks the live execution session. LATEST: **PHASE 24 — FUND DESIGNATION THROUGH THE LEDGER**
-> (2026-08-18). **NOT DEPLOYED. Branch `phase-24/fund-designation`, not `main`.**
+> Tracks the live execution session. LATEST: **BUILD-VS-SCOPE RECONCILIATION**
+> (2026-08-18). **READ-ONLY PASS — nothing was built, fixed or deployed.**
+> Branch `phase-25/scope-reconciliation`, not `main`.
+>
+> **Why it was done.** Governance in this repository has described work as complete that did
+> not exist — the Zeffy IMAP poller was recorded as built and had no route, no cron entry and
+> no mention anywhere in the source tree. A documentation set that can be wrong in that
+> direction cannot be used to plan from. So all 17 scoped features were checked against the
+> App Router tree, the applied migrations, the live Supabase schema and `vercel env ls`, and
+> **no governance document was treated as evidence of completion.**
+>
+> **Result:** `governance/SCOPE_RECONCILIATION.md`. Seven features fully functional, four
+> partial, two built but blocked on a single environment variable each, four not built.
+>
+> **The three findings that changed the picture:**
+> 1. There is **no donor-facing or applicant-facing authentication of any kind**, and
+>    `handle_new_user` defaults every new account to role **`staff`** — which 37 RLS policies
+>    grant read access to. Enabling self-registration today would hand every registrant
+>    staff-level access to contacts, transactions and the audit log.
+> 2. **Middleware performs no role check.** It tests only that a user exists; the admin layout
+>    redirects only when there is no session. Every authorisation decision is made by RLS at
+>    the database, so a `public`-role user reaches `/admin` and sees an empty shell. There is
+>    no routing layer to extend for a new audience — it has to be built.
+> 3. **Nothing sends a donor anything automatically.** SMS, the impact receipt engine and the
+>    automated half of volunteer management are all absent — and they are the features a donor
+>    or applicant would actually experience.
+>
+> Four contradictions between governance and code are recorded in the report, including that
+> the roadmap's phase numbers 12 and 13 name portal specifications that were never built while
+> those migration numbers were used for fund accounting and cornerstone instead.
+>
+> **Fund designation is no longer a blocker for anything** — migration 015 settled it. What the
+> downstream features are blocked on now is donation *data*, which is the Zeffy parser.
+>
+> No other governance file was changed by this pass.
+>
+> ---
+>
+> ## Previous: PHASE 24 — FUND DESIGNATION THROUGH THE LEDGER (2026-08-18)
+>
+> **NOT DEPLOYED. Branch `phase-24/fund-designation`, not `main`.**
 >
 > **Six funds, not ten.** Zeffy's live form offers six. Ten was the enum size, and the two had
 > been conflated in the documentation. Recorded in SCHEMA_REGISTRY with the mapping table.
