@@ -102,6 +102,7 @@ export function MinutesEditor({
         name="minutes_text"
         defaultValue={text}
         rows={24}
+        aria-label="Meeting minutes"
         className={`${CONTROL} resize-y font-serif leading-relaxed`}
       />
       <ErrorNote message={error} />

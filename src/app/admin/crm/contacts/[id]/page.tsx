@@ -143,9 +143,13 @@ export default async function ContactDetailPage({
       <div className="grid gap-6 lg:grid-cols-3">
         {/* ── Left: the record ───────────────────────────────────── */}
         <div style={cardStyle} className="p-6 lg:col-span-1">
-          <h2 style={{ color: "#013e37", fontSize: 20, fontWeight: 700 }}>
+          {/* The contact's name IS this page's subject, so it is the h1. It was
+              an h2 with no h1 above it anywhere on the page, which leaves a
+              screen reader with no title for the record it is reading out.
+              Styling is inline, so this is identical on screen. */}
+          <h1 style={{ color: "#013e37", fontSize: 20, fontWeight: 700 }}>
             {contactName(c)}
-          </h2>
+          </h1>
           <div className="mt-2 flex flex-wrap gap-2">
             <Badge tone={CONTACT_TYPE_TONES[c.type as ContactType] ?? "gray"}>
               {CONTACT_TYPE_LABELS[c.type as ContactType] ?? c.type}
