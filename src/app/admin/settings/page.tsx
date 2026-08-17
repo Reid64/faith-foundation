@@ -7,6 +7,7 @@ import {
   exportVouchers,
   updateSetting,
 } from "./actions";
+import { MfaSection } from "./MfaSection";
 import {
   ExportButton,
   ResetPasswordButton,
@@ -145,6 +146,15 @@ export default async function SettingsPage() {
             </dd>
           </div>
           <ResetPasswordButton email={session.email} />
+        </Panel>
+
+        {/* CARD 2b — Two-factor authentication (opt in) */}
+        <Panel className="p-6">
+          <SectionHeading
+            title="Two-Factor Authentication"
+            subtitle="Optional. Register an authenticator app for your own account — it is not required at sign-in."
+          />
+          <MfaSection />
         </Panel>
 
         {/* CARD 3 — Public transparency */}
