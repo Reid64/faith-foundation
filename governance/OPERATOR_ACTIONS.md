@@ -285,7 +285,8 @@ different fault with a different remedy and the wording now tells you which.
 
 ## 6e. Board meeting room — creation, and getting back in (2026-08-17)
 
-**Status: FIXED IN CODE. NOT DEPLOYED.**
+**Status: FIXED, COMMITTED AND DEPLOYED** (`c149ece`, deployed `cf510cb`
+2026-08-17 01:03, by the operator). Ready to retest on production.
 
 Three things you reported are addressed:
 

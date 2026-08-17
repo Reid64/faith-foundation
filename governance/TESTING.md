@@ -23,7 +23,13 @@
 | `scripts/site-audit.spec.ts` | 140 | live site, or `AUDIT_BASE_URL` | 139 passed, 0 failed (local build, 2026-08-16) |
 | `scripts/ad-grants-readiness.spec.ts` | 64 | live site, or `AUDIT_BASE_URL` | 62 passed, 2 skipped, 0 failed (local build, 2026-08-16) |
 
-**Combined run, 2026-08-16: 224 passed, 3 skipped, 0 failed** across all four suites.
+**Combined run, 2026-08-16: 224 passed, 3 skipped, 0 failed** across four named suites — which
+was the blind spot: `web3forms-wiring` was not among them and had been red since Phase 20.
+
+**Whole-suite run, 2026-08-17 (`npx playwright test`, no filter): 233 passed, 3 flaky, 3 skipped,
+0 failed.** The flaky three are the two `admin-navigation` crawls and one `meeting-room` device
+test; all passed on retry, and the crawls load ~58 pages apiece, so the cause is load timing rather
+than an assertion.
 | `scripts/web3forms-wiring.spec.ts` | 6 | a local build with the Turnstile test keys | 6/6 (2026-08-17, rewritten) |
 | `scripts/turnstile.spec.ts` | 10 | a build carrying the Turnstile keys | 10/10 across pass and fail modes (2026-08-16) |
 | `scripts/meeting-room.spec.ts` | 16 | a local build; needs the service key in `.env.local` | 16/16 (2026-08-17) |

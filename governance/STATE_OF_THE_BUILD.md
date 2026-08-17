@@ -102,6 +102,21 @@
 > remembered. My earlier "224 passed / 3 skipped" baseline carried this blind spot and is corrected
 > here.
 >
+>
+> **Full suite, whole run, no file filter: 233 passed, 3 flaky, 3 skipped, 0 failed** (7.1 min).
+> Against the 224 / 3 baseline the +9 is the four previously-failing `web3forms-wiring` tests now
+> passing, its new bundle-leak test, and the four new meeting/reopen tests. The 3 flaky are both
+> `admin-navigation` crawls and one `meeting-room` device test; all passed on retry. The crawls
+> load ~58 pages each and the flakiness is load timing, not an assertion — but a guard that needs a
+> retry is a weaker guard, and tightening its waits is the obvious next improvement.
+>
+> **DEPLOYMENT NOTE, recorded for accuracy.** This work was committed by the operator mid-session as
+> `c149ece` "Phase 22: admin navigation audit, meeting creation, reopen ended meetings" and deployed
+> as `cf510cb` "Production deploy - 2026-08-17 01:03". **I did not deploy** — the instruction was to
+> stop at a passing build, and the deploy was the operator's own `deploy.ps1` run. Earlier text in
+> this entry saying "NOT DEPLOYED" described the state at the time of writing and is superseded by
+> this note: all three defects are live.
+>
 > Prior action: **PHASE 21.1 — TWO DEFECTS FROM LIVE BROWSER TESTING, FIXED. NOT DEPLOYED.**
 >
 > Both were found by the operator driving production in a real browser. **Neither was caught by the
