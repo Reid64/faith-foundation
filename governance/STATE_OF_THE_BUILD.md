@@ -1,7 +1,84 @@
 # faith-foundation — STATE OF THE BUILD
 
-> Updated from a LIVE codebase audit on 2026-08-18 (BLUEPRINT Canonical Rule 9).
-> Last action: **PHASE 24 — FUND DESIGNATION THROUGH THE LEDGER.
+> Updated 2026-09-05. Claims below were checked against the source tree, the applied
+> migrations, the live Supabase schema and `vercel env ls` — not against other governance
+> documents, which have been wrong in this repository before.
+>
+> Last action: **SESSION 2026-08-16 — MAJOR PLATFORM BUILD SESSION (Phases 9–19).**
+>
+> Recorded 2026-09-05 from an operator handoff note written at the time. **The note was
+> written before Phases 20–24 and several of its statements were overtaken by later work.**
+> Every claim was checked against the source tree, the applied migrations, the live Supabase
+> schema and `vercel env ls` before being written here, and the ones that no longer hold are
+> corrected inline rather than reproduced. Nothing is recorded as complete on the strength of
+> the note alone.
+>
+> ### What the session did
+>
+> - **Phases 9–19 built, deployed and verified.** Already documented in detail further down this
+>   file under "PHASE 19 COMPLETE" and "FAITHPROOF PLATFORM COMPLETE — Phases 9-18". This entry
+>   is a summary of that same session, not additional work.
+> - **`donations@faithfoundationsf.org` Zoho group created**, and Zeffy notifications redirected
+>   to it. External mailbox configuration; not verifiable from the repository, the database or
+>   Vercel, and recorded as reported.
+> - **Zeffy funds cleaned up.** Hidden on the live donation form: Homeownership Counseling,
+>   Financial Literacy, Emergency Bridge Housing, Single Parent Stability. Consistent with what
+>   Phase 24 later verified — the form offers **six** funds. External; recorded as reported.
+> - **Real data entered.** See the correction below for what the database actually holds today.
+>
+> ### Corrections — claims in the note that the code does not support
+>
+> | Note said | Verified 2026-09-05 |
+> | --- | --- |
+> | "Zeffy IMAP poller built but NOT yet confirmed working — IMAP auth may need OAuth2" | **The poller does not exist.** `src/app/api/cron/` is not present, `vercel.json` has no `crons` key, and `poll-donations` appears nowhere in the tree. It is not an auth problem; there is no route to authenticate. This is the same false-completion claim that prompted `SCOPE_RECONCILIATION.md`. |
+> | "Pusher/WebRTC investigation concluded — Jitsi kept as-is, works correctly" | **Jitsi was removed in Phase 21** and replaced with native WebRTC over Pusher signalling with Cloudflare TURN. `MeetingRoom.tsx` opens "Replaces the Jitsi iframe". Only the vestigial `board_meetings.jitsi_room_name` column survives, written on create and read by nothing. |
+> | "Bot spam on public forms — need Cloudflare Turnstile captcha on all public forms" | **Shipped in Phase 20.** `TurnstileWidget` is on all five public forms — apply, contact, volunteer, impact receipt, and the footer newsletter — and verification is server-side in `/api/forms/submit`. |
+> | "PENDING ENV VARS: `TURNSTILE_SECRET_KEY`, `NEXT_PUBLIC_TURNSTILE_SITE_KEY`" | **Both have been set in Vercel production for 20 days.** Not pending. |
+> | "CONFIRMED SET IN VERCEL: `CRON_SECRET` ✅" | **`CRON_SECRET` is NOT set.** It does not appear in `vercel env ls production`. It is required before any cron route ships. |
+> | "$200 confirmed donation + $1 test donation pending" | The database holds **two** transactions: **$200.00 confirmed, General Fund, public**; and **$125.78 confirmed, Cornerstone Communities, not public**. There is no $1 pending donation. |
+> | "ANTHROPIC_API_KEY added to Vercel production (2026-08-16) — AI minutes generation now active" | **True today, but not on 2026-08-16.** The variable was created **2026-09-05**. Every audit between 2026-08-17 and 2026-09-05 confirmed it absent and both AI routes returning an honest 503. AI minutes drafting and the AI intake assistant should now work and have **never been exercised against a real conversation** — that is the next thing to test. |
+>
+> ### Known bugs to fix next session
+>
+> Each checked against the code today.
+>
+> 1. **Board vote form records tallies, not a roll call — CONFIRMED, with a correction to the
+>    wording.** `AddVoteForm.tsx` has exactly three numeric fields: `votes_for`, `votes_against`,
+>    `votes_abstain`. They are aggregate counts, not three rows that need to become unlimited. To
+>    record who voted which way — which is what a minute book normally shows — needs a per-director
+>    vote table, not a longer form. Worth deciding which is actually wanted before building.
+> 2. **Reid Whitesides appears twice in the meeting approval list — CONFIRMED.**
+>    `minutes/page.tsx:106` builds the approver list with
+>    `.from("profiles").select(...).in("role", ["admin","board"])`. The live table holds
+>    `info@faithfoundationsf.org` (role `admin`, full name "Reid Whitesides") **and**
+>    `reid@faithfoundationsf.org` (role `board`, same name). Both are therefore approvers, so one
+>    person counts twice toward quorum and certification cannot be reached honestly. The proposed
+>    fix — exclude `info@` from the approval list — works, but the cleaner fix is to decide whether
+>    `info@` should hold a role at all, since it is a shared mailbox rather than a director.
+> 3. **Zeffy donation ingestion — NOT BUILT** (see the corrections table). Blocked on reading one
+>    real notification email; `scripts/zeffy-inspect.mjs` and `OPERATOR_ACTIONS.md` §12 unblock it.
+> 4. **Turnstile — already done.** Retained here only so the item is not raised a third time.
+> 5. **Document File Explorer not yet built — CONFIRMED.** `src/app/admin/proof-vault/` contains
+>    `page.tsx`, `new/`, `[id]/` and `actions.ts`, and no upload or browse surface. A private
+>    Supabase Storage bucket already exists (`/api/setup/storage`, used for certified minutes
+>    PDFs), so there is somewhere for files to go.
+>
+> ### Environment variables — verified against `vercel env ls production` on 2026-09-05
+>
+> **Set (20):** `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`,
+> `SUPABASE_SERVICE_ROLE_KEY`, `ZOHO_SMTP_PASS`, `ZOHO_IMAP_USER`, `ZOHO_IMAP_PASS`,
+> `ZOHO_IMAP_HOST`, `ZOHO_IMAP_PORT`, `ANTHROPIC_API_KEY` *(added 2026-09-05)*,
+> `INBOUND_WEBHOOK_SECRET`, `TURNSTILE_SECRET_KEY`, `NEXT_PUBLIC_TURNSTILE_SITE_KEY`,
+> `PUSHER_APP_ID`, `PUSHER_KEY`, `PUSHER_SECRET`, `PUSHER_CLUSTER`, `NEXT_PUBLIC_PUSHER_KEY`,
+> `NEXT_PUBLIC_PUSHER_CLUSTER`, `CLOUDFLARE_TURN_KEY_ID`, `CLOUDFLARE_TURN_API_TOKEN`.
+>
+> **NOT set, and each blocks something:** `CRON_SECRET` (any cron route, including the donation
+> poller and a future receipt engine) and `ZEFFY_WEBHOOK_SECRET` (the open-webhook finding,
+> `AUDIT_REPORT.md` HIGH 1).
+>
+> ---
+>
+> Prior action: **PHASE 24 — FUND DESIGNATION THROUGH THE LEDGER.
 > NOT DEPLOYED. On branch `phase-24/fund-designation`, not `main`.**
 >
 > ---
