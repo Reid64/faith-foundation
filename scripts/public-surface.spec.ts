@@ -148,6 +148,152 @@ test("every public page renders, links resolve, and nothing reads like a placeho
 });
 
 /**
+ * DEPARTED-OFFICER SWEEP — added 2026-09-18.
+ *
+ * The President and Executive Director resigned on 2026-09-18 and every
+ * reference to them was removed from the site. This walks the whole public
+ * surface and asserts three things at once:
+ *
+ *   1. The departed officer's name appears nowhere in a rendered DOM — not in
+ *      copy, not in an `alt` attribute, not in a `<title>`, not in a meta
+ *      description, and not in JSON-LD.
+ *   2. No vacancy language leaks. The office is vacant, and the public is told
+ *      nothing about that: no empty card, no "Position Open", no "TBD".
+ *   3. The board renders as exactly the three serving directors.
+ *
+ * (1) is the reason this test exists at all: a name removed from a component
+ * but left in a metadata string is still on the page as far as a search engine
+ * is concerned, and only a rendered-DOM assertion catches that.
+ */
+const DEPARTED = /\bron\b|\blanders\b/i;
+
+/**
+ * Vacancy language. `TBD` is checked separately below because /events has
+ * carried an unrelated "Time TBD" on the volunteer orientation since long
+ * before the resignation — it is an event time, not an unfilled office.
+ */
+const VACANCY_LANGUAGE =
+  /\bvacant\b|\bvacancy\b|position open|open position|coming soon|to be appointed|to be announced|interim president/i;
+const UNRELATED_TBD = "Time TBD";
+
+test("the departed officer appears nowhere on the public site", async ({ page }) => {
+  test.setTimeout(20 * 60_000);
+  const leaks: string[] = [];
+
+  for (const route of ROUTES) {
+    const url = route === "/" ? "/" : route + "/";
+    const res = await page.goto(url, { waitUntil: "domcontentloaded" });
+    if ((res?.status() ?? 0) >= 400) continue;
+
+    // The whole document, not just visible text: alt attributes, <title>, meta
+    // descriptions and JSON-LD all carry names a visitor never reads but a
+    // crawler does.
+    const html = await page.content();
+    if (DEPARTED.test(html)) {
+      const line = html.split("\n").find((l) => DEPARTED.test(l)) ?? html;
+      leaks.push(`${route}: departed officer named — ${line.trim().slice(0, 200)}`);
+    }
+
+    const alts = await page
+      .locator("img[alt]")
+      .evaluateAll((els) => els.map((e) => e.getAttribute("alt") ?? ""));
+    for (const alt of alts) {
+      if (DEPARTED.test(alt)) leaks.push(`${route}: alt text names departed officer — ${alt}`);
+    }
+
+    const body = await page.locator("body").innerText();
+    if (VACANCY_LANGUAGE.test(body)) {
+      const line = body.split("\n").find((l) => VACANCY_LANGUAGE.test(l)) ?? "";
+      leaks.push(`${route}: vacancy language — ${line.trim().slice(0, 200)}`);
+    }
+    const tbd = body
+      .split("\n")
+      .filter((l) => /\bTBD\b/.test(l) && !l.includes(UNRELATED_TBD));
+    for (const l of tbd) leaks.push(`${route}: unexplained TBD — ${l.trim().slice(0, 200)}`);
+
+    // A card carrying an officer title but no name would be an empty slot
+    // reaching the page — the exact failure the roster's name filter exists to
+    // prevent.
+    const emptyCards = await page.evaluate(() =>
+      [...document.querySelectorAll("li, article")].filter((el) => {
+        const t = (el as HTMLElement).innerText ?? "";
+        if (!/president|executive director|secretary|treasurer|board chair/i.test(t)) return false;
+        const withoutTitles = t.replace(
+          /president|executive director|secretary|treasurer|board chair|founder|chief strategy officer|protector/gi,
+          ""
+        );
+        return withoutTitles.replace(/[^a-z]/gi, "").length === 0;
+      }).length
+    );
+    if (emptyCards > 0) {
+      leaks.push(`${route}: ${emptyCards} officer card(s) carry a title but no name`);
+    }
+  }
+
+  console.log(`departed-officer sweep: ${ROUTES.length} routes, ${leaks.length} leaks`);
+  for (const l of leaks) console.log(`  ${l}`);
+  expect(leaks, leaks.join("\n")).toEqual([]);
+});
+
+test("team, about and governance render exactly the three serving directors", async ({
+  page,
+}) => {
+  const SERVING = ["Pastor Juan Valdez", "Scott Ellis", "Reid Whitesides"];
+
+  // /governance — three name cards in a single row, no fourth and no hole.
+  await page.goto("/governance/", { waitUntil: "domcontentloaded" });
+  const govCards = page.locator("section ul.grid > li");
+  await expect(govCards).toHaveCount(3);
+  for (const name of SERVING) {
+    await expect(govCards.filter({ hasText: name })).toHaveCount(1);
+  }
+
+  // /team — three directory cards, each with a name, a role and a portrait.
+  await page.goto("/team/", { waitUntil: "domcontentloaded" });
+  const teamCards = page.locator("article.card-team");
+  await expect(teamCards).toHaveCount(3);
+  for (const name of SERVING) {
+    await expect(teamCards.filter({ hasText: name })).toHaveCount(1);
+  }
+  const brokenPortraits = await page.evaluate(() =>
+    [...document.querySelectorAll("article.card-team img")].filter(
+      (i) => !(i as HTMLImageElement).getAttribute("src")
+    ).length
+  );
+  expect(brokenPortraits, "team portraits with no src").toBe(0);
+
+  // The grid must not leave a hole where the fourth card used to be: with an
+  // odd roster the last card is centred, so no card may sit flush left in a
+  // row of its own while the row beside it is empty.
+  const rowGeometry = await page.evaluate(() => {
+    const cards = [...document.querySelectorAll("article.card-team")];
+    const grid = cards[0]?.parentElement;
+    if (!grid) return null;
+    const g = grid.getBoundingClientRect();
+    const last = cards[cards.length - 1].getBoundingClientRect();
+    const leftGap = last.left - g.left;
+    const rightGap = g.right - last.right;
+    return { leftGap: Math.round(leftGap), rightGap: Math.round(rightGap) };
+  });
+  expect(rowGeometry, "team grid geometry").not.toBeNull();
+  // Centred means the space either side of the final card matches.
+  expect(
+    Math.abs((rowGeometry?.leftGap ?? 0) - (rowGeometry?.rightGap ?? 0)),
+    `final team card is not centred: ${JSON.stringify(rowGeometry)}`
+  ).toBeLessThanOrEqual(2);
+
+  // /about — three avatars in the leadership strip, named in their alt text.
+  await page.goto("/about/", { waitUntil: "domcontentloaded" });
+  const avatarAlts = await page
+    .locator("img[alt*='at FAITH Foundation']")
+    .evaluateAll((els) => els.map((e) => e.getAttribute("alt") ?? ""));
+  expect(avatarAlts.length, "about leadership avatars").toBe(3);
+  for (const name of SERVING) {
+    expect(avatarAlts.some((a) => a.includes(name)), `${name} in about avatars`).toBe(true);
+  }
+});
+
+/**
  * The application wizard has to be walked, not just loaded: its submit button
  * lives on the last step, so a page-level check cannot see it. This clicks
  * through every step and stops at the submit — it never presses it, because

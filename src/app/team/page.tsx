@@ -3,63 +3,14 @@ import Link from "next/link";
 import Reveal from "@/components/Reveal";
 import BackgroundSwirls from "@/components/BackgroundSwirls";
 import { img } from "@/lib/images";
+import { BOARD } from "@/lib/board";
 
 export const metadata: Metadata = {
   title: "Our Team — FAITH Foundation",
   description:
-    "Meet FAITH Foundation's board — Ron Landers, Pastor Juan Valdez, Scott Ellis, and Reid Whitesides — leading our mission to help Texas families reach homeownership.",
+    "Meet FAITH Foundation's board — Pastor Juan Valdez, Scott Ellis, and Reid Whitesides — leading our mission to help Texas families reach homeownership.",
   alternates: { canonical: "/team" },
 };
-
-const BOARD = [
-  {
-    name: "Ron Landers",
-    role: "President & Executive Director",
-    initials: "RL",
-    photo: "/Images/team/ron-landers.jpg",
-    bio: [
-      "Ron Landers brings more than four decades of ministry, nonprofit leadership, teaching, and organizational development experience to the FAITH Foundation. His passion is connecting people in need with meaningful resources while building practical systems that strengthen individuals, families, ministries, and communities.",
-      "Raised on four continents, Ron developed a lifelong appreciation for diverse cultures and later served as a missionary in Europe and South America for more than 20 years. His experience also includes serving as a hospice chaplain and as Executive Director of Christians in Action, where he led nonprofit initiatives, ministry outreach, and community engagement.",
-      "Ron earned a Master of Divinity (M.Div.) from Columbia International University and pursued doctoral studies in Intercultural Studies with a minor in Educational Studies. He has developed Christian leadership and training curricula, mentored emerging leaders, and is fluent in Portuguese.",
-      "As President and Executive Director, Ron oversees the Foundation's day-to-day operations, donor and community engagement, incoming assistance inquiries, and the use of a programmatic fundraising platform to identify funding opportunities, streamline charitable outreach, and strengthen donor engagement. His leadership advances the Foundation's mission while expanding support for affordable housing and related charitable initiatives.",
-      "Ron and his wife, Linda, have been married for 40 years and have two daughters, two sons-in-law, and seven grandchildren. Together, they have pursued several entrepreneurial ventures, including real estate investment and other business enterprises. They remain active in their church through small-group discipleship and prayer ministries, striving to live out their Christian faith through servant leadership, integrity, and compassion.",
-    ],
-  },
-  {
-    name: "Pastor Juan Valdez",
-    role: "Secretary & Protector",
-    initials: "JV",
-    photo: "/Images/team/pastor-juan-valdez.jpg",
-    bio: [
-      "Pastor Juan Valdez serves as Secretary and Protector of the Faith Foundation, providing spiritual oversight, governance accountability, and mission stewardship for the organization. With more than 40 years of Christian faith and nearly 30 years of ordained ministry experience, Pastor Valdez offers a lifetime of leadership grounded in biblical principles, service, and integrity.",
-      "His ministry has extended across the United States, South America, Central America, the Caribbean, and Africa, where he has taught, preached, and supported faith-based outreach initiatives. Known for his wisdom, humility, and commitment to discipleship, Pastor Valdez has dedicated his life to helping individuals and families discover hope, purpose, and restoration through faith.",
-      "Beyond ministry, Pastor Valdez and his wife, Martha, demonstrated an extraordinary commitment to their community through business ownership, operating a successful hair studio in the same San Antonio location for 34 years. Such longevity reflects the consistency, reliability, and stewardship that have characterized both his professional and ministry endeavors throughout his life.",
-      "Pastor Valdez currently serves as an Associate Pastor at Temple of Praise and resides in Texas with his wife, Martha. Together they have built a legacy of faith that spans generations, including three daughters, six grandchildren, and two great-grandchildren.",
-    ],
-  },
-  {
-    name: "Scott Ellis",
-    role: "Treasurer & Board Chair",
-    initials: "SE",
-    photo: "/Images/team/scott-ellis.jpg",
-    bio: [
-      "Scott Ellis serves as Treasurer and Board Chair of the Faith Foundation, providing financial oversight, strategic guidance, and leadership in support of the Foundation's mission to expand affordable housing opportunities and strengthen communities through faith-based service.",
-      "Scott is the owner of E4 Roofing and Construction, a Georgetown, Texas-based company he has successfully led for more than 15 years. His experience as a business owner provides the Foundation with valuable expertise in financial management, operations, project coordination, and organizational leadership. He also brings extensive construction and housing industry knowledge that helps support the Foundation's affordable housing initiatives.",
-      "A longtime Georgetown resident of more than 24 years, Scott and his wife, Christy, have been married for 37 years and have raised two daughters together. Scott and Christy are active members of their local church, where they serve through ministry, fellowship, and community engagement. Scott has also participated in mission work in Mexico, demonstrating a commitment to serving others both locally and abroad.",
-    ],
-  },
-  {
-    name: "Reid Whitesides",
-    role: "Founder & Chief Strategy Officer",
-    initials: "RW",
-    photo: "/Images/team/reid-whitesides.jpg",
-    bio: [
-      "Reid Whitesides is the Founder and Chief Strategy Officer of FAITH Foundation, bringing more than 20 years of experience in construction, roofing, project management, sales, and consulting to the organization's leadership. He also applies deep expertise in technology and software development — building the operational systems, platforms, and automation tools that keep the Foundation running efficiently and positioned to scale its impact across Texas.",
-      "Reid's commitment to this work is deeply personal. During a prolonged struggle with addiction, he spent nearly twenty years incarcerated in the State of Texas — giving him firsthand understanding of the barriers families face when rebuilding after addiction, incarceration, and housing instability. Today, sober for more than fifteen years, he channels that experience into leadership grounded in empathy, accountability, and the conviction that stable housing is the first step toward a rebuilt life. He credits his Christian faith and God's transformative work as the foundation of his recovery and purpose.",
-      "Reid and his wife, Mary Ann, are recently married and are growing their family in Texas.",
-    ],
-  },
-];
 
 const VALUES = [
   {
@@ -142,12 +93,22 @@ export default function TeamPage() {
           </Reveal>
 
           <div className="mt-16 grid gap-10 lg:grid-cols-2">
-            {BOARD.map((member, i) => (
+            {BOARD.map((member, i) => {
+              /* With an odd number of directors the last card would otherwise
+                 sit in the left column with an empty half beside it — a hole
+                 sitting exactly where a departed director's card used to be.
+                 Centring it keeps the grid reading as deliberate at any roster
+                 size. `gap-10` is 2.5rem, so half the gap is 1.25rem and the
+                 centred card matches a normal column's width exactly. */
+              const orphan = BOARD.length % 2 === 1 && i === BOARD.length - 1;
+              return (
               <Reveal
                 key={member.name}
                 delay={i * 120}
                 as="article"
-                className="card-team flex h-full flex-col overflow-hidden rounded-3xl"
+                className={`card-team flex h-full flex-col overflow-hidden rounded-3xl${
+                  orphan ? " lg:col-span-2 lg:mx-auto lg:w-[calc(50%-1.25rem)]" : ""
+                }`}
               >
                 <div className="relative h-96 overflow-hidden sm:h-[28rem]">
                   <img
@@ -172,7 +133,8 @@ export default function TeamPage() {
                   ))}
                 </div>
               </Reveal>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>

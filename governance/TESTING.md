@@ -34,6 +34,50 @@ than an assertion.
 | `scripts/turnstile.spec.ts` | 10 | a build carrying the Turnstile keys | 10/10 across pass and fail modes (2026-08-16) |
 | `scripts/meeting-room.spec.ts` | 16 | a local build; needs the service key in `.env.local` | 16/16 (2026-08-17) |
 | `scripts/admin-navigation.spec.ts` | 3 | a local build; needs the service key in `.env.local` | 3/3 (2026-08-17) |
+| `scripts/public-surface.spec.ts` | 4 | live site, or `AUDIT_BASE_URL` | 4/4 (2026-09-18, local build) — gained 2 tests with the officer resignation |
+
+**Whole-suite run, 2026-09-18 (`npx playwright test`, `AUDIT_BASE_URL` = a local production
+build): 262 passed, 6 failed, 1 flaky, 3 skipped (11.7m).** All six failures were the
+missing-feature-key case this file already warns about: five Turnstile widget tests
+(`NEXT_PUBLIC_TURNSTILE_SITE_KEY` absent from `.env.local`) and one
+`api-authorization` anon check, where `api/pusher/auth/route.ts` returns **503 at line 39,
+before the session check at line 47**, because `PUSHER_*` are unset — so the route answers
+503 where the test expects 401. Serve every feature key in the same shell to reproduce the
+267-pass baseline.
+
+### Guarding a departed officer and an invisible vacancy (2026-09-18)
+
+`scripts/public-surface.spec.ts` gained two tests when the President and
+Executive Director resigned. Both run against every public route the fixtures
+enumerate (30 today).
+
+| Test | What it proves |
+| --- | --- |
+| *the departed officer appears nowhere on the public site* | ``/\bron\b|\blanders\b/i`` matches nothing in `page.content()`, in any `img[alt]`, or in visible body text; no vacancy language appears; no card carries an officer title with no name |
+| *team, about and governance render exactly the three serving directors* | 3 governance cards, 3 team cards, 3 about avatars, every portrait has a `src`, and the final team card is centred rather than leaving a hole |
+
+**Why `page.content()` and not a grep.** The name that was hardest to catch was
+not in any component — it was in `/team`'s `metadata.description`, i.e. a
+`<meta>` tag. A visitor never reads it; Google does. Only an assertion over the
+rendered document catches a name in metadata, in `alt` text, or in JSON-LD.
+
+**Why `TBD` is checked separately.** `/events` has carried "Time TBD" on the
+volunteer orientation since long before the resignation. It is an event time,
+not an unfilled office, so the sweep excludes that exact string and flags every
+other `TBD`. If the events copy changes, update `UNRELATED_TBD` — do not widen
+the exclusion to bare `TBD`.
+
+**When a successor is appointed, the second test must change from 3 to 4.** It
+is meant to fail on an uncoordinated roster change; that is the point. The
+procedure is `OPERATOR_ACTIONS.md` §4a.
+
+**What these tests do NOT cover.** They run against the public surface only.
+Whether the departed officer can still authenticate is not a Playwright
+assertion — it was verified directly against GoTrue (password sign-in
+`400 user_banned`; magic-link redemption `403 user_banned`) and is recorded in
+`OPERATOR_ACTIONS.md` §4b.
+
+---
 
 ### Running the meeting room spec (Phase 21)
 

@@ -4,6 +4,7 @@ import Reveal from "@/components/Reveal";
 import { img } from "@/lib/images";
 import { Cite } from "@/components/Citations";
 import BackgroundSwirls from "@/components/BackgroundSwirls";
+import { BOARD } from "@/lib/board";
 
 export const metadata: Metadata = {
   title: "About Us — FAITH Foundation",
@@ -52,33 +53,6 @@ const HISTORY = [
   {
     label: "The turning point",
     body: "A turning point came as the generosity of donors and community partners made a sustained fund for down payment assistance possible. Made possible by that support, designated housing donations directly support our charitable housing mission, including down payment assistance vouchers for families pursuing ownership. This community-powered model is designed to be a renewable source of uplift for families working toward a home of their own. Today we continue to grow that mission across Texas, guided by faith and powered by neighbors who believe ownership should be within everyone's reach.",
-  },
-];
-
-const LEADERSHIP = [
-  {
-    name: "Ron Landers",
-    role: "President & Executive Director",
-    photo: "/Images/team/ron-landers.jpg",
-    bio: "Ron brings two decades of ministry and nonprofit leadership to FAITH Foundation as President and Executive Director.",
-  },
-  {
-    name: "Pastor Juan Valdez",
-    role: "Secretary & Protector",
-    photo: "/Images/team/pastor-juan-valdez.jpg",
-    bio: "With nearly 30 years of ordained ministry across the Americas and beyond, Pastor Valdez provides the Foundation's spiritual oversight, governance accountability, and mission stewardship.",
-  },
-  {
-    name: "Scott Ellis",
-    role: "Treasurer & Board Chair",
-    photo: "/Images/team/scott-ellis.jpg",
-    bio: "Owner of E4 Roofing and Construction for more than 15 years, Scott brings the financial oversight and construction expertise that strengthen the Foundation's affordable-housing work.",
-  },
-  {
-    name: "Reid Whitesides",
-    role: "Founder & Chief Strategy Officer",
-    photo: "/Images/team/reid-whitesides.jpg",
-    bio: "A builder and technologist with over 20 years in construction and housing, Reid founded FAITH Foundation out of his own journey through addiction, incarceration, and recovery to help others find stability through a home.",
   },
 ];
 
@@ -353,7 +327,7 @@ export default function AboutPage() {
 
           <Reveal delay={120}>
             <ul className="mt-14 flex flex-wrap items-center justify-center gap-6 sm:gap-10">
-              {LEADERSHIP.map((member) => (
+              {BOARD.map((member) => (
                 <li key={member.name}>
                   <span className="block h-28 w-28 overflow-hidden rounded-full bg-[#1B2A4A] shadow-card ring-4 ring-gold/30 sm:h-32 sm:w-32">
                     <img

@@ -17,9 +17,15 @@ Stack: Next.js 14, Supabase, TypeScript, Tailwind, Vercel
 ## Admin Users
 - info@faithfoundationsf.org — role: admin (Reid Whitesides, primary)
 - reid@faithfoundationsf.org — role: board (Reid Whitesides)
-- ron@faithfoundationsf.org — role: board (Ron Landers, President)
 - juan@faithfoundationsf.org — role: board (Juan Valdez, Secretary)
 - scott@faithfoundationsf.org — role: board (Scott Ellis, Treasurer)
+
+The office of **President and Executive Director is vacant** as of 2026-09-18.
+`ron@faithfoundationsf.org` was that officer's account; on resignation its role
+was moved to `public` and its login disabled. The profile row is retained, not
+deleted — `audit_log.actor_id` references `profiles(id)` with no cascade by
+design. It is therefore no longer an admin user and is no longer in the minutes
+approval set.
 
 ## Design System — Admin
 Page bg: #e8e6e1

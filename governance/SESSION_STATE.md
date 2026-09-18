@@ -1,8 +1,123 @@
 # faith-foundation — SESSION STATE
 
-> Tracks the live execution session. LATEST ENTRY RECORDED: **SESSION 2026-08-16 — MAJOR
-> PLATFORM BUILD SESSION (Phases 9–19)**, written up on **2026-09-05** from an operator
-> handoff note.
+> Tracks the live execution session. LATEST ENTRY RECORDED: **SESSION 2026-09-18 — OFFICER
+> RESIGNATION AND INVISIBLE VACANCY.**
+>
+> ## 2026-09-18 — Ron Landers resigned; presidency left vacant and invisible
+>
+> **Branch `governance/ron-landers-resignation`. NOT DEPLOYED.**
+>
+> ### What was asked, and what actually shaped the work
+>
+> Remove every public reference to the resigning President and Executive Director, disable
+> his login, and leave the office vacant with invisible scaffolding. Three hard limits:
+> touch no minutes, votes or `audit_log`; do not delete his `profiles` row; name no
+> successor.
+>
+> **The reference most likely to have survived a careless sweep was not in a component.** It
+> was `/team`'s `metadata.description`, a `<meta>` tag naming all four directors. A visitor
+> never reads it; a crawler does. That single fact drove two decisions: the roster was
+> consolidated into one file so there is one place to get wrong, and the guard was written
+> as a rendered-DOM assertion over `page.content()` rather than a grep.
+>
+> ### Delivered
+>
+> **`src/lib/board.ts` — the roster, defined once.** `/team`, `/about` and `/governance` had
+> each declared their own array, in three different shapes, with the same four people. They
+> now import one `BOARD`. Per-page title differences are preserved as a field
+> (`governanceRole`) rather than flattened — `/governance` has always published "Secretary"
+> where `/team` publishes "Secretary & Protector", and that was not mine to change.
+>
+> **The vacancy is a commented-out entry (lines 88–100), not a blank one.** Every field a
+> real entry has, with ALL-CAPS placeholders. `BOARD` is `ROSTER` filtered to entries whose
+> `name` is non-empty, so even an uncommented half-finished entry renders nowhere. Filling
+> the office is one uncomment in one file — procedure in `OPERATOR_ACTIONS.md` §4a, step 1
+> of which is that the board must resolve first.
+>
+> **Removed:** name, role, initials, photo and five biography paragraphs from `/team`; name,
+> role, photo and bio from `/about`; name and role from `/governance`; the `/team` metadata
+> description; `public/Images/team/ron-landers.jpg`; the roster lines in
+> `OPERATOR_ACTIONS.md` and `faithproof-roadmap/00-MASTER.md`; and the hard-coded
+> "Ron Landers signature block" on three unbuilt PDF templates in `16-DOCUMENTS.md` — that
+> last one mattered, because building Phase 16 later would have printed a resigned officer's
+> name on outgoing award letters and tax receipts.
+>
+> **Supabase:** `profiles.role` `board` → `public`; the `auth.users` row banned through
+> GoTrue. Both reversible in one call each. A ban rather than the Phase 23 password-rotation
+> pattern, **because a rotated password does not close the magic-link door** — verified by
+> minting a magic link with the admin API and watching redemption return `403 user_banned`.
+>
+> **`/team` grid.** Three cards in a two-column grid left a 588px hole exactly where the
+> fourth card used to be. The final card is now centred when the roster is odd.
+>
+> ### Two things the brief assumed that are not true
+>
+> 1. **There are no board minutes naming him.** The brief asked me to confirm minutes still
+>    render intact with his name present. They do not exist. `board_meetings` holds two
+>    rows, both `minutes_status: 'draft'`, both with empty `minutes`, `ai_draft_minutes` and
+>    `transcript_text`; one lists attendees `["reid whitesides","reid whitesides"]`; the one
+>    `board_votes` row has motion `"liuiugpihvh"`. `meeting_approvals` is empty and
+>    `audit_log` holds **zero** rows with him as actor. Test rows, not a minute book. Nothing
+>    was touched regardless — the hard limit was honoured whether or not it had anything to
+>    protect.
+> 2. **There are no bylaws in this repository.** No articles, no executed resolutions, no
+>    inaugural minutes. The vacatur terms, who holds the President's duties, and any filing
+>    obligation **could not be reported and were not guessed.** The drafted resolution leaves
+>    those paragraphs blank and says why.
+>
+> ### Reported, not changed: the approval set is unanimity, not quorum
+>
+> `minutes/page.tsx:106` and `minutes/actions.ts::boardProfileIds()` both build the required
+> set as `profiles WHERE role IN ('admin','board')`; `certifyMinutes` refuses unless every
+> one has signed. No quorum or majority exists anywhere in the codebase.
+>
+> The set went **5 → 4**. His account had **never signed in**, so while he sat in it no
+> minutes could ever be certified — and banning him while he still held `role: 'board'`
+> would have made that permanent. Changing the role is what prevented it.
+>
+> **The `info@` / `reid@` double-count is now the only thing left.** Both carry the name
+> "Reid Whitesides", so a three-person board still needs four signatures and one person must
+> sign from two accounts. Known bug #2 below; operator's call.
+>
+> ### Verification
+>
+> tsc 0 errors · build clean · `public-surface` 4/4 local (30 routes, 0 leaks) · password
+> sign-in `400 user_banned`, magic-link redemption `403 user_banned`, `/admin` 307 to
+> `/login`.
+>
+> **Full suite: 262 passed · 6 failed · 1 flaky · 3 skipped (11.7m)**, against baseline 267
+> passed / 3 skipped / 0 failed. All 6 failures are missing feature keys in this shell —
+> 5 Turnstile (no `NEXT_PUBLIC_TURNSTILE_SITE_KEY`) and 1 Pusher (`api/pusher/auth` returns
+> 503 at line 39 before the session check at line 47 when `PUSHER_*` are unset, and the test
+> expects 401). Each was traced to its source line, not assumed. The flaky one is the
+> `admin-navigation` board crawl already documented as a load-timing flake; it passed on
+> retry. **Nothing failing touches the roster, the three public pages, `profiles`, or auth.**
+>
+> ### Left for the operator
+>
+> - **Complete paragraphs 3 and 4 of the draft resolution against the executed bylaws.**
+>   `governance/resolutions/DRAFT-2026-09-18-president-vacancy.md`, unexecuted.
+> - **Two surviving mentions, reported rather than decided** (the brief said to report
+>   anything that looked like an exception): `STATE_OF_THE_BUILD.md:1766`, a dated
+>   2026-07-24 maintenance log entry naming him — preserved, because rewriting a governance
+>   log to make a departure tidy is what the log exists to prevent; and
+>   `broken-links-report.txt:36`, a generated 2026-07-27 link-check artifact recording that
+>   his photo URL resolved, which was true at the time. Deleting that line would falsify the
+>   record of a run; regenerating the report after deploy is the honest fix.
+> - **Whether to close the Zoho mailbox.** Revoking the login does not close
+>   `ron@faithfoundationsf.org`. External to this repository.
+> - **Whether to write an `audit_log` row for the role change.** None was written: doing it
+>   through the service role would have attributed the act to a profile that did not perform
+>   it.
+> - **Whether the board's titles on `/team` and `/about` should be shortened** to match the
+>   brief's phrasing ("Juan Valdez (Secretary)"). They currently publish the fuller working
+>   titles they always have; changing published titles was not part of the ask.
+>
+> ---
+>
+> ## Previous: SESSION 2026-08-16 — MAJOR PLATFORM BUILD SESSION (Phases 9–19)
+>
+> Written up on **2026-09-05** from an operator handoff note.
 >
 > **Read the dates before the content.** The note describes work done on 2026-08-16. Phases
 > 20, 21, 21.1, 21.2, 22, 23 and 24 all happened *after* it, and several of the note's

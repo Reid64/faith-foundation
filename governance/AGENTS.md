@@ -6,6 +6,36 @@
 ## Orchestration
 _(no orchestration specified)_
 
+## STANDING RULE — the board roster has one home (added 2026-09-18)
+
+**Never declare a board member, officer, or their title in a page file.** The
+roster lives in `src/lib/board.ts` and nowhere else. `/team`, `/about` and
+`/governance` import it.
+
+The rule exists because it was broken. Until 2026-09-18 the same four people
+were declared three times, in three shapes, in three files. When an officer
+resigned, "remove every mention" meant finding all three — and a name left in
+one array, or in a page's `metadata.description`, would have stayed live and
+indexed. A roster that is stated once can be corrected once.
+
+**Two invariants go with it:**
+
+1. **An entry with no name never renders.** `BOARD` is `ROSTER` filtered to
+   entries whose `name` is non-empty. A half-finished appointment reaches no
+   page. Do not bypass the filter by mapping `ROSTER` directly.
+2. **A vacant office is invisible, not empty.** It is represented by a
+   commented-out entry, not by a present entry with blank fields, and never by
+   a placeholder card. `scripts/public-surface.spec.ts` fails the build if the
+   words "vacant", "vacancy", "position open", "open position", "coming soon"
+   or an unexplained "TBD" appear anywhere on the public site.
+
+**A name is not only in the copy.** When removing a person, check page
+`metadata` descriptions, `alt` text, JSON-LD, and image assets under `public/`
+as well as the roster itself. The guard that catches all four is a rendered-DOM
+assertion over `page.content()`, not a grep.
+
+---
+
 ## STANDING RULE — reachability is part of "done" (added 2026-08-17)
 
 **No page is complete until it can be reached by clicking from `/admin`.**

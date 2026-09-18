@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import BackgroundSwirls from "@/components/BackgroundSwirls";
 import Reveal from "@/components/Reveal";
+import { BOARD } from "@/lib/board";
 
 export const metadata: Metadata = {
   title: "Governance & Policies — FAITH Foundation",
@@ -9,13 +10,6 @@ export const metadata: Metadata = {
     "FAITH Foundation's governance policies — conflict of interest, whistleblower, document retention, and gift acceptance — overseen by a lean, mission-driven board committed to keeping every dollar working for Texas families.",
   alternates: { canonical: "/governance" },
 };
-
-const BOARD = [
-  { name: "Ron Landers", role: "President & Executive Director" },
-  { name: "Pastor Juan Valdez", role: "Secretary" },
-  { name: "Scott Ellis", role: "Treasurer / Board Chair" },
-  { name: "Reid Whitesides", role: "Founder & Chief Strategy Officer" },
-];
 
 const POLICIES = [
   {
@@ -134,7 +128,7 @@ export default function GovernancePage() {
               >
                 <p className="text-xl font-extrabold text-navy">{member.name}</p>
                 <p className="mt-2 text-sm font-bold uppercase tracking-[0.2em] text-[#4A7C59]">
-                  {member.role}
+                  {member.governanceRole}
                 </p>
               </Reveal>
             ))}

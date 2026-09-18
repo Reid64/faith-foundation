@@ -1,10 +1,143 @@
 # faith-foundation — STATE OF THE BUILD
 
-> Updated 2026-09-05. Claims below were checked against the source tree, the applied
+> Updated 2026-09-18. Claims below were checked against the source tree, the applied
 > migrations, the live Supabase schema and `vercel env ls` — not against other governance
 > documents, which have been wrong in this repository before.
 >
-> Last action: **SESSION 2026-08-16 — MAJOR PLATFORM BUILD SESSION (Phases 9–19).**
+> Last action: **2026-09-18 — OFFICER RESIGNATION: RON LANDERS REMOVED, PRESIDENCY LEFT
+> VACANT AND INVISIBLE. On branch `governance/ron-landers-resignation`. NOT DEPLOYED.**
+>
+> ---
+>
+> ## 2026-09-18 — RESIGNATION OF THE PRESIDENT AND EXECUTIVE DIRECTOR
+>
+> Ron Landers resigned. Every public reference to him was removed, his access was revoked,
+> and the office was left vacant with scaffolding that says nothing to the public.
+>
+> ### THE ROSTER WAS DEFINED THREE TIMES — that was the actual risk
+>
+> `/team`, `/about` and `/governance` each declared their own board array, in three
+> different shapes. "Remove every mention" therefore meant finding three arrays, and the
+> reference that would most likely have survived was not in any of them: it was in
+> `/team`'s `metadata.description`, a `<meta>` tag naming all four directors. A visitor
+> never reads it. A crawler does.
+>
+> The roster is now **`src/lib/board.ts`** and nothing else. Each page projects the slice it
+> renders. `BOARD` is the roster filtered to entries carrying a real name, so an
+> incomplete entry cannot reach a page even if someone uncomments one and walks away.
+>
+> ### WHAT WAS REMOVED
+>
+> | Where | What |
+> | --- | --- |
+> | `src/app/team/page.tsx` | name, role, initials, photo, 5 biography paragraphs, and the metadata description naming him |
+> | `src/app/about/page.tsx` | name, role, photo, one-line bio |
+> | `src/app/governance/page.tsx` | name and role |
+> | `public/Images/team/ron-landers.jpg` | deleted — it existed only for that profile |
+> | `governance/faithproof-roadmap/00-MASTER.md` | admin-user roster line |
+> | `governance/faithproof-roadmap/16-DOCUMENTS.md` | "Ron Landers signature block" on three unbuilt PDF templates |
+> | `governance/OPERATOR_ACTIONS.md` | roster table |
+>
+> Verified by rendered-DOM sweep over all 30 public routes: **0 occurrences** of "Ron" or
+> "Landers" in any page's HTML, `alt` text, `<title>`, meta description or JSON-LD.
+>
+> ### WHAT WAS PRESERVED, AND WHY
+>
+> - **`governance/STATE_OF_THE_BUILD.md:1766`** — the 2026-07-24 maintenance log entry that
+>   names him. It is a dated record of a change that happened. Rewriting history to make a
+>   departure tidy is exactly what a governance log exists to prevent.
+> - **The `profiles` row.** Deactivated, not deleted. `audit_log.actor_id` references
+>   `profiles(id)` with no cascade by design.
+> - **Every board meeting, vote and `audit_log` row.** Untouched. See the finding below.
+>
+> ### THE VACANCY IS INVISIBLE
+>
+> No card, no "Position Open", no placeholder portrait, no gap, nothing in metadata or
+> structured data. The office is represented by a **commented-out entry** in
+> `src/lib/board.ts` (lines 88–100) carrying every field a real entry has. Filling it is one
+> uncomment plus real values, in one file — the procedure is `OPERATOR_ACTIONS.md` §4a, and
+> step 1 of it is that the board must resolve first.
+>
+> The `/team` grid centres its final card when the roster is odd, so three directors do not
+> leave a 588px hole exactly where the fourth card used to be.
+>
+> ### SUPABASE — access revoked, reversibly
+>
+> `profiles.role` `board` → `public`, and the matching `auth.users` row banned via GoTrue
+> (`banned_until` ~100 years out). Both reverse in one call each; see `OPERATOR_ACTIONS.md`
+> §4b for the exact reversal.
+>
+> A ban rather than the Phase 23 password-rotation pattern, because **a rotated password
+> does not close the magic-link door.** Verified against GoTrue after the change: password
+> sign-in `400 user_banned`, and a magic-link token minted with the admin API refused at
+> redemption with `403 user_banned`. `/admin` answers 307 to `/login` without a session.
+>
+> Worth knowing: **role alone would not have blocked `/admin`.** `src/app/admin/layout.tsx`
+> requires a session, not a role — RLS is what protects the data behind it. The ban is what
+> makes the account unreachable.
+>
+> ### TWO FINDINGS THE BRIEF ASSUMED OTHERWISE
+>
+> 1. **There are no board minutes naming him.** The verification step asked for confirmation
+>    that minutes still render intact with his name present. They do not exist.
+>    `board_meetings` holds two rows, both dated 2026-08-17, both `minutes_status: 'draft'`,
+>    both with empty `minutes`, `ai_draft_minutes` and `transcript_text`, both created by
+>    `info@`. One lists attendees `["reid whitesides","reid whitesides"]`. The single
+>    `board_votes` row has motion `"liuiugpihvh"` and notes `".j ljh h bh"`.
+>    `meeting_approvals` is empty and `audit_log` has **zero** rows with him as actor. These
+>    are test rows, not a minute book. Nothing was touched regardless.
+> 2. **There are no bylaws in this repository.** No articles, no executed resolutions, no
+>    inaugural minutes. `git grep -i bylaw` returns one hit: a sentence in the document
+>    retention policy copy on `/governance`. The vacatur provisions, who holds the
+>    President's duties, and any filing obligation therefore **could not be reported** and
+>    were not guessed. The drafted resolution leaves those paragraphs blank and says why.
+>
+> ### THE APPROVAL SET IS UNANIMITY, NOT QUORUM
+>
+> Reported without changing it, as instructed. `minutes/page.tsx:106` and
+> `minutes/actions.ts::boardProfileIds()` both build the required set as
+> `profiles WHERE role IN ('admin','board')`, and `certifyMinutes` refuses unless **every**
+> one of them has signed. There is no quorum, no majority, and no threshold anywhere in the
+> codebase — `grep -i quorum` over `src/` returns nothing.
+>
+> The set went from **5 to 4**: `juan@`, `scott@`, `reid@` (board) and `info@` (admin).
+>
+> **Removing him turned certification from unreachable into reachable.** His account had
+> **never signed in** (`last_sign_in_at` null). While he sat in the required set, no minutes
+> could ever be certified — and had he been banned while still holding `role: 'board'`, that
+> would have become permanent. Changing the role is what prevented it.
+>
+> **Still broken, and not ours to fix tonight:** `info@` and `reid@` both carry the name
+> "Reid Whitesides", so a three-person board still needs **four** signatures and one person
+> must sign from two accounts. That is the known bug already recorded below; it is now the
+> only thing standing between this board and an honest certification.
+>
+> ### VERIFICATION
+>
+> tsc 0 errors · build clean · `public-surface` 4/4 against a local production build, 30
+> routes, 0 leaks · sign-in refused on every door.
+>
+> **Full suite, local production build: 262 passed · 6 failed · 1 flaky · 3 skipped (11.7m).**
+> Baseline was 267 passed / 3 skipped / 0 failed (Phase 24). **All 6 failures are missing
+> feature keys in this shell, not regressions**, and each was traced to the line that causes
+> it rather than assumed:
+>
+> | Failing | Count | Cause, verified in source |
+> | --- | --- | --- |
+> | `turnstile.spec.ts` widget present | 5 | `TurnstileWidget.tsx:32` reads `NEXT_PUBLIC_TURNSTILE_SITE_KEY`; it is not in `.env.local`, so no widget renders |
+> | `api-authorization` anon 401 | 1 | `api/pusher/auth/route.ts:39-44` returns **503 before the session check at :47** when `PUSHER_*` are unset; the test expects 401 |
+>
+> This is the exact case TESTING.md already warns about — "serve every feature key at once".
+> `.env.local` carries the Web3Forms key and the three Supabase keys and nothing else. The
+> 1 flaky is the `admin-navigation` board crawl, already recorded as load-timing flake; it
+> passed on retry.
+>
+> **Nothing in the failing set touches the roster, the three public pages, `profiles`, or
+> auth.** **Not deployed.**
+>
+> ---
+>
+> Prior action: **SESSION 2026-08-16 — MAJOR PLATFORM BUILD SESSION (Phases 9–19).**
 >
 > Recorded 2026-09-05 from an operator handoff note written at the time. **The note was
 > written before Phases 20–24 and several of its statements were overtaken by later work.**

@@ -376,6 +376,37 @@ Policies: `Board can read approvals` (014_board_meeting_room.sql), `Board can in
 
 Policies: `Users can read their own profile` (001_faithproof_foundation.sql), `Admins can read all profiles` (001_faithproof_foundation.sql), `Admins can update profiles` (001_faithproof_foundation.sql), `Admins can read all profiles` (002_fix_rls_recursion.sql), `Admins can read all profiles` (002_fix_rls_recursion.sql), `Admins can update profiles` (002_fix_rls_recursion.sql)
 
+**Data change, 2026-09-18 — no schema change.** On the resignation of the
+President and Executive Director, profile `75d78fcd-f664-4fb8-8035-920c4ea2f244`
+(`ron@faithfoundationsf.org`) had `role` moved from `board` to `public`, and the
+matching `auth.users` row was banned (`banned_until` set ~100 years out). **No
+column, type, policy or migration changed**; this is a row edit recorded here
+because it changes who is in the minutes approval set, which is derived from
+this table.
+
+**The row was deliberately NOT deleted.** `audit_log.actor_id` is
+`uuid REFERENCES profiles(id)` with **no** `ON DELETE` clause, so Postgres
+defaults to `NO ACTION` — a delete would either be refused by the constraint or,
+for any actor with no rows, would remove the only record of who that actor was.
+An append-only trail that cannot name its actors is not a trail. The same
+reasoning retired the Phase 23 throwaway account rather than deleting it.
+
+**Consequence for certification.** `minutes/page.tsx` and
+`minutes/actions.ts::boardProfileIds()` both build the required-approver set as
+`profiles WHERE role IN ('admin','board')`. That set went from **5** to **4**:
+
+| | Before | After |
+| --- | --- | --- |
+| `ron@` (board) | required | **not required** |
+| `juan@` (board) | required | required |
+| `scott@` (board) | required | required |
+| `reid@` (board) | required | required |
+| `info@` (admin) | required | required |
+
+Certification requires **all** of them, not a majority — see TESTING.md and the
+session report for why that is unanimity rather than quorum, and for the
+`info@`/`reid@` double-count that remains open.
+
 ### `promises`
 
 3 RLS policies, 0 indexes (from migrations).

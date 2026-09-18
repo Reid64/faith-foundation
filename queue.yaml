@@ -8,6 +8,57 @@
 # Build HALTS after governance + queue for Gate 3 (human approval, Contract 2).
 
 # ─────────────────────────────────────────────────────────────────────────────
+# COMPLETED OUT OF QUEUE — Officer resignation and invisible vacancy (2026-09-18)
+#
+# A comment, not an entry, for the same reason as the phases below.
+#
+#   Trigger:  the President and Executive Director resigned. Every public
+#             reference removed; the office left vacant and invisible.
+#
+#   Added:    src/lib/board.ts
+#               The board roster, defined once. `BoardMember` type, the
+#               commented-out vacancy entry for the unfilled office (lines
+#               88-100), and `BOARD` = ROSTER filtered to entries with a name,
+#               so an incomplete entry can never reach a page.
+#             governance/resolutions/DRAFT-2026-09-18-president-vacancy.md
+#               UNEXECUTED. Drafted, not adopted.
+#   Touched:  src/app/team/page.tsx        (imports BOARD; metadata.description
+#                                           no longer names him; odd rosters
+#                                           centre the final card)
+#             src/app/about/page.tsx       (imports BOARD)
+#             src/app/governance/page.tsx  (imports BOARD, governanceRole)
+#             scripts/public-surface.spec.ts (2 new tests)
+#             governance/OPERATOR_ACTIONS.md (section 4 rewritten; 4a fill-in
+#                                           procedure; 4b access revocation)
+#             governance/faithproof-roadmap/00-MASTER.md
+#             governance/faithproof-roadmap/16-DOCUMENTS.md (signatory no longer
+#                                           hard-coded to a named officer)
+#             AGENTS, BLUEPRINT, SCHEMA_REGISTRY, TESTING, STATE_OF_THE_BUILD,
+#             SESSION_STATE
+#   Deleted:  public/Images/team/ron-landers.jpg  (existed only for that profile)
+#   Deps:     none.
+#   Schema:   NONE. One row edited: profiles.role board -> public, plus a GoTrue
+#             ban on the matching auth user. No migration.
+#
+#   NOT DONE ON PURPOSE:
+#             - The profiles row was NOT deleted. audit_log.actor_id references
+#               profiles(id) with no cascade by design.
+#             - No board minutes, votes or audit_log rows were touched.
+#             - No successor named. The presidency is vacant; Reid Whitesides
+#               remains Founder and Chief Strategy Officer and nothing else.
+#             - Not deployed.
+#
+#   BLOCKED / NEEDS THE OPERATOR:
+#             - The bylaws are not in this repository, so the vacatur terms,
+#               who holds the President's duties, and any filing obligation
+#               could not be reported. See the session report.
+#             - The draft resolution needs paragraphs 3 and 4 completed against
+#               the executed bylaws before it can be moved.
+#
+#   Verification: tsc 0 errors; build clean; public-surface 4/4 local;
+#             sign-in refused on every door (400/403 user_banned).
+#
+# ─────────────────────────────────────────────────────────────────────────────
 # COMPLETED OUT OF QUEUE — Phase 24: fund designation through the ledger (2026-08-18)
 #
 # A comment, not an entry, for the same reason as the phases below.

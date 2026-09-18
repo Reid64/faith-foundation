@@ -109,20 +109,103 @@ personal address.
 
 **Status: SITE IS INTERNALLY CONSISTENT — external accuracy NOT VERIFIED.**
 
-The website presents four leaders on `/team` and a board on `/governance`:
+**UPDATED 2026-09-18 — the President and Executive Director resigned.** The
+website now presents **three** leaders on `/team`, `/about` and `/governance`:
 
 | Name | Title as published |
 | --- | --- |
-| Ron Landers | President & Executive Director |
-| Pastor Juan Valdez | Secretary & Protector |
-| Scott Ellis | Treasurer & Board Chair |
+| Pastor Juan Valdez | Secretary & Protector *(`/governance` publishes the short form, "Secretary")* |
+| Scott Ellis | Treasurer & Board Chair *(`/governance`: "Treasurer / Board Chair")* |
 | Reid Whitesides | Founder & Chief Strategy Officer |
+
+The office of **President and Executive Director is vacant**. Nothing on the
+public site says so, by design — see §4a for the scaffolding and the procedure
+for filling it.
 
 These titles are used consistently across the site. **What cannot be verified
 from the repository** is whether they match the organization's current governing
 documents and most recent IRS filing. Before applying, confirm the published
 roster matches the board of record, and that any officer who has joined or
 departed is reflected on the site.
+
+**Recorded outcome:** _(fill in)_
+
+---
+
+## 4a. APPOINTING A PRESIDENT AND EXECUTIVE DIRECTOR — the fill-in procedure
+
+**Status: ACTION REQUIRED WHEN THE BOARD ELECTS A SUCCESSOR. Do not do this
+before the board has resolved.**
+
+The office has been vacant since **2026-09-18**. The site carries invisible
+scaffolding so that filling it is a single edit in a single file.
+
+**The exact location:** `src/lib/board.ts` — the commented-out entry at the top
+of the `ROSTER` array (currently lines **88–100**), under the header comment
+"VACANT OFFICE — PRESIDENT AND EXECUTIVE DIRECTOR". That file is the only place
+the board roster is defined; `/team`, `/about` and `/governance` all read it.
+
+**The steps, in this order:**
+
+1. **The board resolves first.** A resolution electing the officer must be
+   adopted and minuted before this file changes. The site follows the minute
+   book; it does not lead it. A companion draft accepting the resignation and
+   declaring the office vacant is at
+   `governance/resolutions/DRAFT-2026-09-18-president-vacancy.md` — **unexecuted**.
+2. **Uncomment the block** in `src/lib/board.ts` and replace every ALL-CAPS
+   placeholder with the real values: `name`, `role`, `governanceRole`,
+   `initials`, `photo`, `shortBio`, `bio`.
+3. **Add the portrait** to `public/Images/team/` and point `photo` at it.
+4. **Leave nothing blank.** An entry whose `name` is empty is filtered out by
+   `BOARD` at the bottom of that file and will silently not render — that is the
+   intended failure mode, not a bug to work around.
+5. **Verify:** `pnpm tsc --noEmit`, `pnpm run build`, then
+   `npx playwright test scripts/public-surface.spec.ts`. Two tests there guard
+   this: *"the departed officer appears nowhere on the public site"* and *"team,
+   about and governance render exactly the three serving directors"* — the
+   second asserts a count of **3** and must be updated to **4** as part of the
+   appointment.
+6. **Only then deploy.**
+
+**Do not** add a "Position Open" card, a placeholder portrait, or any other
+public signal of the vacancy in the meantime. The `public-surface` suite fails
+if vacancy language appears anywhere on the public site.
+
+**Recorded outcome:** _(fill in)_
+
+---
+
+## 4b. Ron Landers — access revoked 2026-09-18
+
+**Status: DONE. Recorded here so it is not re-done or reversed by accident.**
+
+| What | Before | After | Reversal |
+| --- | --- | --- | --- |
+| `profiles.role` | `board` | `public` | Set it back to `board` |
+| `auth.users.banned_until` | `null` | `2126-08-25T21:20:09Z` | `updateUserById(id, { ban_duration: "none" })` |
+
+Profile id `75d78fcd-f664-4fb8-8035-920c4ea2f244`, email
+`ron@faithfoundationsf.org`. **The profile row was NOT deleted** —
+`audit_log.actor_id` references `profiles(id)` with no cascade by design, and
+deleting an actor would falsify an append-only trail. This is the same
+neutralisation pattern used for the Phase 23 throwaway account, with a GoTrue
+ban in place of a password rotation because a ban also refuses magic-link and
+recovery sign-in, which a rotated password does not.
+
+Verified after the change: password sign-in returns `400 user_banned`; a
+magic-link token minted with the admin API is refused at redemption with
+`403 user_banned`; `/admin` returns 307 to `/login` without a session. The
+account had **never signed in** (`last_sign_in_at` was null both before and
+after).
+
+**Two things the operator should still decide:**
+
+1. **Whether to keep the mailbox.** Revoking the login does not close
+   `ron@faithfoundationsf.org` at Zoho. That is external to this repository.
+2. **Whether to record this in `audit_log`.** No audit row was written for the
+   role change, because doing it through the service role would have required
+   attributing the act to a profile that did not perform it. A row written by a
+   real signed-in admin would be truthful; a fabricated actor would not.
 
 **Recorded outcome:** _(fill in)_
 
